@@ -1,0 +1,8 @@
+{
+  "exclude": [
+    "**/*.spec.js",
+    "support/**/*"
+  ],
+  "instrument": false,
+  "sourceMap": false
+}
