@@ -1,0 +1,31 @@
+{
+  "name": "@ndustrial/ndustrial-js-sdk",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
+    "test": "npm run lint && npm run test:js",
+    "test:js": "NODE_ENV=test mocha --opts 'support/mocha.opts' 'src/**/*.spec.js'",
+    "test:js:dev": "npm run test:js -- --watch",
+    "test:js:inspect": "npm run test:js -- --inspect-brk"
+  },
+  "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^4.15.0",
+    "eslint-config-ndustrial": "^1.0.5",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-plugin-node": "^5.2.1",
+    "faker": "^4.1.0",
+    "mocha": "^4.1.0",
+    "sinon": "^4.1.6",
+    "sinon-chai": "^2.14.0"
+  }
+}

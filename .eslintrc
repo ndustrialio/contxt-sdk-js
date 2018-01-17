@@ -1,0 +1,22 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "mocha": true,
+    "node": true
+  },
+  "extends": ["ndustrial"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "globals": {
+    "expect": true,
+    "faker": true,
+    "sandbox": true
+  },
+  "plugins": [],
+  "rules": {
+    "no-unused-expressions": "off"
+  }
+}
