@@ -6,6 +6,7 @@
   "scripts": {
     "coverage": "nyc npm run test:js",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
+    "report": "nyc report",
     "test": "npm run lint && npm run coverage",
     "test:js": "NODE_ENV=test mocha --opts 'support/mocha.opts' 'src/**/*.spec.js'",
     "test:js:dev": "npm run test:js -- --watch",

@@ -4,5 +4,9 @@
     "support/**/*"
   ],
   "instrument": false,
+  "reporter": [
+    "lcov",
+    "text"
+  ],
   "sourceMap": false
 }
