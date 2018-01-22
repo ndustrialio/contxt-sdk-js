@@ -8,11 +8,13 @@ export default {
   output: [
     {
       format: 'cjs',
-      file: 'lib/index.js'
+      file: 'lib/index.js',
+      sourcemap: true
     },
     {
       format: 'es',
-      file: 'es/index.js'
+      file: 'es/index.js',
+      sourcemap: true
     }
   ],
   plugins: [
@@ -22,8 +24,15 @@ export default {
     }),
     commonjs(),
     babel({
-      exclude: 'node_modules/**'
+      babelrc: false,
+      exclude: 'node_modules/**',
+      plugins: ['external-helpers'],
+      presets: [
+        [
+          'env',
+          { modules: false }
+        ]
+      ]
     })
-  ],
-  sourcemap: true
+  ]
 };
