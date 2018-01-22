@@ -1,8 +1,15 @@
 {
   "env": {
     "test": {
-      "plugins": ["istanbul"]
+      "plugins": ["istanbul"],
+      "presets": ["env"]
     }
   },
-  "presets": ["env"]
+  "plugins": ["external-helpers"],
+  "presets": [
+    [
+      "env",
+      { "modules": false }
+    ]
+  ]
 }
