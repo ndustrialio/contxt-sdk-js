@@ -22,17 +22,12 @@ export default {
       jsnext: true,
       module: true
     }),
-    commonjs(),
+    commonjs({
+      include: 'node_modules/**',
+    }),
     babel({
-      babelrc: false,
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
-      presets: [
-        [
-          'env',
-          { modules: false }
-        ]
-      ]
+      plugins: ['external-helpers']
     })
   ]
 };
