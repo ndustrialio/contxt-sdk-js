@@ -8,6 +8,12 @@ class Request {
     this.axios.interceptors.request.use(this.insertHeaders);
   }
 
+  insertHeaders = (config) => {
+    config.headers.common.Authorization = `Bearer: ${this.sdk.auth.getCurrentToken()}`;
+
+    return config;
+  }
+
   delete(...args) {
     return this.axios.delete(...args);
   }
@@ -18,12 +24,6 @@ class Request {
 
   head(...args) {
     return this.axios.head(...args);
-  }
-
-  insertHeaders = (config) => {
-    config.headers.common.Authorization = `Bearer: ${this.sdk.auth.getCurrentToken()}`;
-
-    return config;
   }
 
   options(...args) {
