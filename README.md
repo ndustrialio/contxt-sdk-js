@@ -1,6 +1,20 @@
-# ndustrial-js-sdk
+# contxt-sdk
+
+## Building the package
+
+[rollup.js](https://rollupjs.org/guide/en) is used to build the source code into CommonJS and ES6 modules that can be used for distribution. These modules are both built by running one command: `npm run build`. If you'd like to continuously create builds as files are changed (i.e. if you are developing new features and have set things up correctly with `npm link` to serve the newly updated files to your app), you can run `npm run watch`.
 
 ## Testing & Code Quality
+
+Some important NPM tasks for running the test suite:
+
+- `npm test` - Lints, sets up tracking for Istanbul coverage reports, and runs the test suite
+- `npm run test:js` - Runs the test suite
+- `npm run test:js:dev` - Runs the test suite in watch mode, where the tests are re-run whenever a file changes
+- `npm run test:js:inspect` - Runs the test suite in inspect/inspect-brk mode. Insert a `debugger` somewhere in your code and connect to the debugger with this command. (Node 8: visit `chrome://inspect` to connect. Node 6: Copy and paste the blob provided in the terminal into Chrome to connect. Older versions also have ways to connect.)
+- `npm run lint` - Lints the source code
+- `npm run coverage` - Sets up tracking for Istanbul coverage reports and runs the test suite
+- `npm run report` - Parses the Istanbul coverage reports and writes them to file (in `./coverage`) and displays them in terminal
 
 Some tools used for testing and ensuring code quality include:
 

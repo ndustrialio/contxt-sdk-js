@@ -1,10 +1,10 @@
 import request from './request.js';
 
-class NdustrialSdk {
+class ContxtSdk {
   constructor() {
     this.example = true;
     this.request = request;
   }
 }
 
-export default NdustrialSdk;
+export default ContxtSdk;

@@ -1,15 +1,15 @@
-import NdustrialSdk from './index';
+import ContxtSdk from './index';
 
-describe('NdustrialSdk', function() {
+describe('ContxtSdk', function() {
   describe('constructor', function() {
-    let ndustrialSdk;
+    let contxtSdk;
 
     beforeEach(function() {
-      ndustrialSdk = new NdustrialSdk();
+      contxtSdk = new ContxtSdk();
     });
 
     it('sets if it is an example to be true', function() {
-      expect(ndustrialSdk.example).to.be.true;
+      expect(contxtSdk.example).to.be.true;
     });
   });
 });
