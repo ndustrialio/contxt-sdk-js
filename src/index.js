@@ -1,9 +1,11 @@
-import request from './request.js';
+import Auth from './Auth.js';
+import Request from './request.js';
 
 class ContxtSdk {
   constructor() {
-    this.example = true;
-    this.request = request;
+    // TODO: Allow different types of Auth modules
+    this.auth = new Auth(this);
+    this.request = new Request(this);
   }
 }
 

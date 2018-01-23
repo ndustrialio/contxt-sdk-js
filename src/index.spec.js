@@ -1,4 +1,5 @@
 import ContxtSdk from './index';
+import Request from './request';
 
 describe('ContxtSdk', function() {
   describe('constructor', function() {
@@ -8,8 +9,10 @@ describe('ContxtSdk', function() {
       contxtSdk = new ContxtSdk();
     });
 
-    it('sets if it is an example to be true', function() {
-      expect(contxtSdk.example).to.be.true;
+    it('sets an instance of Auth');
+
+    it('sets an instance of Request', function() {
+      expect(contxtSdk.request).to.be.an.instanceof(Request);
     });
   });
 });
