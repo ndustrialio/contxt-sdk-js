@@ -1,0 +1,51 @@
+{
+  "name": "@ndustrial/contxt-sdk",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "coverage": "nyc npm run test:js",
+    "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
+    "report": "nyc report",
+    "test": "npm run lint && npm run coverage",
+    "test:js": "NODE_ENV=test mocha --opts 'support/mocha.opts' 'src/**/*.spec.js'",
+    "test:js:dev": "npm run test:js -- --watch",
+    "test:js:inspect": "npm run test:js -- --inspect-brk",
+    "watch": "npm run prepare -- --watch"
+  },
+  "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "axios": "~0.17.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^4.15.0",
+    "eslint-config-ndustrial": "^1.0.5",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-plugin-node": "^5.2.1",
+    "faker": "^4.1.0",
+    "lodash.times": "^4.3.2",
+    "mocha": "^4.1.0",
+    "nyc": "^11.4.1",
+    "rollup": "^0.54.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.2",
+    "rollup-watch": "^4.3.1",
+    "sinon": "^4.1.6",
+    "sinon-chai": "^2.14.0"
+  },
+  "peerDependencies": {
+    "axios": "~0.17.0"
+  }
+}
