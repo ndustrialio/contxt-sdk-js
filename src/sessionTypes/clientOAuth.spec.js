@@ -56,4 +56,32 @@ describe('sessionTypes/ClientOAuth', function() {
   describe('getCurrentToken', function() {
     it('returns a current token');
   });
+
+  describe('isAuthenticated', function() {
+    let clientOAuth;
+
+    beforeEach(function() {
+      clientOAuth = new ClientOAuth(baseSdk);
+    });
+
+    it('returns true when the expiresAt info is in the future', function() {
+      clientOAuth.tokenInfo = {
+        expiresAt: faker.date.future().getTime()
+      };
+
+      const isAuthenticated = clientOAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.true;
+    });
+
+    it('returns true when the expiresAt info is in the past', function() {
+      clientOAuth.tokenInfo = {
+        expiresAt: faker.date.past().getTime()
+      };
+
+      const isAuthenticated = clientOAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.false;
+    });
+  });
 });

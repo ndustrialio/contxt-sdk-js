@@ -10,6 +10,10 @@ class ClientOAuth {
     // TODO: Do work to get a real token
     return 'not a real token';
   }
+
+  isAuthenticated() {
+    return this.tokenInfo.expiresAt > Date.now();
+  }
 }
 
 export default ClientOAuth;
