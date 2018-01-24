@@ -46,11 +46,11 @@ describe('Request', function() {
       expect(baseAxiosInstance.interceptors.request.use).to.be.calledOnce;
       const [requestInterceptor] = baseAxiosInstance.interceptors.request.use.firstCall.args;
       expect(requestInterceptor).to.be.a('function');
-      expect(requestInterceptor).to.equal(request.insertHeaders);
+      expect(requestInterceptor).to.equal(request._insertHeaders);
     });
   });
 
-  describe('insertHeaders', function() {
+  describe('_insertHeaders', function() {
     let config;
     let expectedToken;
     let initialConfig;
@@ -71,7 +71,7 @@ describe('Request', function() {
       };
 
       const request = new Request(sdk);
-      config = request.insertHeaders(initialConfig);
+      config = request._insertHeaders(initialConfig);
     });
 
     it("gets a current token from the sdk's auth module", function() {

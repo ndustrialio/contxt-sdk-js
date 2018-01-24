@@ -5,10 +5,10 @@ class Request {
     this.sdk = sdk;
     this.axios = axios.create();
 
-    this.axios.interceptors.request.use(this.insertHeaders);
+    this.axios.interceptors.request.use(this._insertHeaders);
   }
 
-  insertHeaders = (config) => {
+  _insertHeaders = (config) => {
     config.headers.common.Authorization = `Bearer: ${this.sdk.auth.getCurrentToken()}`;
 
     return config;
