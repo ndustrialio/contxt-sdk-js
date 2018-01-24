@@ -14,6 +14,10 @@ class ClientOAuth {
   isAuthenticated() {
     return this.tokenInfo.expiresAt > Date.now();
   }
+
+  logIn() {
+    this.auth0.authorize();
+  }
 }
 
 export default ClientOAuth;

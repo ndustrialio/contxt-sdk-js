@@ -3,16 +3,18 @@ import ClientOAuth from './clientOAuth';
 
 describe('sessionTypes/ClientOAuth', function() {
   let baseSdk;
-  let expectedWebAuthSession;
   let webAuth;
+  let webAuthSession;
 
   beforeEach(function() {
     this.sandbox = sandbox.create();
 
     baseSdk = { config: {} };
-    expectedWebAuthSession = {};
+    webAuthSession = {
+      authorize: this.sandbox.stub()
+    };
 
-    webAuth = this.sandbox.stub(auth0, 'WebAuth').returns(expectedWebAuthSession);
+    webAuth = this.sandbox.stub(auth0, 'WebAuth').returns(webAuthSession);
   });
 
   afterEach(function() {
@@ -49,7 +51,7 @@ describe('sessionTypes/ClientOAuth', function() {
     it('appends an auth0 WebAuth instance to the class instance', function() {
       expect(webAuth).to.be.calledWithNew;
       expect(webAuth).to.be.calledWith(sdk.config.auth);
-      expect(clientOAuth.auth0).to.equal(expectedWebAuthSession);
+      expect(clientOAuth.auth0).to.equal(webAuthSession);
     });
   });
 
@@ -82,6 +84,19 @@ describe('sessionTypes/ClientOAuth', function() {
       const isAuthenticated = clientOAuth.isAuthenticated();
 
       expect(isAuthenticated).to.be.false;
+    });
+  });
+
+  describe('logIn', function() {
+    let clientOAuth;
+
+    beforeEach(function() {
+      clientOAuth = new ClientOAuth(baseSdk);
+      clientOAuth.logIn();
+    });
+
+    it('begins to authorize an auth0 WebAuth session', function() {
+      expect(webAuthSession.authorize).to.be.calledOnce;
     });
   });
 });
