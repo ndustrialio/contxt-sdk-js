@@ -1,4 +1,4 @@
-class Auth {
+class ClientOAuth {
   constructor(sdk) {
     this.sdk = sdk;
   }
@@ -9,4 +9,4 @@ class Auth {
   }
 }
 
-export default Auth;
+export default ClientOAuth;

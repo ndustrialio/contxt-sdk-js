@@ -38,15 +38,15 @@ describe('Request', function() {
     });
 
     it('creates an axios instance and appends it to the class instance', function() {
-      expect(create.calledOnce).to.be.true;
+      expect(create).to.be.calledOnce;
       expect(request.axios).to.equal(baseAxiosInstance);
     });
 
     it("sets up axios's interceptors", function() {
-      expect(baseAxiosInstance.interceptors.request.use.calledOnce).to.be.true;
-      const [requestInterceptors] = baseAxiosInstance.interceptors.request.use.firstCall.args;
-      expect(requestInterceptors).to.be.a('function');
-      expect(requestInterceptors).to.equal(request.insertHeaders);
+      expect(baseAxiosInstance.interceptors.request.use).to.be.calledOnce;
+      const [requestInterceptor] = baseAxiosInstance.interceptors.request.use.firstCall.args;
+      expect(requestInterceptor).to.be.a('function');
+      expect(requestInterceptor).to.equal(request.insertHeaders);
     });
   });
 
@@ -72,6 +72,10 @@ describe('Request', function() {
 
       const request = new Request(sdk);
       config = request.insertHeaders(initialConfig);
+    });
+
+    it("gets a current token from the sdk's auth module", function() {
+      expect(sdk.auth.getCurrentToken).to.be.calledOnce;
     });
 
     it('appends an Authorization header', function() {
@@ -110,9 +114,7 @@ describe('Request', function() {
       });
 
       it(`invokes axio's ${method} with all the arguments passed`, function() {
-        expect(axiosInstance[method].calledOnce).to.be.true;
-        const args = axiosInstance[method].firstCall.args;
-        expect(args).to.deep.equal(expectedArgs);
+        expect(axiosInstance[method]).to.be.calledWith(...expectedArgs);
       });
 
       it('returns the promise provided by axios', function() {
