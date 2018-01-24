@@ -1,5 +1,5 @@
-import ClientOauth from './clientOauth';
+import ClientOAuth from './clientOAuth';
 
 export {
-  ClientOauth
+  ClientOAuth
 };

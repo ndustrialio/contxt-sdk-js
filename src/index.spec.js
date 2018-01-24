@@ -45,7 +45,7 @@ describe('ContxtSdk', function() {
 
   describe('createAuthSession', function() {
     [
-      { sessionType: 'clientOauth', moduleName: 'ClientOauth' }
+      { sessionType: 'clientOAuth', moduleName: 'ClientOAuth' }
     ].forEach(function(authSessionConfig) {
       it(`returns a new ${authSessionConfig.sessionType} session`, function() {
         const instance = {
