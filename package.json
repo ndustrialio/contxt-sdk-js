@@ -35,6 +35,7 @@
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-plugin-node": "^5.2.1",
     "faker": "^4.1.0",
+    "lodash.clonedeep": "^4.5.0",
     "lodash.times": "^4.3.2",
     "mocha": "^4.1.0",
     "nyc": "^11.4.1",

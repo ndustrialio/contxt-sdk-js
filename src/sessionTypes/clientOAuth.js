@@ -3,7 +3,30 @@ import auth0 from 'auth0-js';
 class ClientOAuth {
   constructor(sdk) {
     this.sdk = sdk;
-    this.auth0 = new auth0.WebAuth(this.sdk.config.auth);
+
+    const authConfig = {
+      authorizationPath: '/callback',
+      ...this.sdk.config.auth
+    };
+
+    if (!authConfig.authProviderClientId) {
+      throw new Error('authProviderClientId is required for the WebAuth config');
+    }
+
+    if (!authConfig.clientId) {
+      throw new Error('clientId is required for the WebAuth config');
+    }
+
+    this.auth0 = new auth0.WebAuth({
+      audience: authConfig.authProviderClientId,
+      clientId: authConfig.clientId,
+      domain: 'ndustrial.auth0.com',
+      redirectUri: window.location.origin +
+        (authConfig.authorizationPath.indexOf('/') === 0 ? '' : '/') +
+        authConfig.authorizationPath,
+      responseType: 'token',
+      scope: 'profile openid'
+    });
   }
 
   getCurrentToken() {
