@@ -41,6 +41,18 @@ class ClientOAuth {
   logIn() {
     this.auth0.authorize();
   }
+
+  parseHash() {
+    return new Promise((resolve, reject) => {
+      this.auth0.parseHash((err, hashResponse) => {
+        if (err || !hashResponse) {
+          return reject(err || 'No valid tokens returned from auth0');
+        }
+
+        return resolve(hashResponse);
+      });
+    });
+  }
 }
 
 export default ClientOAuth;

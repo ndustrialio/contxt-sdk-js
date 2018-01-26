@@ -1,9 +1,8 @@
 import auth0 from 'auth0-js';
-import cloneDeep from 'lodash.clonedeep';
 import ClientOAuth from './clientOAuth';
 
 describe('sessionTypes/ClientOAuth', function() {
-  let baseSdk;
+  let sdk;
   let originalWindow;
   let webAuth;
   let webAuthSession;
@@ -11,7 +10,7 @@ describe('sessionTypes/ClientOAuth', function() {
   beforeEach(function() {
     this.sandbox = sandbox.create();
 
-    baseSdk = {
+    sdk = {
       config: {
         auth: {
           authProviderClientId: faker.internet.url(),
@@ -42,18 +41,18 @@ describe('sessionTypes/ClientOAuth', function() {
       let clientOAuth;
 
       beforeEach(function() {
-        clientOAuth = new ClientOAuth(baseSdk);
+        clientOAuth = new ClientOAuth(sdk);
       });
 
       it('appends the supplied sdk to the class instance', function() {
-        expect(clientOAuth.sdk).to.equal(baseSdk);
+        expect(clientOAuth.sdk).to.equal(sdk);
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
         expect(webAuth).to.be.calledWithNew;
         expect(webAuth).to.be.calledWith({
-          audience: baseSdk.config.auth.authProviderClientId,
-          clientId: baseSdk.config.auth.clientId,
+          audience: sdk.config.auth.authProviderClientId,
+          clientId: sdk.config.auth.clientId,
           domain: 'ndustrial.auth0.com',
           redirectUri: `${global.window.location.origin}/callback`,
           responseType: 'token',
@@ -68,11 +67,9 @@ describe('sessionTypes/ClientOAuth', function() {
 
     context('with custom WebAuth config options', function() {
       let expectedAuthorizationPath;
-      let sdk;
 
       beforeEach(function() {
         expectedAuthorizationPath = faker.hacker.verb();
-        sdk = cloneDeep(baseSdk);
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
 
         new ClientOAuth(sdk); // eslint-disable-line no-new
@@ -86,7 +83,6 @@ describe('sessionTypes/ClientOAuth', function() {
 
     context('without required config options', function() {
       it('throws an error when no authProviderClientId is provided', function() {
-        const sdk = cloneDeep(baseSdk);
         delete sdk.config.auth.authProviderClientId;
         const fn = () => new ClientOAuth(sdk);
 
@@ -94,7 +90,6 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('throws an error when no clientId is provided', function() {
-        const sdk = cloneDeep(baseSdk);
         delete sdk.config.auth.clientId;
         const fn = () => new ClientOAuth(sdk);
 
@@ -111,7 +106,7 @@ describe('sessionTypes/ClientOAuth', function() {
     let clientOAuth;
 
     beforeEach(function() {
-      clientOAuth = new ClientOAuth(baseSdk);
+      clientOAuth = new ClientOAuth(sdk);
     });
 
     it('returns true when the expiresAt info is in the future', function() {
@@ -139,12 +134,73 @@ describe('sessionTypes/ClientOAuth', function() {
     let clientOAuth;
 
     beforeEach(function() {
-      clientOAuth = new ClientOAuth(baseSdk);
+      clientOAuth = new ClientOAuth(sdk);
       clientOAuth.logIn();
     });
 
     it('begins to authorize an auth0 WebAuth session', function() {
       expect(webAuthSession.authorize).to.be.calledOnce;
+    });
+  });
+
+  describe('parseHash', function() {
+    let clientOAuth;
+
+    beforeEach(function() {
+      clientOAuth = new ClientOAuth(sdk);
+      clientOAuth.logIn();
+    });
+
+    context('successfully parsing the hash', function() {
+      let expectedHash;
+      let promise;
+
+      beforeEach(function() {
+        expectedHash = faker.helpers.createTransaction();
+        webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, expectedHash));
+
+        const clientOAuth = new ClientOAuth(sdk);
+        promise = clientOAuth.parseHash();
+      });
+
+      it('parses the hash using auth0', function() {
+        expect(webAuthSession.parseHash).to.be.calledOnce;
+      });
+
+      it('fulfills a promise with the hash information', function() {
+        return expect(promise).to.become(expectedHash);
+      });
+    });
+
+    context('erroring while parsing the hash', function() {
+      let clientOAuth;
+      let expectedError;
+
+      beforeEach(function() {
+        expectedError = new Error(faker.hacker.phrase());
+        webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(expectedError));
+
+        clientOAuth = new ClientOAuth(sdk);
+      });
+
+      it('returns with a rejected promise', function() {
+        return expect(clientOAuth.parseHash()).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    context('no valid token info returned from auth0', function() {
+      let clientOAuth;
+
+      beforeEach(function() {
+        webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, null));
+
+        clientOAuth = new ClientOAuth(sdk);
+      });
+
+      it('returns with a rejected promise', function() {
+        return expect(clientOAuth.parseHash())
+          .to.be.rejectedWith('No valid tokens returned from auth0');
+      });
     });
   });
 });
