@@ -3,11 +3,11 @@ import axios from 'axios';
 
 class ClientOAuth {
   constructor(sdk) {
-    this.sdk = sdk;
+    this._sdk = sdk;
 
     const authConfig = {
       authorizationPath: '/callback',
-      ...this.sdk.config.auth
+      ...this._sdk.config.auth
     };
 
     if (!authConfig.authProviderClientId) {
@@ -18,7 +18,7 @@ class ClientOAuth {
       throw new Error('clientId is required for the WebAuth config');
     }
 
-    this.auth0 = new auth0.WebAuth({
+    this._auth0 = new auth0.WebAuth({
       audience: authConfig.authProviderClientId,
       clientId: authConfig.clientId,
       domain: 'ndustrial.auth0.com',
@@ -30,38 +30,23 @@ class ClientOAuth {
     });
   }
 
-  getApiToken(accessToken) {
-    return axios
-      .post(
-        'https://contxt-auth.api.ndustrial.io/v1/token',
-        {
-          audiences: this.sdk.config.apiDependencies,
-          nonce: 'nonce'
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        }
-      )
-      .then(({ data }) => data.access_token);
-  }
-
   getCurrentToken() {
-    if (!(this.sessionInfo && this.sessionInfo.apiToken)) {
+    if (!(this._sessionInfo && this._sessionInfo.apiToken)) {
       throw new Error('No api token found');
     }
 
-    return this.sessionInfo.apiToken;
+    return this._sessionInfo.apiToken;
   }
 
   getProfile() {
-    const accessToken = this.sessionInfo && this.sessionInfo.accessToken;
+    const accessToken = this._sessionInfo && this._sessionInfo.accessToken;
 
     if (!accessToken) {
       throw new Error('No access token found');
     }
 
     return new Promise((resolve, reject) => {
-      this.auth0.client.userInfo(accessToken, (err, profile) => {
+      this._auth0.client.userInfo(accessToken, (err, profile) => {
         if (err) {
           reject(err);
         }
@@ -72,14 +57,14 @@ class ClientOAuth {
   }
 
   handleAuthentication() {
-    return this.parseWebAuthHash()
+    return this._parseWebAuthHash()
       .then((hash) => {
         return Promise.all([
           {
             accessToken: hash.accessToken,
             expiresAt: (hash.expiresIn * 1000) + Date.now()
           },
-          this.getApiToken(hash.accessToken)
+          this._getApiToken(hash.accessToken)
         ]);
       })
       .then(([partialSessionInfo, apiToken]) => {
@@ -88,30 +73,45 @@ class ClientOAuth {
           apiToken
         };
 
-        this.saveSession(sessionInfo);
+        this._saveSession(sessionInfo);
 
         return sessionInfo;
       });
   }
 
   isAuthenticated() {
-    return this.sessionInfo.expiresAt > Date.now();
+    return this._sessionInfo.expiresAt > Date.now();
   }
 
   logIn() {
-    this.auth0.authorize();
+    this._auth0.authorize();
   }
 
   logOut() {
-    delete this.sessionInfo;
+    delete this._sessionInfo;
     localStorage.removeItem('access_token');
     localStorage.removeItem('api_token');
     localStorage.removeItem('expires_at');
   }
 
-  parseWebAuthHash() {
+  _getApiToken(accessToken) {
+    return axios
+      .post(
+        'https://contxt-auth.api.ndustrial.io/v1/token',
+        {
+          audiences: this._sdk.config.apiDependencies,
+          nonce: 'nonce'
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        }
+      )
+      .then(({ data }) => data.access_token);
+  }
+
+  _parseWebAuthHash() {
     return new Promise((resolve, reject) => {
-      this.auth0.parseHash((err, hashResponse) => {
+      this._auth0.parseHash((err, hashResponse) => {
         if (err || !hashResponse) {
           return reject(err || 'No valid tokens returned from auth0');
         }
@@ -121,8 +121,8 @@ class ClientOAuth {
     });
   }
 
-  saveSession(sessionInfo) {
-    this.sessionInfo = sessionInfo;
+  _saveSession(sessionInfo) {
+    this._sessionInfo = sessionInfo;
 
     localStorage.setItem('access_token', sessionInfo.accessToken);
     localStorage.setItem('api_token', sessionInfo.apiToken);

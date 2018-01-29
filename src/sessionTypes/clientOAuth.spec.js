@@ -48,7 +48,7 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('appends the supplied sdk to the class instance', function() {
-        expect(clientOAuth.sdk).to.equal(sdk);
+        expect(clientOAuth._sdk).to.equal(sdk);
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
@@ -64,7 +64,7 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('appends an auth0 WebAuth instance to the class instance', function() {
-        expect(clientOAuth.auth0).to.equal(webAuthSession);
+        expect(clientOAuth._auth0).to.equal(webAuthSession);
       });
     });
 
@@ -101,44 +101,6 @@ describe('sessionTypes/ClientOAuth', function() {
     });
   });
 
-  describe('getApiToken', function() {
-    let accessToken;
-    let expectedApiToken;
-    let expectedAudiences;
-    let post;
-    let promise;
-
-    beforeEach(function() {
-      accessToken = faker.internet.password();
-      expectedApiToken = faker.internet.password();
-      expectedAudiences = times(faker.random.number({ min: 1, max: 5 }), () => faker.random.uuid());
-
-      sdk.config.apiDependencies = expectedAudiences;
-      post = this.sandbox.stub(axios, 'post').callsFake(() => {
-        return Promise.resolve({ data: { access_token: expectedApiToken } });
-      });
-
-      const clientOAuth = new ClientOAuth(sdk);
-      promise = clientOAuth.getApiToken(accessToken);
-    });
-
-    it('POSTs to the contxt api to get a token', function() {
-      expect(post).to.be.calledWith(
-        'https://contxt-auth.api.ndustrial.io/v1/token',
-        {
-          audiences: expectedAudiences,
-          nonce: 'nonce'
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-    });
-
-    it('returns a promise that fulfills with the api access token', function() {
-      return expect(promise).to.be.fulfilled
-        .and.to.eventually.equal(expectedApiToken);
-    });
-  });
-
   describe('getCurrentToken', function() {
     let clientOAuth;
 
@@ -154,7 +116,7 @@ describe('sessionTypes/ClientOAuth', function() {
     it('returns a current token', function() {
       const expectedApiToken = faker.internet.password();
       const clientOAuth = new ClientOAuth(sdk);
-      clientOAuth.sessionInfo = { apiToken: expectedApiToken };
+      clientOAuth._sessionInfo = { apiToken: expectedApiToken };
       const currentToken = clientOAuth.getCurrentToken();
 
       expect(currentToken).to.equal(expectedApiToken);
@@ -177,13 +139,13 @@ describe('sessionTypes/ClientOAuth', function() {
         };
 
         clientOAuth = new ClientOAuth(sdk);
-        clientOAuth.sessionInfo = { accessToken: faker.internet.password() };
+        clientOAuth._sessionInfo = { accessToken: faker.internet.password() };
         promise = clientOAuth.getProfile();
       });
 
       it("gets the user's profile", function() {
         expect(webAuthSession.client.userInfo)
-          .to.be.calledWith(clientOAuth.sessionInfo.accessToken);
+          .to.be.calledWith(clientOAuth._sessionInfo.accessToken);
       });
 
       it("returns a fulfilled promise with the users's profile", function() {
@@ -221,7 +183,7 @@ describe('sessionTypes/ClientOAuth', function() {
         };
 
         const clientOAuth = new ClientOAuth(sdk);
-        clientOAuth.sessionInfo = { accessToken: faker.internet.password() };
+        clientOAuth._sessionInfo = { accessToken: faker.internet.password() };
         promise = clientOAuth.getProfile();
       });
 
@@ -248,16 +210,16 @@ describe('sessionTypes/ClientOAuth', function() {
       };
 
       clock = sinon.useFakeTimers(currentDate);
-      getApiToken = this.sandbox.stub(ClientOAuth.prototype, 'getApiToken').callsFake(() => {
+      getApiToken = this.sandbox.stub(ClientOAuth.prototype, '_getApiToken').callsFake(() => {
         return Promise.resolve(expectedSessionInfo.apiToken);
       });
-      parseWebAuthHash = this.sandbox.stub(ClientOAuth.prototype, 'parseWebAuthHash').callsFake(() => {
+      parseWebAuthHash = this.sandbox.stub(ClientOAuth.prototype, '_parseWebAuthHash').callsFake(() => {
         return Promise.resolve({
           accessToken: expectedSessionInfo.accessToken,
           expiresIn: (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
         });
       });
-      saveSession = this.sandbox.stub(ClientOAuth.prototype, 'saveSession');
+      saveSession = this.sandbox.stub(ClientOAuth.prototype, '_saveSession');
 
       const clientOAuth = new ClientOAuth(sdk);
       promise = clientOAuth.handleAuthentication();
@@ -298,7 +260,7 @@ describe('sessionTypes/ClientOAuth', function() {
     });
 
     it('returns true when the expiresAt info is in the future', function() {
-      clientOAuth.sessionInfo = {
+      clientOAuth._sessionInfo = {
         expiresAt: faker.date.future().getTime()
       };
 
@@ -308,7 +270,7 @@ describe('sessionTypes/ClientOAuth', function() {
     });
 
     it('returns true when the expiresAt info is in the past', function() {
-      clientOAuth.sessionInfo = {
+      clientOAuth._sessionInfo = {
         expiresAt: faker.date.past().getTime()
       };
 
@@ -342,7 +304,7 @@ describe('sessionTypes/ClientOAuth', function() {
       global.localStorage = localStorage;
 
       clientOAuth = new ClientOAuth(sdk);
-      clientOAuth.sessionInfo = {
+      clientOAuth._sessionInfo = {
         accessToken: faker.internet.password(),
         apiToken: faker.internet.password(),
         expiresAt: faker.date.future().getTime()
@@ -351,7 +313,7 @@ describe('sessionTypes/ClientOAuth', function() {
     });
 
     it('deletes the session info from the auth module instance', function() {
-      expect(clientOAuth.sessionInfo).to.be.undefined;
+      expect(clientOAuth._sessionInfo).to.be.undefined;
     });
 
     it('deletes the access token from local storage', function() {
@@ -367,7 +329,45 @@ describe('sessionTypes/ClientOAuth', function() {
     });
   });
 
-  describe('parseWebAuthHash', function() {
+  describe('_getApiToken', function() {
+    let accessToken;
+    let expectedApiToken;
+    let expectedAudiences;
+    let post;
+    let promise;
+
+    beforeEach(function() {
+      accessToken = faker.internet.password();
+      expectedApiToken = faker.internet.password();
+      expectedAudiences = times(faker.random.number({ min: 1, max: 5 }), () => faker.random.uuid());
+
+      sdk.config.apiDependencies = expectedAudiences;
+      post = this.sandbox.stub(axios, 'post').callsFake(() => {
+        return Promise.resolve({ data: { access_token: expectedApiToken } });
+      });
+
+      const clientOAuth = new ClientOAuth(sdk);
+      promise = clientOAuth._getApiToken(accessToken);
+    });
+
+    it('POSTs to the contxt api to get a token', function() {
+      expect(post).to.be.calledWith(
+        'https://contxt-auth.api.ndustrial.io/v1/token',
+        {
+          audiences: expectedAudiences,
+          nonce: 'nonce'
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+    });
+
+    it('returns a promise that fulfills with the api access token', function() {
+      return expect(promise).to.be.fulfilled
+        .and.to.eventually.equal(expectedApiToken);
+    });
+  });
+
+  describe('_parseWebAuthHash', function() {
     let clientOAuth;
 
     beforeEach(function() {
@@ -384,7 +384,7 @@ describe('sessionTypes/ClientOAuth', function() {
         webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, expectedHash));
 
         const clientOAuth = new ClientOAuth(sdk);
-        promise = clientOAuth.parseWebAuthHash();
+        promise = clientOAuth._parseWebAuthHash();
       });
 
       it('parses the hash using auth0', function() {
@@ -408,7 +408,7 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('returns with a rejected promise', function() {
-        return expect(clientOAuth.parseWebAuthHash()).to.be.rejectedWith(expectedError);
+        return expect(clientOAuth._parseWebAuthHash()).to.be.rejectedWith(expectedError);
       });
     });
 
@@ -422,13 +422,13 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('returns with a rejected promise', function() {
-        return expect(clientOAuth.parseWebAuthHash())
+        return expect(clientOAuth._parseWebAuthHash())
           .to.be.rejectedWith('No valid tokens returned from auth0');
       });
     });
   });
 
-  describe('saveSession', function() {
+  describe('_saveSession', function() {
     let clientOAuth;
     let expectedSessionInfo;
     let localStorage;
@@ -446,11 +446,11 @@ describe('sessionTypes/ClientOAuth', function() {
       global.localStorage = localStorage;
 
       clientOAuth = new ClientOAuth(sdk);
-      clientOAuth.saveSession(expectedSessionInfo);
+      clientOAuth._saveSession(expectedSessionInfo);
     });
 
     it('saves the session info in the auth module instance', function() {
-      expect(clientOAuth.sessionInfo).to.equal(expectedSessionInfo);
+      expect(clientOAuth._sessionInfo).to.equal(expectedSessionInfo);
     });
 
     it('saves the access token to local storage', function() {

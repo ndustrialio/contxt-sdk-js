@@ -50,39 +50,6 @@ describe('Request', function() {
     });
   });
 
-  describe('_insertHeaders', function() {
-    let config;
-    let expectedToken;
-    let initialConfig;
-    let sdk;
-
-    beforeEach(function() {
-      expectedToken = faker.internet.password();
-      initialConfig = {
-        headers: {
-          common: {}
-        }
-      };
-      sdk = {
-        ...baseSdk,
-        auth: {
-          getCurrentToken: this.sandbox.stub().returns(expectedToken)
-        }
-      };
-
-      const request = new Request(sdk);
-      config = request._insertHeaders(initialConfig);
-    });
-
-    it("gets a current token from the sdk's auth module", function() {
-      expect(sdk.auth.getCurrentToken).to.be.calledOnce;
-    });
-
-    it('appends an Authorization header', function() {
-      expect(config.headers.common.Authorization).to.equal(`Bearer ${expectedToken}`);
-    });
-  });
-
   [
     'delete',
     'get',
@@ -121,6 +88,39 @@ describe('Request', function() {
         return expect(response).to.be.fulfilled
           .and.to.eventually.equal(expectedResponse);
       });
+    });
+  });
+
+  describe('_insertHeaders', function() {
+    let config;
+    let expectedToken;
+    let initialConfig;
+    let sdk;
+
+    beforeEach(function() {
+      expectedToken = faker.internet.password();
+      initialConfig = {
+        headers: {
+          common: {}
+        }
+      };
+      sdk = {
+        ...baseSdk,
+        auth: {
+          getCurrentToken: this.sandbox.stub().returns(expectedToken)
+        }
+      };
+
+      const request = new Request(sdk);
+      config = request._insertHeaders(initialConfig);
+    });
+
+    it("gets a current token from the sdk's auth module", function() {
+      expect(sdk.auth.getCurrentToken).to.be.calledOnce;
+    });
+
+    it('appends an Authorization header', function() {
+      expect(config.headers.common.Authorization).to.equal(`Bearer ${expectedToken}`);
     });
   });
 });
