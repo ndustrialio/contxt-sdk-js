@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
 
-class ClientOAuth {
+class Auth0WebAuth {
   constructor(sdk) {
     this._sdk = sdk;
 
@@ -130,4 +130,4 @@ class ClientOAuth {
   }
 }
 
-export default ClientOAuth;
+export default Auth0WebAuth;

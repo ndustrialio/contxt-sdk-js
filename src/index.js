@@ -11,8 +11,8 @@ class ContxtSdk {
 
   _createAuthSession() {
     switch (this.config.sessionType) {
-      case 'clientOAuth':
-        return new sessionTypes.ClientOAuth(this);
+      case 'auth0WebAuth':
+        return new sessionTypes.Auth0WebAuth(this);
 
       default:
         throw new Error('Invalid sessionType provided');

@@ -1,5 +1,5 @@
-import ClientOAuth from './clientOAuth';
+import Auth0WebAuth from './auth0WebAuth';
 
 export {
-  ClientOAuth
+  Auth0WebAuth
 };

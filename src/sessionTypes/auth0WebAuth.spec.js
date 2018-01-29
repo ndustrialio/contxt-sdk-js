@@ -2,9 +2,9 @@ import auth0 from 'auth0-js';
 import axios from 'axios';
 import times from 'lodash.times';
 import sinon from 'sinon';
-import ClientOAuth from './clientOAuth';
+import Auth0WebAuth from './auth0WebAuth';
 
-describe('sessionTypes/ClientOAuth', function() {
+describe('sessionTypes/Auth0WebAuth', function() {
   let sdk;
   let originalWindow;
   let webAuth;
@@ -41,14 +41,14 @@ describe('sessionTypes/ClientOAuth', function() {
 
   describe('constructor', function() {
     context('with default WebAuth config options', function() {
-      let clientOAuth;
+      let auth0WebAuth;
 
       beforeEach(function() {
-        clientOAuth = new ClientOAuth(sdk);
+        auth0WebAuth = new Auth0WebAuth(sdk);
       });
 
       it('appends the supplied sdk to the class instance', function() {
-        expect(clientOAuth._sdk).to.equal(sdk);
+        expect(auth0WebAuth._sdk).to.equal(sdk);
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
@@ -64,7 +64,7 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('appends an auth0 WebAuth instance to the class instance', function() {
-        expect(clientOAuth._auth0).to.equal(webAuthSession);
+        expect(auth0WebAuth._auth0).to.equal(webAuthSession);
       });
     });
 
@@ -75,7 +75,7 @@ describe('sessionTypes/ClientOAuth', function() {
         expectedAuthorizationPath = faker.hacker.verb();
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
 
-        new ClientOAuth(sdk); // eslint-disable-line no-new
+        new Auth0WebAuth(sdk); // eslint-disable-line no-new
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
@@ -87,14 +87,14 @@ describe('sessionTypes/ClientOAuth', function() {
     context('without required config options', function() {
       it('throws an error when no authProviderClientId is provided', function() {
         delete sdk.config.auth.authProviderClientId;
-        const fn = () => new ClientOAuth(sdk);
+        const fn = () => new Auth0WebAuth(sdk);
 
         expect(fn).to.throw('authProviderClientId is required for the WebAuth config');
       });
 
       it('throws an error when no clientId is provided', function() {
         delete sdk.config.auth.clientId;
-        const fn = () => new ClientOAuth(sdk);
+        const fn = () => new Auth0WebAuth(sdk);
 
         expect(fn).to.throw('clientId is required for the WebAuth config');
       });
@@ -102,22 +102,22 @@ describe('sessionTypes/ClientOAuth', function() {
   });
 
   describe('getCurrentToken', function() {
-    let clientOAuth;
+    let auth0WebAuth;
 
     beforeEach(function() {
-      clientOAuth = new ClientOAuth(sdk);
+      auth0WebAuth = new Auth0WebAuth(sdk);
     });
 
     it('throws an error when there is no current token', function() {
-      const fn = () => clientOAuth.getCurrentToken();
+      const fn = () => auth0WebAuth.getCurrentToken();
       expect(fn).to.throw('No api token found');
     });
 
     it('returns a current token', function() {
       const expectedApiToken = faker.internet.password();
-      const clientOAuth = new ClientOAuth(sdk);
-      clientOAuth._sessionInfo = { apiToken: expectedApiToken };
-      const currentToken = clientOAuth.getCurrentToken();
+      const auth0WebAuth = new Auth0WebAuth(sdk);
+      auth0WebAuth._sessionInfo = { apiToken: expectedApiToken };
+      const currentToken = auth0WebAuth.getCurrentToken();
 
       expect(currentToken).to.equal(expectedApiToken);
     });
@@ -125,7 +125,7 @@ describe('sessionTypes/ClientOAuth', function() {
 
   describe('getProfile', function() {
     context("the user's profile is successfully retrieved", function() {
-      let clientOAuth;
+      let auth0WebAuth;
       let expectedProfile;
       let promise;
 
@@ -138,14 +138,14 @@ describe('sessionTypes/ClientOAuth', function() {
           })
         };
 
-        clientOAuth = new ClientOAuth(sdk);
-        clientOAuth._sessionInfo = { accessToken: faker.internet.password() };
-        promise = clientOAuth.getProfile();
+        auth0WebAuth = new Auth0WebAuth(sdk);
+        auth0WebAuth._sessionInfo = { accessToken: faker.internet.password() };
+        promise = auth0WebAuth.getProfile();
       });
 
       it("gets the user's profile", function() {
         expect(webAuthSession.client.userInfo)
-          .to.be.calledWith(clientOAuth._sessionInfo.accessToken);
+          .to.be.calledWith(auth0WebAuth._sessionInfo.accessToken);
       });
 
       it("returns a fulfilled promise with the users's profile", function() {
@@ -155,16 +155,16 @@ describe('sessionTypes/ClientOAuth', function() {
     });
 
     context("there is no access token available to get a user's profile", function() {
-      let clientOAuth;
+      let auth0WebAuth;
 
       beforeEach(function() {
         webAuthSession.client = { userInfo: this.sandbox.stub() };
 
-        clientOAuth = new ClientOAuth(sdk);
+        auth0WebAuth = new Auth0WebAuth(sdk);
       });
 
       it('throws an error', function() {
-        const fn = () => clientOAuth.getProfile();
+        const fn = () => auth0WebAuth.getProfile();
         expect(fn).to.throw('No access token found');
       });
     });
@@ -182,9 +182,9 @@ describe('sessionTypes/ClientOAuth', function() {
           })
         };
 
-        const clientOAuth = new ClientOAuth(sdk);
-        clientOAuth._sessionInfo = { accessToken: faker.internet.password() };
-        promise = clientOAuth.getProfile();
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        auth0WebAuth._sessionInfo = { accessToken: faker.internet.password() };
+        promise = auth0WebAuth.getProfile();
       });
 
       it('returns a rejected promise', function() {
@@ -210,19 +210,19 @@ describe('sessionTypes/ClientOAuth', function() {
       };
 
       clock = sinon.useFakeTimers(currentDate);
-      getApiToken = this.sandbox.stub(ClientOAuth.prototype, '_getApiToken').callsFake(() => {
+      getApiToken = this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
         return Promise.resolve(expectedSessionInfo.apiToken);
       });
-      parseWebAuthHash = this.sandbox.stub(ClientOAuth.prototype, '_parseWebAuthHash').callsFake(() => {
+      parseWebAuthHash = this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
         return Promise.resolve({
           accessToken: expectedSessionInfo.accessToken,
           expiresIn: (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
         });
       });
-      saveSession = this.sandbox.stub(ClientOAuth.prototype, '_saveSession');
+      saveSession = this.sandbox.stub(Auth0WebAuth.prototype, '_saveSession');
 
-      const clientOAuth = new ClientOAuth(sdk);
-      promise = clientOAuth.handleAuthentication();
+      const auth0WebAuth = new Auth0WebAuth(sdk);
+      promise = auth0WebAuth.handleAuthentication();
     });
 
     afterEach(function() {
@@ -253,39 +253,39 @@ describe('sessionTypes/ClientOAuth', function() {
   });
 
   describe('isAuthenticated', function() {
-    let clientOAuth;
+    let auth0WebAuth;
 
     beforeEach(function() {
-      clientOAuth = new ClientOAuth(sdk);
+      auth0WebAuth = new Auth0WebAuth(sdk);
     });
 
     it('returns true when the expiresAt info is in the future', function() {
-      clientOAuth._sessionInfo = {
+      auth0WebAuth._sessionInfo = {
         expiresAt: faker.date.future().getTime()
       };
 
-      const isAuthenticated = clientOAuth.isAuthenticated();
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
 
       expect(isAuthenticated).to.be.true;
     });
 
     it('returns true when the expiresAt info is in the past', function() {
-      clientOAuth._sessionInfo = {
+      auth0WebAuth._sessionInfo = {
         expiresAt: faker.date.past().getTime()
       };
 
-      const isAuthenticated = clientOAuth.isAuthenticated();
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
 
       expect(isAuthenticated).to.be.false;
     });
   });
 
   describe('logIn', function() {
-    let clientOAuth;
+    let auth0WebAuth;
 
     beforeEach(function() {
-      clientOAuth = new ClientOAuth(sdk);
-      clientOAuth.logIn();
+      auth0WebAuth = new Auth0WebAuth(sdk);
+      auth0WebAuth.logIn();
     });
 
     it('begins to authorize an auth0 WebAuth session', function() {
@@ -294,7 +294,7 @@ describe('sessionTypes/ClientOAuth', function() {
   });
 
   describe('logOut', function() {
-    let clientOAuth;
+    let auth0WebAuth;
     let localStorage;
 
     beforeEach(function() {
@@ -303,17 +303,17 @@ describe('sessionTypes/ClientOAuth', function() {
       };
       global.localStorage = localStorage;
 
-      clientOAuth = new ClientOAuth(sdk);
-      clientOAuth._sessionInfo = {
+      auth0WebAuth = new Auth0WebAuth(sdk);
+      auth0WebAuth._sessionInfo = {
         accessToken: faker.internet.password(),
         apiToken: faker.internet.password(),
         expiresAt: faker.date.future().getTime()
       };
-      clientOAuth.logOut();
+      auth0WebAuth.logOut();
     });
 
     it('deletes the session info from the auth module instance', function() {
-      expect(clientOAuth._sessionInfo).to.be.undefined;
+      expect(auth0WebAuth._sessionInfo).to.be.undefined;
     });
 
     it('deletes the access token from local storage', function() {
@@ -346,8 +346,8 @@ describe('sessionTypes/ClientOAuth', function() {
         return Promise.resolve({ data: { access_token: expectedApiToken } });
       });
 
-      const clientOAuth = new ClientOAuth(sdk);
-      promise = clientOAuth._getApiToken(accessToken);
+      const auth0WebAuth = new Auth0WebAuth(sdk);
+      promise = auth0WebAuth._getApiToken(accessToken);
     });
 
     it('POSTs to the contxt api to get a token', function() {
@@ -368,11 +368,11 @@ describe('sessionTypes/ClientOAuth', function() {
   });
 
   describe('_parseWebAuthHash', function() {
-    let clientOAuth;
+    let auth0WebAuth;
 
     beforeEach(function() {
-      clientOAuth = new ClientOAuth(sdk);
-      clientOAuth.logIn();
+      auth0WebAuth = new Auth0WebAuth(sdk);
+      auth0WebAuth.logIn();
     });
 
     context('successfully parsing the hash', function() {
@@ -383,8 +383,8 @@ describe('sessionTypes/ClientOAuth', function() {
         expectedHash = faker.helpers.createTransaction();
         webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, expectedHash));
 
-        const clientOAuth = new ClientOAuth(sdk);
-        promise = clientOAuth._parseWebAuthHash();
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        promise = auth0WebAuth._parseWebAuthHash();
       });
 
       it('parses the hash using auth0', function() {
@@ -397,39 +397,39 @@ describe('sessionTypes/ClientOAuth', function() {
     });
 
     context('erroring while parsing the hash', function() {
-      let clientOAuth;
+      let auth0WebAuth;
       let expectedError;
 
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
         webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(expectedError));
 
-        clientOAuth = new ClientOAuth(sdk);
+        auth0WebAuth = new Auth0WebAuth(sdk);
       });
 
       it('returns with a rejected promise', function() {
-        return expect(clientOAuth._parseWebAuthHash()).to.be.rejectedWith(expectedError);
+        return expect(auth0WebAuth._parseWebAuthHash()).to.be.rejectedWith(expectedError);
       });
     });
 
     context('no valid token info returned from auth0', function() {
-      let clientOAuth;
+      let auth0WebAuth;
 
       beforeEach(function() {
         webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, null));
 
-        clientOAuth = new ClientOAuth(sdk);
+        auth0WebAuth = new Auth0WebAuth(sdk);
       });
 
       it('returns with a rejected promise', function() {
-        return expect(clientOAuth._parseWebAuthHash())
+        return expect(auth0WebAuth._parseWebAuthHash())
           .to.be.rejectedWith('No valid tokens returned from auth0');
       });
     });
   });
 
   describe('_saveSession', function() {
-    let clientOAuth;
+    let auth0WebAuth;
     let expectedSessionInfo;
     let localStorage;
 
@@ -445,12 +445,12 @@ describe('sessionTypes/ClientOAuth', function() {
       };
       global.localStorage = localStorage;
 
-      clientOAuth = new ClientOAuth(sdk);
-      clientOAuth._saveSession(expectedSessionInfo);
+      auth0WebAuth = new Auth0WebAuth(sdk);
+      auth0WebAuth._saveSession(expectedSessionInfo);
     });
 
     it('saves the session info in the auth module instance', function() {
-      expect(clientOAuth._sessionInfo).to.equal(expectedSessionInfo);
+      expect(auth0WebAuth._sessionInfo).to.equal(expectedSessionInfo);
     });
 
     it('saves the access token to local storage', function() {
