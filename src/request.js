@@ -9,7 +9,7 @@ class Request {
   }
 
   _insertHeaders = (config) => {
-    config.headers.common.Authorization = `Bearer: ${this.sdk.auth.getCurrentToken()}`;
+    config.headers.common.Authorization = `Bearer ${this.sdk.auth.getCurrentToken()}`;
 
     return config;
   }

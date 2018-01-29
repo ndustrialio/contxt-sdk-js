@@ -79,7 +79,7 @@ describe('Request', function() {
     });
 
     it('appends an Authorization header', function() {
-      expect(config.headers.common.Authorization).to.equal(`Bearer: ${expectedToken}`);
+      expect(config.headers.common.Authorization).to.equal(`Bearer ${expectedToken}`);
     });
   });
 
