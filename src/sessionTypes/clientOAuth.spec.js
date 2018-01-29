@@ -1,4 +1,7 @@
 import auth0 from 'auth0-js';
+import axios from 'axios';
+import times from 'lodash.times';
+import sinon from 'sinon';
 import ClientOAuth from './clientOAuth';
 
 describe('sessionTypes/ClientOAuth', function() {
@@ -98,8 +101,193 @@ describe('sessionTypes/ClientOAuth', function() {
     });
   });
 
+  describe('getApiToken', function() {
+    let accessToken;
+    let expectedApiToken;
+    let expectedAudiences;
+    let post;
+    let promise;
+
+    beforeEach(function() {
+      accessToken = faker.internet.password();
+      expectedApiToken = faker.internet.password();
+      expectedAudiences = times(faker.random.number({ min: 1, max: 5 }), () => faker.random.uuid());
+
+      sdk.config.apiDependencies = expectedAudiences;
+      post = this.sandbox.stub(axios, 'post').callsFake(() => {
+        return Promise.resolve({ data: { access_token: expectedApiToken } });
+      });
+
+      const clientOAuth = new ClientOAuth(sdk);
+      promise = clientOAuth.getApiToken(accessToken);
+    });
+
+    it('POSTs to the contxt api to get a token', function() {
+      expect(post).to.be.calledWith(
+        'https://contxt-auth.api.ndustrial.io/v1/token',
+        {
+          audiences: expectedAudiences,
+          nonce: 'nonce'
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+    });
+
+    it('returns a promise that fulfills with the api access token', function() {
+      return expect(promise).to.be.fulfilled
+        .and.to.eventually.equal(expectedApiToken);
+    });
+  });
+
   describe('getCurrentToken', function() {
-    it('returns a current token');
+    let clientOAuth;
+
+    beforeEach(function() {
+      clientOAuth = new ClientOAuth(sdk);
+    });
+
+    it('throws an error when there is no current token', function() {
+      const fn = () => clientOAuth.getCurrentToken();
+      expect(fn).to.throw('No api token found');
+    });
+
+    it('returns a current token', function() {
+      const expectedApiToken = faker.internet.password();
+      const clientOAuth = new ClientOAuth(sdk);
+      clientOAuth.sessionInfo = { apiToken: expectedApiToken };
+      const currentToken = clientOAuth.getCurrentToken();
+
+      expect(currentToken).to.equal(expectedApiToken);
+    });
+  });
+
+  describe('getProfile', function() {
+    context("the user's profile is successfully retrieved", function() {
+      let clientOAuth;
+      let expectedProfile;
+      let promise;
+
+      beforeEach(function() {
+        expectedProfile = faker.helpers.userCard();
+
+        webAuthSession.client = {
+          userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
+            cb(null, expectedProfile);
+          })
+        };
+
+        clientOAuth = new ClientOAuth(sdk);
+        clientOAuth.sessionInfo = { accessToken: faker.internet.password() };
+        promise = clientOAuth.getProfile();
+      });
+
+      it("gets the user's profile", function() {
+        expect(webAuthSession.client.userInfo)
+          .to.be.calledWith(clientOAuth.sessionInfo.accessToken);
+      });
+
+      it("returns a fulfilled promise with the users's profile", function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.equal(expectedProfile);
+      });
+    });
+
+    context("there is no access token available to get a user's profile", function() {
+      let clientOAuth;
+
+      beforeEach(function() {
+        webAuthSession.client = { userInfo: this.sandbox.stub() };
+
+        clientOAuth = new ClientOAuth(sdk);
+      });
+
+      it('throws an error', function() {
+        const fn = () => clientOAuth.getProfile();
+        expect(fn).to.throw('No access token found');
+      });
+    });
+
+    context("there is an error getting a users's profile", function() {
+      let expectedError;
+      let promise;
+
+      beforeEach(function() {
+        expectedError = new Error(faker.hacker.phrase());
+
+        webAuthSession.client = {
+          userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
+            cb(expectedError);
+          })
+        };
+
+        const clientOAuth = new ClientOAuth(sdk);
+        clientOAuth.sessionInfo = { accessToken: faker.internet.password() };
+        promise = clientOAuth.getProfile();
+      });
+
+      it('returns a rejected promise', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+  });
+
+  describe('handleAuthentication', function() {
+    let clock;
+    let expectedSessionInfo;
+    let getApiToken;
+    let parseWebAuthHash;
+    let promise;
+    let saveSession;
+
+    beforeEach(function() {
+      const currentDate = new Date();
+      expectedSessionInfo = {
+        accessToken: faker.internet.password(),
+        apiToken: faker.internet.password(),
+        expiresAt: faker.date.future().getTime()
+      };
+
+      clock = sinon.useFakeTimers(currentDate);
+      getApiToken = this.sandbox.stub(ClientOAuth.prototype, 'getApiToken').callsFake(() => {
+        return Promise.resolve(expectedSessionInfo.apiToken);
+      });
+      parseWebAuthHash = this.sandbox.stub(ClientOAuth.prototype, 'parseWebAuthHash').callsFake(() => {
+        return Promise.resolve({
+          accessToken: expectedSessionInfo.accessToken,
+          expiresIn: (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
+        });
+      });
+      saveSession = this.sandbox.stub(ClientOAuth.prototype, 'saveSession');
+
+      const clientOAuth = new ClientOAuth(sdk);
+      promise = clientOAuth.handleAuthentication();
+    });
+
+    afterEach(function() {
+      clock.restore();
+    });
+
+    it('parses the previously retrieved web auth hash', function() {
+      expect(parseWebAuthHash).to.be.calledOnce;
+    });
+
+    it('gets a contxt api token using the web auth access token', function() {
+      return promise.then(() => {
+        expect(getApiToken).to.be.calledOnce;
+        expect(getApiToken).to.be.calledWith(expectedSessionInfo.accessToken);
+      });
+    });
+
+    it('saves the session info to local storage for future use', function() {
+      return promise.then(() => {
+        expect(saveSession).to.be.calledWith(expectedSessionInfo);
+      });
+    });
+
+    it('returns a promise that is fulfilled with the web auth info and contxt api token', function() {
+      return expect(promise).to.be.fulfilled
+        .and.to.eventually.deep.equal(expectedSessionInfo);
+    });
   });
 
   describe('isAuthenticated', function() {
@@ -110,7 +298,7 @@ describe('sessionTypes/ClientOAuth', function() {
     });
 
     it('returns true when the expiresAt info is in the future', function() {
-      clientOAuth.tokenInfo = {
+      clientOAuth.sessionInfo = {
         expiresAt: faker.date.future().getTime()
       };
 
@@ -120,7 +308,7 @@ describe('sessionTypes/ClientOAuth', function() {
     });
 
     it('returns true when the expiresAt info is in the past', function() {
-      clientOAuth.tokenInfo = {
+      clientOAuth.sessionInfo = {
         expiresAt: faker.date.past().getTime()
       };
 
@@ -143,7 +331,43 @@ describe('sessionTypes/ClientOAuth', function() {
     });
   });
 
-  describe('parseHash', function() {
+  describe('logOut', function() {
+    let clientOAuth;
+    let localStorage;
+
+    beforeEach(function() {
+      localStorage = {
+        removeItem: this.sandbox.stub()
+      };
+      global.localStorage = localStorage;
+
+      clientOAuth = new ClientOAuth(sdk);
+      clientOAuth.sessionInfo = {
+        accessToken: faker.internet.password(),
+        apiToken: faker.internet.password(),
+        expiresAt: faker.date.future().getTime()
+      };
+      clientOAuth.logOut();
+    });
+
+    it('deletes the session info from the auth module instance', function() {
+      expect(clientOAuth.sessionInfo).to.be.undefined;
+    });
+
+    it('deletes the access token from local storage', function() {
+      expect(localStorage.removeItem).to.be.calledWith('access_token');
+    });
+
+    it('deletes the api access token from local storage', function() {
+      expect(localStorage.removeItem).to.be.calledWith('api_token');
+    });
+
+    it('deletes the expires at information from local storage', function() {
+      expect(localStorage.removeItem).to.be.calledWith('expires_at');
+    });
+  });
+
+  describe('parseWebAuthHash', function() {
     let clientOAuth;
 
     beforeEach(function() {
@@ -160,7 +384,7 @@ describe('sessionTypes/ClientOAuth', function() {
         webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, expectedHash));
 
         const clientOAuth = new ClientOAuth(sdk);
-        promise = clientOAuth.parseHash();
+        promise = clientOAuth.parseWebAuthHash();
       });
 
       it('parses the hash using auth0', function() {
@@ -184,7 +408,7 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('returns with a rejected promise', function() {
-        return expect(clientOAuth.parseHash()).to.be.rejectedWith(expectedError);
+        return expect(clientOAuth.parseWebAuthHash()).to.be.rejectedWith(expectedError);
       });
     });
 
@@ -198,9 +422,50 @@ describe('sessionTypes/ClientOAuth', function() {
       });
 
       it('returns with a rejected promise', function() {
-        return expect(clientOAuth.parseHash())
+        return expect(clientOAuth.parseWebAuthHash())
           .to.be.rejectedWith('No valid tokens returned from auth0');
       });
+    });
+  });
+
+  describe('saveSession', function() {
+    let clientOAuth;
+    let expectedSessionInfo;
+    let localStorage;
+
+    beforeEach(function() {
+      expectedSessionInfo = {
+        accessToken: faker.internet.password(),
+        apiToken: faker.internet.password(),
+        expiresAt: faker.date.future().getTime()
+      };
+
+      localStorage = {
+        setItem: this.sandbox.stub()
+      };
+      global.localStorage = localStorage;
+
+      clientOAuth = new ClientOAuth(sdk);
+      clientOAuth.saveSession(expectedSessionInfo);
+    });
+
+    it('saves the session info in the auth module instance', function() {
+      expect(clientOAuth.sessionInfo).to.equal(expectedSessionInfo);
+    });
+
+    it('saves the access token to local storage', function() {
+      expect(localStorage.setItem)
+        .to.be.calledWith('access_token', expectedSessionInfo.accessToken);
+    });
+
+    it('saves the api access token to local storage', function() {
+      expect(localStorage.setItem)
+        .to.be.calledWith('api_token', expectedSessionInfo.apiToken);
+    });
+
+    it('saves the expires at information to local storage', function() {
+      expect(localStorage.setItem)
+        .to.be.calledWith('expires_at', expectedSessionInfo.expiresAt);
     });
   });
 });

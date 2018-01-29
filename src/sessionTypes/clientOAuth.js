@@ -1,4 +1,5 @@
 import auth0 from 'auth0-js';
+import axios from 'axios';
 
 class ClientOAuth {
   constructor(sdk) {
@@ -29,20 +30,86 @@ class ClientOAuth {
     });
   }
 
+  getApiToken(accessToken) {
+    return axios
+      .post(
+        'https://contxt-auth.api.ndustrial.io/v1/token',
+        {
+          audiences: this.sdk.config.apiDependencies,
+          nonce: 'nonce'
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        }
+      )
+      .then(({ data }) => data.access_token);
+  }
+
   getCurrentToken() {
-    // TODO: Do work to get a real token
-    return 'not a real token';
+    if (!(this.sessionInfo && this.sessionInfo.apiToken)) {
+      throw new Error('No api token found');
+    }
+
+    return this.sessionInfo.apiToken;
+  }
+
+  getProfile() {
+    const accessToken = this.sessionInfo && this.sessionInfo.accessToken;
+
+    if (!accessToken) {
+      throw new Error('No access token found');
+    }
+
+    return new Promise((resolve, reject) => {
+      this.auth0.client.userInfo(accessToken, (err, profile) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(profile);
+      });
+    });
+  }
+
+  handleAuthentication() {
+    return this.parseWebAuthHash()
+      .then((hash) => {
+        return Promise.all([
+          {
+            accessToken: hash.accessToken,
+            expiresAt: (hash.expiresIn * 1000) + Date.now()
+          },
+          this.getApiToken(hash.accessToken)
+        ]);
+      })
+      .then(([partialSessionInfo, apiToken]) => {
+        const sessionInfo = {
+          ...partialSessionInfo,
+          apiToken
+        };
+
+        this.saveSession(sessionInfo);
+
+        return sessionInfo;
+      });
   }
 
   isAuthenticated() {
-    return this.tokenInfo.expiresAt > Date.now();
+    return this.sessionInfo.expiresAt > Date.now();
   }
 
   logIn() {
     this.auth0.authorize();
   }
 
-  parseHash() {
+  logOut() {
+    delete this.sessionInfo;
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('api_token');
+    localStorage.removeItem('expires_at');
+  }
+
+  parseWebAuthHash() {
     return new Promise((resolve, reject) => {
       this.auth0.parseHash((err, hashResponse) => {
         if (err || !hashResponse) {
@@ -52,6 +119,14 @@ class ClientOAuth {
         return resolve(hashResponse);
       });
     });
+  }
+
+  saveSession(sessionInfo) {
+    this.sessionInfo = sessionInfo;
+
+    localStorage.setItem('access_token', sessionInfo.accessToken);
+    localStorage.setItem('api_token', sessionInfo.apiToken);
+    localStorage.setItem('expires_at', sessionInfo.expiresAt);
   }
 }
 
