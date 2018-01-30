@@ -26,9 +26,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     };
     originalWindow = global.window;
     global.window = {
-      location: {
-        origin: faker.internet.url()
-      }
+      location: faker.internet.url()
     };
 
     webAuth = this.sandbox.stub(auth0, 'WebAuth').returns(webAuthSession);
@@ -57,7 +55,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           audience: sdk.config.auth.authProviderClientId,
           clientId: sdk.config.auth.clientId,
           domain: 'ndustrial.auth0.com',
-          redirectUri: `${global.window.location.origin}/callback`,
+          redirectUri: `${global.window.location}/callback`,
           responseType: 'token',
           scope: 'profile openid'
         });

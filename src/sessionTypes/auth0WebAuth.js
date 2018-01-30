@@ -1,5 +1,6 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
+import URL from 'url-parse';
 
 class Auth0WebAuth {
   constructor(sdk) {
@@ -18,13 +19,14 @@ class Auth0WebAuth {
       throw new Error('clientId is required for the WebAuth config');
     }
 
+    const currentLocation = new URL(window.location);
+    currentLocation.set('pathname', authConfig.authorizationPath);
+
     this._auth0 = new auth0.WebAuth({
       audience: authConfig.authProviderClientId,
       clientId: authConfig.clientId,
       domain: 'ndustrial.auth0.com',
-      redirectUri: window.location.origin +
-        (authConfig.authorizationPath.indexOf('/') === 0 ? '' : '/') +
-        authConfig.authorizationPath,
+      redirectUri: `${currentLocation.origin}${currentLocation.pathname}`,
       responseType: 'token',
       scope: 'profile openid'
     });

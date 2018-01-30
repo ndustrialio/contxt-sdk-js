@@ -18,7 +18,9 @@
   "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
   "license": "ISC",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "url-parse": "^1.2.0"
+  },
   "devDependencies": {
     "auth0-js": "^9.0.0",
     "axios": "~0.17.0",
