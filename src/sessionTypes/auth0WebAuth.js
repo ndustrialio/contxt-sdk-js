@@ -78,6 +78,18 @@ class Auth0WebAuth {
         this._saveSession(sessionInfo);
 
         return sessionInfo;
+      })
+      .then((sessionInfo) => {
+        const redirectPathname = this._getRedirectPathname();
+        const redirectUrl = this._generateRedirectUrlFromPathname(redirectPathname);
+        window.location = redirectUrl;
+
+        return sessionInfo;
+      })
+      .catch((err) => {
+        console.log(`Error while handling authentication: ${err}`);
+        window.location = this._generateRedirectUrlFromPathname('/');
+        throw err;
       });
   }
 
@@ -99,6 +111,13 @@ class Auth0WebAuth {
     window.location = this._generateRedirectUrlFromPathname('/');
   }
 
+  _generateRedirectUrlFromPathname(path) {
+    const newUrl = new URL(window.location);
+    newUrl.set('pathname', path);
+
+    return newUrl.href;
+  }
+
   _getApiToken(accessToken) {
     return axios
       .post(
@@ -114,11 +133,11 @@ class Auth0WebAuth {
       .then(({ data }) => data.access_token);
   }
 
-  _generateRedirectUrlFromPathname(path) {
-    const newUrl = new URL(window.location);
-    newUrl.set('pathname', path);
+  _getRedirectPathname() {
+    const redirectPathname = localStorage.getItem('redirect_pathname');
+    localStorage.removeItem('redirect_pathname');
 
-    return newUrl.href;
+    return redirectPathname || '/';
   }
 
   _parseWebAuthHash() {

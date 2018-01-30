@@ -192,61 +192,154 @@ describe('sessionTypes/Auth0WebAuth', function() {
   });
 
   describe('handleAuthentication', function() {
-    let clock;
-    let expectedSessionInfo;
-    let getApiToken;
-    let parseWebAuthHash;
-    let promise;
-    let saveSession;
+    context('successfully getting a new api token', function() {
+      let clock;
+      let expectedRedirectPathname;
+      let expectedSessionInfo;
+      let expectedUrl;
+      let generateRedirectUrlFromPathname;
+      let getApiToken;
+      let getRedirectPathname;
+      let parseWebAuthHash;
+      let promise;
+      let saveSession;
 
-    beforeEach(function() {
-      const currentDate = new Date();
-      expectedSessionInfo = {
-        accessToken: faker.internet.password(),
-        apiToken: faker.internet.password(),
-        expiresAt: faker.date.future().getTime()
-      };
+      beforeEach(function() {
+        const currentDate = new Date();
+        expectedRedirectPathname = `/${faker.hacker.verb()}/${faker.hacker.verb()}`;
+        expectedSessionInfo = {
+          accessToken: faker.internet.password(),
+          apiToken: faker.internet.password(),
+          expiresAt: faker.date.future().getTime()
+        };
+        expectedUrl = faker.internet.url();
 
-      clock = sinon.useFakeTimers(currentDate);
-      getApiToken = this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
-        return Promise.resolve(expectedSessionInfo.apiToken);
+        clock = sinon.useFakeTimers(currentDate);
+        getApiToken = this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
+          return Promise.resolve(expectedSessionInfo.apiToken);
+        });
+        getRedirectPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_getRedirectPathname')
+          .returns(expectedRedirectPathname);
+        generateRedirectUrlFromPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_generateRedirectUrlFromPathname')
+          .returns(expectedUrl);
+        parseWebAuthHash = this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
+          return Promise.resolve({
+            accessToken: expectedSessionInfo.accessToken,
+            expiresIn: (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
+          });
+        });
+        saveSession = this.sandbox.stub(Auth0WebAuth.prototype, '_saveSession');
+        global.window = {
+          _location: `${faker.internet.url()}/${faker.hacker.verb()}`,
+          get location() {
+            return this._location;
+          },
+          set location(newLocation) {
+            this._location = newLocation;
+          }
+        };
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        promise = auth0WebAuth.handleAuthentication();
       });
-      parseWebAuthHash = this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
-        return Promise.resolve({
-          accessToken: expectedSessionInfo.accessToken,
-          expiresIn: (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
+
+      afterEach(function() {
+        clock.restore();
+      });
+
+      it('parses the previously retrieved web auth hash', function() {
+        expect(parseWebAuthHash).to.be.calledOnce;
+      });
+
+      it('gets a contxt api token using the web auth access token', function() {
+        return promise.then(() => {
+          expect(getApiToken).to.be.calledOnce;
+          expect(getApiToken).to.be.calledWith(expectedSessionInfo.accessToken);
         });
       });
-      saveSession = this.sandbox.stub(Auth0WebAuth.prototype, '_saveSession');
 
-      const auth0WebAuth = new Auth0WebAuth(sdk);
-      promise = auth0WebAuth.handleAuthentication();
-    });
+      it('saves the session info to local storage for future use', function() {
+        return promise.then(() => {
+          expect(saveSession).to.be.calledWith(expectedSessionInfo);
+        });
+      });
 
-    afterEach(function() {
-      clock.restore();
-    });
+      it('gets a stored (or default redirect pathname)', function() {
+        return promise.then(() => {
+          expect(getRedirectPathname).to.be.calledOnce;
+        });
+      });
 
-    it('parses the previously retrieved web auth hash', function() {
-      expect(parseWebAuthHash).to.be.calledOnce;
-    });
+      it('generates a redirect url', function() {
+        return promise.then(() => {
+          expect(generateRedirectUrlFromPathname).to.be.calledWith(expectedRedirectPathname);
+        });
+      });
 
-    it('gets a contxt api token using the web auth access token', function() {
-      return promise.then(() => {
-        expect(getApiToken).to.be.calledOnce;
-        expect(getApiToken).to.be.calledWith(expectedSessionInfo.accessToken);
+      it("assigns the new redirect url to the browsers's location", function() {
+        return promise
+          .then(() => {
+            expect(global.window.location).to.equal(expectedUrl);
+          });
+      });
+
+      it('returns a promise that is fulfilled with the web auth info and contxt api token', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.deep.equal(expectedSessionInfo);
       });
     });
 
-    it('saves the session info to local storage for future use', function() {
-      return promise.then(() => {
-        expect(saveSession).to.be.calledWith(expectedSessionInfo);
-      });
-    });
+    context('unsuccessfully getting an api token', function() {
+      let expectedError;
+      let expectedUrl;
+      let generateRedirectUrlFromPathname;
+      let promise;
 
-    it('returns a promise that is fulfilled with the web auth info and contxt api token', function() {
-      return expect(promise).to.be.fulfilled
-        .and.to.eventually.deep.equal(expectedSessionInfo);
+      beforeEach(function() {
+        expectedError = faker.hacker.phrase();
+        expectedUrl = faker.internet.url();
+
+        generateRedirectUrlFromPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_generateRedirectUrlFromPathname')
+          .returns(expectedUrl);
+        this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
+          return Promise.reject(expectedError);
+        });
+        this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
+          return Promise.resolve({});
+        });
+        global.window = {
+          _location: `${faker.internet.url()}/${faker.hacker.verb()}`,
+          get location() {
+            return this._location;
+          },
+          set location(newLocation) {
+            this._location = newLocation;
+          }
+        };
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        promise = auth0WebAuth.handleAuthentication();
+      });
+
+      it('generates a redirect url', function() {
+        return promise
+          .then(expect.fail)
+          .catch(() => {
+            expect(generateRedirectUrlFromPathname).to.be.calledWith('/');
+          });
+      });
+
+      it("assigns the new redirect url to the browsers's location", function() {
+        return promise
+          .then(expect.fail)
+          .catch(() => {
+            expect(global.window.location).to.equal(expectedUrl);
+          });
+      });
+
+      it('returns with a rejected promise', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
     });
   });
 
@@ -420,6 +513,55 @@ describe('sessionTypes/Auth0WebAuth', function() {
     it('returns a promise that fulfills with the api access token', function() {
       return expect(promise).to.be.fulfilled
         .and.to.eventually.equal(expectedApiToken);
+    });
+  });
+
+  describe('_getRedirectPathname', function() {
+    beforeEach(function() {
+      global.localStorage = {
+        removeItem: this.sandbox.stub()
+      };
+    });
+
+    context('when there is a saved redirect pathname', function() {
+      let expectedPathname;
+      let pathname;
+
+      beforeEach(function() {
+        expectedPathname = `/${faker.hacker.verb()}/${faker.hacker.verb()}`;
+
+        global.localStorage.getItem = this.sandbox.stub().returns(expectedPathname);
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        pathname = auth0WebAuth._getRedirectPathname();
+      });
+
+      it('gets the stored pathname from local storage', function() {
+        expect(global.localStorage.getItem).to.be.calledWith('redirect_pathname');
+      });
+
+      it('removes the previously stored pathname from local storage', function() {
+        expect(global.localStorage.removeItem).to.be.calledWith('redirect_pathname');
+      });
+
+      it('returns the stored pathname', function() {
+        expect(pathname).to.equal(expectedPathname);
+      });
+    });
+
+    context('when there is no saved redirect pathname', function() {
+      let pathname;
+
+      beforeEach(function() {
+        global.localStorage.getItem = this.sandbox.stub();
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        pathname = auth0WebAuth._getRedirectPathname();
+      });
+
+      it('returns a root pathname', function() {
+        expect(pathname).to.equal('/');
+      });
     });
   });
 
