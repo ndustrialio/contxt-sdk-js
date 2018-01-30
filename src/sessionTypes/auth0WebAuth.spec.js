@@ -70,7 +70,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let expectedAuthorizationPath;
 
       beforeEach(function() {
-        expectedAuthorizationPath = faker.hacker.verb();
+        expectedAuthorizationPath = faker.hacker.adjective();
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
 
         new Auth0WebAuth(sdk); // eslint-disable-line no-new
@@ -206,7 +206,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         const currentDate = new Date();
-        expectedRedirectPathname = `/${faker.hacker.verb()}/${faker.hacker.verb()}`;
+        expectedRedirectPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
         expectedSessionInfo = {
           accessToken: faker.internet.password(),
           apiToken: faker.internet.password(),
@@ -230,7 +230,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         });
         saveSession = this.sandbox.stub(Auth0WebAuth.prototype, '_saveSession');
         global.window = {
-          _location: `${faker.internet.url()}/${faker.hacker.verb()}`,
+          _location: `${faker.internet.url()}/${faker.hacker.adjective()}`,
           get location() {
             return this._location;
           },
@@ -308,7 +308,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           return Promise.resolve({});
         });
         global.window = {
-          _location: `${faker.internet.url()}/${faker.hacker.verb()}`,
+          _location: `${faker.internet.url()}/${faker.hacker.adjective()}`,
           get location() {
             return this._location;
           },
@@ -454,13 +454,13 @@ describe('sessionTypes/Auth0WebAuth', function() {
     let query;
 
     beforeEach(function() {
-      expectedPathname = faker.hacker.verb();
-      hash = `#${faker.hacker.verb()}`;
+      expectedPathname = faker.hacker.adjective();
+      hash = `#${faker.hacker.adjective()}`;
       origin = faker.internet.url();
-      query = `?q=${faker.hacker.verb()}`;
+      query = `?q=${faker.hacker.adjective()}`;
 
       global.window = {
-        _location: `${origin}/${faker.hacker.noun()}/${faker.hacker.noun()}/${query}${hash}`,
+        _location: `${origin}/${faker.hacker.adjective()}/${faker.hacker.adjective()}/${query}${hash}`,
         get location() {
           return this._location;
         },
@@ -528,7 +528,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let pathname;
 
       beforeEach(function() {
-        expectedPathname = `/${faker.hacker.verb()}/${faker.hacker.verb()}`;
+        expectedPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
         global.localStorage.getItem = this.sandbox.stub().returns(expectedPathname);
 
