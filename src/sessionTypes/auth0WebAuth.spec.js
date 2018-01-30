@@ -293,13 +293,31 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
   describe('logOut', function() {
     let auth0WebAuth;
+    let expectedUrl;
+    let generateRedirectUrlFromPathname;
     let localStorage;
+    let originalLocation;
 
     beforeEach(function() {
+      expectedUrl = faker.internet.url();
+
+      generateRedirectUrlFromPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_generateRedirectUrlFromPathname')
+        .returns(expectedUrl);
       localStorage = {
         removeItem: this.sandbox.stub()
       };
+      originalLocation = faker.internet.url();
+
       global.localStorage = localStorage;
+      global.window = {
+        _location: originalLocation,
+        get location() {
+          return this._location;
+        },
+        set location(newLocation) {
+          this._location = newLocation;
+        }
+      };
 
       auth0WebAuth = new Auth0WebAuth(sdk);
       auth0WebAuth._sessionInfo = {
@@ -324,6 +342,46 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     it('deletes the expires at information from local storage', function() {
       expect(localStorage.removeItem).to.be.calledWith('expires_at');
+    });
+
+    it('generates a redirect url', function() {
+      expect(generateRedirectUrlFromPathname).to.be.calledWith('/');
+    });
+
+    it("assigns the new redirect url to the browsers's location", function() {
+      expect(global.window.location).to.equal(expectedUrl);
+    });
+  });
+
+  describe('_generateRedirectUrlFromPathname', function() {
+    let expectedPathname;
+    let hash;
+    let newUrl;
+    let origin;
+    let query;
+
+    beforeEach(function() {
+      expectedPathname = faker.hacker.verb();
+      hash = `#${faker.hacker.verb()}`;
+      origin = faker.internet.url();
+      query = `?q=${faker.hacker.verb()}`;
+
+      global.window = {
+        _location: `${origin}/${faker.hacker.noun()}/${faker.hacker.noun()}/${query}${hash}`,
+        get location() {
+          return this._location;
+        },
+        set location(newLocation) {
+          this._location = newLocation;
+        }
+      };
+
+      const auth0WebAuth = new Auth0WebAuth(sdk);
+      newUrl = auth0WebAuth._generateRedirectUrlFromPathname(expectedPathname);
+    });
+
+    it("changes the url's original path to the newly provided path", function() {
+      expect(newUrl).to.equal(`${origin}/${expectedPathname}${query}${hash}`);
     });
   });
 

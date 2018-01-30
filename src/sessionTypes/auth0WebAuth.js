@@ -19,14 +19,14 @@ class Auth0WebAuth {
       throw new Error('clientId is required for the WebAuth config');
     }
 
-    const currentLocation = new URL(window.location);
-    currentLocation.set('pathname', authConfig.authorizationPath);
+    const currentUrl = new URL(window.location);
+    currentUrl.set('pathname', authConfig.authorizationPath);
 
     this._auth0 = new auth0.WebAuth({
       audience: authConfig.authProviderClientId,
       clientId: authConfig.clientId,
       domain: 'ndustrial.auth0.com',
-      redirectUri: `${currentLocation.origin}${currentLocation.pathname}`,
+      redirectUri: `${currentUrl.origin}${currentUrl.pathname}`,
       responseType: 'token',
       scope: 'profile openid'
     });
@@ -91,9 +91,12 @@ class Auth0WebAuth {
 
   logOut() {
     delete this._sessionInfo;
+
     localStorage.removeItem('access_token');
     localStorage.removeItem('api_token');
     localStorage.removeItem('expires_at');
+
+    window.location = this._generateRedirectUrlFromPathname('/');
   }
 
   _getApiToken(accessToken) {
@@ -109,6 +112,13 @@ class Auth0WebAuth {
         }
       )
       .then(({ data }) => data.access_token);
+  }
+
+  _generateRedirectUrlFromPathname(path) {
+    const newUrl = new URL(window.location);
+    newUrl.set('pathname', path);
+
+    return newUrl.href;
   }
 
   _parseWebAuthHash() {
