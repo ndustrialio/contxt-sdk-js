@@ -94,7 +94,10 @@ class Auth0WebAuth {
   }
 
   isAuthenticated() {
-    return this._sessionInfo.expiresAt > Date.now();
+    const hasTokens = !!(this._sessionInfo && this._sessionInfo.accessToken &&
+      this._sessionInfo.apiToken && this._sessionInfo.expiresAt);
+
+    return hasTokens && this._sessionInfo.expiresAt > Date.now();
   }
 
   logIn() {

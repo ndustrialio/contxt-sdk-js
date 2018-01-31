@@ -352,6 +352,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     it('returns true when the expiresAt info is in the future', function() {
       auth0WebAuth._sessionInfo = {
+        accessToken: faker.internet.url(),
+        apiToken: faker.internet.url(),
         expiresAt: faker.date.future().getTime()
       };
 
@@ -360,9 +362,50 @@ describe('sessionTypes/Auth0WebAuth', function() {
       expect(isAuthenticated).to.be.true;
     });
 
-    it('returns true when the expiresAt info is in the past', function() {
+    it('returns false when the expiresAt info is in the past', function() {
       auth0WebAuth._sessionInfo = {
+        accessToken: faker.internet.url(),
+        apiToken: faker.internet.url(),
         expiresAt: faker.date.past().getTime()
+      };
+
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.false;
+    });
+
+    it('returns false when there is no stored session info', function() {
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.false;
+    });
+
+    it('returns false when there is no stored access token', function() {
+      auth0WebAuth._sessionInfo = {
+        apiToken: faker.internet.url(),
+        expiresAt: faker.date.past().getTime()
+      };
+
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.false;
+    });
+
+    it('returns false when there is no stored api token', function() {
+      auth0WebAuth._sessionInfo = {
+        accessToken: faker.internet.url(),
+        expiresAt: faker.date.past().getTime()
+      };
+
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.false;
+    });
+
+    it('returns false when there is no stored expires at value', function() {
+      auth0WebAuth._sessionInfo = {
+        accessToken: faker.internet.url(),
+        apiToken: faker.internet.url()
       };
 
       const isAuthenticated = auth0WebAuth.isAuthenticated();
