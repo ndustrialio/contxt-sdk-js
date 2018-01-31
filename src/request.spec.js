@@ -46,40 +46,7 @@ describe('Request', function() {
       expect(baseAxiosInstance.interceptors.request.use).to.be.calledOnce;
       const [requestInterceptor] = baseAxiosInstance.interceptors.request.use.firstCall.args;
       expect(requestInterceptor).to.be.a('function');
-      expect(requestInterceptor).to.equal(request.insertHeaders);
-    });
-  });
-
-  describe('insertHeaders', function() {
-    let config;
-    let expectedToken;
-    let initialConfig;
-    let sdk;
-
-    beforeEach(function() {
-      expectedToken = faker.internet.password();
-      initialConfig = {
-        headers: {
-          common: {}
-        }
-      };
-      sdk = {
-        ...baseSdk,
-        auth: {
-          getCurrentToken: this.sandbox.stub().returns(expectedToken)
-        }
-      };
-
-      const request = new Request(sdk);
-      config = request.insertHeaders(initialConfig);
-    });
-
-    it("gets a current token from the sdk's auth module", function() {
-      expect(sdk.auth.getCurrentToken).to.be.calledOnce;
-    });
-
-    it('appends an Authorization header', function() {
-      expect(config.headers.common.Authorization).to.equal(`Bearer: ${expectedToken}`);
+      expect(requestInterceptor).to.equal(request._insertHeaders);
     });
   });
 
@@ -121,6 +88,39 @@ describe('Request', function() {
         return expect(response).to.be.fulfilled
           .and.to.eventually.equal(expectedResponse);
       });
+    });
+  });
+
+  describe('_insertHeaders', function() {
+    let config;
+    let expectedToken;
+    let initialConfig;
+    let sdk;
+
+    beforeEach(function() {
+      expectedToken = faker.internet.password();
+      initialConfig = {
+        headers: {
+          common: {}
+        }
+      };
+      sdk = {
+        ...baseSdk,
+        auth: {
+          getCurrentApiToken: this.sandbox.stub().returns(expectedToken)
+        }
+      };
+
+      const request = new Request(sdk);
+      config = request._insertHeaders(initialConfig);
+    });
+
+    it("gets a current token from the sdk's auth module", function() {
+      expect(sdk.auth.getCurrentApiToken).to.be.calledOnce;
+    });
+
+    it('appends an Authorization header', function() {
+      expect(config.headers.common.Authorization).to.equal(`Bearer ${expectedToken}`);
     });
   });
 });

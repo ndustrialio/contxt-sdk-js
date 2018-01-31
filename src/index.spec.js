@@ -23,7 +23,7 @@ describe('ContxtSdk', function() {
     beforeEach(function() {
       expectedAuthSession = faker.helpers.createTransaction();
 
-      createAuthSession = this.sandbox.stub(ContxtSdk.prototype, 'createAuthSession')
+      createAuthSession = this.sandbox.stub(ContxtSdk.prototype, '_createAuthSession')
         .returns(expectedAuthSession);
 
       contxtSdk = new ContxtSdk(baseConfig);
@@ -43,9 +43,9 @@ describe('ContxtSdk', function() {
     });
   });
 
-  describe('createAuthSession', function() {
+  describe('_createAuthSession', function() {
     [
-      { sessionType: 'clientOAuth', moduleName: 'ClientOAuth' }
+      { sessionType: 'auth0WebAuth', moduleName: 'Auth0WebAuth' }
     ].forEach(function(authSessionConfig) {
       it(`returns a new ${authSessionConfig.sessionType} session`, function() {
         const instance = {
@@ -59,7 +59,7 @@ describe('ContxtSdk', function() {
         const authSessionStub = this.sandbox.stub(sessionTypes, authSessionConfig.moduleName)
           .returns(expectedSession);
 
-        const authSession = ContxtSdk.prototype.createAuthSession.call(instance);
+        const authSession = ContxtSdk.prototype._createAuthSession.call(instance);
 
         expect(authSessionStub).to.be.calledWithNew;
         expect(authSessionStub).to.be.calledWith(instance);
@@ -72,13 +72,13 @@ describe('ContxtSdk', function() {
         ...baseConfig,
         sessionType: faker.hacker.verb()
       };
-      const fn = () => ContxtSdk.prototype.createAuthSession.call({ config });
+      const fn = () => ContxtSdk.prototype._createAuthSession.call({ config });
 
       expect(fn).to.throw('Invalid sessionType provided');
     });
 
     it('throws an error if no session type is provided', function() {
-      const fn = () => ContxtSdk.prototype.createAuthSession.call({ config: baseConfig });
+      const fn = () => ContxtSdk.prototype._createAuthSession.call({ config: baseConfig });
 
       expect(fn).to.throw('Invalid sessionType provided');
     });
