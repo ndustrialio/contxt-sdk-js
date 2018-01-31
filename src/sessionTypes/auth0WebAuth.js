@@ -33,19 +33,11 @@ class Auth0WebAuth {
   }
 
   getCurrentAccessToken() {
-    if (!(this._sessionInfo && this._sessionInfo.accessToken)) {
-      throw new Error('No access token found');
-    }
-
-    return this._sessionInfo.accessToken;
+    return this._getCurrentTokenByType('access');
   }
 
   getCurrentApiToken() {
-    if (!(this._sessionInfo && this._sessionInfo.apiToken)) {
-      throw new Error('No api token found');
-    }
-
-    return this._sessionInfo.apiToken;
+    return this._getCurrentTokenByType('api');
   }
 
   getProfile() {
@@ -136,6 +128,16 @@ class Auth0WebAuth {
         }
       )
       .then(({ data }) => data.access_token);
+  }
+
+  _getCurrentTokenByType(type) {
+    const propertyName = `${type}Token`;
+
+    if (!(this._sessionInfo && this._sessionInfo[propertyName])) {
+      throw new Error(`No ${type} token found`);
+    }
+
+    return this._sessionInfo[propertyName];
   }
 
   _getRedirectPathname() {

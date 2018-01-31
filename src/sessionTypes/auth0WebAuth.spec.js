@@ -99,47 +99,29 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  describe('getCurrentAccessToken', function() {
-    let auth0WebAuth;
+  ['Access', 'Api'].forEach(function(tokenType) {
+    describe(`getCurrent${tokenType}Token`, function() {
+      let currentToken;
+      let expectedToken;
+      let getCurrentTokenByType;
 
-    beforeEach(function() {
-      auth0WebAuth = new Auth0WebAuth(sdk);
-    });
+      beforeEach(function() {
+        expectedToken = faker.internet.password();
 
-    it('throws an error when there is no current token', function() {
-      const fn = () => auth0WebAuth.getCurrentAccessToken();
-      expect(fn).to.throw('No access token found');
-    });
+        getCurrentTokenByType = this.sandbox.stub(Auth0WebAuth.prototype, '_getCurrentTokenByType')
+          .returns(expectedToken);
 
-    it('returns a current token', function() {
-      const expectedAccessToken = faker.internet.password();
-      const auth0WebAuth = new Auth0WebAuth(sdk);
-      auth0WebAuth._sessionInfo = { accessToken: expectedAccessToken };
-      const currentToken = auth0WebAuth.getCurrentAccessToken();
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        currentToken = auth0WebAuth[`getCurrent${tokenType}Token`]();
+      });
 
-      expect(currentToken).to.equal(expectedAccessToken);
-    });
-  });
+      it('gets the current token', function() {
+        expect(getCurrentTokenByType).to.be.calledWith(tokenType.toLowerCase());
+      });
 
-  describe('getCurrentApiToken', function() {
-    let auth0WebAuth;
-
-    beforeEach(function() {
-      auth0WebAuth = new Auth0WebAuth(sdk);
-    });
-
-    it('throws an error when there is no current token', function() {
-      const fn = () => auth0WebAuth.getCurrentApiToken();
-      expect(fn).to.throw('No api token found');
-    });
-
-    it('returns a current token', function() {
-      const expectedApiToken = faker.internet.password();
-      const auth0WebAuth = new Auth0WebAuth(sdk);
-      auth0WebAuth._sessionInfo = { apiToken: expectedApiToken };
-      const currentToken = auth0WebAuth.getCurrentApiToken();
-
-      expect(currentToken).to.equal(expectedApiToken);
+      it('returns a current token', function() {
+        expect(currentToken).to.equal(expectedToken);
+      });
     });
   });
 
@@ -587,6 +569,30 @@ describe('sessionTypes/Auth0WebAuth', function() {
     it('returns a promise that fulfills with the api access token', function() {
       return expect(promise).to.be.fulfilled
         .and.to.eventually.equal(expectedApiToken);
+    });
+  });
+
+  describe('_getCurrentTokenByType', function() {
+    let auth0WebAuth;
+
+    beforeEach(function() {
+      auth0WebAuth = new Auth0WebAuth(sdk);
+    });
+
+    it('throws an error when there is no current token of that type', function() {
+      const type = faker.hacker.adjective();
+      const fn = () => auth0WebAuth._getCurrentTokenByType(type);
+      expect(fn).to.throw(`No ${type} token found`);
+    });
+
+    it('returns a current token', function() {
+      const type = faker.hacker.adjective();
+      const expectedToken = faker.internet.password();
+
+      auth0WebAuth._sessionInfo = { [`${type}Token`]: expectedToken };
+      const currentToken = auth0WebAuth._getCurrentTokenByType(type);
+
+      expect(currentToken).to.equal(expectedToken);
     });
   });
 
