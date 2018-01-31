@@ -107,7 +107,7 @@ describe('Request', function() {
       sdk = {
         ...baseSdk,
         auth: {
-          getCurrentToken: this.sandbox.stub().returns(expectedToken)
+          getCurrentApiToken: this.sandbox.stub().returns(expectedToken)
         }
       };
 
@@ -116,7 +116,7 @@ describe('Request', function() {
     });
 
     it("gets a current token from the sdk's auth module", function() {
-      expect(sdk.auth.getCurrentToken).to.be.calledOnce;
+      expect(sdk.auth.getCurrentApiToken).to.be.calledOnce;
     });
 
     it('appends an Authorization header', function() {

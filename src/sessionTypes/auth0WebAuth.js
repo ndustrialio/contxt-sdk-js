@@ -32,7 +32,15 @@ class Auth0WebAuth {
     });
   }
 
-  getCurrentToken() {
+  getCurrentAccessToken() {
+    if (!(this._sessionInfo && this._sessionInfo.accessToken)) {
+      throw new Error('No access token found');
+    }
+
+    return this._sessionInfo.accessToken;
+  }
+
+  getCurrentApiToken() {
     if (!(this._sessionInfo && this._sessionInfo.apiToken)) {
       throw new Error('No api token found');
     }
@@ -41,14 +49,8 @@ class Auth0WebAuth {
   }
 
   getProfile() {
-    const accessToken = this._sessionInfo && this._sessionInfo.accessToken;
-
-    if (!accessToken) {
-      throw new Error('No access token found');
-    }
-
     return new Promise((resolve, reject) => {
-      this._auth0.client.userInfo(accessToken, (err, profile) => {
+      this._auth0.client.userInfo(this.getCurrentAccessToken(), (err, profile) => {
         if (err) {
           reject(err);
         }

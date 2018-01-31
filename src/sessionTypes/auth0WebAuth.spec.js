@@ -99,7 +99,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  describe('getCurrentToken', function() {
+  describe('getCurrentAccessToken', function() {
     let auth0WebAuth;
 
     beforeEach(function() {
@@ -107,7 +107,29 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
 
     it('throws an error when there is no current token', function() {
-      const fn = () => auth0WebAuth.getCurrentToken();
+      const fn = () => auth0WebAuth.getCurrentAccessToken();
+      expect(fn).to.throw('No access token found');
+    });
+
+    it('returns a current token', function() {
+      const expectedAccessToken = faker.internet.password();
+      const auth0WebAuth = new Auth0WebAuth(sdk);
+      auth0WebAuth._sessionInfo = { accessToken: expectedAccessToken };
+      const currentToken = auth0WebAuth.getCurrentAccessToken();
+
+      expect(currentToken).to.equal(expectedAccessToken);
+    });
+  });
+
+  describe('getCurrentApiToken', function() {
+    let auth0WebAuth;
+
+    beforeEach(function() {
+      auth0WebAuth = new Auth0WebAuth(sdk);
+    });
+
+    it('throws an error when there is no current token', function() {
+      const fn = () => auth0WebAuth.getCurrentApiToken();
       expect(fn).to.throw('No api token found');
     });
 
@@ -115,7 +137,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       const expectedApiToken = faker.internet.password();
       const auth0WebAuth = new Auth0WebAuth(sdk);
       auth0WebAuth._sessionInfo = { apiToken: expectedApiToken };
-      const currentToken = auth0WebAuth.getCurrentToken();
+      const currentToken = auth0WebAuth.getCurrentApiToken();
 
       expect(currentToken).to.equal(expectedApiToken);
     });
@@ -124,12 +146,17 @@ describe('sessionTypes/Auth0WebAuth', function() {
   describe('getProfile', function() {
     context("the user's profile is successfully retrieved", function() {
       let auth0WebAuth;
+      let expectedAccessToken;
       let expectedProfile;
+      let getCurrentAccessToken;
       let promise;
 
       beforeEach(function() {
+        expectedAccessToken = faker.internet.password();
         expectedProfile = faker.helpers.userCard();
 
+        getCurrentAccessToken = this.sandbox.stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
+          .returns(expectedAccessToken);
         webAuthSession.client = {
           userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
             cb(null, expectedProfile);
@@ -137,13 +164,16 @@ describe('sessionTypes/Auth0WebAuth', function() {
         };
 
         auth0WebAuth = new Auth0WebAuth(sdk);
-        auth0WebAuth._sessionInfo = { accessToken: faker.internet.password() };
         promise = auth0WebAuth.getProfile();
+      });
+
+      it("gets the user's access token", function() {
+        expect(getCurrentAccessToken).to.be.calledOnce;
       });
 
       it("gets the user's profile", function() {
         expect(webAuthSession.client.userInfo)
-          .to.be.calledWith(auth0WebAuth._sessionInfo.accessToken);
+          .to.be.calledWith(expectedAccessToken);
       });
 
       it("returns a fulfilled promise with the users's profile", function() {
@@ -154,16 +184,17 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     context("there is no access token available to get a user's profile", function() {
       let auth0WebAuth;
+      let promise;
 
       beforeEach(function() {
         webAuthSession.client = { userInfo: this.sandbox.stub() };
 
         auth0WebAuth = new Auth0WebAuth(sdk);
+        promise = auth0WebAuth.getProfile();
       });
 
-      it('throws an error', function() {
-        const fn = () => auth0WebAuth.getProfile();
-        expect(fn).to.throw('No access token found');
+      it('returns a rejected promise', function() {
+        return expect(promise).to.be.rejected;
       });
     });
 
