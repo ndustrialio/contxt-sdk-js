@@ -13,7 +13,7 @@
     "test:js": "NODE_ENV=test mocha --opts 'support/mocha.opts' 'src/**/*.spec.js'",
     "test:js:dev": "npm run test:js -- --watch",
     "test:js:inspect": "npm run test:js -- --inspect-brk",
-    "watch": "npm run prepare -- --watch"
+    "watch": "npm run build -- --watch"
   },
   "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
   "license": "ISC",
