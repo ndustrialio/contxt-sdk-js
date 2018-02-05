@@ -6,25 +6,27 @@ class Auth0WebAuth {
   constructor(sdk) {
     this._sdk = sdk;
 
-    const authConfig = {
+    if (!this._sdk.config.auth.authProviderClientId) {
+      throw new Error('authProviderClientId is required for the WebAuth config');
+    }
+
+    if (!this._sdk.config.auth.clientId) {
+      throw new Error('clientId is required for the WebAuth config');
+    }
+
+    this._config = {
       authorizationPath: '/callback',
       ...this._sdk.config.auth
     };
 
-    if (!authConfig.authProviderClientId) {
-      throw new Error('authProviderClientId is required for the WebAuth config');
-    }
-
-    if (!authConfig.clientId) {
-      throw new Error('clientId is required for the WebAuth config');
-    }
+    this._sessionInfo = this._loadSession();
 
     const currentUrl = new URL(window.location);
-    currentUrl.set('pathname', authConfig.authorizationPath);
+    currentUrl.set('pathname', this._config.authorizationPath);
 
     this._auth0 = new auth0.WebAuth({
-      audience: authConfig.authProviderClientId,
-      clientId: authConfig.clientId,
+      audience: this._config.authProviderClientId,
+      clientID: this._config.clientId,
       domain: 'ndustrial.auth0.com',
       redirectUri: `${currentUrl.origin}${currentUrl.pathname}`,
       responseType: 'token',
@@ -99,7 +101,7 @@ class Auth0WebAuth {
   }
 
   logOut() {
-    delete this._sessionInfo;
+    this._sessionInfo = {};
 
     localStorage.removeItem('access_token');
     localStorage.removeItem('api_token');
@@ -110,6 +112,7 @@ class Auth0WebAuth {
 
   _generateRedirectUrlFromPathname(path) {
     const newUrl = new URL(window.location);
+    newUrl.set('hash', '');
     newUrl.set('pathname', path);
 
     return newUrl.href;
@@ -118,7 +121,7 @@ class Auth0WebAuth {
   _getApiToken(accessToken) {
     return axios
       .post(
-        'https://contxt-auth.api.ndustrial.io/v1/token',
+        'https://contxtauth.com/v1/token',
         {
           audiences: this._sdk.config.apiDependencies,
           nonce: 'nonce'
@@ -147,11 +150,19 @@ class Auth0WebAuth {
     return redirectPathname || '/';
   }
 
+  _loadSession() {
+    return {
+      accessToken: localStorage.getItem('access_token'),
+      apiToken: localStorage.getItem('api_token'),
+      expiresAt: localStorage.getItem('expires_at')
+    };
+  }
+
   _parseWebAuthHash() {
     return new Promise((resolve, reject) => {
       this._auth0.parseHash((err, hashResponse) => {
         if (err || !hashResponse) {
-          return reject(err || 'No valid tokens returned from auth0');
+          return reject(err || new Error('No valid tokens returned from auth0'));
         }
 
         return resolve(hashResponse);
