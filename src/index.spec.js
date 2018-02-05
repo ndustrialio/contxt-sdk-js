@@ -1,4 +1,5 @@
 import ContxtSdk from './index';
+import Facilities from './facilities';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
@@ -36,6 +37,10 @@ describe('ContxtSdk', function() {
     it('sets an instance of Auth', function() {
       expect(createAuthSession).to.be.calledOnce;
       expect(contxtSdk.auth).to.equal(expectedAuthSession);
+    });
+
+    it('sets an instance of Facilities', function() {
+      expect(contxtSdk.facilities).to.be.an.instanceof(Facilities);
     });
 
     it('sets an instance of Request', function() {
