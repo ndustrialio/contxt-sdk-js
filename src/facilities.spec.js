@@ -1,12 +1,13 @@
 import Facilities from './facilities';
-import Request from './request';
 
 describe('Facilities', function() {
+  let baseRequest;
   let baseSdk;
 
   beforeEach(function() {
     this.sandbox = sandbox.create();
 
+    baseRequest = {};
     baseSdk = {};
   });
 
@@ -18,11 +19,11 @@ describe('Facilities', function() {
     let facilities;
 
     beforeEach(function() {
-      facilities = new Facilities(baseSdk);
+      facilities = new Facilities(baseSdk, baseRequest);
     });
 
-    it('sets an instance of Request', function() {
-      expect(facilities._request).to.be.an.instanceof(Request);
+    it('appends the supplied request module to the class instance', function() {
+      expect(facilities._request).to.equal(baseRequest);
     });
 
     it('appends the supplied sdk to the class instance', function() {
@@ -32,20 +33,22 @@ describe('Facilities', function() {
 
   describe('getAll', function() {
     let expectedFacilities;
-    let get;
     let promise;
+    let request;
 
     beforeEach(function() {
       expectedFacilities = [faker.helpers.createTransaction()];
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves({ data: expectedFacilities })
+      };
 
-      const facilities = new Facilities();
-      get = this.sandbox.stub(facilities._request, 'get').resolves({ data: expectedFacilities });
-
+      const facilities = new Facilities(baseSdk, request);
       promise = facilities.getAll();
     });
 
     it('gets a list of facilities from the server', function() {
-      expect(get).to.be.calledWith('https://facilities.api.ndustrial.io/v1/facilities');
+      expect(request.get).to.be.calledWith('https://facilities.api.ndustrial.io/v1/facilities');
     });
 
     it('returns a list of facilities', function() {

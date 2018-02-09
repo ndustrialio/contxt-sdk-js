@@ -1,6 +1,7 @@
 import times from 'lodash.times';
 import ContxtSdk from './index';
 import Facilities from './facilities';
+import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
 describe('ContxtSdk', function() {
@@ -19,6 +20,7 @@ describe('ContxtSdk', function() {
   describe('constructor', function() {
     let contxtSdk;
     let createAuthSession;
+    let createRequest;
     let decorate;
     let expectedAdditionalModules;
     let expectedAuthSession;
@@ -35,6 +37,7 @@ describe('ContxtSdk', function() {
 
       createAuthSession = this.sandbox.stub(ContxtSdk.prototype, '_createAuthSession')
         .returns(expectedAuthSession);
+      createRequest = this.sandbox.stub(ContxtSdk.prototype, '_createRequest');
       decorate = this.sandbox.stub(ContxtSdk.prototype, '_decorate');
 
       contxtSdk = new ContxtSdk({
@@ -51,6 +54,10 @@ describe('ContxtSdk', function() {
     it('sets an instance of Auth', function() {
       expect(createAuthSession).to.be.calledWith(expectedAuthSessionType);
       expect(contxtSdk.auth).to.equal(expectedAuthSession);
+    });
+
+    it('creates an instance of the request module for Facilities', function() {
+      expect(createRequest).to.be.calledWith('facilities');
     });
 
     it('sets an instance of Facilities', function() {
@@ -98,6 +105,25 @@ describe('ContxtSdk', function() {
     });
   });
 
+  describe('_createRequest', function() {
+    let expectedAudienceName;
+    let expectedInstance;
+    let request;
+
+    beforeEach(function() {
+      expectedAudienceName = faker.hacker.noun();
+      expectedInstance = {};
+
+      request = ContxtSdk.prototype._createRequest.call(expectedInstance, expectedAudienceName);
+    });
+
+    it('returns an instance of the Request module tied to the sdk and the passed audience name', function() {
+      expect(request).to.be.an.instanceof(Request);
+      expect(request._sdk).to.equal(expectedInstance);
+      expect(request._audienceName).to.equal(expectedAudienceName);
+    });
+  });
+
   describe('_decorate', function() {
     let additionalModules;
     let instance;
@@ -108,15 +134,25 @@ describe('ContxtSdk', function() {
         memo[moduleName] = { module: this.sandbox.stub() };
         return memo;
       }, {});
-      instance = {};
+      instance = {
+        _createRequest: this.sandbox.stub()
+          .callsFake((moduleName) => `request module for: ${moduleName}`)
+      };
 
       ContxtSdk.prototype._decorate.call(instance, additionalModules);
+    });
+
+    it('creates new request modules for the provided modules', function() {
+      for (const module in additionalModules) {
+        expect(instance._createRequest).to.be.calledWith(module);
+      }
     });
 
     it('creates new instances of the provided modules', function() {
       for (const module in additionalModules) {
         expect(additionalModules[module].module).to.be.calledWithNew;
-        expect(additionalModules[module].module).to.be.calledWith(instance);
+        expect(additionalModules[module].module)
+          .to.be.calledWith(instance, `request module for: ${module}`);
       }
     });
 

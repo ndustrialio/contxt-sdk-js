@@ -2,8 +2,8 @@ import axios from 'axios';
 
 class Request {
   constructor(sdk, audienceName) {
-    this._sdk = sdk;
     this._audienceName = audienceName;
+    this._sdk = sdk;
     this._axios = axios.create();
 
     this._axios.interceptors.request.use(this._insertHeaders);

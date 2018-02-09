@@ -36,12 +36,12 @@ describe('Request', function() {
       request = new Request(baseSdk, expectedAudienceName);
     });
 
-    it('appends the supplied sdk to the class instance', function() {
-      expect(request._sdk).to.equal(baseSdk);
-    });
-
     it('appends the audience name of the parent to the class instance', function() {
       expect(request._audienceName).to.equal(expectedAudienceName);
+    });
+
+    it('appends the supplied sdk to the class instance', function() {
+      expect(request._sdk).to.equal(baseSdk);
     });
 
     it('creates an axios instance and appends it to the class instance', function() {

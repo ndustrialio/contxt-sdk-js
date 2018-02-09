@@ -1,10 +1,8 @@
-import Request from './request';
-
 const baseUrl = 'https://facilities.api.ndustrial.io/v1';
 
 class Facilities {
-  constructor(sdk) {
-    this._request = new Request(sdk, 'facilities');
+  constructor(sdk, request) {
+    this._request = request;
     this._sdk = sdk;
   }
 
