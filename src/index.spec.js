@@ -1,7 +1,6 @@
 import times from 'lodash.times';
 import ContxtSdk from './index';
 import Facilities from './facilities';
-import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
 describe('ContxtSdk', function() {
@@ -56,10 +55,6 @@ describe('ContxtSdk', function() {
 
     it('sets an instance of Facilities', function() {
       expect(contxtSdk.facilities).to.be.an.instanceof(Facilities);
-    });
-
-    it('sets an instance of Request', function() {
-      expect(contxtSdk.request).to.be.an.instanceof(Request);
     });
 
     it('decorates the additional custom modules', function() {

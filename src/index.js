@@ -1,5 +1,4 @@
 import Facilities from './facilities';
-import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
 class ContxtSdk {
@@ -8,7 +7,6 @@ class ContxtSdk {
 
     this.auth = this._createAuthSession(sessionType);
     this.facilities = new Facilities(this);
-    this.request = new Request(this);
 
     this._decorate(additionalModules);
   }
