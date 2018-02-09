@@ -34,12 +34,12 @@ describe('Request', function() {
     });
 
     it('appends the supplied sdk to the class instance', function() {
-      expect(request.sdk).to.equal(baseSdk);
+      expect(request._sdk).to.equal(baseSdk);
     });
 
     it('creates an axios instance and appends it to the class instance', function() {
       expect(create).to.be.calledOnce;
-      expect(request.axios).to.equal(baseAxiosInstance);
+      expect(request._axios).to.equal(baseAxiosInstance);
     });
 
     it("sets up axios's interceptors", function() {

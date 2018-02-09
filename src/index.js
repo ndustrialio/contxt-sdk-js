@@ -1,22 +1,32 @@
+import Facilities from './facilities';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
 class ContxtSdk {
-  constructor(config = {}) {
+  constructor({ additionalModules = {}, config = {}, sessionType }) {
     this.config = config;
 
-    this.auth = this._createAuthSession();
+    this.auth = this._createAuthSession(sessionType);
+    this.facilities = new Facilities(this);
     this.request = new Request(this);
+
+    this._decorate(additionalModules);
   }
 
-  _createAuthSession() {
-    switch (this.config.sessionType) {
+  _createAuthSession(sessionType) {
+    switch (sessionType) {
       case 'auth0WebAuth':
         return new sessionTypes.Auth0WebAuth(this);
 
       default:
         throw new Error('Invalid sessionType provided');
     }
+  }
+
+  _decorate(modules) {
+    Object.keys(modules).forEach((moduleName) => {
+      this[moduleName] = new modules[moduleName].module(this);
+    });
   }
 }
 
