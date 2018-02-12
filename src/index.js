@@ -7,8 +7,7 @@ class ContxtSdk {
     this.config = config;
 
     this.auth = this._createAuthSession(sessionType);
-    this.facilities = new Facilities(this);
-    this.request = new Request(this);
+    this.facilities = new Facilities(this, this._createRequest('facilities'));
 
     this._decorate(additionalModules);
   }
@@ -23,9 +22,13 @@ class ContxtSdk {
     }
   }
 
+  _createRequest(audienceName) {
+    return new Request(this, audienceName);
+  }
+
   _decorate(modules) {
     Object.keys(modules).forEach((moduleName) => {
-      this[moduleName] = new modules[moduleName].module(this);
+      this[moduleName] = new modules[moduleName].module(this, this._createRequest(moduleName));
     });
   }
 }

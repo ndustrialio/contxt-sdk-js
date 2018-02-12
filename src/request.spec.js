@@ -25,12 +25,19 @@ describe('Request', function() {
 
   describe('constructor', function() {
     let create;
+    let expectedAudienceName;
     let request;
 
     beforeEach(function() {
+      expectedAudienceName = faker.hacker.noun();
+
       create = this.sandbox.stub(axios, 'create').returns(baseAxiosInstance);
 
-      request = new Request(baseSdk);
+      request = new Request(baseSdk, expectedAudienceName);
+    });
+
+    it('appends the audience name of the parent to the class instance', function() {
+      expect(request._audienceName).to.equal(expectedAudienceName);
     });
 
     it('appends the supplied sdk to the class instance', function() {
@@ -93,11 +100,13 @@ describe('Request', function() {
 
   describe('_insertHeaders', function() {
     let config;
+    let expectedAudienceName;
     let expectedToken;
     let initialConfig;
     let sdk;
 
     beforeEach(function() {
+      expectedAudienceName = faker.hacker.noun();
       expectedToken = faker.internet.password();
       initialConfig = {
         headers: {
@@ -111,12 +120,12 @@ describe('Request', function() {
         }
       };
 
-      const request = new Request(sdk);
+      const request = new Request(sdk, expectedAudienceName);
       config = request._insertHeaders(initialConfig);
     });
 
     it("gets a current token from the sdk's auth module", function() {
-      expect(sdk.auth.getCurrentApiToken).to.be.calledOnce;
+      expect(sdk.auth.getCurrentApiToken).to.be.calledWith(expectedAudienceName);
     });
 
     it('appends an Authorization header', function() {

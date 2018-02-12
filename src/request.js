@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 class Request {
-  constructor(sdk) {
+  constructor(sdk, audienceName) {
+    this._audienceName = audienceName;
     this._sdk = sdk;
     this._axios = axios.create();
 
@@ -41,7 +42,7 @@ class Request {
   }
 
   _insertHeaders = (config) => {
-    config.headers.common.Authorization = `Bearer ${this._sdk.auth.getCurrentApiToken()}`;
+    config.headers.common.Authorization = `Bearer ${this._sdk.auth.getCurrentApiToken(this._audienceName)}`;
 
     return config;
   }

@@ -1,11 +1,13 @@
 import Facilities from './facilities';
 
 describe('Facilities', function() {
+  let baseRequest;
   let baseSdk;
 
   beforeEach(function() {
     this.sandbox = sandbox.create();
 
+    baseRequest = {};
     baseSdk = {};
   });
 
@@ -17,7 +19,11 @@ describe('Facilities', function() {
     let facilities;
 
     beforeEach(function() {
-      facilities = new Facilities(baseSdk);
+      facilities = new Facilities(baseSdk, baseRequest);
+    });
+
+    it('appends the supplied request module to the class instance', function() {
+      expect(facilities._request).to.equal(baseRequest);
     });
 
     it('appends the supplied sdk to the class instance', function() {
@@ -28,28 +34,21 @@ describe('Facilities', function() {
   describe('getAll', function() {
     let expectedFacilities;
     let promise;
-    let sdk;
+    let request;
 
     beforeEach(function() {
       expectedFacilities = [faker.helpers.createTransaction()];
-
-      sdk = {
-        ...baseSdk,
-        request: {
-          get: this.sandbox.stub().callsFake(() => {
-            return Promise.resolve({
-              data: expectedFacilities
-            });
-          })
-        }
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves({ data: expectedFacilities })
       };
 
-      const facilities = new Facilities(sdk);
+      const facilities = new Facilities(baseSdk, request);
       promise = facilities.getAll();
     });
 
     it('gets a list of facilities from the server', function() {
-      expect(sdk.request.get).to.be.calledWith('https://facilities.api.ndustrial.io/v1/facilities');
+      expect(request.get).to.be.calledWith('https://facilities.api.ndustrial.io/v1/facilities');
     });
 
     it('returns a list of facilities', function() {
