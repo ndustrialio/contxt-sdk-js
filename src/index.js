@@ -1,10 +1,11 @@
+import Config from './config';
 import Facilities from './facilities';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
 class ContxtSdk {
   constructor({ additionalModules = {}, config = {}, sessionType }) {
-    this.config = config;
+    this.config = new Config(config, additionalModules);
 
     this.auth = this._createAuthSession(sessionType);
     this.facilities = new Facilities(this, this._createRequest('facilities'));
