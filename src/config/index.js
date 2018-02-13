@@ -18,7 +18,8 @@ class Config {
 
   _getAudiences({ audiences = defaultAudiences, env = 'production', moduleEnvs = {} }) {
     return Object.keys(defaultAudiences).reduce((memo, key) => {
-      memo[key] = audiences[key][env];
+      const moduleEnvKey = moduleEnvs[key] || env;
+      memo[key] = audiences[key][moduleEnvKey];
       return memo;
     }, {});
   }

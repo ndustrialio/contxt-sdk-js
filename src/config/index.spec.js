@@ -115,5 +115,37 @@ describe('Config', function() {
         expect(audiences).to.deep.equal(expectedAudiences);
       });
     });
+
+    context('when an environment is provided for an individual module', function() {
+      let audiences;
+      let expectedAudiences;
+
+      beforeEach(function() {
+        const env = faker.hacker.noun();
+        expectedAudiences = {
+          contxtAuth: fixture.build('audience'),
+          facilities: fixture.build('audience')
+        };
+        const initialAudiences = {
+          contxtAuth: {
+            [env]: expectedAudiences.contxtAuth,
+            production: fixture.build('audience')
+          },
+          facilities: {
+            production: expectedAudiences.facilities,
+            [faker.hacker.verb()]: fixture.build('audience')
+          }
+        };
+
+        audiences = Config.prototype._getAudiences({
+          audiences: initialAudiences,
+          moduleEnvs: { contxtAuth: env }
+        });
+      });
+
+      it('provides an object with the hosts and clientIds of that environment', function() {
+        expect(audiences).to.deep.equal(expectedAudiences);
+      });
+    });
   });
 });
