@@ -1,4 +1,5 @@
 import times from 'lodash.times';
+import Config from './config';
 import ContxtSdk from './index';
 import Facilities from './facilities';
 import Request from './request';
@@ -47,8 +48,8 @@ describe('ContxtSdk', function() {
       });
     });
 
-    it('saves the provided config', function() {
-      expect(contxtSdk.config).to.equal(baseConfig);
+    it('sets an instance of Config', function() {
+      expect(contxtSdk.config).to.be.an.instanceof(Config);
     });
 
     it('sets an instance of Auth', function() {

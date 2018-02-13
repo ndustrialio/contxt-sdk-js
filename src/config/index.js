@@ -5,7 +5,10 @@ class Config {
   constructor(userConfig) {
     Object.assign(this, userConfig);
 
-    this.audiences = this._getAudiences(userConfig.env);
+    this.audiences = this._getAudiences({
+      env: userConfig.env,
+      moduleEnvs: userConfig.moduleEnvs
+    });
 
     this.auth = {
       ...defaultConfigs.auth,
@@ -13,9 +16,9 @@ class Config {
     };
   }
 
-  _getAudiences(env = 'production') {
+  _getAudiences({ audiences = defaultAudiences, env = 'production', moduleEnvs = {} }) {
     return Object.keys(defaultAudiences).reduce((memo, key) => {
-      memo[key] = defaultAudiences[key][env];
+      memo[key] = audiences[key][env];
       return memo;
     }, {});
   }
