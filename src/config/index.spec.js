@@ -147,5 +147,82 @@ describe('Config', function() {
         expect(audiences).to.deep.equal(expectedAudiences);
       });
     });
+
+    context('when providing a custom envornment for a module', function() {
+      context('when all required custom information is provided in the right format', function() {
+        let audiences;
+        let expectedAudiences;
+
+        beforeEach(function() {
+          expectedAudiences = {
+            contxtAuth: fixture.build('audience'),
+            facilities: fixture.build('audience')
+          };
+          const initialAudiences = {
+            contxtAuth: {
+              production: expectedAudiences.contxtAuth,
+              [faker.hacker.verb()]: fixture.build('audience')
+            },
+            facilities: {
+              production: fixture.build('audience'),
+              [faker.hacker.verb()]: fixture.build('audience')
+            }
+          };
+
+          audiences = Config.prototype._getAudiences({
+            audiences: initialAudiences,
+            moduleEnvs: {
+              facilities: expectedAudiences.facilities
+            }
+          });
+        });
+
+        it('provides an object with the default hosts and clientIds combined with the custom host and clientId', function() {
+          expect(audiences).to.deep.equal(expectedAudiences);
+        });
+      });
+
+      context('when there is missing custom information or the custom information is not formatted correctly', function() {
+        it('throws an error when missing the host', function() {
+          const fn = () => {
+            Config.prototype._getAudiences({
+              moduleEnvs: {
+                facilities: {
+                  clientId: faker.internet.password()
+                }
+              }
+            });
+          };
+
+          expect(fn).to.throw('Custom module information must either be a string with an environment name or an object with a `host` and `clientId`');
+        });
+
+        it('throws an error when missing the clientId', function() {
+          const fn = () => {
+            Config.prototype._getAudiences({
+              moduleEnvs: {
+                facilities: {
+                  host: faker.internet.url()
+                }
+              }
+            });
+          };
+
+          expect(fn).to.throw('Custom module information must either be a string with an environment name or an object with a `host` and `clientId`');
+        });
+
+        it('throws an error when in an unexpected format', function() {
+          const fn = () => {
+            Config.prototype._getAudiences({
+              moduleEnvs: {
+                facilities: [faker.internet.password(), faker.internet.url()]
+              }
+            });
+          };
+
+          expect(fn).to.throw('Custom module information must either be a string with an environment name or an object with a `host` and `clientId`');
+        });
+      });
+    });
   });
 });
