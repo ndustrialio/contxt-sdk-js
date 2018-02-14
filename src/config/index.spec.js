@@ -23,7 +23,7 @@ describe('Config', function() {
       };
       baseConfigs = {
         env: faker.hacker.noun(),
-        moduleEnvs: {}
+        customModuleConfig: {}
       };
       expectedAudiences = fixture.buildList('audience', faker.random.number({ min: 1, max: 10 }));
 
@@ -39,7 +39,7 @@ describe('Config', function() {
     it('gets a list of audiences for the environment', function() {
       expect(getAudiences).to.be.calledWith({
         env: baseConfigs.env,
-        moduleEnvs: baseConfigs.moduleEnvs
+        customModuleConfig: baseConfigs.customModuleConfig
       });
     });
 
@@ -139,7 +139,11 @@ describe('Config', function() {
 
         audiences = Config.prototype._getAudiences({
           audiences: initialAudiences,
-          moduleEnvs: { contxtAuth: env }
+          customModuleConfig: {
+            contxtAuth: {
+              env
+            }
+          }
         });
       });
 
@@ -149,7 +153,7 @@ describe('Config', function() {
     });
 
     context('when providing a custom envornment for a module', function() {
-      context('when all required custom information is provided in the right format', function() {
+      context('when all required custom configuration is provided in the right format', function() {
         let audiences;
         let expectedAudiences;
 
@@ -171,7 +175,7 @@ describe('Config', function() {
 
           audiences = Config.prototype._getAudiences({
             audiences: initialAudiences,
-            moduleEnvs: {
+            customModuleConfig: {
               facilities: expectedAudiences.facilities
             }
           });
@@ -182,11 +186,11 @@ describe('Config', function() {
         });
       });
 
-      context('when there is missing custom information or the custom information is not formatted correctly', function() {
+      context('when there is missing custom configuration or the custom configuration is not formatted correctly', function() {
         it('throws an error when missing the host', function() {
           const fn = () => {
             Config.prototype._getAudiences({
-              moduleEnvs: {
+              customModuleConfig: {
                 facilities: {
                   clientId: faker.internet.password()
                 }
@@ -194,13 +198,13 @@ describe('Config', function() {
             });
           };
 
-          expect(fn).to.throw('Custom module information must either be a string with an environment name or an object with a `host` and `clientId`');
+          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
         });
 
         it('throws an error when missing the clientId', function() {
           const fn = () => {
             Config.prototype._getAudiences({
-              moduleEnvs: {
+              customModuleConfig: {
                 facilities: {
                   host: faker.internet.url()
                 }
@@ -208,19 +212,19 @@ describe('Config', function() {
             });
           };
 
-          expect(fn).to.throw('Custom module information must either be a string with an environment name or an object with a `host` and `clientId`');
+          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
         });
 
         it('throws an error when in an unexpected format', function() {
           const fn = () => {
             Config.prototype._getAudiences({
-              moduleEnvs: {
+              customModuleConfig: {
                 facilities: [faker.internet.password(), faker.internet.url()]
               }
             });
           };
 
-          expect(fn).to.throw('Custom module information must either be a string with an environment name or an object with a `host` and `clientId`');
+          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
         });
       });
     });

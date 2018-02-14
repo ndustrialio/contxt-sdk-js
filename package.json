@@ -19,7 +19,6 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "lodash.isstring": "^4.0.1",
     "url-parse": "^1.2.0"
   },
   "devDependencies": {

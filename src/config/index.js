@@ -1,4 +1,3 @@
-import isString from 'lodash.isstring';
 import defaultAudiences from './audiences';
 import defaultConfigs from './defaults';
 
@@ -8,7 +7,7 @@ class Config {
 
     this.audiences = this._getAudiences({
       env: userConfig.env,
-      moduleEnvs: userConfig.moduleEnvs
+      customModuleConfig: userConfig.customModuleConfig
     });
 
     this.auth = {
@@ -17,21 +16,21 @@ class Config {
     };
   }
 
-  _getAudiences({ audiences = defaultAudiences, env = 'production', moduleEnvs = {} }) {
+  _getAudiences({ audiences = defaultAudiences, env = 'production', customModuleConfig = {} }) {
     return Object.keys(audiences).reduce((memo, key) => {
       memo[key] = (function() {
         switch (true) {
-          case isString(moduleEnvs[key]):
-            return audiences[key][moduleEnvs[key]];
+          case !!(customModuleConfig[key] && customModuleConfig[key].env):
+            return audiences[key][customModuleConfig[key].env];
 
-          case !!(moduleEnvs[key] && moduleEnvs[key].clientId && moduleEnvs[key].host):
+          case !!(customModuleConfig[key] && customModuleConfig[key].clientId && customModuleConfig[key].host):
             return {
-              clientId: moduleEnvs[key].clientId,
-              host: moduleEnvs[key].host
+              clientId: customModuleConfig[key].clientId,
+              host: customModuleConfig[key].host
             };
 
-          case !!(moduleEnvs[key]):
-            throw new Error('Custom module information must either be a string with an environment name or an object with a `host` and `clientId`');
+          case !!(customModuleConfig[key]):
+            throw new Error('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
 
           default:
             return audiences[key][env];
