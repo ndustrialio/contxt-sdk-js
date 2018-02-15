@@ -6,8 +6,9 @@ class Config {
     Object.assign(this, userConfig);
 
     this.audiences = this._getAudiences({
+      customModuleConfig: userConfig.customModuleConfig,
       env: userConfig.env,
-      customModuleConfig: userConfig.customModuleConfig
+      externalModules: userConfig.externalModules
     });
 
     this.auth = {
@@ -16,7 +17,39 @@ class Config {
     };
   }
 
-  _getAudiences({ audiences = defaultAudiences, env = 'production', customModuleConfig = {} }) {
+  _getAudiences(options = {}) {
+    const {
+      customModuleConfig = {},
+      env = 'production',
+      externalModules = {}
+    } = options;
+
+    return {
+      ...this._getInternalAudiences({
+        customModuleConfig,
+        env,
+        audiences: defaultAudiences
+      }),
+      ...this._getExternalAudiences({ externalModules })
+    };
+  }
+
+  _getExternalAudiences({ externalModules }) {
+    return Object.keys(externalModules).reduce((memo, key) => {
+      if (!(externalModules[key].clientId && externalModules[key].host)) {
+        throw new Error('External modules must contain `clientId` and `host` properties');
+      }
+
+      memo[key] = {
+        clientId: externalModules[key].clientId,
+        host: externalModules[key].host
+      };
+
+      return memo;
+    }, {});
+  }
+
+  _getInternalAudiences({ audiences, customModuleConfig, env }) {
     return Object.keys(audiences).reduce((memo, key) => {
       memo[key] = (function() {
         switch (true) {

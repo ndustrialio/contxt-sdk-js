@@ -23,12 +23,12 @@ describe('ContxtSdk', function() {
     let createAuthSession;
     let createRequest;
     let decorate;
-    let expectedAdditionalModules;
+    let expectedExternalModules;
     let expectedAuthSession;
     let expectedAuthSessionType;
 
     beforeEach(function() {
-      expectedAdditionalModules = times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
+      expectedExternalModules = times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
         const moduleName = faker.hacker.verb();
         memo[moduleName] = { module: this.sandbox.stub() };
         return memo;
@@ -42,7 +42,7 @@ describe('ContxtSdk', function() {
       decorate = this.sandbox.stub(ContxtSdk.prototype, '_decorate');
 
       contxtSdk = new ContxtSdk({
-        additionalModules: expectedAdditionalModules,
+        externalModules: expectedExternalModules,
         config: baseConfig,
         sessionType: expectedAuthSessionType
       });
@@ -66,7 +66,7 @@ describe('ContxtSdk', function() {
     });
 
     it('decorates the additional custom modules', function() {
-      expect(decorate).to.be.calledWith(expectedAdditionalModules);
+      expect(decorate).to.be.calledWith(expectedExternalModules);
     });
   });
 
@@ -126,11 +126,11 @@ describe('ContxtSdk', function() {
   });
 
   describe('_decorate', function() {
-    let additionalModules;
+    let externalModules;
     let instance;
 
     beforeEach(function() {
-      additionalModules = times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
+      externalModules = times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
         const moduleName = faker.hacker.verb();
         memo[moduleName] = { module: this.sandbox.stub() };
         return memo;
@@ -140,26 +140,26 @@ describe('ContxtSdk', function() {
           .callsFake((moduleName) => `request module for: ${moduleName}`)
       };
 
-      ContxtSdk.prototype._decorate.call(instance, additionalModules);
+      ContxtSdk.prototype._decorate.call(instance, externalModules);
     });
 
     it('creates new request modules for the provided modules', function() {
-      for (const module in additionalModules) {
+      for (const module in externalModules) {
         expect(instance._createRequest).to.be.calledWith(module);
       }
     });
 
     it('creates new instances of the provided modules', function() {
-      for (const module in additionalModules) {
-        expect(additionalModules[module].module).to.be.calledWithNew;
-        expect(additionalModules[module].module)
+      for (const module in externalModules) {
+        expect(externalModules[module].module).to.be.calledWithNew;
+        expect(externalModules[module].module)
           .to.be.calledWith(instance, `request module for: ${module}`);
       }
     });
 
     it('sets the new instances of the provided modules to the sdk instance', function() {
-      for (const module in additionalModules) {
-        expect(instance[module]).to.be.an.instanceof(additionalModules[module].module);
+      for (const module in externalModules) {
+        expect(instance[module]).to.be.an.instanceof(externalModules[module].module);
       }
     });
   });

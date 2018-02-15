@@ -1,4 +1,6 @@
+import times from 'lodash.times';
 import Config from './index';
+import defaultAudiences from './audiences';
 import defaultConfigs from './defaults';
 
 describe('Config', function() {
@@ -22,8 +24,9 @@ describe('Config', function() {
         [faker.hacker.noun()]: faker.internet.password()
       };
       baseConfigs = {
+        customModuleConfig: {},
         env: faker.hacker.noun(),
-        customModuleConfig: {}
+        externalModules: {}
       };
       expectedAudiences = fixture.buildList('audience', faker.random.number({ min: 1, max: 10 }));
 
@@ -38,8 +41,9 @@ describe('Config', function() {
 
     it('gets a list of audiences for the environment', function() {
       expect(getAudiences).to.be.calledWith({
+        customModuleConfig: baseConfigs.customModuleConfig,
         env: baseConfigs.env,
-        customModuleConfig: baseConfigs.customModuleConfig
+        externalModules: baseConfigs.externalModules
       });
     });
 
@@ -57,37 +61,158 @@ describe('Config', function() {
   });
 
   describe('_getAudiences', function() {
-    context('when no environment is provided', function() {
-      it('provides an object with the hosts and clientIds of the production environment', function() {
-        let audiences;
-        let expectedAudiences;
+    let env;
+    let expectedExternalAudiences;
+    let expectedInternalAudiences;
+    let getExternalAudiences;
+    let getInternalAudiences;
 
-        beforeEach(function() {
-          expectedAudiences = {
-            contxtAuth: fixture.build('audience'),
-            facilities: fixture.build('audience')
-          };
-          const initialAudiences = {
-            contxtAuth: {
-              production: expectedAudiences.contxtAuth,
-              [faker.hacker.verb()]: fixture.build('audience')
-            },
-            facilities: {
-              production: expectedAudiences.facilities,
-              [faker.hacker.verb()]: fixture.build('audience')
-            }
-          };
+    beforeEach(function() {
+      env = faker.hacker.noun();
+      expectedExternalAudiences = {
+        facilities: fixture.build('audience'),
+        [env]: fixture.build('audience')
+      };
+      expectedInternalAudiences = {
+        contxtAuth: fixture.build('audience'),
+        facilities: fixture.build('audience')
+      };
 
-          audiences = Config.prototype._getAudiences({ audiences: initialAudiences });
+      getExternalAudiences = this.sandbox.stub(Config.prototype, '_getExternalAudiences')
+        .returns(expectedExternalAudiences);
+      getInternalAudiences = this.sandbox.stub(Config.prototype, '_getInternalAudiences')
+        .returns(expectedInternalAudiences);
+    });
+
+    context('when all values are provided', function() {
+      let audiences;
+      let initialCustomModuleConfig;
+      let initialExternalModules;
+
+      beforeEach(function() {
+        initialCustomModuleConfig = {
+          [faker.hacker.noun()]: fixture.build('audience')
+        };
+        initialExternalModules = {
+          [faker.hacker.noun()]: {
+            ...fixture.build('audience'),
+            module: function() {}
+          }
+        };
+
+        audiences = Config.prototype._getAudiences({
+          env,
+          audiences: defaultAudiences,
+          customModuleConfig: initialCustomModuleConfig,
+          externalModules: initialExternalModules
         });
+      });
 
-        it('provides an object with the hosts and clientIds of that environment', function() {
-          expect(audiences).to.deep.equal(expectedAudiences);
+      it('gets the internal audiences', function() {
+        expect(getInternalAudiences).to.be.calledWith({
+          env,
+          audiences: defaultAudiences,
+          customModuleConfig: initialCustomModuleConfig
+        });
+      });
+
+      it('gets the external audiences', function() {
+        expect(getExternalAudiences).to.be.calledWith({
+          externalModules: initialExternalModules
+        });
+      });
+
+      it('combines the internal and external audiences with external audiences being preferred', function() {
+        expect(audiences).to.deep.equal({
+          contxtAuth: expectedInternalAudiences.contxtAuth,
+          facilities: expectedExternalAudiences.facilities,
+          [env]: expectedExternalAudiences[env]
         });
       });
     });
 
-    context('when an environment is provided', function() {
+    context('when relying on default values', function() {
+      beforeEach(function() {
+        Config.prototype._getAudiences();
+      });
+
+      it('gets the internal audiences using default values', function() {
+        expect(getInternalAudiences).to.be.calledWith({
+          audiences: defaultAudiences,
+          customModuleConfig: {},
+          env: 'production'
+        });
+      });
+
+      it('gets the external audiences using default values', function() {
+        expect(getExternalAudiences).to.be.calledWith({
+          externalModules: {}
+        });
+      });
+    });
+  });
+
+  describe('_getExternalAudiences', function() {
+    context('when external modules are provided with a clientId and host', function() {
+      let audiences;
+      let expectedAudiences;
+
+      beforeEach(function() {
+        const externalModules = {};
+        expectedAudiences = {};
+
+        times(faker.random.number({ min: 1, max: 10 }))
+          .map(() => faker.hacker.noun())
+          .forEach((moduleName) => {
+            const audience = fixture.build('audience');
+            expectedAudiences[moduleName] = audience;
+            externalModules[moduleName] = {
+              ...audience,
+              module: function() {}
+            };
+          });
+
+        audiences = Config.prototype._getExternalAudiences({ externalModules });
+      });
+
+      it('provides an object with the hosts and clientIds of the external modules', function() {
+        expect(audiences).to.deep.equal(expectedAudiences);
+      });
+    });
+
+    context('when external modules are provided by are missing a clientId or host', function() {
+      it('throws an error when the clientId is not provided', function() {
+        const fn = () => {
+          Config.prototype._getExternalAudiences({
+            externalModules: {
+              [faker.hacker.noun()]: {
+                host: faker.internet.url()
+              }
+            }
+          });
+        };
+
+        expect(fn).to.throw('External modules must contain `clientId` and `host` properties');
+      });
+
+      it('throws an error when the host is not provided', function() {
+        const fn = () => {
+          Config.prototype._getExternalAudiences({
+            externalModules: {
+              [faker.hacker.noun()]: {
+                clientId: faker.internet.url()
+              }
+            }
+          });
+        };
+
+        expect(fn).to.throw('External modules must contain `clientId` and `host` properties');
+      });
+    });
+  });
+
+  describe('_getInternalAudiences', function() {
+    context('when using provided audience information across all services', function() {
       let audiences;
       let expectedAudiences;
 
@@ -108,20 +233,25 @@ describe('Config', function() {
           }
         };
 
-        audiences = Config.prototype._getAudiences({ env, audiences: initialAudiences });
+        audiences = Config.prototype._getInternalAudiences({
+          env,
+          audiences: initialAudiences,
+          customModuleConfig: {}
+        });
       });
 
-      it('provides an object with the hosts and clientIds of that environment', function() {
+      it('provides audience information for the specified environment', function() {
         expect(audiences).to.deep.equal(expectedAudiences);
       });
     });
 
-    context('when an environment is provided for an individual module', function() {
+    context('when specifying a different environment for a specific module', function() {
       let audiences;
       let expectedAudiences;
 
       beforeEach(function() {
         const env = faker.hacker.noun();
+        const facilitiesEnv = faker.hacker.verb();
         expectedAudiences = {
           contxtAuth: fixture.build('audience'),
           facilities: fixture.build('audience')
@@ -129,51 +259,55 @@ describe('Config', function() {
         const initialAudiences = {
           contxtAuth: {
             [env]: expectedAudiences.contxtAuth,
-            production: fixture.build('audience')
+            [faker.hacker.verb()]: fixture.build('audience')
           },
           facilities: {
-            production: expectedAudiences.facilities,
+            [env]: fixture.build('audience'),
+            [facilitiesEnv]: expectedAudiences.facilities,
             [faker.hacker.verb()]: fixture.build('audience')
           }
         };
 
-        audiences = Config.prototype._getAudiences({
+        audiences = Config.prototype._getInternalAudiences({
+          env,
           audiences: initialAudiences,
           customModuleConfig: {
-            contxtAuth: {
-              env
+            facilities: {
+              env: facilitiesEnv
             }
           }
         });
       });
 
-      it('provides an object with the hosts and clientIds of that environment', function() {
+      it('provides audience information that matches the specific module environments provided', function() {
         expect(audiences).to.deep.equal(expectedAudiences);
       });
     });
 
-    context('when providing a custom envornment for a module', function() {
+    context('when providing a custom environment for a module', function() {
       context('when all required custom configuration is provided in the right format', function() {
         let audiences;
         let expectedAudiences;
 
         beforeEach(function() {
+          const env = faker.hacker.noun();
           expectedAudiences = {
             contxtAuth: fixture.build('audience'),
             facilities: fixture.build('audience')
           };
           const initialAudiences = {
             contxtAuth: {
-              production: expectedAudiences.contxtAuth,
+              [env]: expectedAudiences.contxtAuth,
               [faker.hacker.verb()]: fixture.build('audience')
             },
             facilities: {
-              production: fixture.build('audience'),
+              [env]: fixture.build('audience'),
               [faker.hacker.verb()]: fixture.build('audience')
             }
           };
 
-          audiences = Config.prototype._getAudiences({
+          audiences = Config.prototype._getInternalAudiences({
+            env,
             audiences: initialAudiences,
             customModuleConfig: {
               facilities: expectedAudiences.facilities
@@ -181,29 +315,22 @@ describe('Config', function() {
           });
         });
 
-        it('provides an object with the default hosts and clientIds combined with the custom host and clientId', function() {
+        it('provides audience information that matches the custom module environment provided', function() {
           expect(audiences).to.deep.equal(expectedAudiences);
         });
       });
 
-      context('when there is missing custom configuration or the custom configuration is not formatted correctly', function() {
-        it('throws an error when missing the host', function() {
-          const fn = () => {
-            Config.prototype._getAudiences({
-              customModuleConfig: {
-                facilities: {
-                  clientId: faker.internet.password()
-                }
-              }
-            });
-          };
-
-          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
-        });
-
+      context('when there is missing or malformed custom configuration information', function() {
         it('throws an error when missing the clientId', function() {
           const fn = () => {
-            Config.prototype._getAudiences({
+            const env = faker.hacker.noun();
+            Config.prototype._getInternalAudiences({
+              env,
+              audiences: {
+                facilities: {
+                  [env]: fixture.build('audience')
+                }
+              },
               customModuleConfig: {
                 facilities: {
                   host: faker.internet.url()
@@ -215,9 +342,37 @@ describe('Config', function() {
           expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
         });
 
-        it('throws an error when in an unexpected format', function() {
+        it('throws an error when missing the host', function() {
           const fn = () => {
-            Config.prototype._getAudiences({
+            const env = faker.hacker.noun();
+            Config.prototype._getInternalAudiences({
+              env,
+              audiences: {
+                facilities: {
+                  [env]: fixture.build('audience')
+                }
+              },
+              customModuleConfig: {
+                facilities: {
+                  clientId: faker.internet.password()
+                }
+              }
+            });
+          };
+
+          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
+        });
+
+        it('throws an error when the configuration is malformed', function() {
+          const fn = () => {
+            const env = faker.hacker.noun();
+            Config.prototype._getInternalAudiences({
+              env,
+              audiences: {
+                facilities: {
+                  [env]: fixture.build('audience')
+                }
+              },
               customModuleConfig: {
                 facilities: [faker.internet.password(), faker.internet.url()]
               }
