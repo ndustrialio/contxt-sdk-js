@@ -21,14 +21,14 @@ describe('Config', function() {
 
     beforeEach(function() {
       baseAuthConfigs = {
-        [faker.hacker.noun()]: faker.internet.password()
+        clientId: faker.internet.password()
       };
       baseConfigs = {
         customModuleConfig: {},
         env: faker.hacker.noun(),
         externalModules: {}
       };
-      expectedAudiences = fixture.buildList('audience', faker.random.number({ min: 1, max: 10 }));
+      expectedAudiences = fixture.build('defaultAudiences');
 
       getAudiences = this.sandbox.stub(Config.prototype, '_getAudiences').returns(expectedAudiences);
 
@@ -73,10 +73,7 @@ describe('Config', function() {
         facilities: fixture.build('audience'),
         [env]: fixture.build('audience')
       };
-      expectedInternalAudiences = {
-        contxtAuth: fixture.build('audience'),
-        facilities: fixture.build('audience')
-      };
+      expectedInternalAudiences = fixture.build('defaultAudiences');
 
       getExternalAudiences = this.sandbox.stub(Config.prototype, '_getExternalAudiences')
         .returns(expectedExternalAudiences);
@@ -218,10 +215,7 @@ describe('Config', function() {
 
       beforeEach(function() {
         const env = faker.hacker.noun();
-        expectedAudiences = {
-          contxtAuth: fixture.build('audience'),
-          facilities: fixture.build('audience')
-        };
+        expectedAudiences = fixture.build('defaultAudiences');
         const initialAudiences = {
           contxtAuth: {
             [env]: expectedAudiences.contxtAuth,
@@ -252,10 +246,7 @@ describe('Config', function() {
       beforeEach(function() {
         const env = faker.hacker.noun();
         const facilitiesEnv = faker.hacker.verb();
-        expectedAudiences = {
-          contxtAuth: fixture.build('audience'),
-          facilities: fixture.build('audience')
-        };
+        expectedAudiences = fixture.build('defaultAudiences');
         const initialAudiences = {
           contxtAuth: {
             [env]: expectedAudiences.contxtAuth,
@@ -291,10 +282,7 @@ describe('Config', function() {
 
         beforeEach(function() {
           const env = faker.hacker.noun();
-          expectedAudiences = {
-            contxtAuth: fixture.build('audience'),
-            facilities: fixture.build('audience')
-          };
+          expectedAudiences = fixture.build('defaultAudiences');
           const initialAudiences = {
             contxtAuth: {
               [env]: expectedAudiences.contxtAuth,
