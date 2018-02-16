@@ -25,7 +25,7 @@ describe('Config', function() {
       };
       baseConfigs = {
         customModuleConfig: {},
-        env: faker.hacker.noun(),
+        env: faker.hacker.adjective(),
         externalModules: {}
       };
       expectedAudiences = fixture.build('defaultAudiences');
@@ -68,7 +68,7 @@ describe('Config', function() {
     let getInternalAudiences;
 
     beforeEach(function() {
-      env = faker.hacker.noun();
+      env = faker.hacker.adjective();
       expectedExternalAudiences = {
         facilities: fixture.build('audience'),
         [env]: fixture.build('audience')
@@ -88,10 +88,10 @@ describe('Config', function() {
 
       beforeEach(function() {
         initialCustomModuleConfig = {
-          [faker.hacker.noun()]: fixture.build('audience')
+          [faker.hacker.adjective()]: fixture.build('audience')
         };
         initialExternalModules = {
-          [faker.hacker.noun()]: {
+          [faker.hacker.adjective()]: {
             ...fixture.build('audience'),
             module: function() {}
           }
@@ -159,7 +159,7 @@ describe('Config', function() {
         expectedAudiences = {};
 
         times(faker.random.number({ min: 1, max: 10 }))
-          .map(() => faker.hacker.noun())
+          .map(() => faker.hacker.adjective())
           .forEach((moduleName) => {
             const audience = fixture.build('audience');
             expectedAudiences[moduleName] = audience;
@@ -182,7 +182,7 @@ describe('Config', function() {
         const fn = () => {
           Config.prototype._getExternalAudiences({
             externalModules: {
-              [faker.hacker.noun()]: {
+              [faker.hacker.adjective()]: {
                 host: faker.internet.url()
               }
             }
@@ -196,7 +196,7 @@ describe('Config', function() {
         const fn = () => {
           Config.prototype._getExternalAudiences({
             externalModules: {
-              [faker.hacker.noun()]: {
+              [faker.hacker.adjective()]: {
                 clientId: faker.internet.url()
               }
             }
@@ -214,7 +214,7 @@ describe('Config', function() {
       let expectedAudiences;
 
       beforeEach(function() {
-        const env = faker.hacker.noun();
+        const env = faker.hacker.adjective();
         expectedAudiences = fixture.build('defaultAudiences');
         const initialAudiences = {
           contxtAuth: {
@@ -244,7 +244,7 @@ describe('Config', function() {
       let expectedAudiences;
 
       beforeEach(function() {
-        const env = faker.hacker.noun();
+        const env = faker.hacker.adjective();
         const facilitiesEnv = faker.hacker.verb();
         expectedAudiences = fixture.build('defaultAudiences');
         const initialAudiences = {
@@ -281,7 +281,7 @@ describe('Config', function() {
         let expectedAudiences;
 
         beforeEach(function() {
-          const env = faker.hacker.noun();
+          const env = faker.hacker.adjective();
           expectedAudiences = fixture.build('defaultAudiences');
           const initialAudiences = {
             contxtAuth: {
@@ -311,7 +311,7 @@ describe('Config', function() {
       context('when there is missing or malformed custom configuration information', function() {
         it('throws an error when missing the clientId', function() {
           const fn = () => {
-            const env = faker.hacker.noun();
+            const env = faker.hacker.adjective();
             Config.prototype._getInternalAudiences({
               env,
               audiences: {
@@ -332,7 +332,7 @@ describe('Config', function() {
 
         it('throws an error when missing the host', function() {
           const fn = () => {
-            const env = faker.hacker.noun();
+            const env = faker.hacker.adjective();
             Config.prototype._getInternalAudiences({
               env,
               audiences: {
@@ -353,7 +353,7 @@ describe('Config', function() {
 
         it('throws an error when the configuration is malformed', function() {
           const fn = () => {
-            const env = faker.hacker.noun();
+            const env = faker.hacker.adjective();
             Config.prototype._getInternalAudiences({
               env,
               audiences: {
