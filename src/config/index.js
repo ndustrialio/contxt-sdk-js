@@ -2,13 +2,13 @@ import defaultAudiences from './audiences';
 import defaultConfigs from './defaults';
 
 class Config {
-  constructor(userConfig) {
+  constructor(userConfig, externalModules) {
     Object.assign(this, userConfig);
 
     this.audiences = this._getAudiences({
+      externalModules,
       customModuleConfig: userConfig.customModuleConfig,
-      env: userConfig.env,
-      externalModules: userConfig.externalModules
+      env: userConfig.env
     });
 
     this.auth = {

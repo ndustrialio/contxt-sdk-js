@@ -30,7 +30,10 @@ describe('ContxtSdk', function() {
     beforeEach(function() {
       expectedExternalModules = times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
         const moduleName = faker.hacker.verb();
-        memo[moduleName] = { module: this.sandbox.stub() };
+        memo[moduleName] = {
+          ...fixture.build('audience'),
+          module: this.sandbox.stub()
+        };
         return memo;
       }, {});
       expectedAuthSession = faker.helpers.createTransaction();

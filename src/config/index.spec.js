@@ -17,6 +17,7 @@ describe('Config', function() {
     let baseConfigs;
     let config;
     let expectedAudiences;
+    let expectedExternalModules;
     let getAudiences;
 
     beforeEach(function() {
@@ -24,15 +25,22 @@ describe('Config', function() {
         clientId: faker.internet.password()
       };
       baseConfigs = {
-        customModuleConfig: {},
-        env: faker.hacker.adjective(),
-        externalModules: {}
+        customModuleConfig: {
+          [faker.hacker.adjective()]: fixture.build('audience')
+        },
+        env: faker.hacker.adjective()
       };
       expectedAudiences = fixture.build('defaultAudiences');
+      expectedExternalModules = {
+        [faker.hacker.verb()]: {
+          ...fixture.build('audience'),
+          module: function() {}
+        }
+      };
 
       getAudiences = this.sandbox.stub(Config.prototype, '_getAudiences').returns(expectedAudiences);
 
-      config = new Config({ ...baseConfigs, auth: baseAuthConfigs });
+      config = new Config({ ...baseConfigs, auth: baseAuthConfigs }, expectedExternalModules);
     });
 
     it('assigns the user provided configs to the new config', function() {
@@ -43,7 +51,7 @@ describe('Config', function() {
       expect(getAudiences).to.be.calledWith({
         customModuleConfig: baseConfigs.customModuleConfig,
         env: baseConfigs.env,
-        externalModules: baseConfigs.externalModules
+        externalModules: expectedExternalModules
       });
     });
 
