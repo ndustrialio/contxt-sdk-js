@@ -253,7 +253,7 @@ describe('Config', function() {
 
       beforeEach(function() {
         const env = faker.hacker.adjective();
-        const facilitiesEnv = faker.hacker.verb();
+        const facilitiesEnv = faker.lorem.word();
         expectedAudiences = fixture.build('defaultAudiences');
         const initialAudiences = {
           contxtAuth: {
