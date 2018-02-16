@@ -4,13 +4,9 @@ export default {
       clientId: '75wT048QcpE7ujwBJPPjr263eTHl4gEX',
       host: 'https://contxtauth.com'
     },
-    // staging: {
-    //   clientId: 'XzgumXUg5U57015haylz4zaJsiQqZy4l',
-    //   host: 'https://contxt-auth-staging.api.ndustrial.io'
-    // }
     staging: {
-      clientId: '75wT048QcpE7ujwBJPPjr263eTHl4gEX',
-      host: 'https://contxtauth.com'
+      clientId: 'XzgumXUg5U57015haylz4zaJsiQqZy4l',
+      host: 'https://contxt-auth-staging.api.ndustrial.io'
     }
   },
   facilities: {
