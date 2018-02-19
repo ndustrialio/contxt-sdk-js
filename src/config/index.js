@@ -7,7 +7,7 @@ class Config {
 
     this.audiences = this._getAudiences({
       externalModules,
-      customModuleConfig: userConfig.customModuleConfig,
+      customModuleConfigs: userConfig.customModuleConfigs,
       env: userConfig.env
     });
 
@@ -17,16 +17,29 @@ class Config {
     };
   }
 
+  _getAudienceFromCustomConfig(config, audiences) {
+    if (config.clientId && config.host) {
+      return {
+        clientId: config.clientId,
+        host: config.host
+      };
+    } else if (config.env) {
+      return audiences[config.env];
+    } else {
+      throw new Error('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
+    }
+  }
+
   _getAudiences(options = {}) {
     const {
-      customModuleConfig = {},
+      customModuleConfigs = {},
       env = 'production',
       externalModules = {}
     } = options;
 
     return {
       ...this._getInternalAudiences({
-        customModuleConfig,
+        customModuleConfigs,
         env,
         audiences: defaultAudiences
       }),
@@ -49,26 +62,16 @@ class Config {
     }, {});
   }
 
-  _getInternalAudiences({ audiences, customModuleConfig, env }) {
+  _getInternalAudiences({ audiences, customModuleConfigs, env }) {
     return Object.keys(audiences).reduce((memo, key) => {
-      memo[key] = (function() {
-        switch (true) {
-          case !!(customModuleConfig[key] && customModuleConfig[key].env):
-            return audiences[key][customModuleConfig[key].env];
+      const customModuleConfig = customModuleConfigs[key];
+      const moduleAudiences = audiences[key];
 
-          case !!(customModuleConfig[key] && customModuleConfig[key].clientId && customModuleConfig[key].host):
-            return {
-              clientId: customModuleConfig[key].clientId,
-              host: customModuleConfig[key].host
-            };
-
-          case !!(customModuleConfig[key]):
-            throw new Error('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
-
-          default:
-            return audiences[key][env];
-        }
-      })();
+      if (customModuleConfig) {
+        memo[key] = this._getAudienceFromCustomConfig(customModuleConfig, moduleAudiences);
+      } else {
+        memo[key] = moduleAudiences[env];
+      }
 
       return memo;
     }, {});

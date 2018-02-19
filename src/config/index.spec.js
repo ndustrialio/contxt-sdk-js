@@ -25,7 +25,7 @@ describe('Config', function() {
         clientId: faker.internet.password()
       };
       baseConfigs = {
-        customModuleConfig: {
+        customModuleConfigs: {
           [faker.hacker.adjective()]: fixture.build('audience')
         },
         env: faker.hacker.adjective()
@@ -49,7 +49,7 @@ describe('Config', function() {
 
     it('gets a list of audiences for the environment', function() {
       expect(getAudiences).to.be.calledWith({
-        customModuleConfig: baseConfigs.customModuleConfig,
+        customModuleConfigs: baseConfigs.customModuleConfigs,
         env: baseConfigs.env,
         externalModules: expectedExternalModules
       });
@@ -65,6 +65,100 @@ describe('Config', function() {
 
     it('assigns the provided user auth configurations to the new config', function() {
       expect(config.auth).to.include(baseAuthConfigs);
+    });
+  });
+
+  describe('_getAudienceFromCustomConfig', function() {
+    context('when providing a custom host and clientId for a module', function() {
+      let audiences;
+      let expectedAudience;
+
+      beforeEach(function() {
+        const env = faker.hacker.adjective();
+        expectedAudience = fixture.build('audience');
+        const config = { ...expectedAudience, env };
+        const initialAudiences = {
+          [env]: fixture.build('audience'),
+          [faker.hacker.verb()]: fixture.build('audience')
+        };
+
+        audiences = Config.prototype._getAudienceFromCustomConfig(config, initialAudiences);
+      });
+
+      it('provides audience information that matches the custom information provided', function() {
+        expect(audiences).to.deep.equal(expectedAudience);
+      });
+    });
+
+    context('when providing an environment for a module', function() {
+      let audiences;
+      let expectedAudience;
+
+      beforeEach(function() {
+        const env = faker.hacker.adjective();
+        expectedAudience = fixture.build('audience');
+        const config = { env };
+        const initialAudiences = {
+          [env]: expectedAudience,
+          [faker.hacker.verb()]: fixture.build('audience')
+        };
+
+        audiences = Config.prototype._getAudienceFromCustomConfig(config, initialAudiences);
+      });
+
+      it('provides audience information that matches the custom module environment provided', function() {
+        expect(audiences).to.deep.equal(expectedAudience);
+      });
+    });
+
+    context('when there is missing or malformed custom configuration information', function() {
+      let initialAudiences;
+
+      beforeEach(function() {
+        const env = faker.hacker.adjective();
+        initialAudiences = {
+          facilities: {
+            [env]: fixture.build('audience')
+          }
+        };
+      });
+
+      it('throws an error when missing the clientId', function() {
+        const fn = () => {
+          const config = {
+            facilities: {
+              host: faker.internet.url()
+            }
+          };
+          Config.prototype._getAudienceFromCustomConfig(config, initialAudiences);
+        };
+
+        expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
+      });
+
+      it('throws an error when missing the host', function() {
+        const fn = () => {
+          const config = {
+            facilities: {
+              clientId: faker.internet.password()
+            }
+          };
+          Config.prototype._getAudienceFromCustomConfig(config, initialAudiences);
+        };
+
+        expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
+      });
+
+      it('throws an error when the configuration is malformed', function() {
+        const fn = () => {
+          const config = {
+            facilities: [faker.internet.password(), faker.internet.url()]
+          };
+          Config.prototype._getAudienceFromCustomConfig(config, initialAudiences);
+        };
+
+        expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
+      });
     });
   });
 
@@ -108,7 +202,7 @@ describe('Config', function() {
         audiences = Config.prototype._getAudiences({
           env,
           audiences: defaultAudiences,
-          customModuleConfig: initialCustomModuleConfig,
+          customModuleConfigs: initialCustomModuleConfig,
           externalModules: initialExternalModules
         });
       });
@@ -117,7 +211,7 @@ describe('Config', function() {
         expect(getInternalAudiences).to.be.calledWith({
           env,
           audiences: defaultAudiences,
-          customModuleConfig: initialCustomModuleConfig
+          customModuleConfigs: initialCustomModuleConfig
         });
       });
 
@@ -144,7 +238,7 @@ describe('Config', function() {
       it('gets the internal audiences using default values', function() {
         expect(getInternalAudiences).to.be.calledWith({
           audiences: defaultAudiences,
-          customModuleConfig: {},
+          customModuleConfigs: {},
           env: 'production'
         });
       });
@@ -217,7 +311,7 @@ describe('Config', function() {
   });
 
   describe('_getInternalAudiences', function() {
-    context('when using provided audience information across all services', function() {
+    context('when using the same audience environment across all modules', function() {
       let audiences;
       let expectedAudiences;
 
@@ -238,7 +332,7 @@ describe('Config', function() {
         audiences = Config.prototype._getInternalAudiences({
           env,
           audiences: initialAudiences,
-          customModuleConfig: {}
+          customModuleConfigs: {}
         });
       });
 
@@ -247,9 +341,12 @@ describe('Config', function() {
       });
     });
 
-    context('when specifying a different environment for a specific module', function() {
+    context('when a module uses a custom configuration', function() {
       let audiences;
       let expectedAudiences;
+      let expectedFacilitiesConfig;
+      let expectedModuleAudiences;
+      let getAudienceFromCustomConfig;
 
       beforeEach(function() {
         const env = faker.hacker.adjective();
@@ -266,117 +363,30 @@ describe('Config', function() {
             [faker.hacker.verb()]: fixture.build('audience')
           }
         };
+        expectedModuleAudiences = initialAudiences.facilities;
+        expectedFacilitiesConfig = { env: facilitiesEnv };
+
+        getAudienceFromCustomConfig = this.sandbox.stub(Config.prototype, '_getAudienceFromCustomConfig')
+          .returns(expectedAudiences.facilities);
 
         audiences = Config.prototype._getInternalAudiences({
           env,
           audiences: initialAudiences,
-          customModuleConfig: {
-            facilities: {
-              env: facilitiesEnv
-            }
+          customModuleConfigs: {
+            facilities: expectedFacilitiesConfig
           }
         });
       });
 
+      it('gets the audience from the custom config', function() {
+        expect(getAudienceFromCustomConfig).to.be.calledWith(
+          expectedFacilitiesConfig,
+          expectedModuleAudiences
+        );
+      });
+
       it('provides audience information that matches the specific module environments provided', function() {
         expect(audiences).to.deep.equal(expectedAudiences);
-      });
-    });
-
-    context('when providing a custom environment for a module', function() {
-      context('when all required custom configuration is provided in the right format', function() {
-        let audiences;
-        let expectedAudiences;
-
-        beforeEach(function() {
-          const env = faker.hacker.adjective();
-          expectedAudiences = fixture.build('defaultAudiences');
-          const initialAudiences = {
-            contxtAuth: {
-              [env]: expectedAudiences.contxtAuth,
-              [faker.hacker.verb()]: fixture.build('audience')
-            },
-            facilities: {
-              [env]: fixture.build('audience'),
-              [faker.hacker.verb()]: fixture.build('audience')
-            }
-          };
-
-          audiences = Config.prototype._getInternalAudiences({
-            env,
-            audiences: initialAudiences,
-            customModuleConfig: {
-              facilities: expectedAudiences.facilities
-            }
-          });
-        });
-
-        it('provides audience information that matches the custom module environment provided', function() {
-          expect(audiences).to.deep.equal(expectedAudiences);
-        });
-      });
-
-      context('when there is missing or malformed custom configuration information', function() {
-        it('throws an error when missing the clientId', function() {
-          const fn = () => {
-            const env = faker.hacker.adjective();
-            Config.prototype._getInternalAudiences({
-              env,
-              audiences: {
-                facilities: {
-                  [env]: fixture.build('audience')
-                }
-              },
-              customModuleConfig: {
-                facilities: {
-                  host: faker.internet.url()
-                }
-              }
-            });
-          };
-
-          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
-        });
-
-        it('throws an error when missing the host', function() {
-          const fn = () => {
-            const env = faker.hacker.adjective();
-            Config.prototype._getInternalAudiences({
-              env,
-              audiences: {
-                facilities: {
-                  [env]: fixture.build('audience')
-                }
-              },
-              customModuleConfig: {
-                facilities: {
-                  clientId: faker.internet.password()
-                }
-              }
-            });
-          };
-
-          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
-        });
-
-        it('throws an error when the configuration is malformed', function() {
-          const fn = () => {
-            const env = faker.hacker.adjective();
-            Config.prototype._getInternalAudiences({
-              env,
-              audiences: {
-                facilities: {
-                  [env]: fixture.build('audience')
-                }
-              },
-              customModuleConfig: {
-                facilities: [faker.internet.password(), faker.internet.url()]
-              }
-            });
-          };
-
-          expect(fn).to.throw('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
-        });
       });
     });
   });
