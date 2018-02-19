@@ -5,6 +5,11 @@ class Facilities {
     this._sdk = sdk;
   }
 
+  get(facilityId) {
+    return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
+      .then(({ data }) => data);
+  }
+
   getAll() {
     return this._request.get(`${this._baseUrl}/facilities`)
       .then(({ data }) => data);
