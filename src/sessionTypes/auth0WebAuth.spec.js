@@ -1,6 +1,5 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
-import times from 'lodash.times';
 import sinon from 'sinon';
 import Auth0WebAuth from './auth0WebAuth';
 
@@ -15,8 +14,12 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     sdk = {
       config: {
+        audiences: {
+          contxtAuth: fixture.build('audience'),
+          facilities: fixture.build('audience')
+        },
         auth: {
-          authProviderClientId: faker.internet.url(),
+          authorizationPath: faker.hacker.noun(),
           clientId: faker.internet.password()
         }
       }
@@ -59,13 +62,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expect(auth0WebAuth._sdk).to.equal(sdk);
       });
 
-      it("appends the module's configuration to the class instance", function() {
-        expect(auth0WebAuth._config).to.deep.equal({
-          authorizationPath: '/callback',
-          ...sdk.config.auth
-        });
-      });
-
       it('loads the session from memory', function() {
         expect(loadSession.calledOnce).to.be.true;
       });
@@ -77,10 +73,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
       it('creates an auth0 WebAuth instance with the default settings', function() {
         expect(webAuth).to.be.calledWithNew;
         expect(webAuth).to.be.calledWith({
-          audience: sdk.config.auth.authProviderClientId,
+          audience: sdk.config.audiences.contxtAuth.clientId,
           clientID: sdk.config.auth.clientId,
           domain: 'ndustrial.auth0.com',
-          redirectUri: `${global.window.location}/callback`,
+          redirectUri: `${global.window.location}/${sdk.config.auth.authorizationPath}`,
           responseType: 'token',
           scope: 'profile openid'
         });
@@ -112,13 +108,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
     context('without required config options', function() {
       beforeEach(function() {
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-      });
-
-      it('throws an error when no authProviderClientId is provided', function() {
-        delete sdk.config.auth.authProviderClientId;
-        const fn = () => new Auth0WebAuth(sdk);
-
-        expect(fn).to.throw('authProviderClientId is required for the WebAuth config');
       });
 
       it('throws an error when no clientId is provided', function() {
@@ -584,16 +573,13 @@ describe('sessionTypes/Auth0WebAuth', function() {
   describe('_getApiToken', function() {
     let accessToken;
     let expectedApiToken;
-    let expectedAudiences;
     let post;
     let promise;
 
     beforeEach(function() {
       accessToken = faker.internet.password();
       expectedApiToken = faker.internet.password();
-      expectedAudiences = times(faker.random.number({ min: 1, max: 5 }), () => faker.random.uuid());
 
-      sdk.config.apiDependencies = expectedAudiences;
       post = this.sandbox.stub(axios, 'post').callsFake(() => {
         return Promise.resolve({ data: { access_token: expectedApiToken } });
       });
@@ -605,9 +591,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     it('POSTs to the contxt api to get a token', function() {
       expect(post).to.be.calledWith(
-        'https://contxtauth.com/v1/token',
+        `${sdk.config.audiences.contxtAuth.host}/v1/token`,
         {
-          audiences: expectedAudiences,
+          audiences: [sdk.config.audiences.facilities.clientId],
           nonce: 'nonce'
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }

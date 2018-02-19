@@ -6,27 +6,18 @@ class Auth0WebAuth {
   constructor(sdk) {
     this._sdk = sdk;
 
-    if (!this._sdk.config.auth.authProviderClientId) {
-      throw new Error('authProviderClientId is required for the WebAuth config');
-    }
-
     if (!this._sdk.config.auth.clientId) {
       throw new Error('clientId is required for the WebAuth config');
     }
 
-    this._config = {
-      authorizationPath: '/callback',
-      ...this._sdk.config.auth
-    };
-
     this._sessionInfo = this._loadSession();
 
     const currentUrl = new URL(window.location);
-    currentUrl.set('pathname', this._config.authorizationPath);
+    currentUrl.set('pathname', this._sdk.config.auth.authorizationPath);
 
     this._auth0 = new auth0.WebAuth({
-      audience: this._config.authProviderClientId,
-      clientID: this._config.clientId,
+      audience: this._sdk.config.audiences.contxtAuth.clientId,
+      clientID: this._sdk.config.auth.clientId,
       domain: 'ndustrial.auth0.com',
       redirectUri: `${currentUrl.origin}${currentUrl.pathname}`,
       responseType: 'token',
@@ -121,9 +112,11 @@ class Auth0WebAuth {
   _getApiToken(accessToken) {
     return axios
       .post(
-        'https://contxtauth.com/v1/token',
+        `${this._sdk.config.audiences.contxtAuth.host}/v1/token`,
         {
-          audiences: this._sdk.config.apiDependencies,
+          audiences: Object.keys(this._sdk.config.audiences)
+            .map((audienceName) => this._sdk.config.audiences[audienceName].clientId)
+            .filter((clientId) => clientId !== this._sdk.config.audiences.contxtAuth.clientId),
           nonce: 'nonce'
         },
         {
