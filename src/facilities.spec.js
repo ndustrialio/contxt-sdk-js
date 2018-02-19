@@ -80,7 +80,7 @@ describe('Facilities', function() {
     let request;
 
     beforeEach(function() {
-      expectedFacilities = [faker.helpers.createTransaction()];
+      expectedFacilities = fixture.buildList('facility', faker.random.number({ min: 1, max: 10 }));
       expectedHost = faker.internet.url();
       request = {
         ...baseRequest,
@@ -94,8 +94,7 @@ describe('Facilities', function() {
     });
 
     it('gets a list of facilities from the server', function() {
-      expect(request.get)
-        .to.be.calledWith(`${expectedHost}/facilities`);
+      expect(request.get).to.be.calledWith(`${expectedHost}/facilities`);
     });
 
     it('returns a list of facilities', function() {
