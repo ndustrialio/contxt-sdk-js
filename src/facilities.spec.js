@@ -41,6 +41,38 @@ describe('Facilities', function() {
     });
   });
 
+  describe('get', function() {
+    let expectedFacility;
+    let expectedFacilityId;
+    let expectedHost;
+    let promise;
+    let request;
+
+    beforeEach(function() {
+      expectedFacilityId = faker.random.number();
+      expectedFacility = fixture.build('facility', { id: expectedFacilityId });
+      expectedHost = faker.internet.url();
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves({ data: expectedFacility })
+      };
+
+      const facilities = new Facilities(baseSdk, request);
+      facilities._baseUrl = expectedHost;
+
+      promise = facilities.get(expectedFacilityId);
+    });
+
+    it('gets a list of facilities from the server', function() {
+      expect(request.get).to.be.calledWith(`${expectedHost}/facilities/${expectedFacilityId}`);
+    });
+
+    it('returns the requested facility', function() {
+      return expect(promise).to.be.fulfilled
+        .and.to.eventually.equal(expectedFacility);
+    });
+  });
+
   describe('getAll', function() {
     let expectedFacilities;
     let expectedHost;
@@ -48,7 +80,7 @@ describe('Facilities', function() {
     let request;
 
     beforeEach(function() {
-      expectedFacilities = [faker.helpers.createTransaction()];
+      expectedFacilities = fixture.buildList('facility', faker.random.number({ min: 1, max: 10 }));
       expectedHost = faker.internet.url();
       request = {
         ...baseRequest,
@@ -62,8 +94,7 @@ describe('Facilities', function() {
     });
 
     it('gets a list of facilities from the server', function() {
-      expect(request.get)
-        .to.be.calledWith(`${expectedHost}/facilities`);
+      expect(request.get).to.be.calledWith(`${expectedHost}/facilities`);
     });
 
     it('returns a list of facilities', function() {
