@@ -54,7 +54,7 @@ describe('Facilities', function() {
       expectedHost = faker.internet.url();
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves({ data: expectedFacility })
+        get: this.sandbox.stub().resolves(expectedFacility)
       };
 
       const facilities = new Facilities(baseSdk, request);
@@ -84,7 +84,7 @@ describe('Facilities', function() {
       expectedHost = faker.internet.url();
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves({ data: expectedFacilities })
+        get: this.sandbox.stub().resolves(expectedFacilities)
       };
 
       const facilities = new Facilities(baseSdk, request);
