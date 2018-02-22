@@ -78,7 +78,7 @@ describe('Request', function() {
         expectedResponse = faker.hacker.phrase();
         axiosInstance = {
           ...baseAxiosInstance,
-          [method]: this.sandbox.stub().callsFake(() => Promise.resolve(expectedResponse))
+          [method]: this.sandbox.stub().callsFake(() => Promise.resolve({ data: expectedResponse }))
         };
 
         this.sandbox.stub(axios, 'create').returns(axiosInstance);
@@ -91,7 +91,7 @@ describe('Request', function() {
         expect(axiosInstance[method]).to.be.calledWith(...expectedArgs);
       });
 
-      it('returns the promise provided by axios', function() {
+      it('returns the promise with the requested data', function() {
         return expect(response).to.be.fulfilled
           .and.to.eventually.equal(expectedResponse);
       });

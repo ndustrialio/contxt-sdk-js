@@ -62,6 +62,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expect(auth0WebAuth._sdk).to.equal(sdk);
       });
 
+      it('sets the default onRedirect method to the class instance', function() {
+        expect(auth0WebAuth._onRedirect).to.equal(Auth0WebAuth.prototype._defaultOnRedirect);
+      });
+
       it('loads the session from memory', function() {
         expect(loadSession.calledOnce).to.be.true;
       });
@@ -88,15 +92,23 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
 
     context('with custom WebAuth config options', function() {
+      let auth0WebAuth;
       let expectedAuthorizationPath;
+      let expectedOnRedirect;
 
       beforeEach(function() {
         expectedAuthorizationPath = faker.hacker.adjective();
+        expectedOnRedirect = this.sandbox.stub();
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
+        sdk.config.auth.onRedirect = expectedOnRedirect;
 
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
 
-        new Auth0WebAuth(sdk); // eslint-disable-line no-new
+        auth0WebAuth = new Auth0WebAuth(sdk);
+      });
+
+      it('sets the custom onRedirect method to the class instance', function() {
+        expect(auth0WebAuth._onRedirect).to.equal(expectedOnRedirect);
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
@@ -233,10 +245,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let clock;
       let expectedRedirectPathname;
       let expectedSessionInfo;
-      let expectedUrl;
-      let generateRedirectUrlFromPathname;
       let getApiToken;
       let getRedirectPathname;
+      let onRedirect;
       let parseWebAuthHash;
       let promise;
       let saveSession;
@@ -249,7 +260,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
           apiToken: faker.internet.password(),
           expiresAt: faker.date.future().getTime()
         };
-        expectedUrl = faker.internet.url();
 
         clock = sinon.useFakeTimers(currentDate);
         getApiToken = this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
@@ -257,9 +267,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
         });
         getRedirectPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_getRedirectPathname')
           .returns(expectedRedirectPathname);
-        generateRedirectUrlFromPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_generateRedirectUrlFromPathname')
-          .returns(expectedUrl);
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
+        onRedirect = this.sandbox.stub();
         parseWebAuthHash = this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
           return Promise.resolve({
             accessToken: expectedSessionInfo.accessToken,
@@ -278,6 +287,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         };
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
+        auth0WebAuth._onRedirect = onRedirect;
         promise = auth0WebAuth.handleAuthentication();
       });
 
@@ -308,17 +318,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
         });
       });
 
-      it('generates a redirect url', function() {
-        return promise.then(() => {
-          expect(generateRedirectUrlFromPathname).to.be.calledWith(expectedRedirectPathname);
-        });
-      });
-
       it("assigns the new redirect url to the browsers's location", function() {
-        return promise
-          .then(() => {
-            expect(global.window.location).to.equal(expectedUrl);
-          });
+        return promise.then(() => {
+          expect(onRedirect).to.be.calledWith(expectedRedirectPathname);
+        });
       });
 
       it('returns a promise that is fulfilled with the web auth info and contxt api token', function() {
@@ -329,20 +332,17 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     context('unsuccessfully getting an api token', function() {
       let expectedError;
-      let expectedUrl;
-      let generateRedirectUrlFromPathname;
+      let onRedirect;
       let promise;
 
       beforeEach(function() {
         expectedError = faker.hacker.phrase();
-        expectedUrl = faker.internet.url();
 
-        generateRedirectUrlFromPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_generateRedirectUrlFromPathname')
-          .returns(expectedUrl);
         this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
           return Promise.reject(expectedError);
         });
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
+        onRedirect = this.sandbox.stub();
         this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
           return Promise.resolve({});
         });
@@ -357,22 +357,15 @@ describe('sessionTypes/Auth0WebAuth', function() {
         };
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
+        auth0WebAuth._onRedirect = onRedirect;
         promise = auth0WebAuth.handleAuthentication();
-      });
-
-      it('generates a redirect url', function() {
-        return promise
-          .then(expect.fail)
-          .catch(() => {
-            expect(generateRedirectUrlFromPathname).to.be.calledWith('/');
-          });
       });
 
       it("assigns the new redirect url to the browsers's location", function() {
         return promise
           .then(expect.fail)
           .catch(() => {
-            expect(global.window.location).to.equal(expectedUrl);
+            expect(onRedirect).to.be.calledWith('/');
           });
       });
 
@@ -472,34 +465,19 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
   describe('logOut', function() {
     let auth0WebAuth;
-    let expectedUrl;
-    let generateRedirectUrlFromPathname;
+    let onRedirect;
     let localStorage;
-    let originalLocation;
 
     beforeEach(function() {
-      expectedUrl = faker.internet.url();
-
-      generateRedirectUrlFromPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_generateRedirectUrlFromPathname')
-        .returns(expectedUrl);
       this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
       localStorage = {
         removeItem: this.sandbox.stub()
       };
-      originalLocation = faker.internet.url();
-
       global.localStorage = localStorage;
-      global.window = {
-        _location: originalLocation,
-        get location() {
-          return this._location;
-        },
-        set location(newLocation) {
-          this._location = newLocation;
-        }
-      };
+      onRedirect = this.sandbox.stub();
 
       auth0WebAuth = new Auth0WebAuth(sdk);
+      auth0WebAuth._onRedirect = onRedirect;
       auth0WebAuth._sessionInfo = {
         accessToken: faker.internet.password(),
         apiToken: faker.internet.password(),
@@ -528,31 +506,19 @@ describe('sessionTypes/Auth0WebAuth', function() {
       expect(localStorage.removeItem).to.be.calledWith('expires_at');
     });
 
-    it('generates a redirect url', function() {
-      expect(generateRedirectUrlFromPathname).to.be.calledWith('/');
-    });
-
-    it("assigns the new redirect url to the browsers's location", function() {
-      expect(global.window.location).to.equal(expectedUrl);
+    it("redirects to the browser's location", function() {
+      expect(onRedirect).to.be.calledWith('/');
     });
   });
 
-  describe('_generateRedirectUrlFromPathname', function() {
+  describe('_defaultOnRedirect', function() {
     let expectedPathname;
-    let hash;
-    let newUrl;
-    let origin;
-    let query;
 
     beforeEach(function() {
-      expectedPathname = faker.hacker.adjective();
-      hash = `#access_token=${faker.internet.password()}`;
-      origin = faker.internet.url();
-      query = `?q=${faker.hacker.adjective()}`;
+      expectedPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
       global.window = {
-        _location: `${origin}/${faker.hacker.adjective()}/${faker.hacker.adjective()}/${query}${hash}`,
+        _location: faker.internet.url(),
         get location() {
           return this._location;
         },
@@ -561,12 +527,11 @@ describe('sessionTypes/Auth0WebAuth', function() {
         }
       };
 
-      const auth0WebAuth = new Auth0WebAuth(sdk);
-      newUrl = auth0WebAuth._generateRedirectUrlFromPathname(expectedPathname);
+      Auth0WebAuth.prototype._defaultOnRedirect(expectedPathname);
     });
 
-    it('generates a new url with the newly provided path and with no hash', function() {
-      expect(newUrl).to.equal(`${origin}/${expectedPathname}${query}`);
+    it("assigns the new redirect pathname to the browsers's location", function() {
+      expect(global.window.location).to.equal(expectedPathname);
     });
   });
 

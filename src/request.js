@@ -10,35 +10,43 @@ class Request {
   }
 
   delete(...args) {
-    return this._axios.delete(...args);
+    return this._axios.delete(...args)
+      .then(({ data }) => data);
   }
 
   get(...args) {
-    return this._axios.get(...args);
+    return this._axios.get(...args)
+      .then(({ data }) => data);
   }
 
   head(...args) {
-    return this._axios.head(...args);
+    return this._axios.head(...args)
+      .then(({ data }) => data);
   }
 
   options(...args) {
-    return this._axios.options(...args);
+    return this._axios.options(...args)
+      .then(({ data }) => data);
   }
 
   patch(...args) {
-    return this._axios.patch(...args);
+    return this._axios.patch(...args)
+      .then(({ data }) => data);
   }
 
   post(...args) {
-    return this._axios.post(...args);
+    return this._axios.post(...args)
+      .then(({ data }) => data);
   }
 
   put(...args) {
-    return this._axios.put(...args);
+    return this._axios.put(...args)
+      .then(({ data }) => data);
   }
 
   request(...args) {
-    return this._axios.request(...args);
+    return this._axios.request(...args)
+      .then(({ data }) => data);
   }
 
   _insertHeaders = (config) => {

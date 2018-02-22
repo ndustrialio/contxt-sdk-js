@@ -10,6 +10,7 @@ class Auth0WebAuth {
       throw new Error('clientId is required for the WebAuth config');
     }
 
+    this._onRedirect = this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
     this._sessionInfo = this._loadSession();
 
     const currentUrl = new URL(window.location);
@@ -68,14 +69,16 @@ class Auth0WebAuth {
       })
       .then((sessionInfo) => {
         const redirectPathname = this._getRedirectPathname();
-        const redirectUrl = this._generateRedirectUrlFromPathname(redirectPathname);
-        window.location = redirectUrl;
+
+        this._onRedirect(redirectPathname);
 
         return sessionInfo;
       })
       .catch((err) => {
         console.log(`Error while handling authentication: ${err}`);
-        window.location = this._generateRedirectUrlFromPathname('/');
+
+        this._onRedirect('/');
+
         throw err;
       });
   }
@@ -98,15 +101,11 @@ class Auth0WebAuth {
     localStorage.removeItem('api_token');
     localStorage.removeItem('expires_at');
 
-    window.location = this._generateRedirectUrlFromPathname('/');
+    this._onRedirect('/');
   }
 
-  _generateRedirectUrlFromPathname(path) {
-    const newUrl = new URL(window.location);
-    newUrl.set('hash', '');
-    newUrl.set('pathname', path);
-
-    return newUrl.href;
+  _defaultOnRedirect(pathname) {
+    window.location = pathname;
   }
 
   _getApiToken(accessToken) {
