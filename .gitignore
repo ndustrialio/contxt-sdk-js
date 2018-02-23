@@ -61,5 +61,5 @@ typings/
 .next
 
 # rollup build output
-es/*
-lib/*
+# es/*
+# lib/*
