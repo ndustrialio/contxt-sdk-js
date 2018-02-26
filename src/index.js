@@ -57,8 +57,9 @@ import * as sessionTypes from './sessionTypes';
  */
 class ContxtSdk {
   /**
-   * @param {UserConfig} config
-   * @param {Object} [externalModules]
+   * @param {UserConfig} config The user provided configuration options
+   * @param {Object.<string, ExternalModule>} [externalModules] User provided external modules that
+   *   should be treated as first class citizens
    * @param {string} sessionType The type of auth session you wish to use (e.g. auth0WebAuth
    *   or machine)
    */

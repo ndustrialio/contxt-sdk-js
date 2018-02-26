@@ -143,8 +143,8 @@ ContxtSdk constructor
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config | [<code>UserConfig</code>](#UserConfig) |  |
-| [externalModules] | <code>Object</code> |  |
+| config | [<code>UserConfig</code>](#UserConfig) | The user provided configuration options |
+| [externalModules] | <code>Object.&lt;string, ExternalModule&gt;</code> | User provided external modules that   should be treated as first class citizens |
 | sessionType | <code>string</code> | The type of auth session you wish to use (e.g. auth0WebAuth   or machine) |
 
 **Example**  
@@ -290,10 +290,10 @@ from the Contxt Auth service.
 | Param | Type | Description |
 | --- | --- | --- |
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
-| sdk.config | <code>Object</code> |  |
 | sdk.audiences | <code>Object</code> |  |
 | sdk.audiences.contxtAuth | <code>Object</code> |  |
 | sdk.audiences.contxtAuth.clientId | <code>string</code> | The Auth0 client id of the   Contxt Auth environment |
+| sdk.config | <code>Object</code> |  |
 | sdk.config.auth | <code>Object</code> |  |
 | sdk.config.auth.authorizationPath | <code>string</code> | Path that is called by Auth0 after   successfully authenticating |
 | sdk.config.auth.clientId | <code>string</code> | The Auth0 client id of this application |
