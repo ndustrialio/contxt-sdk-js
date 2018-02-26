@@ -2,7 +2,45 @@ import auth0 from 'auth0-js';
 import axios from 'axios';
 import URL from 'url-parse';
 
+/**
+ * @typedef {Object} UserProfile
+ * @property {string} name
+ * @property {string} nickname
+ * @property {string} picture URL to an avatar
+ * @property {string} sub The Subject Claim of the user's JWT
+ * @property {string} updated_at ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} SessionInfo
+ * @property {string} accessToken
+ * @property {string} apiToken
+ * @property {number} expiresAt
+ */
+
+/**
+ * A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
+ * from the Contxt Auth service.
+ *
+ * @type SessionType
+ *
+ * @typicalname contxtSdk.auth
+ */
 class Auth0WebAuth {
+  /**
+   * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
+   * @param {Object} sdk.audiences
+   * @param {Object} sdk.audiences.contxtAuth
+   * @param {string} sdk.audiences.contxtAuth.clientId The Auth0 client id of the
+   *   Contxt Auth environment
+   * @param {Object} sdk.config
+   * @param {Object} sdk.config.auth
+   * @param {string} sdk.config.auth.authorizationPath Path that is called by Auth0 after
+   *   successfully authenticating
+   * @param {string} sdk.config.auth.clientId The Auth0 client id of this application
+   * @param {function} [sdk.config.auth.onRedirect] Redirect method used when navigating between
+   *   Auth0 callbacks
+   */
   constructor(sdk) {
     this._sdk = sdk;
 
@@ -26,14 +64,30 @@ class Auth0WebAuth {
     });
   }
 
+  /**
+   * Gets the current access token (used to communicate with Auth0 & Contxt Auth)
+   *
+   * @returns {string} accessToken
+   */
   getCurrentAccessToken() {
     return this._getCurrentTokenByType('access');
   }
 
+  /**
+   * Gets the current API token (used to communicate with other Contxt APIs)
+   *
+   * @returns {string} apiToken
+   */
   getCurrentApiToken() {
     return this._getCurrentTokenByType('api');
   }
 
+  /**
+   * Gets the current user's profile from Auth0
+   *
+   * @returns {Promise}
+   * @fulfill {UserProfile}
+   */
   getProfile() {
     return new Promise((resolve, reject) => {
       this._auth0.client.userInfo(this.getCurrentAccessToken(), (err, profile) => {
@@ -46,6 +100,14 @@ class Auth0WebAuth {
     });
   }
 
+  /**
+   * Routine that takes unparsed information from Auth0, uses it to get a valid API token, and then
+   * redirects to the correct page in the application.
+   *
+   * @returns {Promise}
+   * @fulfill {SessionInfo}
+   * @rejects {Error}
+   */
   handleAuthentication() {
     return this._parseWebAuthHash()
       .then((hash) => {
@@ -83,6 +145,11 @@ class Auth0WebAuth {
       });
   }
 
+  /**
+   * Tells caller if the current user is authenticated.
+   *
+   * @returns {boolean}
+   */
   isAuthenticated() {
     const hasTokens = !!(this._sessionInfo && this._sessionInfo.accessToken &&
       this._sessionInfo.apiToken && this._sessionInfo.expiresAt);
@@ -90,10 +157,16 @@ class Auth0WebAuth {
     return hasTokens && this._sessionInfo.expiresAt > Date.now();
   }
 
+  /**
+   * Starts the Auth0 log in process
+   */
   logIn() {
     this._auth0.authorize();
   }
 
+  /**
+   * Logs the user out by removing any stored session info and redirecting to the root
+   */
   logOut() {
     this._sessionInfo = {};
 
@@ -104,10 +177,24 @@ class Auth0WebAuth {
     this._onRedirect('/');
   }
 
+  /**
+   * Default method used for redirecting around the web application. Overridden by `onRedirect` in
+   * the auth config
+   *
+   * @private
+   */
   _defaultOnRedirect(pathname) {
     window.location = pathname;
   }
 
+  /**
+   * Requests an access token from Contxt Auth with the correct audiences.
+   *
+   * @returns {Promise}
+   * @fulfill {string} accessToken
+   *
+   * @private
+   */
   _getApiToken(accessToken) {
     return axios
       .post(
@@ -125,6 +212,16 @@ class Auth0WebAuth {
       .then(({ data }) => data.access_token);
   }
 
+  /**
+   * Returns the type of token requested if it exists.
+   *
+   * @param {string} type The type of token requested. Only valid types are `access` and `api`
+   *
+   * @returns {string} token
+   * @throws {Error}
+   *
+   * @private
+   */
   _getCurrentTokenByType(type) {
     const propertyName = `${type}Token`;
 
@@ -135,6 +232,12 @@ class Auth0WebAuth {
     return this._sessionInfo[propertyName];
   }
 
+  /**
+   * Grabs a stored redirect pathname that may have been stored in another part of the
+   * web application
+   *
+   * @private
+   */
   _getRedirectPathname() {
     const redirectPathname = localStorage.getItem('redirect_pathname');
     localStorage.removeItem('redirect_pathname');
@@ -142,6 +245,16 @@ class Auth0WebAuth {
     return redirectPathname || '/';
   }
 
+  /**
+   * Loads a saved session from local storage
+   *
+   * @returns {Object} session
+   * @returns {string} session.accessToken
+   * @returns {string} session.apiToken
+   * @returns {number} session.expiresAt
+   *
+   * @private
+   */
   _loadSession() {
     return {
       accessToken: localStorage.getItem('access_token'),
@@ -150,6 +263,15 @@ class Auth0WebAuth {
     };
   }
 
+  /**
+   * Wraps Auth0's method for parsing hash information after a successful authentication.
+   *
+   * @returns {Promise}
+   * @fulfill {Object} hashResponse Information returned from Auth0
+   * @rejects {Error}
+   *
+   * @private
+   */
   _parseWebAuthHash() {
     return new Promise((resolve, reject) => {
       this._auth0.parseHash((err, hashResponse) => {
@@ -162,6 +284,16 @@ class Auth0WebAuth {
     });
   }
 
+  /**
+   * Saves a session in local storage for future use
+   *
+   * @param {Object} sessionInfo
+   * @param {string} sessionInfo.accessToken
+   * @param {string} sessionInfo.apiToken
+   * @param {number} sessionInfo.expiresAt
+   *
+   * @private
+   */
   _saveSession(sessionInfo) {
     this._sessionInfo = sessionInfo;
 
