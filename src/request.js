@@ -2,7 +2,7 @@ import axios from 'axios';
 
 class Request {
   /**
-   * @param {object} sdk An instance of the SDK so the module can communicate with other modules
+   * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {string} audienceName The audience name for this instance. Used when grabbing a
    *   Bearer token
    */
@@ -113,11 +113,11 @@ class Request {
   /**
    * Decorates custom modules onto the SDK instance so they behave as first-class citizens.
    *
-   * @param {object} config
-   * @param {object} config.headers
-   * @param {object} config.headers.common
+   * @param {Object} config
+   * @param {Object} config.headers
+   * @param {Object} config.headers.common
    *
-   * @returns {object} config
+   * @returns {Object} config
    *
    * @private
    */

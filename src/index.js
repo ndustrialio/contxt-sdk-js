@@ -9,7 +9,7 @@ import * as sessionTypes from './sessionTypes';
  * with Contxt. The adapter must implement required methods, but most methods are optional. Some of
  * the optional methods are documented below.
  *
- * @typedef {object} SessionType
+ * @typedef {Object} SessionType
  * @property {function} [getCurrentAccessToken] Provides a current access token from Auth0 that is
  *   used for profile information and can be used to get API token for Contxt itself
  * @property {function} getCurrentApiToken Provides a current API token that is used across
@@ -58,7 +58,7 @@ import * as sessionTypes from './sessionTypes';
 class ContxtSdk {
   /**
    * @param {UserConfig} config
-   * @param {object} [externalModules]
+   * @param {Object} [externalModules]
    * @param {string} sessionType The type of auth session you wish to use (e.g. auth0WebAuth
    *   or machine)
    */
@@ -97,7 +97,7 @@ class ContxtSdk {
    * @param {string} audienceName The audience name of the service you are trying to reach
    *   (e.g. facilities or feeds)
    *
-   * @returns {object} Request module
+   * @returns {Object} Request module
    *
    * @private
    */
@@ -108,7 +108,7 @@ class ContxtSdk {
   /**
    * Decorates custom modules onto the SDK instance so they behave as first-class citizens.
    *
-   * @param {object} modules
+   * @param {Object} modules
    * @param {function} modules.module
    *
    * @private

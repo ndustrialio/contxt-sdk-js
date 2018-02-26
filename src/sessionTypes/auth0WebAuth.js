@@ -3,7 +3,7 @@ import axios from 'axios';
 import URL from 'url-parse';
 
 /**
- * @typedef {object} UserProfile
+ * @typedef {Object} UserProfile
  * @property {string} name
  * @property {string} nickname
  * @property {string} picture URL to an avatar
@@ -12,7 +12,7 @@ import URL from 'url-parse';
  */
 
 /**
- * @typedef {object} SessionInfo
+ * @typedef {Object} SessionInfo
  * @property {string} accessToken
  * @property {string} apiToken
  * @property {number} expiresAt
@@ -28,13 +28,13 @@ import URL from 'url-parse';
  */
 class Auth0WebAuth {
   /**
-   * @param {object} sdk An instance of the SDK so the module can communicate with other modules
-   * @param {object} sdk.config
-   * @param {object} sdk.audiences
-   * @param {object} sdk.audiences.contxtAuth
+   * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
+   * @param {Object} sdk.config
+   * @param {Object} sdk.audiences
+   * @param {Object} sdk.audiences.contxtAuth
    * @param {string} sdk.audiences.contxtAuth.clientId The Auth0 client id of the
    *   Contxt Auth environment
-   * @param {object} sdk.config.auth
+   * @param {Object} sdk.config.auth
    * @param {string} sdk.config.auth.authorizationPath Path that is called by Auth0 after
    *   successfully authenticating
    * @param {string} sdk.config.auth.clientId The Auth0 client id of this application
@@ -248,7 +248,7 @@ class Auth0WebAuth {
   /**
    * Loads a saved session from local storage
    *
-   * @returns {object} session
+   * @returns {Object} session
    * @returns {string} session.accessToken
    * @returns {string} session.apiToken
    * @returns {number} session.expiresAt
@@ -267,7 +267,7 @@ class Auth0WebAuth {
    * Wraps Auth0's method for parsing hash information after a successful authentication.
    *
    * @returns {Promise}
-   * @fulfill {object} hashResponse Information returned from Auth0
+   * @fulfill {Object} hashResponse Information returned from Auth0
    * @rejects {Error}
    *
    * @private
@@ -287,7 +287,7 @@ class Auth0WebAuth {
   /**
    * Saves a session in local storage for future use
    *
-   * @param {object} sessionInfo
+   * @param {Object} sessionInfo
    * @param {string} sessionInfo.accessToken
    * @param {string} sessionInfo.apiToken
    * @param {number} sessionInfo.expiresAt

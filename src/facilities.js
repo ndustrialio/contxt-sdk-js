@@ -1,19 +1,19 @@
 /**
- * @typedef {object} Facility
+ * @typedef {Object} Facility
  * @property {string} address1
  * @property {string} address2
  * @property {string} city
  * @property {string} created_at ISO 8601 Extended Format date/time string
  * @property {number} id
- * @property {object} Info
+ * @property {Object} Info
  * @property {string} name
- * @property {object} Organization
+ * @property {Object} Organization
  * @property {string} Organization.id UUID formatted id
  * @property {string} Organization.name
  * @property {string} Organization.created_at ISO 8601 Extended Format date/time string
  * @property {string} Organization.updated_at ISO 8601 Extended Format date/time string
  * @property {string} state
- * @property {object[]} tags
+ * @property {Object[]} tags
  * @property {number} tags[].id
  * @property {number} tags[].facility_id
  * @property {string} tags[].name
@@ -32,8 +32,8 @@
  */
 class Facilities {
   /**
-   * @param {object} sdk An instance of the SDK so the module can communicate with other modules
-   * @param {object} request An instance of the request module tied to this module's audience.
+   * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
+   * @param {Object} request An instance of the request module tied to this module's audience.
    */
   constructor(sdk, request) {
     this._baseUrl = `${sdk.config.audiences.facilities.host}/v1`;

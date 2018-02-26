@@ -4,12 +4,12 @@ import defaultConfigs from './defaults';
 /**
  * User provided configuration options
  *
- * @typedef {object} UserConfig
- * @property {object} auth User assigned configurations specific for their authentication methods
+ * @typedef {Object} UserConfig
+ * @property {Object} auth User assigned configurations specific for their authentication methods
  * @property {string} auth.clientId Client Id provided by Auth0 for this application
- * @property {object} [auth.customModuleConfigs] Custom environment setups for individual modules.
+ * @property {Object} [auth.customModuleConfigs] Custom environment setups for individual modules.
  *   Requires clientId/host or env
- * @property {object} [auth.customModuleConfigs.moduleName] The key of this object corresponds with
+ * @property {Object} [auth.customModuleConfigs.moduleName] The key of this object corresponds with
  *   the module for which you would like to override the host/clientId
  * @property {string} [auth.customModuleConfigs.moduleName.clientId] Client Id provided by Auth0
  *   for the environment you are trying to communicate with
@@ -27,8 +27,8 @@ import defaultConfigs from './defaults';
  * An object of multiple moduleNames that makes up all audiences that will be used for
  * authentication and communicating with various APIs
  *
- * @typedef {object} Audiences
- * @property {object} moduleName Key of this object is the name of the corresponding module
+ * @typedef {Object} Audiences
+ * @property {Object} moduleName Key of this object is the name of the corresponding module
  *   (e.g. `facilities`)
  * @property {string} moduleName.clientId
  * @property {string} moduleName.host
@@ -42,7 +42,7 @@ import defaultConfigs from './defaults';
 class Config {
   /**
    * @param {UserConfig} userConfig
-   * @param {object} [externalModules] User provided external modules that should be treated as
+   * @param {Object} [externalModules] User provided external modules that should be treated as
    *   first class citizens
    */
   constructor(userConfig, externalModules) {
@@ -64,7 +64,7 @@ class Config {
    * Parses a custom module configuration for a valid environment/audience. Requires either a
    * clientId and host, or an environment that matches a default audience/environment.
    *
-   * @param {object} config
+   * @param {Object} config
    * @param {string} [config.clientId] Client Id provided by Auth0 for the environment you are
    *   trying to communicate with
    * @param {string} [config.env] The SDK provided environment name you are trying to reach
@@ -91,10 +91,10 @@ class Config {
   /**
    * Reconciles the main environment with custom environments and external modules.
    *
-   * @param {object} options
-   * @param {object} [options.customModuleConfigs]
+   * @param {Object} options
+   * @param {Object} [options.customModuleConfigs]
    * @param {string} [options.env = 'production']
-   * @param {object} [options.externalModules]
+   * @param {Object} [options.externalModules]
    *
    * @returns {Audiences}
    *
@@ -120,8 +120,8 @@ class Config {
   /**
    * Builds up the audiences for external modules.
    *
-   * @param {object} externalModules
-   * @param {object} [externalModules.moduleName] Key of this object is the name of the
+   * @param {Object} externalModules
+   * @param {Object} [externalModules.moduleName] Key of this object is the name of the
    *   corresponding module (e.g. `facilities`)
    * @param {string} [externalModules.moduleName.clientId]
    * @param {string} [externalModules.moduleName.host]
@@ -151,9 +151,9 @@ class Config {
    * Reconciles the main environment with custom environments to build up audiences for
    * internal modules.
    *
-   * @param {object} options
+   * @param {Object} options
    * @param {Audiences} options.audiences
-   * @param {object} options.customModuleConfigs
+   * @param {Object} options.customModuleConfigs
    * @param {string} options.env
    *
    * @returns {Audiences}
