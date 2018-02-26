@@ -17,15 +17,43 @@ import * as sessionTypes from './sessionTypes';
  * @property {function} [getProfile] Provides profile information about the current user
  * @property {function} [handleAuthentication] Is called by front-end code in the Auth0 reference
  *  implementation to handle getting the access token from Auth0
- * @property {isAuthenticated} isAuthenticated
- * @property {logIn} [logIn] Is used by front-end code in the Auth0 reference implementation to
+ * @property {function} isAuthenticated
+ * @property {function} [logIn] Is used by front-end code in the Auth0 reference implementation to
  *   start the sign in process
- * @property {logOut} [logOut] Is used by the front-end code in the Auth0 reference implementation
+ * @property {function} [logOut] Is used by the front-end code in the Auth0 reference implementation
  *   to sign the user out
  */
 
 /**
  * ContxtSdk constructor
+ *
+ * @example
+ * import contxtSdk from 'contxtSdk';
+ * import ExternalModule1 from './ExternalModule1';
+ * import history from '../services/history';
+ *
+ * const contxtSdk = new ContxtSDK({
+ *   config: {
+ *     auth: {
+ *       clientId: 'Auth0 client id of the application being built',
+ *       customModuleConfigs: {
+ *         facilities: {
+ *           env: 'production'
+ *         }
+ *       },
+ *       env: 'staging',
+ *       onRedirect: (pathname) => history.push(pathname)
+ *     }
+ *   },
+ *   externalModules: {
+ *     externalModule1: {
+ *       clientId: 'Auth0 client id of the external module',
+ *       host: 'https://www.example.com/externalModule1',
+ *       module: ExternalModule1
+ *     }
+ *   },
+ *   sessionType: 'auth0WebAuth'
+ * });
  */
 class ContxtSdk {
   /**
@@ -33,34 +61,6 @@ class ContxtSdk {
    * @param {object} [externalModules]
    * @param {string} sessionType The type of auth session you wish to use (e.g. auth0WebAuth
    *   or machine)
-   *
-   * @example
-   * import contxtSdk from 'contxtSdk';
-   * import ExternalModule1 from './ExternalModule1';
-   * import history from '../services/history';
-   *
-   * const contxtSdk = new ContxtSDK({
-   *   config: {
-   *     auth: {
-   *       clientId: 'Auth0 client id of the application being built',
-   *       customModuleConfigs: {
-   *         facilities: {
-   *           env: 'production'
-   *         }
-   *       },
-   *       env: 'staging',
-   *       onRedirect: (pathname) => history.push(pathname)
-   *     }
-   *   },
-   *   externalModules: {
-   *     externalModule1: {
-   *       clientId: 'Auth0 client id of the external module',
-   *       host: 'https://www.example.com/externalModule1',
-   *       module: ExternalModule1
-   *     }
-   *   },
-   *   sessionType: 'auth0WebAuth'
-   * });
    */
   constructor({ config = {}, externalModules = {}, sessionType }) {
     this.config = new Config(config, externalModules);

@@ -37,9 +37,9 @@ Can authenticate with a service like Auth0 and then with Contxt or can communica
 with Contxt. The adapter must implement required methods, but most methods are optional. Some of
 the optional methods are documented below.</p>
 </dd>
-<dt><a href="#UserProfile">UserProfile</a></dt>
+<dt><a href="#UserProfile">UserProfile</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#SessionInfo">SessionInfo</a></dt>
+<dt><a href="#SessionInfo">SessionInfo</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
 
@@ -135,6 +135,35 @@ ContxtSdk constructor
 | [externalModules] | <code>object</code> |  |
 | sessionType | <code>string</code> | The type of auth session you wish to use (e.g. auth0WebAuth   or machine) |
 
+**Example**  
+```js
+import contxtSdk from 'contxtSdk';
+import ExternalModule1 from './ExternalModule1';
+import history from '../services/history';
+
+const contxtSdk = new ContxtSDK({
+  config: {
+    auth: {
+      clientId: 'Auth0 client id of the application being built',
+      customModuleConfigs: {
+        facilities: {
+          env: 'production'
+        }
+      },
+      env: 'staging',
+      onRedirect: (pathname) => history.push(pathname)
+    }
+  },
+  externalModules: {
+    externalModule1: {
+      clientId: 'Auth0 client id of the external module',
+      host: 'https://www.example.com/externalModule1',
+      module: ExternalModule1
+    }
+  },
+  sessionType: 'auth0WebAuth'
+});
+```
 <a name="Request"></a>
 
 ## Request
@@ -323,7 +352,7 @@ User provided configuration options
 | [auth.customModuleConfigs.moduleName.clientId] | <code>string</code> |  | Client Id provided by Auth0   for the environment you are trying to communicate with |
 | [auth.customModuleConfigs.moduleName.env] | <code>string</code> |  | The SDK provided environment name   you are trying to reach |
 | [auth.customModuleConfigs.moduleName.host] | <code>string</code> |  | Hostname for the API that   corresponds with the clientId provided |
-| [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for   their clientId and host |
+| [auth.env] | <code>string</code> | <code>&quot;production&quot;</code> | The environment that every module should use for   their clientId and host |
 | [auth.onRedirect] | <code>string</code> | <code>&quot;(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }&quot;</code> | A redirect   method used for navigating through Auth0 callbacks in Web applications |
 
 <a name="Audiences"></a>
@@ -390,13 +419,13 @@ the optional methods are documented below.
 | getCurrentApiToken | <code>function</code> | Provides a current API token that is used across   different Contxt services |
 | [getProfile] | <code>function</code> | Provides profile information about the current user |
 | [handleAuthentication] | <code>function</code> | Is called by front-end code in the Auth0 reference  implementation to handle getting the access token from Auth0 |
-| isAuthenticated | <code>isAuthenticated</code> |  |
-| [logIn] | <code>logIn</code> | Is used by front-end code in the Auth0 reference implementation to   start the sign in process |
-| [logOut] | <code>logOut</code> | Is used by the front-end code in the Auth0 reference implementation   to sign the user out |
+| isAuthenticated | <code>function</code> |  |
+| [logIn] | <code>function</code> | Is used by front-end code in the Auth0 reference implementation to   start the sign in process |
+| [logOut] | <code>function</code> | Is used by the front-end code in the Auth0 reference implementation   to sign the user out |
 
 <a name="UserProfile"></a>
 
-## UserProfile
+## UserProfile : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -410,7 +439,7 @@ the optional methods are documented below.
 
 <a name="SessionInfo"></a>
 
-## SessionInfo
+## SessionInfo : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
