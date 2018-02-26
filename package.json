@@ -1,6 +1,6 @@
 {
   "name": "@ndustrial/contxt-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -8,6 +8,7 @@
     "build": "rollup -c",
     "coverage": "nyc npm run test:js",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
+    "prepare": "npm run build",
     "report": "nyc report",
     "test": "npm run lint && npm run coverage",
     "test:js": "NODE_ENV=test mocha --opts 'support/mocha.opts' 'src/**/*.spec.js'",
@@ -17,7 +18,6 @@
   },
   "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
   "license": "ISC",
-  "private": true,
   "dependencies": {
     "url-parse": "^1.2.0"
   },
