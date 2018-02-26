@@ -22,13 +22,14 @@ describe('Config', function() {
 
     beforeEach(function() {
       baseAuthConfigs = {
-        clientId: faker.internet.password()
-      };
-      baseConfigs = {
+        clientId: faker.internet.password(),
         customModuleConfigs: {
           [faker.hacker.adjective()]: fixture.build('audience')
         },
         env: faker.hacker.adjective()
+      };
+      baseConfigs = {
+        [faker.lorem.word()]: faker.helpers.createTransaction()
       };
       expectedAudiences = fixture.build('defaultAudiences');
       expectedExternalModules = {
@@ -49,8 +50,8 @@ describe('Config', function() {
 
     it('gets a list of audiences for the environment', function() {
       expect(getAudiences).to.be.calledWith({
-        customModuleConfigs: baseConfigs.customModuleConfigs,
-        env: baseConfigs.env,
+        customModuleConfigs: baseAuthConfigs.customModuleConfigs,
+        env: baseAuthConfigs.env,
         externalModules: expectedExternalModules
       });
     });

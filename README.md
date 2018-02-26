@@ -1,10 +1,96 @@
 # contxt-sdk
 
-## Building the package
+## Installation
+
+The `contxt-sdk` can be installed with NPM:
+
+```
+npm install --save @ndustrial/contxt-sdk
+```
+
+There are two peer dependencies for `contxt-sdk`, `auth0-js` and `axios`. If you don't already have a compatible version installed, run:
+
+```
+npm install --save auth0-js@^9.0.0 axios@~0.17.0
+```
+
+## Getting Started
+
+Once installed, the minimum configuration you need to get going is to include the `clientId` of your application (from Auth0) and a string with the type of authentication you want to use (`auth0WebAuth` or `machine`).
+
+```
+import ContxtSdk from 'contxt-sdk';
+
+const contxtSdk = new ContxtSdk({
+  config: {
+    auth: {
+      clientId: 'example clientId from auth0'
+    }
+  },
+  sessionType: 'auth0WebAuth'
+});
+
+contxtSdk.facilities.getAll().then((facilities) => {
+  console.log(`all of my facilities: ${JSON.stringify(facilities)}`);
+});
+```
+
+More configuration options are in the API docs.
+
+## Adding in external modules
+
+At times when building your application, there might be a Contxt API that you need to reach that is not currently included in the `contxt-sdk` package. To help out with this, we've created a way to include an external module into the SDK when creating an SDK instance that allows you the external module to act as a first class extension of the SDK's API.
+
+To do this, just include information about the module when creating your `contxt-sdk` instance:
+
+```
+import ContxtSdk from 'contxt-sdk';
+import NewModule from './NewModule';
+
+const contxtSdk = new ContxtSdk({
+  config: {
+    auth: {
+      clientId: 'example clientId from auth0'
+    }
+  },
+  externalModules: {
+    newModule: {
+      clientId: 'The Auth0 Id of the API you are communicated with',
+      host: 'http://newModule.example.com',
+      module: NewModule
+    }
+  },
+  sessionType: 'auth0WebAuth'
+});
+
+contxtSdk.newModule.doWork();
+```
+
+When we decorate your external module into your SDK instance, it is treated just like one of the native, internal modules and is provided with the sdk instance (so you can use other parts of the sdk from your new module) and it's own request module, which will handle api tokens if you are working with a Contxt API.
+
+```
+class NewModule {
+  constructor(sdk, request) {
+    this._baseUrl = `${sdk.config.audiences.newModule.host}/v1`;
+    this._request = request;
+    this._sdk = sdk;
+  }
+
+  doWork() {
+    return this._request.patch(`${this._baseUrl}/data`, { work: 'finished' });
+  }
+}
+
+export default NewModule;
+```
+
+## Development
+
+### Building the package
 
 [rollup.js](https://rollupjs.org/guide/en) is used to build the source code into CommonJS and ES6 modules that can be used for distribution. These modules are both built by running one command: `npm run build`. If you'd like to continuously create builds as files are changed (i.e. if you are developing new features and have set things up correctly with `npm link` to serve the newly updated files to your app), you can run `npm run watch`.
 
-## Testing & Code Quality
+### Testing & Code Quality
 
 Some important NPM tasks for running the test suite:
 

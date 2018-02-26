@@ -6,7 +6,7 @@
   "module": "es/index.js",
   "scripts": {
     "build": "npm run build:js && npm run build:docs",
-    "build:docs": "jsdoc2md src/*.js > api.md; echo",
+    "build:docs": "jsdoc2md 'src/**/*.js' > api.md",
     "build:js": "rollup -c",
     "coverage": "nyc npm run test:js",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",

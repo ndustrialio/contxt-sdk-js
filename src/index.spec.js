@@ -11,7 +11,9 @@ describe('ContxtSdk', function() {
   beforeEach(function() {
     this.sandbox = sandbox.create();
 
-    baseConfig = {};
+    baseConfig = {
+      auth: {}
+    };
   });
 
   afterEach(function() {
@@ -45,8 +47,8 @@ describe('ContxtSdk', function() {
       decorate = this.sandbox.stub(ContxtSdk.prototype, '_decorate');
 
       contxtSdk = new ContxtSdk({
-        externalModules: expectedExternalModules,
         config: baseConfig,
+        externalModules: expectedExternalModules,
         sessionType: expectedAuthSessionType
       });
     });

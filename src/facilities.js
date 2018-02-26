@@ -3,24 +3,24 @@
  * @property {string} address1
  * @property {string} address2
  * @property {string} city
- * @property {string} created_at ISO8901 formatted
+ * @property {string} created_at ISO 8601 Extended Format date/time string
  * @property {number} id
  * @property {object} Info
  * @property {string} name
  * @property {object} Organization
  * @property {string} Organization.id UUID formatted id
  * @property {string} Organization.name
- * @property {string} Organization.created_at ISO8901 formatted
- * @property {string} Organization.updated_at ISO8901 formatted
+ * @property {string} Organization.created_at ISO 8601 Extended Format date/time string
+ * @property {string} Organization.updated_at ISO 8601 Extended Format date/time string
  * @property {string} organization.id UUID formatted id
  * @property {string} state
  * @property {object[]} tags
  * @property {number} tags[].id
  * @property {number} tags[].facility_id
  * @property {string} tags[].name
- * @property {string} tags[].created_at ISO8901 formatted
- * @property {string} tags[].updated_at ISO8901 formatted
- * @property {string} timezone
+ * @property {string} tags[].created_at ISO 8601 Extended Format date/time string
+ * @property {string} tags[].updated_at ISO 8601 Extended Format date/time string
+ * @property {string} timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
  * @property {number} weather_location_id
  * @property {string} zip US Zip Code
  */
@@ -32,6 +32,10 @@
  * @typicalname contxtSdk.facilities
  */
 class Facilities {
+  /**
+   * @param {object} sdk An instance of the SDK so the module can communicate with other modules
+   * @param {object} request An instance of the request module tied to this module's audience.
+   */
   constructor(sdk, request) {
     this._baseUrl = `${sdk.config.audiences.facilities.host}/v1`;
     this._request = request;
@@ -66,7 +70,7 @@ class Facilities {
    * Method: GET
    *
    * @returns {Promise}
-   * @fulfill {Facility[]} Information about a facility
+   * @fulfill {Facility[]} Information about all facilities
    * @reject {Error}
    *
    * @example
