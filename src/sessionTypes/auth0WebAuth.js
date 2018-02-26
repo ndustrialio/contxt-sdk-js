@@ -29,11 +29,11 @@ import URL from 'url-parse';
 class Auth0WebAuth {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
-   * @param {Object} sdk.config
    * @param {Object} sdk.audiences
    * @param {Object} sdk.audiences.contxtAuth
    * @param {string} sdk.audiences.contxtAuth.clientId The Auth0 client id of the
    *   Contxt Auth environment
+   * @param {Object} sdk.config
    * @param {Object} sdk.config.auth
    * @param {string} sdk.config.auth.authorizationPath Path that is called by Auth0 after
    *   successfully authenticating
