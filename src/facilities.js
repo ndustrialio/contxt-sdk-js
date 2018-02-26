@@ -12,7 +12,6 @@
  * @property {string} Organization.name
  * @property {string} Organization.created_at ISO 8601 Extended Format date/time string
  * @property {string} Organization.updated_at ISO 8601 Extended Format date/time string
- * @property {string} organization.id UUID formatted id
  * @property {string} state
  * @property {object[]} tags
  * @property {number} tags[].id
@@ -48,7 +47,7 @@ class Facilities {
    * API Endpoint: '/facilities/:facilityId'
    * Method: GET
    *
-   * @param {object} facilityId The id of the facility
+   * @param {number|string} facilityId The id of the facility
    *
    * @returns {Promise}
    * @fulfill {Facility} Information about a facility
@@ -56,7 +55,7 @@ class Facilities {
    *
    * @example
    * contxtSdk.facilities.get(25)
-   *   .then((facility) => console.log(facility)});
+   *   .then((facility) => console.log(facility));
    *   .catch((err) => console.log(err));
    */
   get(facilityId) {
@@ -75,7 +74,7 @@ class Facilities {
    *
    * @example
    * contxtSdk.facilities.getAll()
-   *   .then((facilities) => console.log(facilities)});
+   *   .then((facilities) => console.log(facilities));
    *   .catch((err) => console.log(err));
    */
   getAll() {

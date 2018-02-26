@@ -7,7 +7,7 @@ import URL from 'url-parse';
  * @property {string} name
  * @property {string} nickname
  * @property {string} picture URL to an avatar
- * @property {string} sub
+ * @property {string} sub The Subject Claim of the user's JWT
  * @property {string} updated_at ISO 8601 Extended Format date/time string
  */
 
@@ -36,9 +36,9 @@ class Auth0WebAuth {
    *   Contxt Auth environment
    * @param {object} sdk.config.auth
    * @param {string} sdk.config.auth.authorizationPath Path that is called by Auth0 after
-   *   sucessfully authenticating
+   *   successfully authenticating
    * @param {string} sdk.config.auth.clientId The Auth0 client id of this application
-   * @param {function} [sdk.config.auth.onRedirect] Redirect method used when navingating between
+   * @param {function} [sdk.config.auth.onRedirect] Redirect method used when navigating between
    *   Auth0 callbacks
    */
   constructor(sdk) {
@@ -178,7 +178,7 @@ class Auth0WebAuth {
   }
 
   /**
-   * Default method used for redircting around the web application. Overridden by `onRedirect` in
+   * Default method used for redirecting around the web application. Overridden by `onRedirect` in
    * the auth config
    *
    * @private

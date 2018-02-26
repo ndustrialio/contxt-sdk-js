@@ -94,12 +94,12 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| facilityId | <code>object</code> | The id of the facility |
+| facilityId | <code>number</code> \| <code>string</code> | The id of the facility |
 
 **Example**  
 ```js
 contxtSdk.facilities.get(25)
-  .then((facility) => console.log(facility)});
+  .then((facility) => console.log(facility));
   .catch((err) => console.log(err));
 ```
 <a name="Facilities+getAll"></a>
@@ -116,7 +116,7 @@ Method: GET
 **Example**  
 ```js
 contxtSdk.facilities.getAll()
-  .then((facilities) => console.log(facilities)});
+  .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
 ```
 <a name="ContxtSdk"></a>
@@ -283,9 +283,9 @@ from the Contxt Auth service.
 | sdk.audiences.contxtAuth | <code>object</code> |  |
 | sdk.audiences.contxtAuth.clientId | <code>string</code> | The Auth0 client id of the   Contxt Auth environment |
 | sdk.config.auth | <code>object</code> |  |
-| sdk.config.auth.authorizationPath | <code>string</code> | Path that is called by Auth0 after   sucessfully authenticating |
+| sdk.config.auth.authorizationPath | <code>string</code> | Path that is called by Auth0 after   successfully authenticating |
 | sdk.config.auth.clientId | <code>string</code> | The Auth0 client id of this application |
-| [sdk.config.auth.onRedirect] | <code>function</code> | Redirect method used when navingating between   Auth0 callbacks |
+| [sdk.config.auth.onRedirect] | <code>function</code> | Redirect method used when navigating between   Auth0 callbacks |
 
 <a name="Auth0WebAuth+getCurrentAccessToken"></a>
 
@@ -352,8 +352,8 @@ User provided configuration options
 | [auth.customModuleConfigs.moduleName.clientId] | <code>string</code> |  | Client Id provided by Auth0   for the environment you are trying to communicate with |
 | [auth.customModuleConfigs.moduleName.env] | <code>string</code> |  | The SDK provided environment name   you are trying to reach |
 | [auth.customModuleConfigs.moduleName.host] | <code>string</code> |  | Hostname for the API that   corresponds with the clientId provided |
-| [auth.env] | <code>string</code> | <code>&quot;production&quot;</code> | The environment that every module should use for   their clientId and host |
-| [auth.onRedirect] | <code>string</code> | <code>&quot;(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }&quot;</code> | A redirect   method used for navigating through Auth0 callbacks in Web applications |
+| [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for   their clientId and host |
+| [auth.onRedirect] | <code>function</code> | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect   method used for navigating through Auth0 callbacks in Web applications |
 
 <a name="Audiences"></a>
 
@@ -390,7 +390,6 @@ authentication and communicating with various APIs
 | Organization.name | <code>string</code> |  |
 | Organization.created_at | <code>string</code> | ISO 8601 Extended Format date/time string |
 | Organization.updated_at | <code>string</code> | ISO 8601 Extended Format date/time string |
-| organization.id | <code>string</code> | UUID formatted id |
 | state | <code>string</code> |  |
 | tags | <code>Array.&lt;object&gt;</code> |  |
 | tags[].id | <code>number</code> |  |
@@ -419,7 +418,7 @@ the optional methods are documented below.
 | getCurrentApiToken | <code>function</code> | Provides a current API token that is used across   different Contxt services |
 | [getProfile] | <code>function</code> | Provides profile information about the current user |
 | [handleAuthentication] | <code>function</code> | Is called by front-end code in the Auth0 reference  implementation to handle getting the access token from Auth0 |
-| isAuthenticated | <code>function</code> |  |
+| isAuthenticated | <code>function</code> | Tells caller if the current user is authenticated. |
 | [logIn] | <code>function</code> | Is used by front-end code in the Auth0 reference implementation to   start the sign in process |
 | [logOut] | <code>function</code> | Is used by the front-end code in the Auth0 reference implementation   to sign the user out |
 
@@ -434,7 +433,7 @@ the optional methods are documented below.
 | name | <code>string</code> |  |
 | nickname | <code>string</code> |  |
 | picture | <code>string</code> | URL to an avatar |
-| sub | <code>string</code> |  |
+| sub | <code>string</code> | The Subject Claim of the user's JWT |
 | updated_at | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="SessionInfo"></a>

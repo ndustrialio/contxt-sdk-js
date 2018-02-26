@@ -35,11 +35,11 @@ contxtSdk.facilities.getAll().then((facilities) => {
 });
 ```
 
-More configuration options are in the API docs.
+More configuration options are in the [API docs](https://github.com/ndustrialio/contxt-sdk-js/blob/master/api.md).
 
 ## Adding in external modules
 
-At times when building your application, there might be a Contxt API that you need to reach that is not currently included in the `contxt-sdk` package. To help out with this, we've created a way to include an external module into the SDK when creating an SDK instance that allows you the external module to act as a first class extension of the SDK's API.
+At times when building your application, there might be a Contxt API that you need to reach that is not currently included in the `contxt-sdk` package. To help out with this, we've created a way to include an external module into the SDK when creating an SDK instance that allows the external module to act as a first class extension of the SDK's API.
 
 To do this, just include information about the module when creating your `contxt-sdk` instance:
 
@@ -66,7 +66,7 @@ const contxtSdk = new ContxtSdk({
 contxtSdk.newModule.doWork();
 ```
 
-When we decorate your external module into your SDK instance, it is treated just like one of the native, internal modules and is provided with the sdk instance (so you can use other parts of the sdk from your new module) and it's own request module, which will handle api tokens if you are working with a Contxt API.
+When we decorate your external module into your SDK instance, it is treated just like one of the native, internal modules and is provided with the SDK instance (so you can use other parts of the SDK from your new module) and its own request module, which will handle API tokens if you are working with a Contxt API.
 
 ```
 class NewModule {

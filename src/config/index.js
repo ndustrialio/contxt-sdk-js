@@ -17,9 +17,9 @@ import defaultConfigs from './defaults';
  *   you are trying to reach
  * @property {string} [auth.customModuleConfigs.moduleName.host] Hostname for the API that
  *   corresponds with the clientId provided
- * @property {string} [auth.env = production] The environment that every module should use for
+ * @property {string} [auth.env = 'production'] The environment that every module should use for
  *   their clientId and host
- * @property {string} [auth.onRedirect = (pathname) => { window.location = pathname; }] A redirect
+ * @property {function} [auth.onRedirect = (pathname) => { window.location = pathname; }] A redirect
  *   method used for navigating through Auth0 callbacks in Web applications
  */
 

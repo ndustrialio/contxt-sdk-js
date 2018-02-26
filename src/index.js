@@ -17,7 +17,7 @@ import * as sessionTypes from './sessionTypes';
  * @property {function} [getProfile] Provides profile information about the current user
  * @property {function} [handleAuthentication] Is called by front-end code in the Auth0 reference
  *  implementation to handle getting the access token from Auth0
- * @property {function} isAuthenticated
+ * @property {function} isAuthenticated Tells caller if the current user is authenticated.
  * @property {function} [logIn] Is used by front-end code in the Auth0 reference implementation to
  *   start the sign in process
  * @property {function} [logOut] Is used by the front-end code in the Auth0 reference implementation
