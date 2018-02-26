@@ -3,7 +3,7 @@ import axios from 'axios';
 import URL from 'url-parse';
 
 /**
- * @typedef UserProfile
+ * @typedef {object} UserProfile
  * @property {string} name
  * @property {string} nickname
  * @property {string} picture URL to an avatar
@@ -12,7 +12,7 @@ import URL from 'url-parse';
  */
 
 /**
- * @typedef SessionInfo
+ * @typedef {object} SessionInfo
  * @property {string} accessToken
  * @property {string} apiToken
  * @property {number} expiresAt
