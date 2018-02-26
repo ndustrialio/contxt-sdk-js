@@ -22,24 +22,36 @@ from the Contxt Auth service.</p>
 ## Typedefs
 
 <dl>
-<dt><a href="#UserConfig">UserConfig</a> : <code>object</code></dt>
+<dt><a href="#Audience">Audience</a> : <code>Object</code></dt>
+<dd><p>A single audience used for authenticating and communicating with an individual API.</p>
+</dd>
+<dt><a href="#CustomAudience">CustomAudience</a> : <code>Object</code></dt>
+<dd><p>A custom audience that will override the configuration of an individual module. Consists of
+either a reference to an environment that already exists or a clientId and host for a
+custom environment.</p>
+</dd>
+<dt><a href="#Environments">Environments</a> : <code>Object.&lt;string, Audience&gt;</code></dt>
+<dd><p>An object of audiences that corresponds to all the different environments available for a
+single module.</p>
+</dd>
+<dt><a href="#ExternalModule">ExternalModule</a> : <code>Object</code></dt>
+<dd><p>An external module to be integrated into the SDK as a first class citizen. Includes information
+for authenticating and communicating with an individual API and the external module itself.</p>
+</dd>
+<dt><a href="#UserConfig">UserConfig</a> : <code>Object</code></dt>
 <dd><p>User provided configuration options</p>
 </dd>
-<dt><a href="#Audiences">Audiences</a> : <code>object</code></dt>
-<dd><p>An object of multiple moduleNames that makes up all audiences that will be used for
-authentication and communicating with various APIs</p>
-</dd>
-<dt><a href="#Facility">Facility</a> : <code>object</code></dt>
+<dt><a href="#Facility">Facility</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#SessionType">SessionType</a> : <code>object</code></dt>
+<dt><a href="#SessionType">SessionType</a> : <code>Object</code></dt>
 <dd><p>An adapter that allows the SDK to authenticate with different services and manage various tokens.
 Can authenticate with a service like Auth0 and then with Contxt or can communicate directly
 with Contxt. The adapter must implement required methods, but most methods are optional. Some of
 the optional methods are documented below.</p>
 </dd>
-<dt><a href="#UserProfile">UserProfile</a> : <code>object</code></dt>
+<dt><a href="#UserProfile">UserProfile</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#SessionInfo">SessionInfo</a> : <code>object</code></dt>
+<dt><a href="#SessionInfo">SessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
@@ -55,8 +67,8 @@ Module that merges user assigned configurations with default configurations.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| userConfig | [<code>UserConfig</code>](#UserConfig) |  |
-| [externalModules] | <code>object</code> | User provided external modules that should be treated as   first class citizens |
+| userConfig | [<code>UserConfig</code>](#UserConfig) | The user provided configuration options |
+| [externalModules] | <code>Object</code> | User provided external modules that should be treated as   first class citizens |
 
 <a name="Facilities"></a>
 
@@ -77,8 +89,8 @@ of, information about different facilities
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sdk | <code>object</code> | An instance of the SDK so the module can communicate with other modules |
-| request | <code>object</code> | An instance of the request module tied to this module's audience. |
+| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
+| request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
 <a name="Facilities+get"></a>
 
@@ -132,7 +144,7 @@ ContxtSdk constructor
 | Param | Type | Description |
 | --- | --- | --- |
 | config | [<code>UserConfig</code>](#UserConfig) |  |
-| [externalModules] | <code>object</code> |  |
+| [externalModules] | <code>Object</code> |  |
 | sessionType | <code>string</code> | The type of auth session you wish to use (e.g. auth0WebAuth   or machine) |
 
 **Example**  
@@ -186,7 +198,7 @@ const contxtSdk = new ContxtSDK({
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sdk | <code>object</code> | An instance of the SDK so the module can communicate with other modules |
+| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | audienceName | <code>string</code> | The audience name for this instance. Used when grabbing a   Bearer token |
 
 <a name="Request+delete"></a>
@@ -277,12 +289,12 @@ from the Contxt Auth service.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sdk | <code>object</code> | An instance of the SDK so the module can communicate with other modules |
-| sdk.config | <code>object</code> |  |
-| sdk.audiences | <code>object</code> |  |
-| sdk.audiences.contxtAuth | <code>object</code> |  |
+| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
+| sdk.config | <code>Object</code> |  |
+| sdk.audiences | <code>Object</code> |  |
+| sdk.audiences.contxtAuth | <code>Object</code> |  |
 | sdk.audiences.contxtAuth.clientId | <code>string</code> | The Auth0 client id of the   Contxt Auth environment |
-| sdk.config.auth | <code>object</code> |  |
+| sdk.config.auth | <code>Object</code> |  |
 | sdk.config.auth.authorizationPath | <code>string</code> | Path that is called by Auth0 after   successfully authenticating |
 | sdk.config.auth.clientId | <code>string</code> | The Auth0 client id of this application |
 | [sdk.config.auth.onRedirect] | <code>function</code> | Redirect method used when navigating between   Auth0 callbacks |
@@ -335,9 +347,57 @@ Starts the Auth0 log in process
 Logs the user out by removing any stored session info and redirecting to the root
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
+<a name="Audience"></a>
+
+## Audience : <code>Object</code>
+A single audience used for authenticating and communicating with an individual API.
+
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with |
+| config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
+
+<a name="CustomAudience"></a>
+
+## CustomAudience : <code>Object</code>
+A custom audience that will override the configuration of an individual module. Consists of
+either a reference to an environment that already exists or a clientId and host for a
+custom environment.
+
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [config.clientId] | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with |
+| [config.env] | <code>string</code> | The SDK provided environment name you are trying to reach |
+| [config.host] | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
+
+<a name="Environments"></a>
+
+## Environments : <code>Object.&lt;string, Audience&gt;</code>
+An object of audiences that corresponds to all the different environments available for a
+single module.
+
+**Kind**: global typedef  
+<a name="ExternalModule"></a>
+
+## ExternalModule : <code>Object</code>
+An external module to be integrated into the SDK as a first class citizen. Includes information
+for authenticating and communicating with an individual API and the external module itself.
+
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with |
+| config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
+| config.module | <code>function</code> | The module that will be decorated into the SDK |
+
 <a name="UserConfig"></a>
 
-## UserConfig : <code>object</code>
+## UserConfig : <code>Object</code>
 User provided configuration options
 
 **Kind**: global typedef  
@@ -345,34 +405,15 @@ User provided configuration options
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| auth | <code>object</code> |  | User assigned configurations specific for their authentication methods |
+| auth | <code>Object</code> |  | User assigned configurations specific for their authentication methods |
 | auth.clientId | <code>string</code> |  | Client Id provided by Auth0 for this application |
-| [auth.customModuleConfigs] | <code>object</code> |  | Custom environment setups for individual modules.   Requires clientId/host or env |
-| [auth.customModuleConfigs.moduleName] | <code>object</code> |  | The key of this object corresponds with   the module for which you would like to override the host/clientId |
-| [auth.customModuleConfigs.moduleName.clientId] | <code>string</code> |  | Client Id provided by Auth0   for the environment you are trying to communicate with |
-| [auth.customModuleConfigs.moduleName.env] | <code>string</code> |  | The SDK provided environment name   you are trying to reach |
-| [auth.customModuleConfigs.moduleName.host] | <code>string</code> |  | Hostname for the API that   corresponds with the clientId provided |
+| [auth.customModuleConfigs] | <code>Object.&lt;string, CustomAudience&gt;</code> |  | Custom environment setups   for individual modules. Requires clientId/host or env |
 | [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for   their clientId and host |
 | [auth.onRedirect] | <code>function</code> | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect   method used for navigating through Auth0 callbacks in Web applications |
 
-<a name="Audiences"></a>
-
-## Audiences : <code>object</code>
-An object of multiple moduleNames that makes up all audiences that will be used for
-authentication and communicating with various APIs
-
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| moduleName | <code>object</code> | Key of this object is the name of the corresponding module   (e.g. `facilities`) |
-| moduleName.clientId | <code>string</code> |  |
-| moduleName.host | <code>string</code> |  |
-
 <a name="Facility"></a>
 
-## Facility : <code>object</code>
+## Facility : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -383,15 +424,15 @@ authentication and communicating with various APIs
 | city | <code>string</code> |  |
 | created_at | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>number</code> |  |
-| Info | <code>object</code> |  |
+| Info | <code>Object</code> |  |
 | name | <code>string</code> |  |
-| Organization | <code>object</code> |  |
+| Organization | <code>Object</code> |  |
 | Organization.id | <code>string</code> | UUID formatted id |
 | Organization.name | <code>string</code> |  |
 | Organization.created_at | <code>string</code> | ISO 8601 Extended Format date/time string |
 | Organization.updated_at | <code>string</code> | ISO 8601 Extended Format date/time string |
 | state | <code>string</code> |  |
-| tags | <code>Array.&lt;object&gt;</code> |  |
+| tags | <code>Array.&lt;Object&gt;</code> |  |
 | tags[].id | <code>number</code> |  |
 | tags[].facility_id | <code>number</code> |  |
 | tags[].name | <code>string</code> |  |
@@ -403,7 +444,7 @@ authentication and communicating with various APIs
 
 <a name="SessionType"></a>
 
-## SessionType : <code>object</code>
+## SessionType : <code>Object</code>
 An adapter that allows the SDK to authenticate with different services and manage various tokens.
 Can authenticate with a service like Auth0 and then with Contxt or can communicate directly
 with Contxt. The adapter must implement required methods, but most methods are optional. Some of
@@ -424,7 +465,7 @@ the optional methods are documented below.
 
 <a name="UserProfile"></a>
 
-## UserProfile : <code>object</code>
+## UserProfile : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -438,7 +479,7 @@ the optional methods are documented below.
 
 <a name="SessionInfo"></a>
 
-## SessionInfo : <code>object</code>
+## SessionInfo : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
