@@ -12,7 +12,7 @@ import URL from 'url-parse';
  */
 
 /**
- * @typedef {Object} SessionInfo
+ * @typedef {Object} Auth0WebAuthSessionInfo
  * @property {string} accessToken
  * @property {string} apiToken
  * @property {number} expiresAt
@@ -67,7 +67,8 @@ class Auth0WebAuth {
   /**
    * Gets the current access token (used to communicate with Auth0 & Contxt Auth)
    *
-   * @returns {string} accessToken
+   * @returns {Promise}
+   * @fulfills {string} accessToken
    */
   getCurrentAccessToken() {
     return this._getCurrentTokenByType('access');
@@ -76,7 +77,8 @@ class Auth0WebAuth {
   /**
    * Gets the current API token (used to communicate with other Contxt APIs)
    *
-   * @returns {string} apiToken
+   * @returns {Promise}
+   * @fulfills {string} apiToken
    */
   getCurrentApiToken() {
     return this._getCurrentTokenByType('api');
@@ -87,17 +89,21 @@ class Auth0WebAuth {
    *
    * @returns {Promise}
    * @fulfill {UserProfile}
+   * @rejects {Error}
    */
   getProfile() {
-    return new Promise((resolve, reject) => {
-      this._auth0.client.userInfo(this.getCurrentAccessToken(), (err, profile) => {
-        if (err) {
-          reject(err);
-        }
+    return this.getCurrentAccessToken()
+      .then((accessToken) => {
+        return new Promise((resolve, reject) => {
+          this._auth0.client.userInfo(accessToken, (err, profile) => {
+            if (err) {
+              reject(err);
+            }
 
-        resolve(profile);
+            resolve(profile);
+          });
+        });
       });
-    });
   }
 
   /**
@@ -105,7 +111,7 @@ class Auth0WebAuth {
    * redirects to the correct page in the application.
    *
    * @returns {Promise}
-   * @fulfill {SessionInfo}
+   * @fulfill {Auth0WebAuthSessionInfo}
    * @rejects {Error}
    */
   handleAuthentication() {
@@ -217,19 +223,22 @@ class Auth0WebAuth {
    *
    * @param {string} type The type of token requested. Only valid types are `access` and `api`
    *
-   * @returns {string} token
-   * @throws {Error}
+   * @returns {Promise}
+   * @fulfills {string} token
+   * @rejects {Error}
    *
    * @private
    */
   _getCurrentTokenByType(type) {
-    const propertyName = `${type}Token`;
+    return new Promise((resolve, reject) => {
+      const propertyName = `${type}Token`;
 
-    if (!(this._sessionInfo && this._sessionInfo[propertyName])) {
-      throw new Error(`No ${type} token found`);
-    }
+      if (!(this._sessionInfo && this._sessionInfo[propertyName])) {
+        reject(new Error(`No ${type} token found`));
+      }
 
-    return this._sessionInfo[propertyName];
+      resolve(this._sessionInfo[propertyName]);
+    });
   }
 
   /**

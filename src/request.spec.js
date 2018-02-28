@@ -99,10 +99,10 @@ describe('Request', function() {
   });
 
   describe('_insertHeaders', function() {
-    let config;
     let expectedAudienceName;
     let expectedToken;
     let initialConfig;
+    let promise;
     let sdk;
 
     beforeEach(function() {
@@ -116,20 +116,27 @@ describe('Request', function() {
       sdk = {
         ...baseSdk,
         auth: {
-          getCurrentApiToken: this.sandbox.stub().returns(expectedToken)
+          getCurrentApiToken: this.sandbox.stub().resolves(expectedToken)
         }
       };
 
       const request = new Request(sdk, expectedAudienceName);
-      config = request._insertHeaders(initialConfig);
+      promise = request._insertHeaders(initialConfig);
     });
 
     it("gets a current token from the sdk's auth module", function() {
       expect(sdk.auth.getCurrentApiToken).to.be.calledWith(expectedAudienceName);
     });
 
-    it('appends an Authorization header', function() {
-      expect(config.headers.common.Authorization).to.equal(`Bearer ${expectedToken}`);
+    it('returns a resolved promise', function() {
+      return expect(promise).to.fulfilled;
+    });
+
+    it('resolves a config with an Authorization header appended', function() {
+      return promise.then((config) => {
+        expect(config).to.equal(initialConfig);
+        expect(config.headers.common.Authorization).to.equal(`Bearer ${expectedToken}`);
+      });
     });
   });
 });

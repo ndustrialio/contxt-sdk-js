@@ -17,6 +17,9 @@ of, information about different facilities</p>
 <dd><p>A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
 from the Contxt Auth service.</p>
 </dd>
+<dt><a href="#MachineAuth">MachineAuth</a> : <code><a href="#SessionType">SessionType</a></code></dt>
+<dd><p>A SessionType that allows machine to machine communication between Node.js servers.</p>
+</dd>
 </dl>
 
 ## Typedefs
@@ -51,7 +54,9 @@ the optional methods are documented below.</p>
 </dd>
 <dt><a href="#UserProfile">UserProfile</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#SessionInfo">SessionInfo</a> : <code>Object</code></dt>
+<dt><a href="#Auth0WebAuthSessionInfo">Auth0WebAuthSessionInfo</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
@@ -275,8 +280,8 @@ from the Contxt Auth service.
 
 * [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](#SessionType)
     * [new Auth0WebAuth(sdk)](#new_Auth0WebAuth_new)
-    * [.getCurrentAccessToken()](#Auth0WebAuth+getCurrentAccessToken) ⇒ <code>string</code>
-    * [.getCurrentApiToken()](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>string</code>
+    * [.getCurrentAccessToken()](#Auth0WebAuth+getCurrentAccessToken) ⇒ <code>Promise</code>
+    * [.getCurrentApiToken()](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
     * [.getProfile()](#Auth0WebAuth+getProfile) ⇒ <code>Promise</code>
     * [.handleAuthentication()](#Auth0WebAuth+handleAuthentication) ⇒ <code>Promise</code>
     * [.isAuthenticated()](#Auth0WebAuth+isAuthenticated) ⇒ <code>boolean</code>
@@ -301,18 +306,18 @@ from the Contxt Auth service.
 
 <a name="Auth0WebAuth+getCurrentAccessToken"></a>
 
-### contxtSdk.auth.getCurrentAccessToken() ⇒ <code>string</code>
+### contxtSdk.auth.getCurrentAccessToken() ⇒ <code>Promise</code>
 Gets the current access token (used to communicate with Auth0 & Contxt Auth)
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
-**Returns**: <code>string</code> - accessToken  
+**Fulfills**: <code>string</code> accessToken  
 <a name="Auth0WebAuth+getCurrentApiToken"></a>
 
-### contxtSdk.auth.getCurrentApiToken() ⇒ <code>string</code>
+### contxtSdk.auth.getCurrentApiToken() ⇒ <code>Promise</code>
 Gets the current API token (used to communicate with other Contxt APIs)
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
-**Returns**: <code>string</code> - apiToken  
+**Fulfills**: <code>string</code> apiToken  
 <a name="Auth0WebAuth+getProfile"></a>
 
 ### contxtSdk.auth.getProfile() ⇒ <code>Promise</code>
@@ -320,6 +325,7 @@ Gets the current user's profile from Auth0
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
 **Fulfill**: [<code>UserProfile</code>](#UserProfile)  
+**Rejects**: <code>Error</code>  
 <a name="Auth0WebAuth+handleAuthentication"></a>
 
 ### contxtSdk.auth.handleAuthentication() ⇒ <code>Promise</code>
@@ -327,7 +333,7 @@ Routine that takes unparsed information from Auth0, uses it to get a valid API t
 redirects to the correct page in the application.
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
-**Fulfill**: [<code>SessionInfo</code>](#SessionInfo)  
+**Fulfill**: [<code>Auth0WebAuthSessionInfo</code>](#Auth0WebAuthSessionInfo)  
 **Rejects**: <code>Error</code>  
 <a name="Auth0WebAuth+isAuthenticated"></a>
 
@@ -347,6 +353,50 @@ Starts the Auth0 log in process
 Logs the user out by removing any stored session info and redirecting to the root
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
+<a name="MachineAuth"></a>
+
+## MachineAuth : [<code>SessionType</code>](#SessionType)
+A SessionType that allows machine to machine communication between Node.js servers.
+
+**Kind**: global class  
+
+* [MachineAuth](#MachineAuth) : [<code>SessionType</code>](#SessionType)
+    * [new MachineAuth(sdk)](#new_MachineAuth_new)
+    * [.getCurrentApiToken(audienceName)](#MachineAuth+getCurrentApiToken) ⇒ <code>Promise</code>
+    * [.isAuthenticated(audienceName)](#MachineAuth+isAuthenticated) ⇒ <code>boolean</code>
+
+<a name="new_MachineAuth_new"></a>
+
+### new MachineAuth(sdk)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
+
+<a name="MachineAuth+getCurrentApiToken"></a>
+
+### contxtSdk.auth.getCurrentApiToken(audienceName) ⇒ <code>Promise</code>
+Gets the current API token (used to communicate with other Contxt APIs). Will get and store a
+token or use a previously acquired and stored token.
+
+**Kind**: instance method of [<code>MachineAuth</code>](#MachineAuth)  
+**Fulfills**: <code>string</code> apiToken  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| audienceName | <code>string</code> | The audience you wish to get an API for |
+
+<a name="MachineAuth+isAuthenticated"></a>
+
+### contxtSdk.auth.isAuthenticated(audienceName) ⇒ <code>boolean</code>
+Tells caller if the app is authenticated with a particular service.
+
+**Kind**: instance method of [<code>MachineAuth</code>](#MachineAuth)  
+
+| Param |
+| --- |
+| audienceName | 
+
 <a name="Audience"></a>
 
 ## Audience : <code>Object</code>
@@ -407,6 +457,7 @@ User provided configuration options
 | --- | --- | --- | --- |
 | auth | <code>Object</code> |  | User assigned configurations specific for their authentication methods |
 | auth.clientId | <code>string</code> |  | Client Id provided by Auth0 for this application |
+| [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application |
 | [auth.customModuleConfigs] | <code>Object.&lt;string, CustomAudience&gt;</code> |  | Custom environment setups   for individual modules. Requires clientId/host or env |
 | [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for   their clientId and host |
 | [auth.onRedirect] | <code>function</code> | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect   method used for navigating through Auth0 callbacks in Web applications |
@@ -477,15 +528,26 @@ the optional methods are documented below.
 | sub | <code>string</code> | The Subject Claim of the user's JWT |
 | updated_at | <code>string</code> | ISO 8601 Extended Format date/time string |
 
-<a name="SessionInfo"></a>
+<a name="Auth0WebAuthSessionInfo"></a>
 
-## SessionInfo : <code>Object</code>
+## Auth0WebAuthSessionInfo : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type |
 | --- | --- |
 | accessToken | <code>string</code> | 
+| apiToken | <code>string</code> | 
+| expiresAt | <code>number</code> | 
+
+<a name="MachineAuthSessionInfo"></a>
+
+## MachineAuthSessionInfo : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
 | apiToken | <code>string</code> | 
 | expiresAt | <code>number</code> | 
 

@@ -77,7 +77,8 @@ describe('ContxtSdk', function() {
 
   describe('_createAuthSession', function() {
     [
-      { sessionType: 'auth0WebAuth', moduleName: 'Auth0WebAuth' }
+      { sessionType: 'auth0WebAuth', moduleName: 'Auth0WebAuth' },
+      { sessionType: 'machineAuth', moduleName: 'MachineAuth' }
     ].forEach(function(authSessionConfig) {
       it(`returns a new ${authSessionConfig.sessionType} session`, function() {
         const instance = { config: baseConfig };

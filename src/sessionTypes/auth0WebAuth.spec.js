@@ -133,27 +133,28 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
   ['Access', 'Api'].forEach(function(tokenType) {
     describe(`getCurrent${tokenType}Token`, function() {
-      let currentToken;
       let expectedToken;
       let getCurrentTokenByType;
+      let promise;
 
       beforeEach(function() {
         expectedToken = faker.internet.password();
 
         getCurrentTokenByType = this.sandbox.stub(Auth0WebAuth.prototype, '_getCurrentTokenByType')
-          .returns(expectedToken);
+          .resolves(expectedToken);
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
-        currentToken = auth0WebAuth[`getCurrent${tokenType}Token`]();
+        promise = auth0WebAuth[`getCurrent${tokenType}Token`]();
       });
 
       it('gets the current token', function() {
         expect(getCurrentTokenByType).to.be.calledWith(tokenType.toLowerCase());
       });
 
-      it('returns a current token', function() {
-        expect(currentToken).to.equal(expectedToken);
+      it('returns a promise with the token', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.equal(expectedToken);
       });
     });
   });
@@ -171,7 +172,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedProfile = faker.helpers.userCard();
 
         getCurrentAccessToken = this.sandbox.stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
-          .returns(expectedAccessToken);
+          .resolves(expectedAccessToken);
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         webAuthSession.client = {
           userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
@@ -188,30 +189,14 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it("gets the user's profile", function() {
-        expect(webAuthSession.client.userInfo)
-          .to.be.calledWith(expectedAccessToken);
+        return promise.then(() => {
+          expect(webAuthSession.client.userInfo).to.be.calledWith(expectedAccessToken);
+        });
       });
 
       it("returns a fulfilled promise with the users's profile", function() {
         return expect(promise).to.be.fulfilled
           .and.to.eventually.equal(expectedProfile);
-      });
-    });
-
-    context("there is no access token available to get a user's profile", function() {
-      let auth0WebAuth;
-      let promise;
-
-      beforeEach(function() {
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        webAuthSession.client = { userInfo: this.sandbox.stub() };
-
-        auth0WebAuth = new Auth0WebAuth(sdk);
-        promise = auth0WebAuth.getProfile();
-      });
-
-      it('returns a rejected promise', function() {
-        return expect(promise).to.be.rejected;
       });
     });
 
@@ -222,6 +207,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
 
+        this.sandbox.stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
+          .resolves(faker.internet.password());
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         webAuthSession.client = {
           userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
@@ -580,20 +567,22 @@ describe('sessionTypes/Auth0WebAuth', function() {
       auth0WebAuth = new Auth0WebAuth(sdk);
     });
 
-    it('throws an error when there is no current token of that type', function() {
+    it('returns a rejected promise when there is no current token of that type', function() {
       const type = faker.hacker.adjective();
-      const fn = () => auth0WebAuth._getCurrentTokenByType(type);
-      expect(fn).to.throw(`No ${type} token found`);
+      const promise = auth0WebAuth._getCurrentTokenByType(type);
+
+      return expect(promise).to.be.rejectedWith(`No ${type} token found`);
     });
 
-    it('returns a current token', function() {
+    it('returns a resolved promise with the current token', function() {
       const type = faker.hacker.adjective();
       const expectedToken = faker.internet.password();
 
       auth0WebAuth._sessionInfo = { [`${type}Token`]: expectedToken };
-      const currentToken = auth0WebAuth._getCurrentTokenByType(type);
+      const promise = auth0WebAuth._getCurrentTokenByType(type);
 
-      expect(currentToken).to.equal(expectedToken);
+      return expect(promise).to.be.fulfilled
+        .and.to.eventually.equal(expectedToken);
     });
   });
 

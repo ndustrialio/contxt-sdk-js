@@ -87,6 +87,9 @@ class ContxtSdk {
       case 'auth0WebAuth':
         return new sessionTypes.Auth0WebAuth(this);
 
+      case 'machineAuth':
+        return new sessionTypes.MachineAuth(this);
+
       default:
         throw new Error('Invalid sessionType provided');
     }
