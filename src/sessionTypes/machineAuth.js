@@ -119,4 +119,5 @@ class MachineAuth {
   }
 }
 
+export const TYPE = 'machineAuth';
 export default MachineAuth;

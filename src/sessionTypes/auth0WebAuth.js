@@ -312,4 +312,5 @@ class Auth0WebAuth {
   }
 }
 
+export const TYPE = 'auth0WebAuth';
 export default Auth0WebAuth;
