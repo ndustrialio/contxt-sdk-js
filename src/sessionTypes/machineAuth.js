@@ -60,10 +60,16 @@ class MachineAuth {
    * @returns {boolean}
    */
   isAuthenticated(audienceName) {
-    const hasTokens = !!(this._sessionInfo && this._sessionInfo[audienceName] &&
-      this._sessionInfo[audienceName].apiToken && this._sessionInfo[audienceName].expiresAt);
+    if (!(this._sessionInfo && this._sessionInfo[audienceName])) {
+      return false;
+    }
 
-    return hasTokens && this._sessionInfo[audienceName].expiresAt > Date.now();
+    const {
+      apiToken,
+      expiresAt
+    } = this._sessionInfo[audienceName];
+
+    return !!(apiToken && expiresAt > Date.now());
   }
 
   /**
