@@ -1,5 +1,6 @@
 export default {
   auth: {
-    authorizationPath: '/callback'
+    authorizationPath: '/callback',
+    tokenExpiresAtBufferMs: 10 * 60 * 1000 // 10 minutes
   }
 };

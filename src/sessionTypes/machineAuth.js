@@ -68,8 +68,10 @@ class MachineAuth {
       apiToken,
       expiresAt
     } = this._sessionInfo[audienceName];
+    const tokenExpiresAtBufferMs = this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
+    const bufferedExpiresAt = expiresAt - tokenExpiresAtBufferMs;
 
-    return !!(apiToken && expiresAt > Date.now());
+    return !!(apiToken && bufferedExpiresAt > Date.now());
   }
 
   /**
