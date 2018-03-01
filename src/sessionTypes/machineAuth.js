@@ -104,6 +104,13 @@ class MachineAuth {
           apiToken: data.access_token,
           expiresAt: Date.now() + (data.expires_in * 1000)
         };
+      })
+      .catch((err) => {
+        if (!(err.response && err.response.status)) {
+          throw new Error('There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.');
+        }
+
+        throw err;
       });
   }
 

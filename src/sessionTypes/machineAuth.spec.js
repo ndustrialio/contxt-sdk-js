@@ -289,6 +289,36 @@ describe('sessionTypes/MachineAuth', function() {
         return expect(promise).to.be.rejectedWith('No valid audience found');
       });
     });
+
+    context('when there is an error getting a token', function() {
+      it('throws a human readable error when unable to reach the server', function() {
+        const audienceName = faker.hacker.adjective();
+        sdk.config.audiences[audienceName] = fixture.build('audience');
+
+        this.sandbox.stub(axios, 'post').rejects(new Error());
+
+        const machineAuth = new MachineAuth(sdk);
+        const promise = machineAuth._getNewSessionInfo(audienceName);
+
+        return expect(promise).to.be.rejectedWith(
+          'There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.'
+        );
+      });
+
+      it('throws the original error if it has a status code', function() {
+        const audienceName = faker.hacker.adjective();
+        sdk.config.audiences[audienceName] = fixture.build('audience');
+        const expectedError = new Error();
+        expectedError.response = { status: faker.random.number() };
+
+        this.sandbox.stub(axios, 'post').rejects(expectedError);
+
+        const machineAuth = new MachineAuth(sdk);
+        const promise = machineAuth._getNewSessionInfo(audienceName);
+
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
   });
 
   describe('_saveSession', function() {
