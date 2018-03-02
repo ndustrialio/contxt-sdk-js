@@ -68,8 +68,10 @@ class MachineAuth {
       apiToken,
       expiresAt
     } = this._sessionInfo[audienceName];
+    const tokenExpiresAtBufferMs = this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
+    const bufferedExpiresAt = expiresAt - tokenExpiresAtBufferMs;
 
-    return !!(apiToken && expiresAt > Date.now());
+    return !!(apiToken && bufferedExpiresAt > Date.now());
   }
 
   /**
@@ -104,6 +106,13 @@ class MachineAuth {
           apiToken: data.access_token,
           expiresAt: Date.now() + (data.expires_in * 1000)
         };
+      })
+      .catch((err) => {
+        if (!(err.response && err.response.status)) {
+          throw new Error('There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.');
+        }
+
+        throw err;
       });
   }
 

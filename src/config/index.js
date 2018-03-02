@@ -45,6 +45,8 @@ import defaultConfigs from './defaults';
  *
  * @typedef {Object} UserConfig
  * @property {Object} auth User assigned configurations specific for their authentication methods
+ * @property {string} [auth.authorizationPath] Path Auth0WebAuth process should redirect to after a
+ *   successful sign in attempt
  * @property {string} auth.clientId Client Id provided by Auth0 for this application
  * @property {string} [auth.clientSecret] Client secret provided by Auth0 for this application
  * @property {Object.<string, CustomAudience>} [auth.customModuleConfigs] Custom environment setups
@@ -53,6 +55,9 @@ import defaultConfigs from './defaults';
  *   their clientId and host
  * @property {function} [auth.onRedirect = (pathname) => { window.location = pathname; }] A redirect
  *   method used for navigating through Auth0 callbacks in Web applications
+* @property {number} [auth.tokenExpiresAtBufferMs = 300000] The time (in milliseconds) before a
+*   token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated
+*   expiresAt). Defaults to 5 minutes.
  */
 
 /**
