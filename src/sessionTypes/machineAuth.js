@@ -45,11 +45,7 @@ class MachineAuth {
     }
 
     return this._getNewSessionInfo(audienceName)
-      .then((sessionInfo) => {
-        this._saveSession(audienceName, sessionInfo);
-
-        return sessionInfo.apiToken;
-      });
+      .then((sessionInfo) => sessionInfo.apiToken);
   }
 
   /**
@@ -91,7 +87,11 @@ class MachineAuth {
       return Promise.reject(new Error('No valid audience found'));
     }
 
-    return axios
+    if (this._tokenPromise) {
+      return Promise.resolve(this._tokenPromise);
+    }
+
+    this._tokenPromise = axios
       .post(
         `${this._sdk.config.audiences.contxtAuth.host}/v1/oauth/token`,
         {
@@ -107,6 +107,12 @@ class MachineAuth {
           expiresAt: Date.now() + (data.expires_in * 1000)
         };
       })
+      .then((sessionInfo) => {
+        this._saveSession(audienceName, sessionInfo);
+        this._tokenPromise = null;
+
+        return sessionInfo;
+      })
       .catch((err) => {
         if (!(err.response && err.response.status)) {
           throw new Error('There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.');
@@ -114,6 +120,8 @@ class MachineAuth {
 
         throw err;
       });
+
+    return this._tokenPromise;
   }
 
   /**

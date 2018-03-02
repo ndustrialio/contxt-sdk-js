@@ -68,7 +68,6 @@ describe('sessionTypes/MachineAuth', function() {
     let getNewSessionInfo;
     let isAuthenticated;
     let promise;
-    let saveSession;
 
     beforeEach(function() {
       expectedApiToken = faker.internet.password();
@@ -80,7 +79,6 @@ describe('sessionTypes/MachineAuth', function() {
 
       getNewSessionInfo = this.sandbox.stub(MachineAuth.prototype, '_getNewSessionInfo')
         .resolves(expectedSessionInfo);
-      saveSession = this.sandbox.stub(MachineAuth.prototype, '_saveSession');
     });
 
     context('when getting a new token', function() {
@@ -98,12 +96,6 @@ describe('sessionTypes/MachineAuth', function() {
 
       it('gets new session info', function() {
         expect(getNewSessionInfo).to.be.calledWith(expectedAudienceName);
-      });
-
-      it("saves the new session info the module's instance", function() {
-        return promise.then(() => {
-          expect(saveSession).to.be.calledWith(expectedAudienceName, expectedSessionInfo);
-        });
       });
 
       it('returns a promise with the new apiToken', function() {
@@ -223,10 +215,13 @@ describe('sessionTypes/MachineAuth', function() {
       let audienceName;
       let clock;
       let expectedAudience;
+      let expectedPromise;
       let expectedSessionInfo;
       let expiresInMs;
+      let machineAuth;
       let post;
       let promise;
+      let saveSession;
 
       beforeEach(function() {
         const currentDate = new Date();
@@ -238,16 +233,18 @@ describe('sessionTypes/MachineAuth', function() {
           expiresAt: currentDate.getTime() + expiresInMs
         };
 
+        sdk.config.audiences[audienceName] = expectedAudience;
         clock = sinon.useFakeTimers(currentDate);
-        post = this.sandbox.stub(axios, 'post').resolves({
+        expectedPromise = Promise.resolve({
           data: {
             access_token: expectedSessionInfo.apiToken,
             expires_in: expiresInMs / 1000
           }
         });
-        sdk.config.audiences[audienceName] = expectedAudience;
+        post = this.sandbox.stub(axios, 'post').callsFake(() => expectedPromise);
+        saveSession = this.sandbox.stub(MachineAuth.prototype, '_saveSession');
 
-        const machineAuth = new MachineAuth(sdk);
+        machineAuth = new MachineAuth(sdk);
         promise = machineAuth._getNewSessionInfo(audienceName);
       });
 
@@ -267,9 +264,44 @@ describe('sessionTypes/MachineAuth', function() {
         });
       });
 
+      it('saves the axios promise to the instance', function() {
+        expect(machineAuth._tokenPromise).to.equal(promise);
+      });
+
+      it("saves the new session info the module's instance", function() {
+        return promise.then(() => {
+          expect(saveSession).to.be.calledWith(audienceName, expectedSessionInfo);
+        });
+      });
+
+      it('clears out the reference to the axios promise when complete', function() {
+        return promise.then(() => {
+          expect(machineAuth._tokenPromise).to.be.null;
+        });
+      });
+
       it('returns a fulfilled promise with the api token and an expiration time', function() {
         return expect(promise).to.be.fulfilled
           .and.to.eventually.deep.equal(expectedSessionInfo);
+      });
+    });
+
+    context('when already in the process of getting a new token', function() {
+      let expectedPromise;
+      let promise;
+
+      beforeEach(function() {
+        const audienceName = faker.hacker.adjective();
+        expectedPromise = Promise.resolve();
+        sdk.config.audiences[audienceName] = fixture.build('audience');
+
+        const machineAuth = new MachineAuth(sdk);
+        machineAuth._tokenPromise = expectedPromise;
+        promise = machineAuth._getNewSessionInfo(audienceName);
+      });
+
+      it('returns the already existing promise', function() {
+        expect(promise).to.equal(expectedPromise);
       });
     });
 

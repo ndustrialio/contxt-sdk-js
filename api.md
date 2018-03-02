@@ -456,7 +456,7 @@ User provided configuration options
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | auth | <code>Object</code> |  | User assigned configurations specific for their authentication methods |
-| [auth.authorizationPath] | <code>string</code> |  | Path Auth0WebAuth process should redirect to after a   successful sign in attemp |
+| [auth.authorizationPath] | <code>string</code> |  | Path Auth0WebAuth process should redirect to after a   successful sign in attempt |
 | auth.clientId | <code>string</code> |  | Client Id provided by Auth0 for this application |
 | [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application |
 | [auth.customModuleConfigs] | <code>Object.&lt;string, CustomAudience&gt;</code> |  | Custom environment setups   for individual modules. Requires clientId/host or env |
