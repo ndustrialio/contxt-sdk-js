@@ -117,14 +117,18 @@ class Request {
    * @param {Object} config.headers
    * @param {Object} config.headers.common
    *
-   * @returns {Object} config
+   * @returns {Promise}
+   * @fulfill {Object} axios.js config
    *
    * @private
    */
   _insertHeaders = (config) => {
-    config.headers.common.Authorization = `Bearer ${this._sdk.auth.getCurrentApiToken(this._audienceName)}`;
+    return this._sdk.auth.getCurrentApiToken(this._audienceName)
+      .then((apiToken) => {
+        config.headers.common.Authorization = `Bearer ${apiToken}`;
 
-    return config;
+        return config;
+      });
   }
 }
 

@@ -46,6 +46,7 @@ import defaultConfigs from './defaults';
  * @typedef {Object} UserConfig
  * @property {Object} auth User assigned configurations specific for their authentication methods
  * @property {string} auth.clientId Client Id provided by Auth0 for this application
+ * @property {string} [auth.clientSecret] Client secret provided by Auth0 for this application
  * @property {Object.<string, CustomAudience>} [auth.customModuleConfigs] Custom environment setups
  *   for individual modules. Requires clientId/host or env
  * @property {string} [auth.env = 'production'] The environment that every module should use for

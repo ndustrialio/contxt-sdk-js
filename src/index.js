@@ -84,8 +84,11 @@ class ContxtSdk {
    */
   _createAuthSession(sessionType) {
     switch (sessionType) {
-      case 'auth0WebAuth':
+      case sessionTypes.TYPES.AUTH0_WEB_AUTH:
         return new sessionTypes.Auth0WebAuth(this);
+
+      case sessionTypes.TYPES.MACHINE_AUTH:
+        return new sessionTypes.MachineAuth(this);
 
       default:
         throw new Error('Invalid sessionType provided');
