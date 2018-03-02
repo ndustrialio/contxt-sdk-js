@@ -46,7 +46,7 @@ import defaultConfigs from './defaults';
  * @typedef {Object} UserConfig
  * @property {Object} auth User assigned configurations specific for their authentication methods
  * @property {string} [auth.authorizationPath] Path Auth0WebAuth process should redirect to after a
- *   successful sign in attemp
+ *   successful sign in attempt
  * @property {string} auth.clientId Client Id provided by Auth0 for this application
  * @property {string} [auth.clientSecret] Client secret provided by Auth0 for this application
  * @property {Object.<string, CustomAudience>} [auth.customModuleConfigs] Custom environment setups
