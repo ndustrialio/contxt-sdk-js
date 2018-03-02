@@ -87,39 +87,37 @@ class MachineAuth {
       return Promise.reject(new Error('No valid audience found'));
     }
 
-    if (this._tokenPromise) {
-      return Promise.resolve(this._tokenPromise);
+    if (!this._tokenPromise) {
+      this._tokenPromise = axios
+        .post(
+          `${this._sdk.config.audiences.contxtAuth.host}/v1/oauth/token`,
+          {
+            audience: audience.clientId,
+            client_id: this._sdk.config.auth.clientId,
+            client_secret: this._sdk.config.auth.clientSecret,
+            grant_type: 'client_credentials'
+          }
+        )
+        .then(({ data }) => {
+          return {
+            apiToken: data.access_token,
+            expiresAt: Date.now() + (data.expires_in * 1000)
+          };
+        })
+        .then((sessionInfo) => {
+          this._saveSession(audienceName, sessionInfo);
+          this._tokenPromise = null;
+
+          return sessionInfo;
+        })
+        .catch((err) => {
+          if (!(err.response && err.response.status)) {
+            throw new Error('There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.');
+          }
+
+          throw err;
+        });
     }
-
-    this._tokenPromise = axios
-      .post(
-        `${this._sdk.config.audiences.contxtAuth.host}/v1/oauth/token`,
-        {
-          audience: audience.clientId,
-          client_id: this._sdk.config.auth.clientId,
-          client_secret: this._sdk.config.auth.clientSecret,
-          grant_type: 'client_credentials'
-        }
-      )
-      .then(({ data }) => {
-        return {
-          apiToken: data.access_token,
-          expiresAt: Date.now() + (data.expires_in * 1000)
-        };
-      })
-      .then((sessionInfo) => {
-        this._saveSession(audienceName, sessionInfo);
-        this._tokenPromise = null;
-
-        return sessionInfo;
-      })
-      .catch((err) => {
-        if (!(err.response && err.response.status)) {
-          throw new Error('There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.');
-        }
-
-        throw err;
-      });
 
     return this._tokenPromise;
   }
