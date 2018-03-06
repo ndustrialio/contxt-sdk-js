@@ -13,11 +13,11 @@ of, information about different facilities</p>
 <dt><a href="./Config.md">Config</a></dt>
 <dd><p>Module that merges user assigned configurations with default configurations.</p>
 </dd>
-<dt><a href="./Auth0WebAuth.md">Auth0WebAuth</a> : <code><a href="#SessionType">SessionType</a></code></dt>
+<dt><a href="./Auth0WebAuth.md">Auth0WebAuth</a> : <code>./Typedefs.md#SessionType</code></dt>
 <dd><p>A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
 from the Contxt Auth service.</p>
 </dd>
-<dt><a href="./MachineAuth.md">MachineAuth</a> : <code><a href="#SessionType">SessionType</a></code></dt>
+<dt><a href="./MachineAuth.md">MachineAuth</a> : <code>./Typedefs.md#SessionType</code></dt>
 <dd><p>A SessionType that allows machine to machine communication between Node.js servers.</p>
 </dd>
 </dl>

@@ -3,9 +3,23 @@
 const handlebars = require('handlebars');
 const {
   anchorName,
-  _identifiers: identifiers
+  _identifiers: identifiers,
+  link: originalLink
 } = require('dmd/helpers/ddata');
 const sortBy = require('lodash.sortby');
+
+function link(longname, options) {
+  const linkedInfo = identifiers({
+    ...options,
+    hash: { id: longname }
+  })[0];
+
+  if (linkedInfo && linkedInfo.kind === 'typedef') {
+    return `./Typedefs.md#${anchorName.call(linkedInfo, options)}`;
+  }
+
+  return originalLink(longname, options);
+}
 
 function readmeLink(options) {
   switch (this.kind) {
@@ -31,6 +45,7 @@ function typedefs(options) {
 }
 
 module.exports = {
+  link,
   readmeLink,
   typedefs
 };
