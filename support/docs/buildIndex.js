@@ -9,8 +9,6 @@ module.exports = function({ data, outputDir }) {
   const output = jsdoc2md.renderSync({
     data,
     partial: [
-      path.join(__dirname, 'partials', 'link.hbs'),
-      path.join(__dirname, 'partials', 'linked-type-list.hbs'),
       path.join(__dirname, 'partials', 'sig-link-html.hbs')
     ],
     template,
