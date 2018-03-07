@@ -3,16 +3,18 @@
 const fs = require('fs');
 const jsdoc2md = require('jsdoc-to-markdown');
 const path = require('path');
+const sortBy = require('lodash.sortby');
 
 module.exports = function({ data, outputDir }) {
+  const sortedData = sortBy(data, 'longname');
   const template = '{{>main-index~}}';
   const output = jsdoc2md.renderSync({
-    data,
+    template,
+    data: sortedData,
+    helper: path.join(__dirname, 'helpers.js'),
     partial: [
       path.join(__dirname, 'partials', 'sig-link-html.hbs')
-    ],
-    template,
-    helper: path.join(__dirname, 'helpers.js')
+    ]
   });
   const outputPath = path.resolve(outputDir, 'README.md');
 
