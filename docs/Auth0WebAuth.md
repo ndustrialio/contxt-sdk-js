@@ -1,12 +1,12 @@
 <a name="Auth0WebAuth"></a>
 
-## Auth0WebAuth : [<code>SessionType</code>](#SessionType)
+## Auth0WebAuth : [<code>SessionType</code>](./Typedefs.md#SessionType)
 A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
 from the Contxt Auth service.
 
 **Kind**: global class  
 
-* [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](#SessionType)
+* [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
     * [new Auth0WebAuth(sdk)](#new_Auth0WebAuth_new)
     * [.getCurrentAccessToken()](#Auth0WebAuth+getCurrentAccessToken) ⇒ <code>Promise</code>
     * [.getCurrentApiToken()](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
@@ -52,7 +52,7 @@ Gets the current API token (used to communicate with other Contxt APIs)
 Gets the current user's profile from Auth0
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
-**Fulfill**: [<code>UserProfile</code>](#UserProfile)  
+**Fulfill**: [<code>UserProfile</code>](./Typedefs.md#UserProfile)  
 **Rejects**: <code>Error</code>  
 <a name="Auth0WebAuth+handleAuthentication"></a>
 
@@ -61,7 +61,7 @@ Routine that takes unparsed information from Auth0, uses it to get a valid API t
 redirects to the correct page in the application.
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
-**Fulfill**: [<code>Auth0WebAuthSessionInfo</code>](#Auth0WebAuthSessionInfo)  
+**Fulfill**: [<code>Auth0WebAuthSessionInfo</code>](./Typedefs.md#Auth0WebAuthSessionInfo)  
 **Rejects**: <code>Error</code>  
 <a name="Auth0WebAuth+isAuthenticated"></a>
 

@@ -10,6 +10,6 @@ Module that merges user assigned configurations with default configurations.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| userConfig | [<code>UserConfig</code>](#UserConfig) | The user provided configuration options |
+| userConfig | [<code>UserConfig</code>](./Typedefs.md#UserConfig) | The user provided configuration options |
 | [externalModules] | <code>Object</code> | User provided external modules that should be treated as   first class citizens |
 

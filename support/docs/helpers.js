@@ -15,7 +15,10 @@ function link(longname, options) {
   })[0];
 
   if (linkedInfo && linkedInfo.kind === 'typedef') {
-    return `./Typedefs.md#${anchorName.call(linkedInfo, options)}`;
+    return options.fn({
+      name: linkedInfo.name,
+      url: `./Typedefs.md#${anchorName.call(linkedInfo, options)}`
+    });
   }
 
   return originalLink(longname, options);

@@ -29,7 +29,7 @@ API Endpoint: '/facilities/:facilityId'
 Method: GET
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Fulfill**: [<code>Facility</code>](#Facility) Information about a facility  
+**Fulfill**: [<code>Facility</code>](./Typedefs.md#Facility) Information about a facility  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |

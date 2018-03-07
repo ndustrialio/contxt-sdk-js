@@ -1,11 +1,11 @@
 <a name="MachineAuth"></a>
 
-## MachineAuth : [<code>SessionType</code>](#SessionType)
+## MachineAuth : [<code>SessionType</code>](./Typedefs.md#SessionType)
 A SessionType that allows machine to machine communication between Node.js servers.
 
 **Kind**: global class  
 
-* [MachineAuth](#MachineAuth) : [<code>SessionType</code>](#SessionType)
+* [MachineAuth](#MachineAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
     * [new MachineAuth(sdk)](#new_MachineAuth_new)
     * [.getCurrentApiToken(audienceName)](#MachineAuth+getCurrentApiToken) ⇒ <code>Promise</code>
     * [.isAuthenticated(audienceName)](#MachineAuth+isAuthenticated) ⇒ <code>boolean</code>
