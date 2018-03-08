@@ -19,7 +19,7 @@ npm install --save auth0-js@^9.0.0 axios@~0.17.0
 Once installed, the minimum configuration you need to get going is to include the `clientId` of your application (from Auth0) and a string with the type of authentication you want to use (`auth0WebAuth` or `machineAuth`).
 
 ```
-import ContxtSdk from 'contxt-sdk';
+import ContxtSdk from '@ndustrial/contxt-sdk';
 
 const contxtSdk = new ContxtSdk({
   config: {
