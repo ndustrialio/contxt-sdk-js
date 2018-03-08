@@ -6,7 +6,7 @@
   "module": "es/index.js",
   "scripts": {
     "build": "npm run build:js && npm run build:docs",
-    "build:docs": "jsdoc2md 'src/**/*.js' > api.md",
+    "build:docs": "node ./support/docs",
     "build:js": "rollup -c",
     "coverage": "nyc npm run test:js",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
@@ -39,7 +39,9 @@
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-plugin-node": "^5.2.1",
     "faker": "^4.1.0",
+    "fast-glob": "^2.1.0",
     "jsdoc-to-markdown": "^4.0.1",
+    "lodash.sortby": "^4.7.0",
     "lodash.times": "^4.3.2",
     "mocha": "^4.1.0",
     "nyc": "^11.4.1",

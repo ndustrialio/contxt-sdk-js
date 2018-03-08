@@ -35,7 +35,7 @@ contxtSdk.facilities.getAll().then((facilities) => {
 });
 ```
 
-More configuration options are in the [API docs](https://github.com/ndustrialio/contxt-sdk-js/blob/master/api.md).
+More configuration options are in the [API docs](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/ContxtSdk.md).
 
 ## Adding in external modules
 
