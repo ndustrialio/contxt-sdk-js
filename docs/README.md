@@ -3,7 +3,12 @@
 <dl>
 <dt><a href="./Auth0WebAuth.md">Auth0WebAuth</a> : <code><a href="./Typedefs.md#SessionType">SessionType</a></code></dt>
 <dd><p>A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
-from the Contxt Auth service.</p>
+from the Contxt Auth service. This would only be used in web applications. You will need to
+integrate this module&#39;s <code>logIn</code>, <code>logOut</code>, and <code>handleAuthentication</code> methods with your UI
+elements. <code>logIn</code> would be tied to a UI element to log the user in. <code>logOut</code> would be tied to a
+UI element to log the user out. <code>handleAuthentication</code> would be tied with your application&#39;s
+router and would be called when visting the route defined by <code>config.authorizationPath</code> (the
+default is <code>/callback</code>).</p>
 </dd>
 <dt><a href="./Config.md">Config</a></dt>
 <dd><p>Module that merges user assigned configurations with default configurations.</p>
@@ -16,7 +21,9 @@ from the Contxt Auth service.</p>
 of, information about different facilities</p>
 </dd>
 <dt><a href="./MachineAuth.md">MachineAuth</a> : <code><a href="./Typedefs.md#SessionType">SessionType</a></code></dt>
-<dd><p>A SessionType that allows machine to machine communication between Node.js servers.</p>
+<dd><p>A SessionType that allows machine to machine communication between Node.js servers. This would
+only be used in Node.js applications. This SessionType requires a client id and a client secret,
+which are obtained from Auth0.</p>
 </dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>

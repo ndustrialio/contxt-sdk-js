@@ -2,7 +2,12 @@
 
 ## Auth0WebAuth : [<code>SessionType</code>](./Typedefs.md#SessionType)
 A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
-from the Contxt Auth service.
+from the Contxt Auth service. This would only be used in web applications. You will need to
+integrate this module's `logIn`, `logOut`, and `handleAuthentication` methods with your UI
+elements. `logIn` would be tied to a UI element to log the user in. `logOut` would be tied to a
+UI element to log the user out. `handleAuthentication` would be tied with your application's
+router and would be called when visting the route defined by `config.authorizationPath` (the
+default is `/callback`).
 
 **Kind**: global class  
 
@@ -32,6 +37,21 @@ from the Contxt Auth service.
 | sdk.config.auth.clientId | <code>string</code> | The Auth0 client id of this application |
 | [sdk.config.auth.onRedirect] | <code>function</code> | Redirect method used when navigating between   Auth0 callbacks |
 
+**Example**  
+```js
+import ContxtSdk from '@ndustrial/contxt-sdk';
+import history from '../services/history';
+
+const contxtSdk = new ContxtSDK({
+  config: {
+    auth: {
+      clientId: '<client id>',
+      onRedirect: (pathname) => history.push(pathname)
+    }
+  },
+  sessionType: 'auth0WebAuth'
+});
+```
 <a name="Auth0WebAuth+getCurrentAccessToken"></a>
 
 ### contxtSdk.auth.getCurrentAccessToken() ⇒ <code>Promise</code>
