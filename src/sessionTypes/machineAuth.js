@@ -7,11 +7,26 @@ import axios from 'axios';
 */
 
 /**
- * A SessionType that allows machine to machine communication between Node.js servers.
+ * A SessionType that allows machine to machine communication between Node.js servers. This would
+ * only be used in Node.js applications. This SessionType requires a client id and a client secret,
+ * which are obtained from Auth0.
  *
  * @type SessionType
  *
  * @typicalname contxtSdk.auth
+ *
+ * @example
+ * const ContxtSdk = require('@ndustrial/contxt-sdk');
+ *
+ * const contxtSdk = new ContxtSDK({
+ *   config: {
+ *     auth: {
+ *       clientId: '<client id>',
+ *       clientSecret: '<client secret>'
+ *     }
+ *   },
+ *   sessionType: 'machineAuth'
+ * });
  */
 class MachineAuth {
   /**

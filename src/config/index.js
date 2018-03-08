@@ -48,7 +48,8 @@ import defaultConfigs from './defaults';
  * @property {string} [auth.authorizationPath] Path Auth0WebAuth process should redirect to after a
  *   successful sign in attempt
  * @property {string} auth.clientId Client Id provided by Auth0 for this application
- * @property {string} [auth.clientSecret] Client secret provided by Auth0 for this application
+ * @property {string} [auth.clientSecret] Client secret provided by Auth0 for this application. This
+ *   is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType
  * @property {Object.<string, CustomAudience>} [auth.customModuleConfigs] Custom environment setups
  *   for individual modules. Requires clientId/host or env
  * @property {string} [auth.env = 'production'] The environment that every module should use for
@@ -68,7 +69,7 @@ import defaultConfigs from './defaults';
 class Config {
   /**
    * @param {UserConfig} userConfig The user provided configuration options
-   * @param {Object} [externalModules] User provided external modules that should be treated as
+   * @param {Object.<string, ExternalModule>} [externalModules] User provided external modules that should be treated as
    *   first class citizens
    */
   constructor(userConfig, externalModules) {
