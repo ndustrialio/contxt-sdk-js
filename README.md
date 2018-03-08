@@ -16,10 +16,10 @@ npm install --save auth0-js@^9.0.0 axios@~0.17.0
 
 ## Getting Started
 
-Once installed, the minimum configuration you need to get going is to include the `clientId` of your application (from Auth0) and a string with the type of authentication you want to use (`auth0WebAuth` or `machine`).
+Once installed, the minimum configuration you need to get going is to include the `clientId` of your application (from Auth0) and a string with the type of authentication you want to use (`auth0WebAuth` or `machineAuth`).
 
 ```
-import ContxtSdk from 'contxt-sdk';
+import ContxtSdk from '@ndustrial/contxt-sdk';
 
 const contxtSdk = new ContxtSdk({
   config: {
@@ -35,7 +35,7 @@ contxtSdk.facilities.getAll().then((facilities) => {
 });
 ```
 
-More configuration options are in the [API docs](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/ContxtSdk.md).
+Information about using the auth0WebAuth and machineAuth modules is available in the API docs [here (auth0WebAuth)](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/Auth0WebAuth.md) and [here (machineAuth)](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/MachineAuth.md). Additional information about configuration options can also be found in the [API docs](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/ContxtSdk.md).
 
 ## Adding in external modules
 

@@ -20,11 +20,30 @@ import URL from 'url-parse';
 
 /**
  * A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
- * from the Contxt Auth service.
+ * from the Contxt Auth service. This would only be used in web applications. You will need to
+ * integrate this module's `logIn`, `logOut`, and `handleAuthentication` methods with your UI
+ * elements. `logIn` would be tied to a UI element to log the user in. `logOut` would be tied to a
+ * UI element to log the user out. `handleAuthentication` would be tied with your application's
+ * router and would be called when visting the route defined by `config.authorizationPath` (the
+ * default is `/callback`).
  *
  * @type SessionType
  *
  * @typicalname contxtSdk.auth
+ *
+ * @example
+ * import ContxtSdk from '@ndustrial/contxt-sdk';
+ * import history from '../services/history';
+ *
+ * const contxtSdk = new ContxtSDK({
+ *   config: {
+ *     auth: {
+ *       clientId: '<client id>',
+ *       onRedirect: (pathname) => history.push(pathname)
+ *     }
+ *   },
+ *   sessionType: 'auth0WebAuth'
+ * });
  */
 class Auth0WebAuth {
   /**

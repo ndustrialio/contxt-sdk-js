@@ -1,7 +1,9 @@
 <a name="MachineAuth"></a>
 
 ## MachineAuth : [<code>SessionType</code>](./Typedefs.md#SessionType)
-A SessionType that allows machine to machine communication between Node.js servers.
+A SessionType that allows machine to machine communication between Node.js servers. This would
+only be used in Node.js applications. This SessionType requires a client id and a client secret,
+which are obtained from Auth0.
 
 **Kind**: global class  
 
@@ -18,6 +20,20 @@ A SessionType that allows machine to machine communication between Node.js serve
 | --- | --- | --- |
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 
+**Example**  
+```js
+const ContxtSdk = require('@ndustrial/contxt-sdk');
+
+const contxtSdk = new ContxtSDK({
+  config: {
+    auth: {
+      clientId: '<client id>',
+      clientSecret: '<client secret>'
+    }
+  },
+  sessionType: 'machineAuth'
+});
+```
 <a name="MachineAuth+getCurrentApiToken"></a>
 
 ### contxtSdk.auth.getCurrentApiToken(audienceName) ⇒ <code>Promise</code>

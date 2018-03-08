@@ -16,11 +16,11 @@ ContxtSdk constructor
 
 **Example**  
 ```js
-import contxtSdk from 'contxtSdk';
+import ContxtSdk from '@ndustrial/contxt-sdk';
 import ExternalModule1 from './ExternalModule1';
 import history from '../services/history';
 
-const contxtSdk = new ContxtSDK({
+const contxtSdk = new ContxtSdk({
   config: {
     auth: {
       clientId: 'Auth0 client id of the application being built',

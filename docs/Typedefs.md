@@ -134,7 +134,7 @@ User provided configuration options
 | auth | <code>Object</code> |  | User assigned configurations specific for their authentication methods |
 | [auth.authorizationPath] | <code>string</code> |  | Path Auth0WebAuth process should redirect to after a   successful sign in attempt |
 | auth.clientId | <code>string</code> |  | Client Id provided by Auth0 for this application |
-| [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application |
+| [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application. This   is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType |
 | [auth.customModuleConfigs] | <code>Object.&lt;string, CustomAudience&gt;</code> |  | Custom environment setups   for individual modules. Requires clientId/host or env |
 | [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for   their clientId and host |
 | [auth.onRedirect] | <code>function</code> | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect   method used for navigating through Auth0 callbacks in Web applications |
