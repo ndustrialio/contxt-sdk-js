@@ -102,4 +102,38 @@ describe('Facilities', function() {
         .and.to.eventually.equal(expectedFacilities);
     });
   });
+
+  describe('getAllByOrganizationId', function() {
+    let expectedFacilities;
+    let expectedHost;
+    let expectedOrganizationId;
+    let promise;
+    let request;
+
+    beforeEach(function() {
+      expectedFacilities = fixture.buildList('facility', faker.random.number({ min: 1, max: 10 }));
+      expectedHost = faker.internet.url();
+      expectedOrganizationId = faker.random.number();
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves(expectedFacilities)
+      };
+
+      const facilities = new Facilities(baseSdk, request);
+      facilities._baseUrl = expectedHost;
+
+      promise = facilities.getAllByOrganizationId(expectedOrganizationId);
+    });
+
+    it('gets a list of facilities for an organization from the server', function() {
+      expect(request.get).to.be.calledWith(
+        `${expectedHost}/organizations/${expectedOrganizationId}/facilities`
+      );
+    });
+
+    it('returns a list of facilities', function() {
+      return expect(promise).to.be.fulfilled
+        .and.to.eventually.equal(expectedFacilities);
+    });
+  });
 });

@@ -80,6 +80,27 @@ class Facilities {
   getAll() {
     return this._request.get(`${this._baseUrl}/facilities`);
   }
+
+  /**
+   * Gets a list of all facilities that belong to a particular organization
+   *
+   * API Endpoint: '/organizations/:organizationId/facilities'
+   * Method: GET
+   *
+   * @param {number|string} organizationId
+   *
+   * @returns {Promise}
+   * @fulfill {Facility[]} Information about all facilities
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.getAllByOrganizationId(25)
+   *   .then((facilities) => console.log(facilities));
+   *   .catch((err) => console.log(err));
+   */
+  getAllByOrganizationId(organizationId) {
+    return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`);
+  }
 }
 
 export default Facilities;

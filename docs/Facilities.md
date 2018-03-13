@@ -10,6 +10,7 @@ of, information about different facilities
     * [new Facilities(sdk, request)](#new_Facilities_new)
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
 
@@ -56,6 +57,28 @@ Method: GET
 **Example**  
 ```js
 contxtSdk.facilities.getAll()
+  .then((facilities) => console.log(facilities));
+  .catch((err) => console.log(err));
+```
+<a name="Facilities+getAllByOrganizationId"></a>
+
+### contxtSdk.facilities.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
+Gets a list of all facilities that belong to a particular organization
+
+API Endpoint: '/organizations/:organizationId/facilities'
+Method: GET
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>Facility[]</code> Information about all facilities  
+**Reject**: <code>Error</code>  
+
+| Param | Type |
+| --- | --- |
+| organizationId | <code>number</code> \| <code>string</code> | 
+
+**Example**  
+```js
+contxtSdk.facilities.getAllByOrganizationId(25)
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
 ```
