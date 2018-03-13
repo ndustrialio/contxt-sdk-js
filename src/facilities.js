@@ -42,12 +42,70 @@ class Facilities {
   }
 
   /**
+   * Creates a new facility
+   *
+   * API Endpoint: '/facilities'
+   * Method: POST
+   *
+   * @param {Object} options
+   * @param {string} [options.address1]
+   * @param {string} [options.address2]
+   * @param {string} [options.city]
+   * @param {string} [options.geometryId] UUID corresponding with a geometry
+   * @param {string} options.name
+   * @param {string} options.organizationId UUID corresponding with an organzation
+   * @param {string} [options.state]
+   * @param {string} options.timezone
+   * @param {number} [options.weatherLocationId]
+   * @param {string} [options.zip]
+   *
+   * @returns {Promise}
+   * @fulfill {Facility} Information about the new facility
+   * @reject {Error}
+   * @throws {Error}
+   *
+   * @example
+   * contxtSdk.facilities
+   *   .create({
+   *     address: '221 B Baker St, London, England',
+   *     name: 'Sherlock Homes Museum',
+   *     organizationId: 25
+   *   })
+   *   .then((facilities) => console.log(facilities));
+   *   .catch((err) => console.log(err));
+   */
+  create(facility) {
+    const requiredFields = ['organizationId', 'name', 'timezone'];
+
+    requiredFields.forEach((field) => {
+      if (!facility[field]) {
+        throw new Error(`A ${field} is required to create a new facility.`);
+      }
+    });
+
+    const data = {
+      address1: facility.address1,
+      address2: facility.address2,
+      city: facility.city,
+      geometry_id: facility.geometryId,
+      name: facility.name,
+      organization_id: facility.organizationId,
+      state: facility.state,
+      timezone: facility.timezone,
+      weather_location_id: facility.weatherLocationId,
+      zip: facility.zip
+    };
+
+    return this._request.post(`${this._baseUrl}/facilities`, data);
+  }
+
+  /**
    * Gets information about a facility
    *
    * API Endpoint: '/facilities/:facilityId'
    * Method: GET
    *
-   * @param {number|string} facilityId The id of the facility
+   * @param {number} facilityId The id of the facility
    *
    * @returns {Promise}
    * @fulfill {Facility} Information about a facility
@@ -87,7 +145,7 @@ class Facilities {
    * API Endpoint: '/organizations/:organizationId/facilities'
    * Method: GET
    *
-   * @param {number|string} organizationId
+   * @param {string} organizationId UUID corresponding with an organzation
    *
    * @returns {Promise}
    * @fulfill {Facility[]} Information about all facilities

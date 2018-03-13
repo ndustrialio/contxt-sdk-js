@@ -1,3 +1,4 @@
+import omit from 'lodash.omit';
 import Facilities from './facilities';
 
 describe('Facilities', function() {
@@ -7,7 +8,10 @@ describe('Facilities', function() {
   beforeEach(function() {
     this.sandbox = sandbox.create();
 
-    baseRequest = {};
+    baseRequest = {
+      get: this.sandbox.stub(),
+      post: this.sandbox.stub()
+    };
     baseSdk = {
       config: {
         audiences: {
@@ -38,6 +42,73 @@ describe('Facilities', function() {
 
     it('appends the supplied sdk to the class instance', function() {
       expect(facilities._sdk).to.equal(baseSdk);
+    });
+  });
+
+  describe('create', function() {
+    context('when all required information is supplied', function() {
+      context('when the facility is successfully created', function() {
+        let expectedFacility;
+        let expectedHost;
+        let promise;
+        let request;
+
+        beforeEach(function() {
+          expectedFacility = fixture.build('facility');
+          expectedHost = faker.internet.url();
+
+          request = {
+            ...baseRequest,
+            post: this.sandbox.stub().resolves(expectedFacility)
+          };
+
+          const facilities = new Facilities(baseSdk, request);
+          facilities._baseUrl = expectedHost;
+
+          promise = facilities.create({
+            address1: expectedFacility.address1,
+            address2: expectedFacility.address2,
+            city: expectedFacility.city,
+            geometryId: expectedFacility.geometry_id,
+            name: expectedFacility.name,
+            organizationId: expectedFacility.organization_id,
+            state: expectedFacility.state,
+            timezone: expectedFacility.timezone,
+            weatherLocationId: expectedFacility.weather_location_id,
+            zip: expectedFacility.zip
+          });
+        });
+
+        it('creates a new facility', function() {
+          expect(request.post).to.be.deep.calledWith(
+            `${expectedHost}/facilities`,
+            omit(expectedFacility, ['id', 'Info', 'Organization', 'tags'])
+          );
+        });
+
+        it('returns a fulfilled promise with the new facility information', function() {
+          return expect(promise).to.be.fulfilled
+            .and.to.eventually.equal(expectedFacility);
+        });
+      });
+    });
+
+    context('when there is missing required information', function() {
+      ['organizationId', 'name', 'timezone'].forEach(function(field) {
+        it(`it throws an error when ${field} is missing`, function() {
+          const fn = () => {
+            const facility = fixture.build('facility');
+            const initialFacility = {
+              ...facility,
+              organizationId: facility.organization_id
+            };
+            const facilities = new Facilities(baseSdk, baseRequest);
+            facilities.create(omit(initialFacility, [field]));
+          };
+
+          expect(fn).to.throw(`A ${field} is required to create a new facility.`);
+        });
+      });
     });
   });
 

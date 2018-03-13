@@ -10,6 +10,7 @@ factory.define('facility')
     address1: () => faker.address.streetAddress(),
     address2: () => faker.address.secondaryAddress(),
     city: () => faker.address.city(),
+    geometry_id: () => faker.random.uuid(),
     Info: () => {
       return {
         primary_contact_email: faker.internet.email(),
