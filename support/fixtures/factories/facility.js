@@ -22,7 +22,7 @@ factory.define('facility')
     Organization: () => factory.build('organization'),
     state: () => faker.address.state(),
     timezone: () => {
-      return faker.helpers.shuffle([
+      return faker.random.arrayElement([
         'America/New_York',
         'America/Chicago',
         'America/Denver',
