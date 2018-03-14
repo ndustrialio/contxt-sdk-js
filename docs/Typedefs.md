@@ -69,24 +69,24 @@ for authenticating and communicating with an individual API and the external mod
 | address1 | <code>string</code> |  |
 | address2 | <code>string</code> |  |
 | city | <code>string</code> |  |
-| created_at | <code>string</code> | ISO 8601 Extended Format date/time string |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>number</code> |  |
 | Info | <code>Object</code> |  |
 | name | <code>string</code> |  |
 | Organization | <code>Object</code> |  |
 | Organization.id | <code>string</code> | UUID formatted id |
 | Organization.name | <code>string</code> |  |
-| Organization.created_at | <code>string</code> | ISO 8601 Extended Format date/time string |
-| Organization.updated_at | <code>string</code> | ISO 8601 Extended Format date/time string |
+| Organization.createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| Organization.updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | state | <code>string</code> |  |
 | tags | <code>Array.&lt;Object&gt;</code> |  |
 | tags[].id | <code>number</code> |  |
-| tags[].facility_id | <code>number</code> |  |
+| tags[].facilityId | <code>number</code> |  |
 | tags[].name | <code>string</code> |  |
-| tags[].created_at | <code>string</code> | ISO 8601 Extended Format date/time string |
-| tags[].updated_at | <code>string</code> | ISO 8601 Extended Format date/time string |
+| tags[].createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| tags[].updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | timezone | <code>string</code> | An IANA Time Zone Database string, i.e. America/Los_Angeles |
-| weather_location_id | <code>number</code> |  |
+| weatherLocationId | <code>number</code> |  |
 | zip | <code>string</code> | US Zip Code |
 
 <a name="MachineAuthSessionInfo"></a>
@@ -152,5 +152,5 @@ User provided configuration options
 | nickname | <code>string</code> |  |
 | picture | <code>string</code> | URL to an avatar |
 | sub | <code>string</code> | The Subject Claim of the user's JWT |
-| updated_at | <code>string</code> | ISO 8601 Extended Format date/time string |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 

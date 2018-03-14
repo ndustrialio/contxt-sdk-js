@@ -3,24 +3,24 @@
  * @property {string} address1
  * @property {string} address2
  * @property {string} city
- * @property {string} created_at ISO 8601 Extended Format date/time string
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {number} id
  * @property {Object} Info
  * @property {string} name
  * @property {Object} Organization
  * @property {string} Organization.id UUID formatted id
  * @property {string} Organization.name
- * @property {string} Organization.created_at ISO 8601 Extended Format date/time string
- * @property {string} Organization.updated_at ISO 8601 Extended Format date/time string
+ * @property {string} Organization.createdAt ISO 8601 Extended Format date/time string
+ * @property {string} Organization.updatedAt ISO 8601 Extended Format date/time string
  * @property {string} state
  * @property {Object[]} tags
  * @property {number} tags[].id
- * @property {number} tags[].facility_id
+ * @property {number} tags[].facilityId
  * @property {string} tags[].name
- * @property {string} tags[].created_at ISO 8601 Extended Format date/time string
- * @property {string} tags[].updated_at ISO 8601 Extended Format date/time string
+ * @property {string} tags[].createdAt ISO 8601 Extended Format date/time string
+ * @property {string} tags[].updatedAt ISO 8601 Extended Format date/time string
  * @property {string} timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
- * @property {number} weather_location_id
+ * @property {number} weatherLocationId
  * @property {string} zip US Zip Code
  */
 
@@ -96,7 +96,8 @@ class Facilities {
       zip: facility.zip
     };
 
-    return this._request.post(`${this._baseUrl}/facilities`, data);
+    return this._request.post(`${this._baseUrl}/facilities`, data)
+      .then((facility) => this._formatFacility(facility));
   }
 
   /**
@@ -117,7 +118,8 @@ class Facilities {
    *   .catch((err) => console.log(err));
    */
   get(facilityId) {
-    return this._request.get(`${this._baseUrl}/facilities/${facilityId}`);
+    return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
+      .then((facility) => this._formatFacility(facility));
   }
 
   /**
@@ -136,7 +138,8 @@ class Facilities {
    *   .catch((err) => console.log(err));
    */
   getAll() {
-    return this._request.get(`${this._baseUrl}/facilities`);
+    return this._request.get(`${this._baseUrl}/facilities`)
+      .then((facilities) => facilities.map((facility) => this._formatFacility(facility)));
   }
 
   /**
@@ -157,7 +160,49 @@ class Facilities {
    *   .catch((err) => console.log(err));
    */
   getAllByOrganizationId(organizationId) {
-    return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`);
+    return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
+      .then((facilities) => facilities.map((facility) => this._formatFacility(facility)));
+  }
+
+  _formatFacility(input) {
+    return {
+      address1: input.address1,
+      address2: input.address2,
+      city: input.city,
+      createdAt: input.created_at,
+      geometryId: input.geometry_id,
+      id: input.id,
+      info: input.Info,
+      name: input.name,
+      organization: this._formatOrganization(input.Organization),
+      organizationId: input.organization_id,
+      state: input.state,
+      tags: this._formatTags(input.tags),
+      timezone: input.timezone,
+      weatherLocationId: input.weather_location_id,
+      zip: input.zip
+    };
+  }
+
+  _formatOrganization(organization) {
+    return {
+      createdAt: organization.created_at,
+      id: organization.id,
+      name: organization.name,
+      updatedAt: organization.updated_at
+    };
+  }
+
+  _formatTags(tags) {
+    return tags.map((tag) => {
+      return {
+        createdAt: tag.created_at,
+        facilityId: tag.facility_id,
+        id: tag.id,
+        name: tag.name,
+        updatedAt: tag.updated_at
+      };
+    });
   }
 }
 
