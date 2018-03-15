@@ -8,8 +8,12 @@ of, information about different facilities
 
 * [Facilities](#Facilities)
     * [new Facilities(sdk, request)](#new_Facilities_new)
+    * [.create(options)](#Facilities+create) ⇒ <code>Promise</code>
+    * [.delete(facilityId)](#Facilities+delete)
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.update(facilityId, update)](#Facilities+update) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
 
@@ -20,6 +24,63 @@ of, information about different facilities
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Facilities+create"></a>
+
+### contxtSdk.facilities.create(options) ⇒ <code>Promise</code>
+Creates a new facility
+
+API Endpoint: '/facilities'
+Method: POST
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: [<code>Facility</code>](./Typedefs.md#Facility) Information about the new facility  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Object</code> |  |
+| [options.address1] | <code>string</code> |  |
+| [options.address2] | <code>string</code> |  |
+| [options.city] | <code>string</code> |  |
+| [options.geometryId] | <code>string</code> | UUID corresponding with a geometry |
+| options.name | <code>string</code> |  |
+| options.organizationId | <code>string</code> | UUID corresponding with an organization |
+| [options.state] | <code>string</code> |  |
+| options.timezone | <code>string</code> |  |
+| [options.weatherLocationId] | <code>number</code> |  |
+| [options.zip] | <code>string</code> |  |
+
+**Example**  
+```js
+contxtSdk.facilities
+  .create({
+    address: '221 B Baker St, London, England',
+    name: 'Sherlock Homes Museum',
+    organizationId: 25
+  })
+  .then((facilities) => console.log(facilities));
+  .catch((err) => console.log(err));
+```
+<a name="Facilities+delete"></a>
+
+### contxtSdk.facilities.delete(facilityId)
+Deletes a facility
+
+API Endpoint: '/facilities/:facilityId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>number</code> | The id of the facility |
+
+**Example**  
+```js
+contxtSdk.facilities.delete(25)
+```
 <a name="Facilities+get"></a>
 
 ### contxtSdk.facilities.get(facilityId) ⇒ <code>Promise</code>
@@ -34,7 +95,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| facilityId | <code>number</code> \| <code>string</code> | The id of the facility |
+| facilityId | <code>number</code> | The id of the facility |
 
 **Example**  
 ```js
@@ -58,4 +119,62 @@ Method: GET
 contxtSdk.facilities.getAll()
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
+```
+<a name="Facilities+getAllByOrganizationId"></a>
+
+### contxtSdk.facilities.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
+Gets a list of all facilities that belong to a particular organization
+
+API Endpoint: '/organizations/:organizationId/facilities'
+Method: GET
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>Facility[]</code> Information about all facilities  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | UUID corresponding with an organization |
+
+**Example**  
+```js
+contxtSdk.facilities.getAllByOrganizationId(25)
+  .then((facilities) => console.log(facilities));
+  .catch((err) => console.log(err));
+```
+<a name="Facilities+update"></a>
+
+### contxtSdk.facilities.update(facilityId, update) ⇒ <code>Promise</code>
+Updates a facility's specifics
+
+API Endpoint: '/facilities/:facilityId'
+Method: PUT
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>number</code> | The id of the facility to update |
+| update | <code>Object</code> | An object containing the updated data for the facility |
+| [update.address1] | <code>string</code> |  |
+| [update.address2] | <code>string</code> |  |
+| [update.city] | <code>string</code> |  |
+| [update.geometryId] | <code>string</code> | UUID corresponding with a geometry |
+| [update.info] | <code>Object</code> | User declared information |
+| [update.name] | <code>string</code> |  |
+| [update.organizationId] | <code>string</code> | UUID corresponding with an organization |
+| [update.state] | <code>string</code> |  |
+| [update.timezone] | <code>string</code> |  |
+| [update.weatherLocationId] | <code>number</code> |  |
+| [update.zip] | <code>string</code> |  |
+
+**Example**  
+```js
+contxtSdk.facilities.update(25, {
+  address: '221 B Baker St, London, England',
+  name: 'Sherlock Homes Museum',
+  organizationId: 25
+});
 ```

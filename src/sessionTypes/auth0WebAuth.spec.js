@@ -1,5 +1,6 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
+import omit from 'lodash.omit';
 import sinon from 'sinon';
 import Auth0WebAuth from './auth0WebAuth';
 
@@ -165,18 +166,20 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let expectedAccessToken;
       let expectedProfile;
       let getCurrentAccessToken;
+      let profile;
       let promise;
 
       beforeEach(function() {
         expectedAccessToken = faker.internet.password();
-        expectedProfile = faker.helpers.userCard();
+        profile = fixture.build('userProfile', null, { fromServer: true });
+        expectedProfile = omit({ ...profile, updatedAt: profile.updated_at }, ['updated_at']);
 
         getCurrentAccessToken = this.sandbox.stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
           .resolves(expectedAccessToken);
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         webAuthSession.client = {
           userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
-            cb(null, expectedProfile);
+            cb(null, profile);
           })
         };
 
@@ -196,7 +199,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it("returns a fulfilled promise with the users's profile", function() {
         return expect(promise).to.be.fulfilled
-          .and.to.eventually.equal(expectedProfile);
+          .and.to.eventually.deep.equal(expectedProfile);
       });
     });
 

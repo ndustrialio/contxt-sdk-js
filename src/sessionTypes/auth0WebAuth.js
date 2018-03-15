@@ -8,7 +8,7 @@ import URL from 'url-parse';
  * @property {string} nickname
  * @property {string} picture URL to an avatar
  * @property {string} sub The Subject Claim of the user's JWT
- * @property {string} updated_at ISO 8601 Extended Format date/time string
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
 /**
@@ -119,7 +119,13 @@ class Auth0WebAuth {
               reject(err);
             }
 
-            resolve(profile);
+            const formattedProfile = {
+              ...profile,
+              updatedAt: profile.updated_at
+            };
+            delete formattedProfile.updated_at;
+
+            resolve(formattedProfile);
           });
         });
       });
