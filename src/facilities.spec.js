@@ -109,17 +109,16 @@ describe('Facilities', function() {
     context('when there is missing required information', function() {
       ['organizationId', 'name', 'timezone'].forEach(function(field) {
         it(`it throws an error when ${field} is missing`, function() {
-          const fn = () => {
-            const facility = fixture.build('facility');
-            const initialFacility = {
-              ...facility,
-              organizationId: facility.organizationId
-            };
-            const facilities = new Facilities(baseSdk, baseRequest);
-            facilities.create(omit(initialFacility, [field]));
+          const facility = fixture.build('facility');
+          const initialFacility = {
+            ...facility,
+            organizationId: facility.organizationId
           };
+          const facilities = new Facilities(baseSdk, baseRequest);
+          const promise = facilities.create(omit(initialFacility, [field]));
 
-          expect(fn).to.throw(`A ${field} is required to create a new facility.`);
+          return expect(promise).to.be
+            .rejectedWith(`A ${field} is required to create a new facility.`);
         });
       });
     });
@@ -154,9 +153,10 @@ describe('Facilities', function() {
     context('the facility id is not provided', function() {
       it('throws an error', function() {
         const facilities = new Facilities(baseSdk, baseRequest);
-        const fn = () => facilities.delete();
+        const promise = facilities.delete();
 
-        expect(fn).to.throw('A facility id is required for deleting a facility');
+        return expect(promise).to.be
+          .rejectedWith('A facility id is required for deleting a facility');
       });
     });
   });
@@ -209,9 +209,10 @@ describe('Facilities', function() {
     context('the facility id is not provided', function() {
       it('throws an error', function() {
         const facilities = new Facilities(baseSdk, baseRequest);
-        const fn = () => facilities.get();
+        const promise = facilities.get();
 
-        expect(fn).to.throw('A facility id is required for getting information about a facility');
+        return expect(promise).to.be
+          .rejectedWith('A facility id is required for getting information about a facility');
       });
     });
   });
@@ -320,10 +321,11 @@ describe('Facilities', function() {
     context('the organization id is not provided', function() {
       it('throws an error', function() {
         const facilities = new Facilities(baseSdk, baseRequest);
-        const fn = () => facilities.getAllByOrganizationId();
+        const promise = facilities.getAllByOrganizationId();
 
-        expect(fn).to
-          .throw("An organization id is required for getting a list of an organization's facilities");
+        return expect(promise).to.be.rejectedWith(
+          "An organization id is required for getting a list of an organization's facilities"
+        );
       });
     });
   });
@@ -375,23 +377,26 @@ describe('Facilities', function() {
 
       it('throws an error when there is no provided facility id', function() {
         const facilityUpdate = fixture.build('facility');
-        const fn = () => facilities.update(null, facilityUpdate);
+        const promise = facilities.update(null, facilityUpdate);
 
-        expect(fn).to.throw('A facility id is required to update a facility.');
+        return expect(promise).to.be
+          .rejectedWith('A facility id is required to update a facility.');
       });
 
       it('throws an error when there is no update provided', function() {
         const facilityUpdate = fixture.build('facility');
-        const fn = () => facilities.update(facilityUpdate.id);
+        const promise = facilities.update(facilityUpdate.id);
 
-        expect(fn).to.throw('An update is required to update a facility.');
+        return expect(promise).to.be.rejectedWith('An update is required to update a facility.');
       });
 
       it('throws an error when the update is not an object', function() {
         const facilityUpdate = fixture.build('facility');
-        const fn = () => facilities.update(facilityUpdate.id, [facilityUpdate]);
+        const promise = facilities.update(facilityUpdate.id, [facilityUpdate]);
 
-        expect(fn).to.throw('The facility update must be a well-formed object with the data you wish to update.');
+        return expect(promise).to.be.rejectedWith(
+          'The facility update must be a well-formed object with the data you wish to update.'
+        );
       });
     });
   });

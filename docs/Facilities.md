@@ -33,10 +33,6 @@ API Endpoint: '/facilities'
 Method: POST
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Throws**:
-
-- <code>Error</code> 
-
 **Fulfill**: [<code>Facility</code>](./Typedefs.md#Facility) Information about the new facility  
 **Reject**: <code>Error</code>  
 
@@ -74,10 +70,6 @@ API Endpoint: '/facilities/:facilityId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Throws**:
-
-- <code>Error</code> 
-
 **Fulfill**: <code>undefined</code>  
 **Reject**: <code>Error</code>  
 
@@ -85,6 +77,10 @@ Method: DELETE
 | --- | --- | --- |
 | facilityId | <code>number</code> | The id of the facility |
 
+**Example**  
+```js
+contxtSdk.facilities.delete(25)
+```
 <a name="Facilities+get"></a>
 
 ### contxtSdk.facilities.get(facilityId) ⇒ <code>Promise</code>
@@ -94,10 +90,6 @@ API Endpoint: '/facilities/:facilityId'
 Method: GET
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Throws**:
-
-- <code>Error</code> 
-
 **Fulfill**: [<code>Facility</code>](./Typedefs.md#Facility) Information about a facility  
 **Reject**: <code>Error</code>  
 
@@ -137,10 +129,6 @@ API Endpoint: '/organizations/:organizationId/facilities'
 Method: GET
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Throws**:
-
-- <code>Error</code> 
-
 **Fulfill**: <code>Facility[]</code> Information about all facilities  
 **Reject**: <code>Error</code>  
 
@@ -163,10 +151,6 @@ API Endpoint: '/facilities/:facilityId'
 Method: PUT
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Throws**:
-
-- <code>Error</code> 
-
 **Fulfill**: <code>undefined</code>  
 **Reject**: <code>Error</code>  
 
@@ -175,3 +159,11 @@ Method: PUT
 | facilityId | <code>number</code> | The id of the facility to update |
 | update | <code>Object</code> | An object containing the updated data for the facility |
 
+**Example**  
+```js
+contxtSdk.facilities.update(25, {
+  address: '221 B Baker St, London, England',
+  name: 'Sherlock Homes Museum',
+  organizationId: 25
+});
+```

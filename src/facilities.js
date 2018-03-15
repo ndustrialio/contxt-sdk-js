@@ -65,7 +65,6 @@ class Facilities {
    * @returns {Promise}
    * @fulfill {Facility} Information about the new facility
    * @reject {Error}
-   * @throws {Error}
    *
    * @example
    * contxtSdk.facilities
@@ -77,14 +76,16 @@ class Facilities {
    *   .then((facilities) => console.log(facilities));
    *   .catch((err) => console.log(err));
    */
-  create(facility) {
+  create(facility = {}) {
     const requiredFields = ['organizationId', 'name', 'timezone'];
 
-    requiredFields.forEach((field) => {
+    for (let i = 0; requiredFields.length > i; i++) {
+      const field = requiredFields[i];
+
       if (!facility[field]) {
-        throw new Error(`A ${field} is required to create a new facility.`);
+        return Promise.reject(new Error(`A ${field} is required to create a new facility.`));
       }
-    });
+    }
 
     const data = {
       address1: facility.address1,
@@ -113,11 +114,13 @@ class Facilities {
    *
    * @fulfill {undefined}
    * @reject {Error}
-   * @throws {Error}
+   *
+   * @example
+   * contxtSdk.facilities.delete(25)
    */
   delete(facilityId) {
     if (!facilityId) {
-      throw new Error('A facility id is required for deleting a facility');
+      return Promise.reject(new Error('A facility id is required for deleting a facility'));
     }
 
     return this._request.delete(`${this._baseUrl}/facilities/${facilityId}`);
@@ -134,7 +137,6 @@ class Facilities {
    * @returns {Promise}
    * @fulfill {Facility} Information about a facility
    * @reject {Error}
-   * @throws {Error}
    *
    * @example
    * contxtSdk.facilities.get(25)
@@ -143,7 +145,9 @@ class Facilities {
    */
   get(facilityId) {
     if (!facilityId) {
-      throw new Error('A facility id is required for getting information about a facility');
+      return Promise.reject(
+        new Error('A facility id is required for getting information about a facility')
+      );
     }
 
     return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
@@ -181,7 +185,6 @@ class Facilities {
    * @returns {Promise}
    * @fulfill {Facility[]} Information about all facilities
    * @reject {Error}
-   * @throws {Error}
    *
    * @example
    * contxtSdk.facilities.getAllByOrganizationId(25)
@@ -190,7 +193,9 @@ class Facilities {
    */
   getAllByOrganizationId(organizationId) {
     if (!organizationId) {
-      throw new Error("An organization id is required for getting a list of an organization's facilities");
+      return Promise.reject(
+        new Error("An organization id is required for getting a list of an organization's facilities")
+      );
     }
 
     return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
@@ -209,19 +214,27 @@ class Facilities {
    * @returns {Promise}
    * @fulfill {undefined}
    * @reject {Error}
-   * @throws {Error}
+   *
+   * @example
+   * contxtSdk.facilities.update(25, {
+   *   address: '221 B Baker St, London, England',
+   *   name: 'Sherlock Homes Museum',
+   *   organizationId: 25
+   * });
    */
   update(facilityId, update) {
     if (!facilityId) {
-      throw new Error('A facility id is required to update a facility.');
+      return Promise.reject(new Error('A facility id is required to update a facility.'));
     }
 
     if (!update) {
-      throw new Error('An update is required to update a facility.');
+      return Promise.reject(new Error('An update is required to update a facility.'));
     }
 
     if (!isPlainObject(update)) {
-      throw new Error('The facility update must be a well-formed object with the data you wish to update.');
+      return Promise.reject(
+        new Error('The facility update must be a well-formed object with the data you wish to update.')
+      );
     }
 
     const formattedUpdate = this._formatFacilityToServer(update);
@@ -262,7 +275,7 @@ class Facilities {
    *
    * @private
    */
-  _formatFacilityFromServer(input) {
+  _formatFacilityFromServer(input = {}) {
     return {
       address1: input.address1,
       address2: input.address2,
@@ -302,7 +315,7 @@ class Facilities {
    *
    * @private
    */
-  _formatFacilityToServer(input) {
+  _formatFacilityToServer(input = {}) {
     return {
       address1: input.address1,
       address2: input.address2,
@@ -336,7 +349,7 @@ class Facilities {
    *
    * @private
    */
-  _formatOrganizationFromServer(input) {
+  _formatOrganizationFromServer(input = {}) {
     return {
       createdAt: input.created_at,
       id: input.id,
@@ -364,7 +377,7 @@ class Facilities {
    *
    * @private
    */
-  _formatTagsFromServer(input) {
+  _formatTagsFromServer(input = []) {
     return input.map((tag) => {
       return {
         createdAt: tag.created_at,
