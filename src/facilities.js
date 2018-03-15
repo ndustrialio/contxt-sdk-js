@@ -199,6 +199,17 @@ class Facilities {
    *
    * @param {number} facilityId The id of the facility to update
    * @param {Object} update An object containing the updated data for the facility
+   * @param {string} [update.address1]
+   * @param {string} [update.address2]
+   * @param {string} [update.city]
+   * @param {string} [update.geometryId] UUID corresponding with a geometry
+   * @param {Object} [update.info] User declared information
+   * @param {string} [update.name]
+   * @param {string} [update.organizationId] UUID corresponding with an organization
+   * @param {string} [update.state]
+   * @param {string} [update.timezone]
+   * @param {number} [update.weatherLocationId]
+   * @param {string} [update.zip]
    *
    * @returns {Promise}
    * @fulfill {undefined}

@@ -158,6 +158,17 @@ Method: PUT
 | --- | --- | --- |
 | facilityId | <code>number</code> | The id of the facility to update |
 | update | <code>Object</code> | An object containing the updated data for the facility |
+| [update.address1] | <code>string</code> |  |
+| [update.address2] | <code>string</code> |  |
+| [update.city] | <code>string</code> |  |
+| [update.geometryId] | <code>string</code> | UUID corresponding with a geometry |
+| [update.info] | <code>Object</code> | User declared information |
+| [update.name] | <code>string</code> |  |
+| [update.organizationId] | <code>string</code> | UUID corresponding with an organization |
+| [update.state] | <code>string</code> |  |
+| [update.timezone] | <code>string</code> |  |
+| [update.weatherLocationId] | <code>number</code> |  |
+| [update.zip] | <code>string</code> |  |
 
 **Example**  
 ```js
