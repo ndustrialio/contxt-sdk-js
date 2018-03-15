@@ -9,8 +9,9 @@ describe('Facilities', function() {
     this.sandbox = sandbox.create();
 
     baseRequest = {
-      get: this.sandbox.stub(),
-      post: this.sandbox.stub()
+      delete: this.sandbox.stub().resolves(),
+      get: this.sandbox.stub().resolves(),
+      post: this.sandbox.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -123,6 +124,42 @@ describe('Facilities', function() {
     });
   });
 
+  describe('delete', function() {
+    context('the facility id is provided', function() {
+      let expectedHost;
+      let facility;
+      let promise;
+
+      beforeEach(function() {
+        expectedHost = faker.internet.url();
+        facility = fixture.build('facility');
+
+        const facilities = new Facilities(baseSdk, baseRequest);
+        facilities._baseUrl = expectedHost;
+
+        promise = facilities.delete(facility.id);
+      });
+
+      it('requests to delete the facility', function() {
+        expect(baseRequest.delete).to.be
+          .calledWith(`${expectedHost}/facilities/${facility.id}`);
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('the facility id is not provided', function() {
+      it('throws an error', function() {
+        const facilities = new Facilities(baseSdk, baseRequest);
+        const fn = () => facilities.delete();
+
+        expect(fn).to.throw('A facility id is required for deleting a facility');
+      });
+    });
+  });
+
   describe('get', function() {
     let expectedFacilityId;
     let expectedHost;
@@ -135,8 +172,8 @@ describe('Facilities', function() {
     beforeEach(function() {
       expectedFacilityId = faker.random.number();
       expectedHost = faker.internet.url();
-      rawFacility = fixture.build('facility', { id: expectedFacilityId }, { fromServer: true });
-      formattedFacility = fixture.build('facility', { id: expectedFacilityId });
+      rawFacility = fixture.build('facility', null, { fromServer: true });
+      formattedFacility = fixture.build('facility', { id: rawFacility.id });
 
       formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
         .returns(formattedFacility);

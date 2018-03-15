@@ -9,6 +9,7 @@ of, information about different facilities
 * [Facilities](#Facilities)
     * [new Facilities(sdk, request)](#new_Facilities_new)
     * [.create(options)](#Facilities+create) ⇒ <code>Promise</code>
+    * [.delete(facilityId)](#Facilities+delete)
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
@@ -63,6 +64,22 @@ contxtSdk.facilities
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
 ```
+<a name="Facilities+delete"></a>
+
+### contxtSdk.facilities.delete(facilityId)
+Deletes a facility
+
+API Endpoint: '/facilities/:facilityId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>number</code> | The id of the facility |
+
 <a name="Facilities+get"></a>
 
 ### contxtSdk.facilities.get(facilityId) ⇒ <code>Promise</code>

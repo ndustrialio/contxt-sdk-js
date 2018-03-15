@@ -101,6 +101,25 @@ class Facilities {
   }
 
   /**
+   * Deletes a facility
+   *
+   * API Endpoint: '/facilities/:facilityId'
+   * Method: DELETE
+   *
+   * @param {number} facilityId The id of the facility
+   *
+   * @fulfill {undefined}
+   * @reject {Error}
+   */
+  delete(facilityId) {
+    if (!facilityId) {
+      throw new Error('A facility id is required for deleting a facility');
+    }
+
+    return this._request.delete(`${this._baseUrl}/facilities/${facilityId}`);
+  }
+
+  /**
    * Gets information about a facility
    *
    * API Endpoint: '/facilities/:facilityId'
