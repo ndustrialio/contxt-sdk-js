@@ -49,60 +49,55 @@ describe('Facilities', function() {
 
   describe('create', function() {
     context('when all required information is supplied', function() {
-      context('when the facility is successfully created', function() {
-        let expectedHost;
-        let formatFacility;
-        let formattedFacility;
-        let promise;
-        let rawFacility;
-        let request;
+      let expectedFacility;
+      let expectedHost;
+      let formatFacilityFromServer;
+      let formatFacilityToServer;
+      let formattedFacility;
+      let initialFacility;
+      let promise;
+      let rawFacility;
+      let request;
 
-        beforeEach(function() {
-          expectedHost = faker.internet.url();
-          rawFacility = fixture.build('facility', null, { fromServer: true });
-          formattedFacility = fixture.build('facility');
+      beforeEach(function() {
+        expectedFacility = fixture.build('facility', null, { fromServer: true });
+        expectedHost = faker.internet.url();
+        formattedFacility = fixture.build('facility', null, { fromServer: true });
+        initialFacility = fixture.build('facility');
+        rawFacility = fixture.build('facility', null, { fromServer: true });
 
-          formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
-            .returns(formattedFacility);
-          request = {
-            ...baseRequest,
-            post: this.sandbox.stub().resolves(rawFacility)
-          };
+        formatFacilityFromServer = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
+          .returns(expectedFacility);
+        formatFacilityToServer = this.sandbox.stub(Facilities.prototype, '_formatFacilityToServer')
+          .returns(formattedFacility);
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(rawFacility)
+        };
 
-          const facilities = new Facilities(baseSdk, request);
-          facilities._baseUrl = expectedHost;
+        const facilities = new Facilities(baseSdk, request);
+        facilities._baseUrl = expectedHost;
 
-          promise = facilities.create({
-            address1: rawFacility.address1,
-            address2: rawFacility.address2,
-            city: rawFacility.city,
-            geometryId: rawFacility.geometry_id,
-            name: rawFacility.name,
-            organizationId: rawFacility.organization_id,
-            state: rawFacility.state,
-            timezone: rawFacility.timezone,
-            weatherLocationId: rawFacility.weather_location_id,
-            zip: rawFacility.zip
-          });
+        promise = facilities.create(initialFacility);
+      });
+
+      it('formats the submitted facility object to send to the server', function() {
+        expect(formatFacilityToServer).to.be.calledWith(initialFacility);
+      });
+
+      it('creates a new facility', function() {
+        expect(request.post).to.be.deep.calledWith(`${expectedHost}/facilities`, formattedFacility);
+      });
+
+      it('formats the returned facility object', function() {
+        return promise.then(() => {
+          expect(formatFacilityFromServer).to.be.calledWith(rawFacility);
         });
+      });
 
-        it('creates a new facility', function() {
-          expect(request.post).to.be.deep.calledWith(
-            `${expectedHost}/facilities`,
-            omit(rawFacility, ['created_at', 'id', 'Info', 'Organization', 'tags'])
-          );
-        });
-
-        it('formats the facility object', function() {
-          return promise.then(() => {
-            expect(formatFacility).to.be.calledWith(rawFacility);
-          });
-        });
-
-        it('returns a fulfilled promise with the new facility information', function() {
-          return expect(promise).to.be.fulfilled
-            .and.to.eventually.equal(formattedFacility);
-        });
+      it('returns a fulfilled promise with the new facility information', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.equal(expectedFacility);
       });
     });
 

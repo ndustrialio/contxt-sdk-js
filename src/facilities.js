@@ -87,18 +87,7 @@ class Facilities {
       }
     }
 
-    const data = {
-      address1: facility.address1,
-      address2: facility.address2,
-      city: facility.city,
-      geometry_id: facility.geometryId,
-      name: facility.name,
-      organization_id: facility.organizationId,
-      state: facility.state,
-      timezone: facility.timezone,
-      weather_location_id: facility.weatherLocationId,
-      zip: facility.zip
-    };
+    const data = this._formatFacilityToServer(facility);
 
     return this._request.post(`${this._baseUrl}/facilities`, data)
       .then((facility) => this._formatFacilityFromServer(facility));
