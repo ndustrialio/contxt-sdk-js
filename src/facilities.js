@@ -98,7 +98,7 @@ class Facilities {
     };
 
     return this._request.post(`${this._baseUrl}/facilities`, data)
-      .then((facility) => this._formatFacility(facility));
+      .then((facility) => this._formatFacilityFromServer(facility));
   }
 
   /**
@@ -145,7 +145,7 @@ class Facilities {
     }
 
     return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
-      .then((facility) => this._formatFacility(facility));
+      .then((facility) => this._formatFacilityFromServer(facility));
   }
 
   /**
@@ -165,7 +165,7 @@ class Facilities {
    */
   getAll() {
     return this._request.get(`${this._baseUrl}/facilities`)
-      .then((facilities) => facilities.map((facility) => this._formatFacility(facility)));
+      .then((facilities) => facilities.map((facility) => this._formatFacilityFromServer(facility)));
   }
 
   /**
@@ -192,7 +192,7 @@ class Facilities {
     }
 
     return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
-      .then((facilities) => facilities.map((facility) => this._formatFacility(facility)));
+      .then((facilities) => facilities.map((facility) => this._formatFacilityFromServer(facility)));
   }
 
   /**
@@ -228,7 +228,7 @@ class Facilities {
    *
    * @private
    */
-  _formatFacility(input) {
+  _formatFacilityFromServer(input) {
     return {
       address1: input.address1,
       address2: input.address2,
@@ -238,10 +238,10 @@ class Facilities {
       id: input.id,
       info: input.Info,
       name: input.name,
-      organization: this._formatOrganization(input.Organization),
+      organization: this._formatOrganizationFromServer(input.Organization),
       organizationId: input.organization_id,
       state: input.state,
-      tags: this._formatTags(input.tags),
+      tags: this._formatTagsFromServer(input.tags),
       timezone: input.timezone,
       weatherLocationId: input.weather_location_id,
       zip: input.zip
@@ -266,7 +266,7 @@ class Facilities {
    *
    * @private
    */
-  _formatOrganization(organization) {
+  _formatOrganizationFromServer(organization) {
     return {
       createdAt: organization.created_at,
       id: organization.id,
@@ -294,7 +294,7 @@ class Facilities {
    *
    * @private
    */
-  _formatTags(tags) {
+  _formatTagsFromServer(tags) {
     return tags.map((tag) => {
       return {
         createdAt: tag.created_at,

@@ -61,7 +61,7 @@ describe('Facilities', function() {
           rawFacility = fixture.build('facility', null, { fromServer: true });
           formattedFacility = fixture.build('facility');
 
-          formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
+          formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
             .returns(formattedFacility);
           request = {
             ...baseRequest,
@@ -176,7 +176,7 @@ describe('Facilities', function() {
         rawFacility = fixture.build('facility', null, { fromServer: true });
         formattedFacility = fixture.build('facility', { id: rawFacility.id });
 
-        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
+        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
           .returns(formattedFacility);
         request = {
           ...baseRequest,
@@ -229,7 +229,7 @@ describe('Facilities', function() {
       formattedFacilities = fixture.buildList('facility', numberOfFacilities);
       rawFacilities = fixture.buildList('facility', numberOfFacilities, null, { fromServer: true });
 
-      formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
+      formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
         .callsFake((facility) => {
           const index = rawFacilities.indexOf(facility);
           return formattedFacilities[index];
@@ -280,7 +280,7 @@ describe('Facilities', function() {
         formattedFacilities = fixture.buildList('facility', numberOfFacilities);
         rawFacilities = fixture.buildList('facility', numberOfFacilities, null, { fromServer: true });
 
-        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
+        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
           .callsFake((facility) => {
             const index = rawFacilities.indexOf(facility);
             return formattedFacilities[index];
@@ -327,11 +327,77 @@ describe('Facilities', function() {
     });
   });
 
-  describe('_formatFacility', function() {
+  describe('update', function() {
+    context('when all required information is available', function() {
+      let expectedHost;
+      let facilityUpdate;
+      let formatFacilityToServer;
+      let promise;
+
+      beforeEach(function() {
+        expectedHost = faker.internet.url();
+        facilityUpdate = fixture.build('facility');
+
+        formatFacilityToServer = this.sandbox.stub(Facilities.prototype, '_formatFacilityToServer')
+          .returns({});
+
+        const facilities = new Facilities(baseSdk, baseRequest);
+        facilities._baseUrl = expectedHost;
+
+        promise = facilities.update(facilityUpdate.id, facilityUpdate);
+      });
+
+      it('formats the data into the right format', function() {
+        expect(formatFacilityToServer).to.be.calledWith(facilityUpdate);
+      });
+
+      it('updates the facility', function() {
+        expect(baseRequest.put).to.be.calledWith(
+          `${expectedHost}/facilities/${facilityUpdate.id}`,
+          {}
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is missing or malformed required information', function() {
+      let facilities;
+
+      beforeEach(function() {
+        facilities = new Facilities(baseSdk, baseRequest);
+      });
+
+      it('throws an error when there is no provided facility id', function() {
+        const facilityUpdate = fixture.build('facility');
+        const fn = () => facilities.update(null, facilityUpdate);
+
+        expect(fn).to.throw('A facility id is required to update a facility.');
+      });
+
+      it('throws an error when there is no update provided', function() {
+        const facilityUpdate = fixture.build('facility');
+        const fn = () => facilities.update(facilityUpdate.id);
+
+        expect(fn).to.throw('An update is required to update a facility.');
+      });
+
+      it('throws an error when the update is not an object', function() {
+        const facilityUpdate = fixture.build('facility');
+        const fn = () => facilities.update(facilityUpdate.id, [facilityUpdate]);
+
+        expect(fn).to.throw('The facility update must be a well-formed object with the data you wish to update.');
+      });
+    });
+  });
+
+  describe('_formatFacilityFromServer', function() {
     let expectedFacility;
     let facility;
-    let formatOrganization;
-    let formatTags;
+    let formatOrganizationFromServer;
+    let formatTagsFromServer;
     let formattedFacility;
 
     beforeEach(function() {
@@ -356,16 +422,17 @@ describe('Facilities', function() {
         ]
       );
 
-      formatOrganization = this.sandbox.stub(Facilities.prototype, '_formatOrganization')
+      formatOrganizationFromServer = this.sandbox.stub(Facilities.prototype, '_formatOrganizationFromServer')
         .callsFake((organization) => organization);
-      formatTags = this.sandbox.stub(Facilities.prototype, '_formatTags').callsFake((tags) => tags);
+      formatTagsFromServer = this.sandbox.stub(Facilities.prototype, '_formatTagsFromServer')
+        .callsFake((tags) => tags);
 
-      formattedFacility = Facilities.prototype._formatFacility(facility);
+      formattedFacility = Facilities.prototype._formatFacilityFromServer(facility);
     });
 
     it('formats the necessary children objects', function() {
-      expect(formatOrganization).to.be.calledWith(facility.Organization);
-      expect(formatTags).to.be.calledWith(facility.tags);
+      expect(formatOrganizationFromServer).to.be.calledWith(facility.Organization);
+      expect(formatTagsFromServer).to.be.calledWith(facility.tags);
     });
 
     it('converts the object keys to the camelCase', function() {
@@ -373,7 +440,7 @@ describe('Facilities', function() {
     });
   });
 
-  describe('_formatOrganization', function() {
+  describe('_formatOrganizationFromServer', function() {
     let expectedOrganization;
     let formattedOrganization;
     let organization;
@@ -393,7 +460,7 @@ describe('Facilities', function() {
         ['created_at', 'updated_at']
       );
 
-      formattedOrganization = Facilities.prototype._formatOrganization(organization);
+      formattedOrganization = Facilities.prototype._formatOrganizationFromServer(organization);
     });
 
     it('converts the object keys to camelCase', function() {
@@ -401,7 +468,7 @@ describe('Facilities', function() {
     });
   });
 
-  describe('_formatTags', function() {
+  describe('_formatTagsFromServer', function() {
     let expectedTags;
     let formattedTags;
     let tags;
@@ -425,7 +492,7 @@ describe('Facilities', function() {
         );
       });
 
-      formattedTags = Facilities.prototype._formatTags(tags);
+      formattedTags = Facilities.prototype._formatTagsFromServer(tags);
     });
 
     it('converts the object keys to camelCase', function() {
