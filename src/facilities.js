@@ -4,20 +4,21 @@
  * @property {string} address2
  * @property {string} city
  * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} geometryId UUID corresponding with a geometry
  * @property {number} id
- * @property {Object} Info
+ * @property {Object} Info User declared information
  * @property {string} name
  * @property {Object} Organization
+ * @property {string} Organization.createdAt ISO 8601 Extended Format date/time string
  * @property {string} Organization.id UUID formatted id
  * @property {string} Organization.name
- * @property {string} Organization.createdAt ISO 8601 Extended Format date/time string
  * @property {string} Organization.updatedAt ISO 8601 Extended Format date/time string
  * @property {string} state
  * @property {Object[]} tags
+ * @property {string} tags[].createdAt ISO 8601 Extended Format date/time string
  * @property {number} tags[].id
  * @property {number} tags[].facilityId
  * @property {string} tags[].name
- * @property {string} tags[].createdAt ISO 8601 Extended Format date/time string
  * @property {string} tags[].updatedAt ISO 8601 Extended Format date/time string
  * @property {string} timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
  * @property {number} weatherLocationId
@@ -53,7 +54,7 @@ class Facilities {
    * @param {string} [options.city]
    * @param {string} [options.geometryId] UUID corresponding with a geometry
    * @param {string} options.name
-   * @param {string} options.organizationId UUID corresponding with an organzation
+   * @param {string} options.organizationId UUID corresponding with an organization
    * @param {string} [options.state]
    * @param {string} options.timezone
    * @param {number} [options.weatherLocationId]
@@ -173,7 +174,7 @@ class Facilities {
    * API Endpoint: '/organizations/:organizationId/facilities'
    * Method: GET
    *
-   * @param {string} organizationId UUID corresponding with an organzation
+   * @param {string} organizationId UUID corresponding with an organization
    *
    * @returns {Promise}
    * @fulfill {Facility[]} Information about all facilities
@@ -194,6 +195,39 @@ class Facilities {
       .then((facilities) => facilities.map((facility) => this._formatFacility(facility)));
   }
 
+  /**
+   * Normalizes the facility object returned from the API server
+   *
+   * @param {Object} input
+   * @param {string} input.address1
+   * @param {string} input.address2
+   * @param {string} input.city
+   * @param {string} input.created_at ISO 8601 Extended Format date/time string
+   * @param {string} input.geometry_id UUID corresponding with a geometry
+   * @param {number} input.id
+   * @param {Object} input.Info User declared information
+   * @param {string} input.name
+   * @param {Object} input.Organization
+   * @param {string} input.Organization.created_at ISO 8601 Extended Format date/time string
+   * @param {string} input.Organization.id UUID
+   * @param {string} input.Organization.name
+   * @param {string} input.Organization.updated_at
+   * @param {string} input.organization_id UUID corresponding with an organization
+   * @param {string} input.state
+   * @param {Object[]} input.tags
+   * @param {string} input.tags[].created_at ISO 8601 Extended Format date/time string
+   * @param {number} input.tags[].facility_id Id corresponding with the parent facility
+   * @param {number} input.tags[].id
+   * @param {string} input.tags[].name
+   * @param {string} input.tags[].updated_at ISO 8601 Extended Format date/time string
+   * @param {string} input.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
+   * @param {string} input.weather_location_id
+   * @param {string} input.zip
+   *
+   * @returns {Facility}
+   *
+   * @private
+   */
   _formatFacility(input) {
     return {
       address1: input.address1,
@@ -214,6 +248,24 @@ class Facilities {
     };
   }
 
+  /**
+   * Normalizes the organization object returned from the API server
+   *
+   * @param {Object} organization
+   * @param {string} organization.created_at ISO 8601 Extended Format date/time string
+   * @param {string} organization.id UUID
+   * @param {string} organization.name
+   * @param {string} organization.updated_at
+   * @param {string} organization_id UUID corresponding with an organization
+   *
+   * @returns {Object} organization
+   * @returns {string} organization.createdAt ISO 8601 Extended Format date/time string
+   * @returns {string} organization.id UUID formatted id
+   * @returns {string} organization.name
+   * @returns {string} organization.updatedAt ISO 8601 Extended Format date/time string
+   *
+   * @private
+   */
   _formatOrganization(organization) {
     return {
       createdAt: organization.created_at,
@@ -223,6 +275,25 @@ class Facilities {
     };
   }
 
+  /**
+   * Normalizes the tags array returned from the API server
+   *
+   * @param {Object[]} tags
+   * @param {string} tags[].created_at ISO 8601 Extended Format date/time string
+   * @param {number} tags[].facility_id Id corresponding with the parent facility
+   * @param {number} tags[].id
+   * @param {string} tags[].name
+   * @param {string} tags[].updated_at ISO 8601 Extended Format date/time string
+   *
+   * @returns {Object[]} tags
+   * @returns {string} tags[].createdAt ISO 8601 Extended Format date/time string
+   * @returns {number} tags[].id
+   * @returns {number} tags[].facilityId
+   * @returns {string} tags[].name
+   * @returns {string} tags[].updatedAt ISO 8601 Extended Format date/time string
+   *
+   * @private
+   */
   _formatTags(tags) {
     return tags.map((tag) => {
       return {

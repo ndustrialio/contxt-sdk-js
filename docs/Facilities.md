@@ -47,7 +47,7 @@ Method: POST
 | [options.city] | <code>string</code> |  |
 | [options.geometryId] | <code>string</code> | UUID corresponding with a geometry |
 | options.name | <code>string</code> |  |
-| options.organizationId | <code>string</code> | UUID corresponding with an organzation |
+| options.organizationId | <code>string</code> | UUID corresponding with an organization |
 | [options.state] | <code>string</code> |  |
 | options.timezone | <code>string</code> |  |
 | [options.weatherLocationId] | <code>number</code> |  |
@@ -145,7 +145,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | UUID corresponding with an organzation |
+| organizationId | <code>string</code> | UUID corresponding with an organization |
 
 **Example**  
 ```js

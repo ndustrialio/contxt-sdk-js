@@ -70,20 +70,21 @@ for authenticating and communicating with an individual API and the external mod
 | address2 | <code>string</code> |  |
 | city | <code>string</code> |  |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| geometryId | <code>string</code> | UUID corresponding with a geometry |
 | id | <code>number</code> |  |
-| Info | <code>Object</code> |  |
+| Info | <code>Object</code> | User declared information |
 | name | <code>string</code> |  |
 | Organization | <code>Object</code> |  |
+| Organization.createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | Organization.id | <code>string</code> | UUID formatted id |
 | Organization.name | <code>string</code> |  |
-| Organization.createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | Organization.updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | state | <code>string</code> |  |
 | tags | <code>Array.&lt;Object&gt;</code> |  |
+| tags[].createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | tags[].id | <code>number</code> |  |
 | tags[].facilityId | <code>number</code> |  |
 | tags[].name | <code>string</code> |  |
-| tags[].createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | tags[].updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | timezone | <code>string</code> | An IANA Time Zone Database string, i.e. America/Los_Angeles |
 | weatherLocationId | <code>number</code> |  |
