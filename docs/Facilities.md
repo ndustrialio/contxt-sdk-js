@@ -73,6 +73,10 @@ API Endpoint: '/facilities/:facilityId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Throws**:
+
+- <code>Error</code> 
+
 **Fulfill**: <code>undefined</code>  
 **Reject**: <code>Error</code>  
 
@@ -89,6 +93,10 @@ API Endpoint: '/facilities/:facilityId'
 Method: GET
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Throws**:
+
+- <code>Error</code> 
+
 **Fulfill**: [<code>Facility</code>](./Typedefs.md#Facility) Information about a facility  
 **Reject**: <code>Error</code>  
 
@@ -128,6 +136,10 @@ API Endpoint: '/organizations/:organizationId/facilities'
 Method: GET
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Throws**:
+
+- <code>Error</code> 
+
 **Fulfill**: <code>Facility[]</code> Information about all facilities  
 **Reject**: <code>Error</code>  
 

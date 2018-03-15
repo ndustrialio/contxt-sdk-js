@@ -161,46 +161,57 @@ describe('Facilities', function() {
   });
 
   describe('get', function() {
-    let expectedFacilityId;
-    let expectedHost;
-    let formatFacility;
-    let formattedFacility;
-    let promise;
-    let rawFacility;
-    let request;
+    context('the facility id is provided', function() {
+      let expectedFacilityId;
+      let expectedHost;
+      let formatFacility;
+      let formattedFacility;
+      let promise;
+      let rawFacility;
+      let request;
 
-    beforeEach(function() {
-      expectedFacilityId = faker.random.number();
-      expectedHost = faker.internet.url();
-      rawFacility = fixture.build('facility', null, { fromServer: true });
-      formattedFacility = fixture.build('facility', { id: rawFacility.id });
+      beforeEach(function() {
+        expectedFacilityId = faker.random.number();
+        expectedHost = faker.internet.url();
+        rawFacility = fixture.build('facility', null, { fromServer: true });
+        formattedFacility = fixture.build('facility', { id: rawFacility.id });
 
-      formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
-        .returns(formattedFacility);
-      request = {
-        ...baseRequest,
-        get: this.sandbox.stub().resolves(rawFacility)
-      };
+        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
+          .returns(formattedFacility);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(rawFacility)
+        };
 
-      const facilities = new Facilities(baseSdk, request);
-      facilities._baseUrl = expectedHost;
+        const facilities = new Facilities(baseSdk, request);
+        facilities._baseUrl = expectedHost;
 
-      promise = facilities.get(expectedFacilityId);
-    });
+        promise = facilities.get(expectedFacilityId);
+      });
 
-    it('gets a list of facilities from the server', function() {
-      expect(request.get).to.be.calledWith(`${expectedHost}/facilities/${expectedFacilityId}`);
-    });
+      it('gets a list of facilities from the server', function() {
+        expect(request.get).to.be.calledWith(`${expectedHost}/facilities/${expectedFacilityId}`);
+      });
 
-    it('formats the facility object', function() {
-      return promise.then(() => {
-        expect(formatFacility).to.be.calledWith(rawFacility);
+      it('formats the facility object', function() {
+        return promise.then(() => {
+          expect(formatFacility).to.be.calledWith(rawFacility);
+        });
+      });
+
+      it('returns the requested facility', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.equal(formattedFacility);
       });
     });
 
-    it('returns the requested facility', function() {
-      return expect(promise).to.be.fulfilled
-        .and.to.eventually.equal(formattedFacility);
+    context('the facility id is not provided', function() {
+      it('throws an error', function() {
+        const facilities = new Facilities(baseSdk, baseRequest);
+        const fn = () => facilities.get();
+
+        expect(fn).to.throw('A facility id is required for getting information about a facility');
+      });
     });
   });
 
@@ -253,54 +264,66 @@ describe('Facilities', function() {
   });
 
   describe('getAllByOrganizationId', function() {
-    let expectedHost;
-    let expectedOrganizationId;
-    let formatFacility;
-    let formattedFacilities;
-    let promise;
-    let rawFacilities;
-    let request;
+    context('the organization id is not provided', function() {
+      let expectedHost;
+      let expectedOrganizationId;
+      let formatFacility;
+      let formattedFacilities;
+      let promise;
+      let rawFacilities;
+      let request;
 
-    beforeEach(function() {
-      expectedHost = faker.internet.url();
-      expectedOrganizationId = faker.random.number();
-      const numberOfFacilities = faker.random.number({ min: 1, max: 10 });
-      formattedFacilities = fixture.buildList('facility', numberOfFacilities);
-      rawFacilities = fixture.buildList('facility', numberOfFacilities, null, { fromServer: true });
+      beforeEach(function() {
+        expectedHost = faker.internet.url();
+        expectedOrganizationId = faker.random.number();
+        const numberOfFacilities = faker.random.number({ min: 1, max: 10 });
+        formattedFacilities = fixture.buildList('facility', numberOfFacilities);
+        rawFacilities = fixture.buildList('facility', numberOfFacilities, null, { fromServer: true });
 
-      formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
-        .callsFake((facility) => {
-          const index = rawFacilities.indexOf(facility);
-          return formattedFacilities[index];
+        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacility')
+          .callsFake((facility) => {
+            const index = rawFacilities.indexOf(facility);
+            return formattedFacilities[index];
+          });
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(rawFacilities)
+        };
+
+        const facilities = new Facilities(baseSdk, request);
+        facilities._baseUrl = expectedHost;
+
+        promise = facilities.getAllByOrganizationId(expectedOrganizationId);
+      });
+
+      it('gets a list of facilities for an organization from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/facilities`
+        );
+      });
+
+      it('formats the facility object', function() {
+        return promise.then(() => {
+          rawFacilities.forEach((facility) => {
+            expect(formatFacility).to.be.calledWith(facility);
+          });
         });
-      request = {
-        ...baseRequest,
-        get: this.sandbox.stub().resolves(rawFacilities)
-      };
+      });
 
-      const facilities = new Facilities(baseSdk, request);
-      facilities._baseUrl = expectedHost;
-
-      promise = facilities.getAllByOrganizationId(expectedOrganizationId);
-    });
-
-    it('gets a list of facilities for an organization from the server', function() {
-      expect(request.get).to.be.calledWith(
-        `${expectedHost}/organizations/${expectedOrganizationId}/facilities`
-      );
-    });
-
-    it('formats the facility object', function() {
-      return promise.then(() => {
-        rawFacilities.forEach((facility) => {
-          expect(formatFacility).to.be.calledWith(facility);
-        });
+      it('returns a list of facilities', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.deep.equal(formattedFacilities);
       });
     });
 
-    it('returns a list of facilities', function() {
-      return expect(promise).to.be.fulfilled
-        .and.to.eventually.deep.equal(formattedFacilities);
+    context('the organization id is not provided', function() {
+      it('throws an error', function() {
+        const facilities = new Facilities(baseSdk, baseRequest);
+        const fn = () => facilities.getAllByOrganizationId();
+
+        expect(fn).to
+          .throw("An organization id is required for getting a list of an organization's facilities");
+      });
     });
   });
 

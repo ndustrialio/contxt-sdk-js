@@ -110,6 +110,7 @@ class Facilities {
    *
    * @fulfill {undefined}
    * @reject {Error}
+   * @throws {Error}
    */
   delete(facilityId) {
     if (!facilityId) {
@@ -130,6 +131,7 @@ class Facilities {
    * @returns {Promise}
    * @fulfill {Facility} Information about a facility
    * @reject {Error}
+   * @throws {Error}
    *
    * @example
    * contxtSdk.facilities.get(25)
@@ -137,6 +139,10 @@ class Facilities {
    *   .catch((err) => console.log(err));
    */
   get(facilityId) {
+    if (!facilityId) {
+      throw new Error('A facility id is required for getting information about a facility');
+    }
+
     return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
       .then((facility) => this._formatFacility(facility));
   }
@@ -172,6 +178,7 @@ class Facilities {
    * @returns {Promise}
    * @fulfill {Facility[]} Information about all facilities
    * @reject {Error}
+   * @throws {Error}
    *
    * @example
    * contxtSdk.facilities.getAllByOrganizationId(25)
@@ -179,6 +186,10 @@ class Facilities {
    *   .catch((err) => console.log(err));
    */
   getAllByOrganizationId(organizationId) {
+    if (!organizationId) {
+      throw new Error("An organization id is required for getting a list of an organization's facilities");
+    }
+
     return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
       .then((facilities) => facilities.map((facility) => this._formatFacility(facility)));
   }
