@@ -101,6 +101,7 @@ class Facilities {
    *
    * @param {number} facilityId The id of the facility
    *
+   * @returns {Promise}
    * @fulfill {undefined}
    * @reject {Error}
    *

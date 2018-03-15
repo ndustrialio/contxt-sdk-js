@@ -9,7 +9,7 @@ of, information about different facilities
 * [Facilities](#Facilities)
     * [new Facilities(sdk, request)](#new_Facilities_new)
     * [.create(options)](#Facilities+create) ⇒ <code>Promise</code>
-    * [.delete(facilityId)](#Facilities+delete)
+    * [.delete(facilityId)](#Facilities+delete) ⇒ <code>Promise</code>
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
@@ -63,7 +63,7 @@ contxtSdk.facilities
 ```
 <a name="Facilities+delete"></a>
 
-### contxtSdk.facilities.delete(facilityId)
+### contxtSdk.facilities.delete(facilityId) ⇒ <code>Promise</code>
 Deletes a facility
 
 API Endpoint: '/facilities/:facilityId'
