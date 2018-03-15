@@ -248,6 +248,8 @@ describe('Facilities', function() {
 
     it('formats the facility object', function() {
       return promise.then(() => {
+        expect(formatFacility).to.have.callCount(rawFacilities.length);
+
         rawFacilities.forEach((facility) => {
           expect(formatFacility).to.be.calledWith(facility);
         });
@@ -301,6 +303,8 @@ describe('Facilities', function() {
 
       it('formats the facility object', function() {
         return promise.then(() => {
+          expect(formatFacility).to.have.callCount(rawFacilities.length);
+
           rawFacilities.forEach((facility) => {
             expect(formatFacility).to.be.calledWith(facility);
           });
