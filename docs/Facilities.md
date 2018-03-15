@@ -55,7 +55,7 @@ Method: POST
 contxtSdk.facilities
   .create({
     address: '221 B Baker St, London, England',
-    name: 'Sherlock Homes Museum',
+    name: 'Sherlock Holmes Museum',
     organizationId: 25
   })
   .then((facilities) => console.log(facilities));

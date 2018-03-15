@@ -70,7 +70,7 @@ class Facilities {
    * contxtSdk.facilities
    *   .create({
    *     address: '221 B Baker St, London, England',
-   *     name: 'Sherlock Homes Museum',
+   *     name: 'Sherlock Holmes Museum',
    *     organizationId: 25
    *   })
    *   .then((facilities) => console.log(facilities));
@@ -79,7 +79,7 @@ class Facilities {
   create(facility = {}) {
     const requiredFields = ['organizationId', 'name', 'timezone'];
 
-    for (let i = 0; requiredFields.length > i; i++) {
+    for (let i = 0; i < requiredFields.length; i++) {
       const field = requiredFields[i];
 
       if (!facility[field]) {
