@@ -13,6 +13,7 @@ of, information about different facilities
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.update(facilityId, update)](#Facilities+update) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
 
@@ -153,3 +154,24 @@ contxtSdk.facilities.getAllByOrganizationId(25)
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
 ```
+<a name="Facilities+update"></a>
+
+### contxtSdk.facilities.update(facilityId, update) ⇒ <code>Promise</code>
+Updates a facility's specifics
+
+API Endpoint: '/facilities/:facilityId'
+Method: PUT
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Throws**:
+
+- <code>Error</code> 
+
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>number</code> | The id of the facility to update |
+| update | <code>Object</code> | An object containing the updated data for the facility |
+

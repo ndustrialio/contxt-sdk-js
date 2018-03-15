@@ -11,7 +11,8 @@ describe('Facilities', function() {
     baseRequest = {
       delete: this.sandbox.stub().resolves(),
       get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves()
+      post: this.sandbox.stub().resolves(),
+      put: this.sandbox.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -332,14 +333,16 @@ describe('Facilities', function() {
       let expectedHost;
       let facilityUpdate;
       let formatFacilityToServer;
+      let formattedFacility;
       let promise;
 
       beforeEach(function() {
         expectedHost = faker.internet.url();
         facilityUpdate = fixture.build('facility');
+        formattedFacility = fixture.build('facility', null, { fromServer: true });
 
         formatFacilityToServer = this.sandbox.stub(Facilities.prototype, '_formatFacilityToServer')
-          .returns({});
+          .returns(formattedFacility);
 
         const facilities = new Facilities(baseSdk, baseRequest);
         facilities._baseUrl = expectedHost;
@@ -354,7 +357,7 @@ describe('Facilities', function() {
       it('updates the facility', function() {
         expect(baseRequest.put).to.be.calledWith(
           `${expectedHost}/facilities/${facilityUpdate.id}`,
-          {}
+          formattedFacility
         );
       });
 
@@ -436,6 +439,41 @@ describe('Facilities', function() {
     });
 
     it('converts the object keys to the camelCase', function() {
+      expect(formattedFacility).to.deep.equal(expectedFacility);
+    });
+  });
+
+  describe('_formatFacilityToServer', function() {
+    let expectedFacility;
+    let facility;
+    let formattedFacility;
+
+    beforeEach(function() {
+      facility = fixture.build('facility');
+      expectedFacility = omit(
+        {
+          ...facility,
+          geometry_id: facility.geometryId,
+          Info: facility.info,
+          organization_id: facility.organizationId,
+          weather_location_id: facility.weatherLocationId
+        },
+        [
+          'createdAt',
+          'geometryId',
+          'id',
+          'info',
+          'organization',
+          'organizationId',
+          'tags',
+          'weatherLocationId'
+        ]
+      );
+
+      formattedFacility = Facilities.prototype._formatFacilityToServer(facility);
+    });
+
+    it('converts the object keys to snake case and capitalizes certain keys', function() {
       expect(formattedFacility).to.deep.equal(expectedFacility);
     });
   });

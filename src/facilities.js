@@ -1,3 +1,5 @@
+import isPlainObject from 'lodash.isplainobject';
+
 /**
  * @typedef {Object} Facility
  * @property {string} address1
@@ -196,6 +198,38 @@ class Facilities {
   }
 
   /**
+   * Updates a facility's specifics
+   *
+   * API Endpoint: '/facilities/:facilityId'
+   * Method: PUT
+   *
+   * @param {number} facilityId The id of the facility to update
+   * @param {Object} update An object containing the updated data for the facility
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   * @throws {Error}
+   */
+  update(facilityId, update) {
+    if (!facilityId) {
+      throw new Error('A facility id is required to update a facility.');
+    }
+
+    if (!update) {
+      throw new Error('An update is required to update a facility.');
+    }
+
+    if (!isPlainObject(update)) {
+      throw new Error('The facility update must be a well-formed object with the data you wish to update.');
+    }
+
+    const formattedUpdate = this._formatFacilityToServer(update);
+
+    return this._request.put(`${this._baseUrl}/facilities/${facilityId}`, formattedUpdate);
+  }
+
+  /**
    * Normalizes the facility object returned from the API server
    *
    * @param {Object} input
@@ -249,53 +283,89 @@ class Facilities {
   }
 
   /**
-   * Normalizes the organization object returned from the API server
+   * Normalizes the facility object returned from the API server
    *
-   * @param {Object} organization
-   * @param {string} organization.created_at ISO 8601 Extended Format date/time string
-   * @param {string} organization.id UUID
-   * @param {string} organization.name
-   * @param {string} organization.updated_at
-   * @param {string} organization_id UUID corresponding with an organization
+   * @param {Facility} input
    *
-   * @returns {Object} organization
-   * @returns {string} organization.createdAt ISO 8601 Extended Format date/time string
-   * @returns {string} organization.id UUID formatted id
-   * @returns {string} organization.name
-   * @returns {string} organization.updatedAt ISO 8601 Extended Format date/time string
+   * @returns {Object} output
+   * @returns {string} output.address1
+   * @returns {string} output.address2
+   * @returns {string} output.city
+   * @returns {string} output.geometry_id UUID corresponding with a geometry
+   * @returns {Object} output.Info User declared information
+   * @returns {string} output.name
+   * @returns {string} output.organization_id UUID corresponding with an organization
+   * @returns {string} output.state
+   * @returns {string} output.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
+   * @returns {string} output.weather_location_id
+   * @returns {string} output.zip
    *
    * @private
    */
-  _formatOrganizationFromServer(organization) {
+  _formatFacilityToServer(input) {
     return {
-      createdAt: organization.created_at,
-      id: organization.id,
-      name: organization.name,
-      updatedAt: organization.updated_at
+      address1: input.address1,
+      address2: input.address2,
+      city: input.city,
+      geometry_id: input.geometryId,
+      Info: input.info,
+      name: input.name,
+      organization_id: input.organizationId,
+      state: input.state,
+      timezone: input.timezone,
+      weather_location_id: input.weatherLocationId,
+      zip: input.zip
+    };
+  }
+
+  /**
+   * Normalizes the organization object returned from the API server
+   *
+   * @param {Object} input
+   * @param {string} input.created_at ISO 8601 Extended Format date/time string
+   * @param {string} input.id UUID
+   * @param {string} input.name
+   * @param {string} input.updated_at
+   * @param {string} input.organization_id UUID corresponding with an organization
+   *
+   * @returns {Object} output
+   * @returns {string} output.createdAt ISO 8601 Extended Format date/time string
+   * @returns {string} output.id UUID formatted id
+   * @returns {string} output.name
+   * @returns {string} output.updatedAt ISO 8601 Extended Format date/time string
+   *
+   * @private
+   */
+  _formatOrganizationFromServer(input) {
+    return {
+      createdAt: input.created_at,
+      id: input.id,
+      name: input.name,
+      updatedAt: input.updated_at
     };
   }
 
   /**
    * Normalizes the tags array returned from the API server
    *
-   * @param {Object[]} tags
-   * @param {string} tags[].created_at ISO 8601 Extended Format date/time string
-   * @param {number} tags[].facility_id Id corresponding with the parent facility
-   * @param {number} tags[].id
-   * @param {string} tags[].name
-   * @param {string} tags[].updated_at ISO 8601 Extended Format date/time string
+   * @param {Object[]} input
+   * @param {string} input[].created_at ISO 8601 Extended Format date/time string
+   * @param {number} input[].facility_id Id corresponding with the parent facility
+   * @param {number} input[].id
+   * @param {string} input[].name
+   * @param {string} input[].updated_at ISO 8601 Extended Format date/time string
    *
-   * @returns {Object[]} tags
-   * @returns {string} tags[].createdAt ISO 8601 Extended Format date/time string
-   * @returns {number} tags[].id
-   * @returns {number} tags[].facilityId
-   * @returns {string} tags[].name
-   * @returns {string} tags[].updatedAt ISO 8601 Extended Format date/time string
+   * @returns {Object[]} output
+   * @returns {string} output[].createdAt ISO 8601 Extended Format date/time string
+   * @returns {number} output[].id
+   * @returns {number} output[].facilityId
+   * @returns {string} output[].name
+   * @returns {string} output[].updatedAt ISO 8601 Extended Format date/time string
    *
    * @private
    */
-  _formatTagsFromServer(tags) {
-    return tags.map((tag) => {
+  _formatTagsFromServer(input) {
+    return input.map((tag) => {
       return {
         createdAt: tag.created_at,
         facilityId: tag.facility_id,
