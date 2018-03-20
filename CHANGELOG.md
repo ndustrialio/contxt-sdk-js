@@ -1,3 +1,8 @@
+## [v0.0.5](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.5) (2018-03-20)
+
+**Added**
+- Facilities#create, Facilities#delete, Facilities#getAllByOrganizationId, and Facilities#update
+
 ## [v0.0.4](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.4) (2018-03-08)
 
 **Added**
