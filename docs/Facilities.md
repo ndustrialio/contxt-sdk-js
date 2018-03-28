@@ -9,12 +9,12 @@ of, information about different facilities
 * [Facilities](#Facilities)
     * [new Facilities(sdk, request)](#new_Facilities_new)
     * [.create(options)](#Facilities+create) ⇒ <code>Promise</code>
+    * [.createOrUpdateInfo(facilityId, update)](#Facilities+createOrUpdateInfo) ⇒ <code>Promise</code>
     * [.delete(facilityId)](#Facilities+delete) ⇒ <code>Promise</code>
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.update(facilityId, update)](#Facilities+update) ⇒ <code>Promise</code>
-    * [.updateInfo(facilityId, update)](#Facilities+updateInfo) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
 
@@ -61,6 +61,29 @@ contxtSdk.facilities
   })
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
+```
+<a name="Facilities+createOrUpdateInfo"></a>
+
+### contxtSdk.facilities.createOrUpdateInfo(facilityId, update) ⇒ <code>Promise</code>
+Creates or updates a facility's info (NOTE: This refers to the facility_info model)
+
+API Endpoint: '/facilities/:facilityId/info?should_update=true'
+Method: POST
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>number</code> | The id of the facility to update |
+| update | <code>Object</code> | An object containing the facility info for the facility |
+
+**Example**  
+```js
+contxtSdk.facilities.createOrUpdateInfo(25, {
+  square_feet: '10000'
+});
 ```
 <a name="Facilities+delete"></a>
 
@@ -177,28 +200,5 @@ contxtSdk.facilities.update(25, {
   address: '221 B Baker St, London, England',
   name: 'Sherlock Homes Museum',
   organizationId: 25
-});
-```
-<a name="Facilities+updateInfo"></a>
-
-### contxtSdk.facilities.updateInfo(facilityId, update) ⇒ <code>Promise</code>
-Updates a facility's info (NOTE: This refers to the facility_info model)
-
-API Endpoint: '/facilities/:facilityId/info'
-Method: POST
-
-**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Fulfill**: <code>undefined</code>  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| facilityId | <code>number</code> | The id of the facility to update |
-| update | <code>Object</code> | An object containing the updated facility info for the facility |
-
-**Example**  
-```js
-contxtSdk.facilities.updateInfo(25, {
-  square_feet: '10000'
 });
 ```

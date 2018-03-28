@@ -94,6 +94,48 @@ class Facilities {
   }
 
   /**
+   * Creates or updates a facility's info (NOTE: This refers to the facility_info model)
+   *
+   * API Endpoint: '/facilities/:facilityId/info?should_update=true'
+   * Method: POST
+   *
+   * @param {number} facilityId The id of the facility to update
+   * @param {Object} update An object containing the facility info for the facility
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.createOrUpdateInfo(25, {
+   *   square_feet: '10000'
+   * });
+   */
+  createOrUpdateInfo(facilityId, update) {
+    if (!facilityId) {
+      return Promise.reject(new Error("A facility id is required to update a facility's info."));
+    }
+
+    if (!update) {
+      return Promise.reject(new Error("An update is required to update a facility's info."));
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error('The facility info update must be a well-formed object with the data you wish to update.')
+      );
+    }
+
+    const options = {
+      params: {
+        should_update: true
+      }
+    };
+
+    return this._request.post(`${this._baseUrl}/facilities/${facilityId}/info`, update, options);
+  }
+
+  /**
    * Deletes a facility
    *
    * API Endpoint: '/facilities/:facilityId'
@@ -241,42 +283,6 @@ class Facilities {
     const formattedUpdate = this._formatFacilityToServer(update);
 
     return this._request.put(`${this._baseUrl}/facilities/${facilityId}`, formattedUpdate);
-  }
-
-  /**
-   * Updates a facility's info (NOTE: This refers to the facility_info model)
-   *
-   * API Endpoint: '/facilities/:facilityId/info'
-   * Method: POST
-   *
-   * @param {number} facilityId The id of the facility to update
-   * @param {Object} update An object containing the updated facility info for the facility
-   *
-   * @returns {Promise}
-   * @fulfill {undefined}
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.facilities.updateInfo(25, {
-   *   square_feet: '10000'
-   * });
-   */
-  updateInfo(facilityId, update) {
-    if (!facilityId) {
-      return Promise.reject(new Error("A facility id is required to update a facility's info."));
-    }
-
-    if (!update) {
-      return Promise.reject(new Error("An update is required to update a facility's info."));
-    }
-
-    if (!isPlainObject(update)) {
-      return Promise.reject(
-        new Error('The facility info update must be a well-formed object with the data you wish to update.')
-      );
-    }
-
-    return this._request.post(`${this._baseUrl}/facilities/${facilityId}/info`, update);
   }
 
   /**

@@ -1,3 +1,7 @@
+## [v0.0.7](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.7) (2018-03-29)
+**Renamed**
+- Facilities#updateInfo to Facilities#createOrUpdateInfo so that what the method does is more obvious
+
 ## [v0.0.6](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.6) (2018-03-28)
 **Added**
 - Facilities#updateInfo for updating a facility's facilily info

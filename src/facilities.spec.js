@@ -119,6 +119,70 @@ describe('Facilities', function() {
     });
   });
 
+  describe('createOrUpdateInfo', function() {
+    context('when all required information is available', function() {
+      let expectedHost;
+      let facilityId;
+      let facilityInfoUpdate;
+      let promise;
+
+      beforeEach(function() {
+        expectedHost = faker.internet.url();
+        facilityId = fixture.build('facility').id;
+        facilityInfoUpdate = fixture.build('facilityInfo');
+
+        const facilities = new Facilities(baseSdk, baseRequest);
+        facilities._baseUrl = expectedHost;
+
+        promise = facilities.createOrUpdateInfo(facilityId, facilityInfoUpdate);
+      });
+
+      it('updates the facility', function() {
+        expect(baseRequest.post).to.be.calledWith(
+          `${expectedHost}/facilities/${facilityId}/info`,
+          facilityInfoUpdate,
+          { params: { should_update: true } }
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is missing or malformed required information', function() {
+      let facilities;
+
+      beforeEach(function() {
+        facilities = new Facilities(baseSdk, baseRequest);
+      });
+
+      it('throws an error when there is no provided facility id', function() {
+        const facilityInfoUpdate = fixture.build('facilityInfo');
+        const promise = facilities.createOrUpdateInfo(null, facilityInfoUpdate);
+
+        return expect(promise).to.be
+          .rejectedWith("A facility id is required to update a facility's info.");
+      });
+
+      it('throws an error when there is no update provided', function() {
+        const facility = fixture.build('facility');
+        const promise = facilities.createOrUpdateInfo(facility.id);
+
+        return expect(promise).to.be.rejectedWith("An update is required to update a facility's info.");
+      });
+
+      it('throws an error when the update is not an object', function() {
+        const facility = fixture.build('facility');
+        const promise = facilities.createOrUpdateInfo(facility.id, [facility.info]);
+
+        return expect(promise).to.be.rejectedWith(
+          'The facility info update must be a well-formed object with the data you wish to update.'
+        );
+      });
+    });
+  });
+
   describe('delete', function() {
     context('the facility id is provided', function() {
       let expectedHost;
@@ -395,69 +459,6 @@ describe('Facilities', function() {
 
         return expect(promise).to.be.rejectedWith(
           'The facility update must be a well-formed object with the data you wish to update.'
-        );
-      });
-    });
-  });
-
-  describe('updateInfo', function() {
-    context('when all required information is available', function() {
-      let expectedHost;
-      let facilityId;
-      let facilityInfoUpdate;
-      let promise;
-
-      beforeEach(function() {
-        expectedHost = faker.internet.url();
-        facilityId = fixture.build('facility').id;
-        facilityInfoUpdate = fixture.build('facilityInfo');
-
-        const facilities = new Facilities(baseSdk, baseRequest);
-        facilities._baseUrl = expectedHost;
-
-        promise = facilities.updateInfo(facilityId, facilityInfoUpdate);
-      });
-
-      it('updates the facility', function() {
-        expect(baseRequest.post).to.be.calledWith(
-          `${expectedHost}/facilities/${facilityId}/info`,
-          facilityInfoUpdate
-        );
-      });
-
-      it('returns a fulfilled promise', function() {
-        return expect(promise).to.be.fulfilled;
-      });
-    });
-
-    context('when there is missing or malformed required information', function() {
-      let facilities;
-
-      beforeEach(function() {
-        facilities = new Facilities(baseSdk, baseRequest);
-      });
-
-      it('throws an error when there is no provided facility id', function() {
-        const facilityInfoUpdate = fixture.build('facilityInfo');
-        const promise = facilities.updateInfo(null, facilityInfoUpdate);
-
-        return expect(promise).to.be
-          .rejectedWith("A facility id is required to update a facility's info.");
-      });
-
-      it('throws an error when there is no update provided', function() {
-        const facility = fixture.build('facility');
-        const promise = facilities.updateInfo(facility.id);
-
-        return expect(promise).to.be.rejectedWith("An update is required to update a facility's info.");
-      });
-
-      it('throws an error when the update is not an object', function() {
-        const facility = fixture.build('facility');
-        const promise = facilities.updateInfo(facility.id, [facility.info]);
-
-        return expect(promise).to.be.rejectedWith(
-          'The facility info update must be a well-formed object with the data you wish to update.'
         );
       });
     });
