@@ -1,3 +1,7 @@
+## [v0.0.6](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.6) (2018-03-28)
+**Added**
+- Facilities#updateInfo for updating a facility's facilily info
+
 ## [v0.0.5](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.5) (2018-03-20)
 
 **Added**

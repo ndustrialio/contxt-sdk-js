@@ -14,6 +14,7 @@ of, information about different facilities
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.update(facilityId, update)](#Facilities+update) ⇒ <code>Promise</code>
+    * [.updateInfo(facilityId, update)](#Facilities+updateInfo) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
 
@@ -176,5 +177,28 @@ contxtSdk.facilities.update(25, {
   address: '221 B Baker St, London, England',
   name: 'Sherlock Homes Museum',
   organizationId: 25
+});
+```
+<a name="Facilities+updateInfo"></a>
+
+### contxtSdk.facilities.updateInfo(facilityId, update) ⇒ <code>Promise</code>
+Updates a facility's info (NOTE: This refers to the facility_info model)
+
+API Endpoint: '/facilities/:facilityId/info'
+Method: POST
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>number</code> | The id of the facility to update |
+| update | <code>Object</code> | An object containing the updated facility info for the facility |
+
+**Example**  
+```js
+contxtSdk.facilities.updateInfo(25, {
+  square_feet: '10000'
 });
 ```
