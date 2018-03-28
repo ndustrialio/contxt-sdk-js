@@ -244,6 +244,42 @@ class Facilities {
   }
 
   /**
+   * Updates a facility's info (NOTE: This refers to the facility_info model)
+   *
+   * API Endpoint: '/facilities/:facilityId/info'
+   * Method: POST
+   *
+   * @param {number} facilityId The id of the facility to update
+   * @param {Object} update An object containing the updated facility info for the facility
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.updateInfo(25, {
+   *   square_feet: '10000'
+   * });
+   */
+  updateInfo(facilityId, update) {
+    if (!facilityId) {
+      return Promise.reject(new Error("A facility id is required to update a facility's info."));
+    }
+
+    if (!update) {
+      return Promise.reject(new Error("An update is required to update a facility's info."));
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error('The facility info update must be a well-formed object with the data you wish to update.')
+      );
+    }
+
+    return this._request.post(`${this._baseUrl}/facilities/${facilityId}/info`, update);
+  }
+
+  /**
    * Normalizes the facility object returned from the API server
    *
    * @param {Object} input
