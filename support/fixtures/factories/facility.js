@@ -13,14 +13,7 @@ factory.define('facility')
     city: () => faker.address.city(),
     createdAt: () => faker.date.past().toISOString(),
     geometryId: () => faker.random.uuid(),
-    info: () => {
-      return {
-        primary_contact_email: faker.internet.email(),
-        primary_contact_first_name: faker.name.firstName(),
-        primary_contact_last_name: faker.name.lastName(),
-        square_feet: faker.random.number()
-      };
-    },
+    info: () => factory.build('facilityInfo'),
     state: () => faker.address.state(),
     timezone: () => {
       return faker.random.arrayElement([
