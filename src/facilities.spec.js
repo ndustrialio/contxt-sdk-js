@@ -1,5 +1,6 @@
 import omit from 'lodash.omit';
 import Facilities from './facilities';
+import * as facilitiesUtils from './utils/facilities';
 
 describe('Facilities', function() {
   let baseRequest;
@@ -66,9 +67,9 @@ describe('Facilities', function() {
         initialFacility = fixture.build('facility');
         rawFacility = fixture.build('facility', null, { fromServer: true });
 
-        formatFacilityFromServer = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
+        formatFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityFromServer')
           .returns(expectedFacility);
-        formatFacilityToServer = this.sandbox.stub(Facilities.prototype, '_formatFacilityToServer')
+        formatFacilityToServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityToServer')
           .returns(formattedFacility);
         request = {
           ...baseRequest,
@@ -224,7 +225,7 @@ describe('Facilities', function() {
     context('the facility id is provided', function() {
       let expectedFacilityId;
       let expectedHost;
-      let formatFacility;
+      let formatFacilityFromServer;
       let formattedFacility;
       let promise;
       let rawFacility;
@@ -236,7 +237,7 @@ describe('Facilities', function() {
         rawFacility = fixture.build('facility', null, { fromServer: true });
         formattedFacility = fixture.build('facility', { id: rawFacility.id });
 
-        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
+        formatFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityFromServer')
           .returns(formattedFacility);
         request = {
           ...baseRequest,
@@ -255,7 +256,7 @@ describe('Facilities', function() {
 
       it('formats the facility object', function() {
         return promise.then(() => {
-          expect(formatFacility).to.be.calledWith(rawFacility);
+          expect(formatFacilityFromServer).to.be.calledWith(rawFacility);
         });
       });
 
@@ -278,7 +279,7 @@ describe('Facilities', function() {
 
   describe('getAll', function() {
     let expectedHost;
-    let formatFacility;
+    let formatFacilityFromServer;
     let formattedFacilities;
     let promise;
     let rawFacilities;
@@ -290,7 +291,7 @@ describe('Facilities', function() {
       formattedFacilities = fixture.buildList('facility', numberOfFacilities);
       rawFacilities = fixture.buildList('facility', numberOfFacilities, null, { fromServer: true });
 
-      formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
+      formatFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityFromServer')
         .callsFake((facility) => {
           const index = rawFacilities.indexOf(facility);
           return formattedFacilities[index];
@@ -312,10 +313,10 @@ describe('Facilities', function() {
 
     it('formats the facility object', function() {
       return promise.then(() => {
-        expect(formatFacility).to.have.callCount(rawFacilities.length);
+        expect(formatFacilityFromServer).to.have.callCount(rawFacilities.length);
 
         rawFacilities.forEach((facility) => {
-          expect(formatFacility).to.be.calledWith(facility);
+          expect(formatFacilityFromServer).to.be.calledWith(facility);
         });
       });
     });
@@ -330,7 +331,7 @@ describe('Facilities', function() {
     context('the organization id is not provided', function() {
       let expectedHost;
       let expectedOrganizationId;
-      let formatFacility;
+      let formatFacilityFromServer;
       let formattedFacilities;
       let promise;
       let rawFacilities;
@@ -343,7 +344,7 @@ describe('Facilities', function() {
         formattedFacilities = fixture.buildList('facility', numberOfFacilities);
         rawFacilities = fixture.buildList('facility', numberOfFacilities, null, { fromServer: true });
 
-        formatFacility = this.sandbox.stub(Facilities.prototype, '_formatFacilityFromServer')
+        formatFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityFromServer')
           .callsFake((facility) => {
             const index = rawFacilities.indexOf(facility);
             return formattedFacilities[index];
@@ -367,10 +368,10 @@ describe('Facilities', function() {
 
       it('formats the facility object', function() {
         return promise.then(() => {
-          expect(formatFacility).to.have.callCount(rawFacilities.length);
+          expect(formatFacilityFromServer).to.have.callCount(rawFacilities.length);
 
           rawFacilities.forEach((facility) => {
-            expect(formatFacility).to.be.calledWith(facility);
+            expect(formatFacilityFromServer).to.be.calledWith(facility);
           });
         });
       });
@@ -406,7 +407,7 @@ describe('Facilities', function() {
         facilityUpdate = fixture.build('facility');
         formattedFacility = fixture.build('facility', null, { fromServer: true });
 
-        formatFacilityToServer = this.sandbox.stub(Facilities.prototype, '_formatFacilityToServer')
+        formatFacilityToServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityToServer')
           .returns(formattedFacility);
 
         const facilities = new Facilities(baseSdk, baseRequest);
@@ -461,148 +462,6 @@ describe('Facilities', function() {
           'The facility update must be a well-formed object with the data you wish to update.'
         );
       });
-    });
-  });
-
-  describe('_formatFacilityFromServer', function() {
-    let expectedFacility;
-    let facility;
-    let formatOrganizationFromServer;
-    let formatTagsFromServer;
-    let formattedFacility;
-
-    beforeEach(function() {
-      facility = fixture.build('facility', null, { fromServer: true });
-      expectedFacility = omit(
-        {
-          ...facility,
-          createdAt: facility.created_at,
-          geometryId: facility.geometry_id,
-          info: facility.Info,
-          organization: facility.Organization,
-          organizationId: facility.organization_id,
-          weatherLocationId: facility.weather_location_id
-        },
-        [
-          'created_at',
-          'geometry_id',
-          'Info',
-          'Organization',
-          'organization_id',
-          'weather_location_id'
-        ]
-      );
-
-      formatOrganizationFromServer = this.sandbox.stub(Facilities.prototype, '_formatOrganizationFromServer')
-        .callsFake((organization) => organization);
-      formatTagsFromServer = this.sandbox.stub(Facilities.prototype, '_formatTagsFromServer')
-        .callsFake((tags) => tags);
-
-      formattedFacility = Facilities.prototype._formatFacilityFromServer(facility);
-    });
-
-    it('formats the necessary children objects', function() {
-      expect(formatOrganizationFromServer).to.be.calledWith(facility.Organization);
-      expect(formatTagsFromServer).to.be.calledWith(facility.tags);
-    });
-
-    it('converts the object keys to the camelCase', function() {
-      expect(formattedFacility).to.deep.equal(expectedFacility);
-    });
-  });
-
-  describe('_formatFacilityToServer', function() {
-    let expectedFacility;
-    let facility;
-    let formattedFacility;
-
-    beforeEach(function() {
-      facility = fixture.build('facility');
-      expectedFacility = omit(
-        {
-          ...facility,
-          geometry_id: facility.geometryId,
-          Info: facility.info,
-          organization_id: facility.organizationId,
-          weather_location_id: facility.weatherLocationId
-        },
-        [
-          'createdAt',
-          'geometryId',
-          'id',
-          'info',
-          'organization',
-          'organizationId',
-          'tags',
-          'weatherLocationId'
-        ]
-      );
-
-      formattedFacility = Facilities.prototype._formatFacilityToServer(facility);
-    });
-
-    it('converts the object keys to snake case and capitalizes certain keys', function() {
-      expect(formattedFacility).to.deep.equal(expectedFacility);
-    });
-  });
-
-  describe('_formatOrganizationFromServer', function() {
-    let expectedOrganization;
-    let formattedOrganization;
-    let organization;
-
-    beforeEach(function() {
-      organization = fixture.build(
-        'organization',
-        null,
-        { fromServer: true }
-      );
-      expectedOrganization = omit(
-        {
-          ...organization,
-          createdAt: organization.created_at,
-          updatedAt: organization.updated_at
-        },
-        ['created_at', 'updated_at']
-      );
-
-      formattedOrganization = Facilities.prototype._formatOrganizationFromServer(organization);
-    });
-
-    it('converts the object keys to camelCase', function() {
-      expect(formattedOrganization).to.deep.equal(expectedOrganization);
-    });
-  });
-
-  describe('_formatTagsFromServer', function() {
-    let expectedTags;
-    let formattedTags;
-    let tags;
-
-    beforeEach(function() {
-      tags = fixture.buildList(
-        'facilityTag',
-        faker.random.number({ min: 1, max: 2 }),
-        null,
-        { fromServer: true }
-      );
-      expectedTags = tags.map((tag) => {
-        return omit(
-          {
-            ...tag,
-            createdAt: tag.created_at,
-            facilityId: tag.facility_id,
-            updatedAt: tag.updated_at
-          },
-          ['created_at', 'facility_id', 'updated_at']
-        );
-      });
-
-      formattedTags = Facilities.prototype._formatTagsFromServer(tags);
-    });
-
-    it('converts the object keys to camelCase', function() {
-      expect(formattedTags).to.deep.equal(expectedTags);
     });
   });
 });
