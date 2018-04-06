@@ -1,5 +1,5 @@
 /**
- * Normalizes the facility object returned from the API server
+ * Normalizes the facility object being sent to the API server
  *
  * @param {Facility} input
  *

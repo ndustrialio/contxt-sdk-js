@@ -120,6 +120,75 @@ describe('Facilities', function() {
     });
   });
 
+  describe('createGrouping', function() {
+    context('when all required information is supplied', function() {
+      let expectedGrouping;
+      let expectedHost;
+      let formatGroupingFromServer;
+      let formatGroupingToServer;
+      let formattedGroupingFromServer;
+      let formattedGroupingToServer;
+      let initialGrouping;
+      let promise;
+      let request;
+
+      beforeEach(function() {
+        expectedHost = faker.internet.url();
+        initialGrouping = fixture.build('facilityGrouping');
+        formattedGroupingToServer = fixture.build('facilityGrouping', null, { fromServer: true });
+        formattedGroupingFromServer = fixture.build('facilityGrouping', null, { fromServer: true });
+        expectedGrouping = fixture.build('facilityGrouping', null, { fromServer: true });
+
+        formatGroupingFromServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingFromServer')
+          .returns(expectedGrouping);
+        formatGroupingToServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingToServer')
+          .returns(formattedGroupingToServer);
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(formattedGroupingFromServer)
+        };
+
+        const facilities = new Facilities(baseSdk, request);
+        facilities._baseUrl = expectedHost;
+
+        promise = facilities.createGrouping(initialGrouping);
+      });
+
+      it('formats the submitted facility grouping object to send to the server', function() {
+        expect(formatGroupingToServer).to.be.calledWith(initialGrouping);
+      });
+
+      it('creates a new facility grouping', function() {
+        expect(request.post)
+          .to.be.deep.calledWith(`${expectedHost}/groupings`, formattedGroupingToServer);
+      });
+
+      it('formats the returned facility grouping object', function() {
+        return promise.then(() => {
+          expect(formatGroupingFromServer).to.be.calledWith(formattedGroupingFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the new facility grouping information', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.equal(expectedGrouping);
+      });
+    });
+
+    context('when there is missing required information', function() {
+      ['name', 'organizationId'].forEach(function(field) {
+        it(`it throws an error when ${field} is missing`, function() {
+          const facilityGrouping = fixture.build('facilityGrouping');
+          const facilities = new Facilities(baseSdk, baseRequest);
+          const promise = facilities.createGrouping(omit(facilityGrouping, [field]));
+
+          return expect(promise).to.be
+            .rejectedWith(`A ${field} is required to create a new facility grouping.`);
+        });
+      });
+    });
+  });
+
   describe('createOrUpdateInfo', function() {
     context('when all required information is available', function() {
       let expectedHost;

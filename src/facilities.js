@@ -1,7 +1,9 @@
 import isPlainObject from 'lodash.isplainobject';
 import {
   formatFacilityFromServer,
-  formatFacilityToServer
+  formatFacilityToServer,
+  formatGroupingFromServer,
+  formatGroupingToServer
 } from './utils/facilities';
 
 /**
@@ -32,6 +34,19 @@ import {
  */
 
 /**
+ * @typedef {Object} FacilityGrouping
+ * @param {string} createdAt ISO 8601 Extended Format date/time string
+ * @param {string} description
+ * @param {string} id UUID
+ * @param {boolean} isPrivate
+ * @param {string} name
+ * @param {string} organizationId UUID
+ * @param {string} ownerId Auth0 identifer of the user
+ * @param {string} parentGroupingId UUID
+ * @param {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to, and the manipulation
  * of, information about different facilities
  *
@@ -54,17 +69,17 @@ class Facilities {
    * API Endpoint: '/facilities'
    * Method: POST
    *
-   * @param {Object} options
-   * @param {string} [options.address1]
-   * @param {string} [options.address2]
-   * @param {string} [options.city]
-   * @param {string} [options.geometryId] UUID corresponding with a geometry
-   * @param {string} options.name
-   * @param {string} options.organizationId UUID corresponding with an organization
-   * @param {string} [options.state]
-   * @param {string} options.timezone
-   * @param {number} [options.weatherLocationId]
-   * @param {string} [options.zip]
+   * @param {Object} facility
+   * @param {string} [facility.address1]
+   * @param {string} [facility.address2]
+   * @param {string} [facility.city]
+   * @param {string} [facility.geometryId] UUID corresponding with a geometry
+   * @param {string} facility.name
+   * @param {string} facility.organizationId UUID corresponding with an organization
+   * @param {string} [facility.state]
+   * @param {string} facility.timezone
+   * @param {number} [facility.weatherLocationId]
+   * @param {string} [facility.zip]
    *
    * @returns {Promise}
    * @fulfill {Facility} Information about the new facility
@@ -98,6 +113,54 @@ class Facilities {
   }
 
   /**
+   * Creates a new facility grouping
+   *
+   * API Endpoint: '/groupings'
+   * Method: POST
+   *
+   * @param {Object} facilityGrouping
+   * @param {string} [facilityGrouping.description]
+   * @param {boolean} [facilityGrouping.isPrivate = false]
+   * @param {string} facilityGrouping.name
+   * @param {string} facilityGrouping.organizationId UUID
+   * @param {string} [facilityGrouping.parentGroupingId] UUID
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityGrouping} Information about the new facility grouping
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities
+   *   .createGrouping({
+   *     description: 'US States of CT, MA, ME, NH, RI, VT',
+   *     isPrivate: false,
+   *     name: 'New England, USA',
+   *     organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
+   *     parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
+   *   })
+   *   .then((facilities) => console.log(facilities));
+   *   .catch((err) => console.log(err));
+   */
+  createGrouping(grouping = {}) {
+    const requiredFields = ['name', 'organizationId'];
+
+    for (let i = 0; requiredFields.length > i; i++) {
+      const field = requiredFields[i];
+
+      if (!grouping[field]) {
+        return Promise.reject(
+          new Error(`A ${field} is required to create a new facility grouping.`)
+        );
+      }
+    }
+
+    const data = formatGroupingToServer(grouping);
+
+    return this._request.post(`${this._baseUrl}/groupings`, data)
+      .then((grouping) => formatGroupingFromServer(grouping));
+  }
+
+  /**
    * Creates or updates a facility's info (NOTE: This refers to the facility_info model)
    *
    * API Endpoint: '/facilities/:facilityId/info?should_update=true'
@@ -125,7 +188,9 @@ class Facilities {
     }
 
     if (!isPlainObject(update)) {
-      return Promise.reject(new Error('The facility info update must be a well-formed object with the data you wish to update.'));
+      return Promise.reject(
+        new Error('The facility info update must be a well-formed object with the data you wish to update.')
+      );
     }
 
     const options = {
@@ -179,7 +244,9 @@ class Facilities {
    */
   get(facilityId) {
     if (!facilityId) {
-      return Promise.reject(new Error('A facility id is required for getting information about a facility'));
+      return Promise.reject(
+        new Error('A facility id is required for getting information about a facility')
+      );
     }
 
     return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
@@ -225,7 +292,9 @@ class Facilities {
    */
   getAllByOrganizationId(organizationId) {
     if (!organizationId) {
-      return Promise.reject(new Error("An organization id is required for getting a list of an organization's facilities"));
+      return Promise.reject(
+        new Error("An organization id is required for getting a list of an organization's facilities")
+      );
     }
 
     return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
@@ -273,7 +342,9 @@ class Facilities {
     }
 
     if (!isPlainObject(update)) {
-      return Promise.reject(new Error('The facility update must be a well-formed object with the data you wish to update.'));
+      return Promise.reject(
+        new Error('The facility update must be a well-formed object with the data you wish to update.')
+      );
     }
 
     const formattedUpdate = formatFacilityToServer(update);
