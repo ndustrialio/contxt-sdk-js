@@ -6,6 +6,7 @@ require('./audience');
 require('./defaultAudiences');
 require('./facility');
 require('./facilityGrouping');
+require('./facilityGroupingFacility');
 require('./facilityInfo');
 require('./facilityTag');
 require('./organization');

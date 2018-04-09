@@ -48,6 +48,74 @@ describe('Facilities', function() {
     });
   });
 
+  describe('addFacilityToGrouping', function() {
+    context('when all required information is supplied', function() {
+      let expectedFacilityId;
+      let expectedGroupingFacility;
+      let expectedGroupingId;
+      let expectedHost;
+      let formatGroupingFacilityFromServer;
+      let promise;
+      let rawGroupingFacility;
+      let request;
+
+      beforeEach(function() {
+        expectedGroupingFacility = fixture.build('facilityGroupingFacility');
+        expectedFacilityId = expectedGroupingFacility.facilityId;
+        expectedGroupingId = expectedGroupingFacility.facilityGroupingId;
+        expectedHost = faker.internet.url();
+        rawGroupingFacility = fixture.build('facilityGroupingFacility', { fromServer: true });
+
+        formatGroupingFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingFacilityFromServer')
+          .returns(expectedGroupingFacility);
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(rawGroupingFacility)
+        };
+
+        const facilities = new Facilities(baseSdk, request);
+        facilities._baseUrl = expectedHost;
+
+        promise = facilities.addFacilityToGrouping(expectedGroupingId, expectedFacilityId);
+      });
+
+      it('creates the new facility grouping <--> facility relationship', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/groupings/${expectedGroupingId}/facility/${expectedFacilityId}`
+        );
+      });
+
+      it('formats the returning facility grouping facility object', function() {
+        return promise.then(() => {
+          expect(formatGroupingFacilityFromServer).to.be.calledWith(rawGroupingFacility);
+        });
+      });
+
+      it('returns a fulfilled promise with the new facility information', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.equal(expectedGroupingFacility);
+      });
+    });
+
+    context('when there is missing required information', function() {
+      ['facilityGroupingId', 'facilityId'].forEach(function(field) {
+        it(`it throws an error when ${field} is missing`, function() {
+          const groupingFacility = fixture.build('facilityGroupingFacility');
+          delete groupingFacility[field];
+
+          const facilities = new Facilities(baseSdk, baseRequest);
+          const promise = facilities.addFacilityToGrouping(
+            groupingFacility.facilityGroupingId,
+            groupingFacility.facilityId
+          );
+
+          return expect(promise).to.be
+            .rejectedWith(`A ${field} is required to create a between a facility grouping and a facility.`);
+        });
+      });
+    });
+  });
+
   describe('create', function() {
     context('when all required information is supplied', function() {
       let expectedFacility;

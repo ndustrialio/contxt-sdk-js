@@ -12,7 +12,7 @@
  * @param {string} input.parent_grouping_id UUID
  * @param {string} input.updated_at ISO 8601 Extended Format date/time string
  *
- * @returns {FacilityGrouping}}
+ * @returns {FacilityGrouping}
  *
  * @private
  */

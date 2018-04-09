@@ -2,6 +2,7 @@ import isPlainObject from 'lodash.isplainobject';
 import {
   formatFacilityFromServer,
   formatFacilityToServer,
+  formatGroupingFacilityFromServer,
   formatGroupingFromServer,
   formatGroupingToServer
 } from './utils/facilities';
@@ -47,6 +48,15 @@ import {
  */
 
 /**
+ * @typedef {Object} FacilityGroupingFacility
+ * @param {string} createdAt ISO 8601 Extended Format date/time string
+ * @param {string} facilityGroupingId UUID
+ * @param {number} facilityId
+ * @param {string} id UUID
+ * @param {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to, and the manipulation
  * of, information about different facilities
  *
@@ -61,6 +71,41 @@ class Facilities {
     this._baseUrl = `${sdk.config.audiences.facilities.host}/v1`;
     this._request = request;
     this._sdk = sdk;
+  }
+
+  /**
+   * Adds a facility to a facility grouping
+   *
+   * API Endpoint: '/groupings/:facilityGroupingId/facilities/:facilityId'
+   * Method: POST
+   *
+   * @param {string} facilityGroupingId UUID corresponding with a facility grouping
+   * @param {number} facilityId
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityGroupingFacility} Information about the new facility/grouping relationship
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.addFacilityToGrouping('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+   *   .then((grouping) => console.log(grouping));
+   *   .catch((err) => console.log(err));
+   */
+  addFacilityToGrouping(facilityGroupingId, facilityId) {
+    let errorMsg;
+
+    if (!facilityGroupingId) {
+      errorMsg = 'A facilityGroupingId is required to create a between a facility grouping and a facility.';
+    } else if (!facilityId) {
+      errorMsg = 'A facilityId is required to create a between a facility grouping and a facility.';
+    }
+
+    if (errorMsg) {
+      return Promise.reject(new Error(errorMsg));
+    }
+
+    return this._request.post(`${this._baseUrl}/groupings/${facilityGroupingId}/facility/${facilityId}`)
+      .then((groupingFacility) => formatGroupingFacilityFromServer(groupingFacility));
   }
 
   /**

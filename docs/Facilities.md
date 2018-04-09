@@ -8,6 +8,7 @@ of, information about different facilities
 
 * [Facilities](#Facilities)
     * [new Facilities(sdk, request)](#new_Facilities_new)
+    * [.addFacilityToGrouping(facilityGroupingId, facilityId)](#Facilities+addFacilityToGrouping) ⇒ <code>Promise</code>
     * [.create(facility)](#Facilities+create) ⇒ <code>Promise</code>
     * [.createGrouping(facilityGrouping)](#Facilities+createGrouping) ⇒ <code>Promise</code>
     * [.createOrUpdateInfo(facilityId, update)](#Facilities+createOrUpdateInfo) ⇒ <code>Promise</code>
@@ -26,6 +27,29 @@ of, information about different facilities
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Facilities+addFacilityToGrouping"></a>
+
+### contxtSdk.facilities.addFacilityToGrouping(facilityGroupingId, facilityId) ⇒ <code>Promise</code>
+Adds a facility to a facility grouping
+
+API Endpoint: '/groupings/:facilityGroupingId/facilities/:facilityId'
+Method: POST
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: [<code>FacilityGroupingFacility</code>](./Typedefs.md#FacilityGroupingFacility) Information about the new facility/grouping relationship  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityGroupingId | <code>string</code> | UUID corresponding with a facility grouping |
+| facilityId | <code>number</code> |  |
+
+**Example**  
+```js
+contxtSdk.facilities.addFacilityToGrouping('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+  .then((grouping) => console.log(grouping));
+  .catch((err) => console.log(err));
+```
 <a name="Facilities+create"></a>
 
 ### contxtSdk.facilities.create(facility) ⇒ <code>Promise</code>
@@ -94,7 +118,7 @@ contxtSdk.facilities
     organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
     parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
   })
-  .then((facilities) => console.log(facilities));
+  .then((grouping) => console.log(grouping));
   .catch((err) => console.log(err));
 ```
 <a name="Facilities+createOrUpdateInfo"></a>
