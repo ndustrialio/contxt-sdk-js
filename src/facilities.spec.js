@@ -5,6 +5,7 @@ import * as facilitiesUtils from './utils/facilities';
 describe('Facilities', function() {
   let baseRequest;
   let baseSdk;
+  let expectedHost;
 
   beforeEach(function() {
     this.sandbox = sandbox.create();
@@ -22,6 +23,7 @@ describe('Facilities', function() {
         }
       }
     };
+    expectedHost = faker.internet.url();
   });
 
   afterEach(function() {
@@ -53,7 +55,6 @@ describe('Facilities', function() {
       let expectedFacilityId;
       let expectedGroupingFacility;
       let expectedGroupingId;
-      let expectedHost;
       let formatGroupingFacilityFromServer;
       let promise;
       let rawGroupingFacility;
@@ -63,7 +64,6 @@ describe('Facilities', function() {
         expectedGroupingFacility = fixture.build('facilityGroupingFacility');
         expectedFacilityId = expectedGroupingFacility.facilityId;
         expectedGroupingId = expectedGroupingFacility.facilityGroupingId;
-        expectedHost = faker.internet.url();
         rawGroupingFacility = fixture.build('facilityGroupingFacility', { fromServer: true });
 
         formatGroupingFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingFacilityFromServer')
@@ -119,7 +119,6 @@ describe('Facilities', function() {
   describe('create', function() {
     context('when all required information is supplied', function() {
       let expectedFacility;
-      let expectedHost;
       let formatFacilityFromServer;
       let formatFacilityToServer;
       let formattedFacility;
@@ -130,7 +129,6 @@ describe('Facilities', function() {
 
       beforeEach(function() {
         expectedFacility = fixture.build('facility', null, { fromServer: true });
-        expectedHost = faker.internet.url();
         formattedFacility = fixture.build('facility', null, { fromServer: true });
         initialFacility = fixture.build('facility');
         rawFacility = fixture.build('facility', null, { fromServer: true });
@@ -191,7 +189,6 @@ describe('Facilities', function() {
   describe('createGrouping', function() {
     context('when all required information is supplied', function() {
       let expectedGrouping;
-      let expectedHost;
       let formatGroupingFromServer;
       let formatGroupingToServer;
       let formattedGroupingFromServer;
@@ -201,7 +198,6 @@ describe('Facilities', function() {
       let request;
 
       beforeEach(function() {
-        expectedHost = faker.internet.url();
         initialGrouping = fixture.build('facilityGrouping');
         formattedGroupingToServer = fixture.build('facilityGrouping', null, { fromServer: true });
         formattedGroupingFromServer = fixture.build('facilityGrouping', null, { fromServer: true });
@@ -259,13 +255,11 @@ describe('Facilities', function() {
 
   describe('createOrUpdateInfo', function() {
     context('when all required information is available', function() {
-      let expectedHost;
       let facilityId;
       let facilityInfoUpdate;
       let promise;
 
       beforeEach(function() {
-        expectedHost = faker.internet.url();
         facilityId = fixture.build('facility').id;
         facilityInfoUpdate = fixture.build('facilityInfo');
 
@@ -323,12 +317,10 @@ describe('Facilities', function() {
 
   describe('delete', function() {
     context('the facility id is provided', function() {
-      let expectedHost;
       let facility;
       let promise;
 
       beforeEach(function() {
-        expectedHost = faker.internet.url();
         facility = fixture.build('facility');
 
         const facilities = new Facilities(baseSdk, baseRequest);
@@ -361,7 +353,6 @@ describe('Facilities', function() {
   describe('get', function() {
     context('the facility id is provided', function() {
       let expectedFacilityId;
-      let expectedHost;
       let formatFacilityFromServer;
       let formattedFacility;
       let promise;
@@ -370,7 +361,6 @@ describe('Facilities', function() {
 
       beforeEach(function() {
         expectedFacilityId = faker.random.number();
-        expectedHost = faker.internet.url();
         rawFacility = fixture.build('facility', null, { fromServer: true });
         formattedFacility = fixture.build('facility', { id: rawFacility.id });
 
@@ -415,7 +405,6 @@ describe('Facilities', function() {
   });
 
   describe('getAll', function() {
-    let expectedHost;
     let formatFacilityFromServer;
     let formattedFacilities;
     let promise;
@@ -423,7 +412,6 @@ describe('Facilities', function() {
     let request;
 
     beforeEach(function() {
-      expectedHost = faker.internet.url();
       const numberOfFacilities = faker.random.number({ min: 1, max: 10 });
       formattedFacilities = fixture.buildList('facility', numberOfFacilities);
       rawFacilities = fixture.buildList('facility', numberOfFacilities, null, { fromServer: true });
@@ -466,7 +454,6 @@ describe('Facilities', function() {
 
   describe('getAllByOrganizationId', function() {
     context('the organization id is not provided', function() {
-      let expectedHost;
       let expectedOrganizationId;
       let formatFacilityFromServer;
       let formattedFacilities;
@@ -475,7 +462,6 @@ describe('Facilities', function() {
       let request;
 
       beforeEach(function() {
-        expectedHost = faker.internet.url();
         expectedOrganizationId = faker.random.number();
         const numberOfFacilities = faker.random.number({ min: 1, max: 10 });
         formattedFacilities = fixture.buildList('facility', numberOfFacilities);
@@ -533,14 +519,12 @@ describe('Facilities', function() {
 
   describe('update', function() {
     context('when all required information is available', function() {
-      let expectedHost;
       let facilityUpdate;
       let formatFacilityToServer;
       let formattedFacility;
       let promise;
 
       beforeEach(function() {
-        expectedHost = faker.internet.url();
         facilityUpdate = fixture.build('facility');
         formattedFacility = fixture.build('facility', null, { fromServer: true });
 
