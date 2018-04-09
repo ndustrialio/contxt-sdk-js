@@ -90,6 +90,23 @@ for authenticating and communicating with an individual API and the external mod
 | weatherLocationId | <code>number</code> |  |
 | zip | <code>string</code> | US Zip Code |
 
+<a name="FacilityGrouping"></a>
+
+## FacilityGrouping : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| isPrivate | <code>boolean</code> |  |
+| name | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID |
+| ownerId | <code>string</code> | Auth0 identifer of the user |
+| parentGroupingId | <code>string</code> | UUID |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>

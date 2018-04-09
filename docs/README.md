@@ -52,6 +52,8 @@ for authenticating and communicating with an individual API and the external mod
 </dd>
 <dt><a href="./Typedefs.md#Facility">Facility</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#FacilityGrouping">FacilityGrouping</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#SessionType">SessionType</a> : <code>Object</code></dt>

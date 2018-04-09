@@ -8,7 +8,8 @@ of, information about different facilities
 
 * [Facilities](#Facilities)
     * [new Facilities(sdk, request)](#new_Facilities_new)
-    * [.create(options)](#Facilities+create) ⇒ <code>Promise</code>
+    * [.create(facility)](#Facilities+create) ⇒ <code>Promise</code>
+    * [.createGrouping(facilityGrouping)](#Facilities+createGrouping) ⇒ <code>Promise</code>
     * [.createOrUpdateInfo(facilityId, update)](#Facilities+createOrUpdateInfo) ⇒ <code>Promise</code>
     * [.delete(facilityId)](#Facilities+delete) ⇒ <code>Promise</code>
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
@@ -27,7 +28,7 @@ of, information about different facilities
 
 <a name="Facilities+create"></a>
 
-### contxtSdk.facilities.create(options) ⇒ <code>Promise</code>
+### contxtSdk.facilities.create(facility) ⇒ <code>Promise</code>
 Creates a new facility
 
 API Endpoint: '/facilities'
@@ -39,17 +40,17 @@ Method: POST
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options | <code>Object</code> |  |
-| [options.address1] | <code>string</code> |  |
-| [options.address2] | <code>string</code> |  |
-| [options.city] | <code>string</code> |  |
-| [options.geometryId] | <code>string</code> | UUID corresponding with a geometry |
-| options.name | <code>string</code> |  |
-| options.organizationId | <code>string</code> | UUID corresponding with an organization |
-| [options.state] | <code>string</code> |  |
-| options.timezone | <code>string</code> |  |
-| [options.weatherLocationId] | <code>number</code> |  |
-| [options.zip] | <code>string</code> |  |
+| facility | <code>Object</code> |  |
+| [facility.address1] | <code>string</code> |  |
+| [facility.address2] | <code>string</code> |  |
+| [facility.city] | <code>string</code> |  |
+| [facility.geometryId] | <code>string</code> | UUID corresponding with a geometry |
+| facility.name | <code>string</code> |  |
+| facility.organizationId | <code>string</code> | UUID corresponding with an organization |
+| [facility.state] | <code>string</code> |  |
+| facility.timezone | <code>string</code> |  |
+| [facility.weatherLocationId] | <code>number</code> |  |
+| [facility.zip] | <code>string</code> |  |
 
 **Example**  
 ```js
@@ -58,6 +59,40 @@ contxtSdk.facilities
     address: '221 B Baker St, London, England',
     name: 'Sherlock Holmes Museum',
     organizationId: 25
+  })
+  .then((facilities) => console.log(facilities));
+  .catch((err) => console.log(err));
+```
+<a name="Facilities+createGrouping"></a>
+
+### contxtSdk.facilities.createGrouping(facilityGrouping) ⇒ <code>Promise</code>
+Creates a new facility grouping
+
+API Endpoint: '/groupings'
+Method: POST
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: [<code>FacilityGrouping</code>](./Typedefs.md#FacilityGrouping) Information about the new facility grouping  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| facilityGrouping | <code>Object</code> |  |  |
+| [facilityGrouping.description] | <code>string</code> |  |  |
+| [facilityGrouping.isPrivate] | <code>boolean</code> | <code>false</code> |  |
+| facilityGrouping.name | <code>string</code> |  |  |
+| facilityGrouping.organizationId | <code>string</code> |  | UUID |
+| [facilityGrouping.parentGroupingId] | <code>string</code> |  | UUID |
+
+**Example**  
+```js
+contxtSdk.facilities
+  .createGrouping({
+    description: 'US States of CT, MA, ME, NH, RI, VT',
+    isPrivate: false,
+    name: 'New England, USA',
+    organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
+    parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
   })
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));

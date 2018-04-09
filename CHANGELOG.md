@@ -1,3 +1,7 @@
+## [v0.0.8](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.8) (2018-??-??)
+**Added**
+- Facilities#createGrouping for creating new facility groupings
+
 ## [v0.0.7](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.7) (2018-03-29)
 **Renamed**
 - Facilities#updateInfo to Facilities#createOrUpdateInfo so that what the method does is more obvious

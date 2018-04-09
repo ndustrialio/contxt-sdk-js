@@ -1,4 +1,10 @@
 import isPlainObject from 'lodash.isplainobject';
+import {
+  formatFacilityFromServer,
+  formatFacilityToServer,
+  formatGroupingFromServer,
+  formatGroupingToServer
+} from './utils/facilities';
 
 /**
  * @typedef {Object} Facility
@@ -28,6 +34,19 @@ import isPlainObject from 'lodash.isplainobject';
  */
 
 /**
+ * @typedef {Object} FacilityGrouping
+ * @param {string} createdAt ISO 8601 Extended Format date/time string
+ * @param {string} description
+ * @param {string} id UUID
+ * @param {boolean} isPrivate
+ * @param {string} name
+ * @param {string} organizationId UUID
+ * @param {string} ownerId Auth0 identifer of the user
+ * @param {string} parentGroupingId UUID
+ * @param {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to, and the manipulation
  * of, information about different facilities
  *
@@ -50,17 +69,17 @@ class Facilities {
    * API Endpoint: '/facilities'
    * Method: POST
    *
-   * @param {Object} options
-   * @param {string} [options.address1]
-   * @param {string} [options.address2]
-   * @param {string} [options.city]
-   * @param {string} [options.geometryId] UUID corresponding with a geometry
-   * @param {string} options.name
-   * @param {string} options.organizationId UUID corresponding with an organization
-   * @param {string} [options.state]
-   * @param {string} options.timezone
-   * @param {number} [options.weatherLocationId]
-   * @param {string} [options.zip]
+   * @param {Object} facility
+   * @param {string} [facility.address1]
+   * @param {string} [facility.address2]
+   * @param {string} [facility.city]
+   * @param {string} [facility.geometryId] UUID corresponding with a geometry
+   * @param {string} facility.name
+   * @param {string} facility.organizationId UUID corresponding with an organization
+   * @param {string} [facility.state]
+   * @param {string} facility.timezone
+   * @param {number} [facility.weatherLocationId]
+   * @param {string} [facility.zip]
    *
    * @returns {Promise}
    * @fulfill {Facility} Information about the new facility
@@ -87,10 +106,58 @@ class Facilities {
       }
     }
 
-    const data = this._formatFacilityToServer(facility);
+    const data = formatFacilityToServer(facility);
 
     return this._request.post(`${this._baseUrl}/facilities`, data)
-      .then((facility) => this._formatFacilityFromServer(facility));
+      .then((facility) => formatFacilityFromServer(facility));
+  }
+
+  /**
+   * Creates a new facility grouping
+   *
+   * API Endpoint: '/groupings'
+   * Method: POST
+   *
+   * @param {Object} facilityGrouping
+   * @param {string} [facilityGrouping.description]
+   * @param {boolean} [facilityGrouping.isPrivate = false]
+   * @param {string} facilityGrouping.name
+   * @param {string} facilityGrouping.organizationId UUID
+   * @param {string} [facilityGrouping.parentGroupingId] UUID
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityGrouping} Information about the new facility grouping
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities
+   *   .createGrouping({
+   *     description: 'US States of CT, MA, ME, NH, RI, VT',
+   *     isPrivate: false,
+   *     name: 'New England, USA',
+   *     organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
+   *     parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
+   *   })
+   *   .then((grouping) => console.log(grouping));
+   *   .catch((err) => console.log(err));
+   */
+  createGrouping(grouping = {}) {
+    const requiredFields = ['name', 'organizationId'];
+
+    for (let i = 0; requiredFields.length > i; i++) {
+      const field = requiredFields[i];
+
+      if (!grouping[field]) {
+        return Promise.reject(
+          new Error(`A ${field} is required to create a new facility grouping.`)
+        );
+      }
+    }
+
+    const data = formatGroupingToServer(grouping);
+
+    return this._request.post(`${this._baseUrl}/groupings`, data)
+      .then((grouping) => formatGroupingFromServer(grouping));
   }
 
   /**
@@ -183,7 +250,7 @@ class Facilities {
     }
 
     return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
-      .then((facility) => this._formatFacilityFromServer(facility));
+      .then((facility) => formatFacilityFromServer(facility));
   }
 
   /**
@@ -203,7 +270,7 @@ class Facilities {
    */
   getAll() {
     return this._request.get(`${this._baseUrl}/facilities`)
-      .then((facilities) => facilities.map((facility) => this._formatFacilityFromServer(facility)));
+      .then((facilities) => facilities.map((facility) => formatFacilityFromServer(facility)));
   }
 
   /**
@@ -231,7 +298,7 @@ class Facilities {
     }
 
     return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
-      .then((facilities) => facilities.map((facility) => this._formatFacilityFromServer(facility)));
+      .then((facilities) => facilities.map((facility) => formatFacilityFromServer(facility)));
   }
 
   /**
@@ -280,156 +347,9 @@ class Facilities {
       );
     }
 
-    const formattedUpdate = this._formatFacilityToServer(update);
+    const formattedUpdate = formatFacilityToServer(update);
 
     return this._request.put(`${this._baseUrl}/facilities/${facilityId}`, formattedUpdate);
-  }
-
-  /**
-   * Normalizes the facility object returned from the API server
-   *
-   * @param {Object} input
-   * @param {string} input.address1
-   * @param {string} input.address2
-   * @param {string} input.city
-   * @param {string} input.created_at ISO 8601 Extended Format date/time string
-   * @param {string} input.geometry_id UUID corresponding with a geometry
-   * @param {number} input.id
-   * @param {Object} input.Info User declared information
-   * @param {string} input.name
-   * @param {Object} input.Organization
-   * @param {string} input.Organization.created_at ISO 8601 Extended Format date/time string
-   * @param {string} input.Organization.id UUID
-   * @param {string} input.Organization.name
-   * @param {string} input.Organization.updated_at
-   * @param {string} input.organization_id UUID corresponding with an organization
-   * @param {string} input.state
-   * @param {Object[]} input.tags
-   * @param {string} input.tags[].created_at ISO 8601 Extended Format date/time string
-   * @param {number} input.tags[].facility_id Id corresponding with the parent facility
-   * @param {number} input.tags[].id
-   * @param {string} input.tags[].name
-   * @param {string} input.tags[].updated_at ISO 8601 Extended Format date/time string
-   * @param {string} input.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
-   * @param {string} input.weather_location_id
-   * @param {string} input.zip
-   *
-   * @returns {Facility}
-   *
-   * @private
-   */
-  _formatFacilityFromServer(input = {}) {
-    return {
-      address1: input.address1,
-      address2: input.address2,
-      city: input.city,
-      createdAt: input.created_at,
-      geometryId: input.geometry_id,
-      id: input.id,
-      info: input.Info,
-      name: input.name,
-      organization: this._formatOrganizationFromServer(input.Organization),
-      organizationId: input.organization_id,
-      state: input.state,
-      tags: this._formatTagsFromServer(input.tags),
-      timezone: input.timezone,
-      weatherLocationId: input.weather_location_id,
-      zip: input.zip
-    };
-  }
-
-  /**
-   * Normalizes the facility object returned from the API server
-   *
-   * @param {Facility} input
-   *
-   * @returns {Object} output
-   * @returns {string} output.address1
-   * @returns {string} output.address2
-   * @returns {string} output.city
-   * @returns {string} output.geometry_id UUID corresponding with a geometry
-   * @returns {Object} output.Info User declared information
-   * @returns {string} output.name
-   * @returns {string} output.organization_id UUID corresponding with an organization
-   * @returns {string} output.state
-   * @returns {string} output.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
-   * @returns {string} output.weather_location_id
-   * @returns {string} output.zip
-   *
-   * @private
-   */
-  _formatFacilityToServer(input = {}) {
-    return {
-      address1: input.address1,
-      address2: input.address2,
-      city: input.city,
-      geometry_id: input.geometryId,
-      Info: input.info,
-      name: input.name,
-      organization_id: input.organizationId,
-      state: input.state,
-      timezone: input.timezone,
-      weather_location_id: input.weatherLocationId,
-      zip: input.zip
-    };
-  }
-
-  /**
-   * Normalizes the organization object returned from the API server
-   *
-   * @param {Object} input
-   * @param {string} input.created_at ISO 8601 Extended Format date/time string
-   * @param {string} input.id UUID
-   * @param {string} input.name
-   * @param {string} input.updated_at
-   * @param {string} input.organization_id UUID corresponding with an organization
-   *
-   * @returns {Object} output
-   * @returns {string} output.createdAt ISO 8601 Extended Format date/time string
-   * @returns {string} output.id UUID formatted id
-   * @returns {string} output.name
-   * @returns {string} output.updatedAt ISO 8601 Extended Format date/time string
-   *
-   * @private
-   */
-  _formatOrganizationFromServer(input = {}) {
-    return {
-      createdAt: input.created_at,
-      id: input.id,
-      name: input.name,
-      updatedAt: input.updated_at
-    };
-  }
-
-  /**
-   * Normalizes the tags array returned from the API server
-   *
-   * @param {Object[]} input
-   * @param {string} input[].created_at ISO 8601 Extended Format date/time string
-   * @param {number} input[].facility_id Id corresponding with the parent facility
-   * @param {number} input[].id
-   * @param {string} input[].name
-   * @param {string} input[].updated_at ISO 8601 Extended Format date/time string
-   *
-   * @returns {Object[]} output
-   * @returns {string} output[].createdAt ISO 8601 Extended Format date/time string
-   * @returns {number} output[].id
-   * @returns {number} output[].facilityId
-   * @returns {string} output[].name
-   * @returns {string} output[].updatedAt ISO 8601 Extended Format date/time string
-   *
-   * @private
-   */
-  _formatTagsFromServer(input = []) {
-    return input.map((tag) => {
-      return {
-        createdAt: tag.created_at,
-        facilityId: tag.facility_id,
-        id: tag.id,
-        name: tag.name,
-        updatedAt: tag.updated_at
-      };
-    });
   }
 }
 
