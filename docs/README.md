@@ -20,6 +20,10 @@ default is <code>/callback</code>).</p>
 <dd><p>Module that provides access to, and the manipulation
 of, information about different facilities</p>
 </dd>
+<dt><a href="./FacilityGroupings.md">FacilityGroupings</a></dt>
+<dd><p>Module that provides access to facility groupings, and helps manage
+the relationship between those groupings and facilities</p>
+</dd>
 <dt><a href="./MachineAuth.md">MachineAuth</a> : <code><a href="./Typedefs.md#SessionType">SessionType</a></code></dt>
 <dd><p>A SessionType that allows machine to machine communication between Node.js servers. This would
 only be used in Node.js applications. This SessionType requires a client id and a client secret,

@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
-import Facilities from './facilities';
-import * as facilitiesUtils from './utils/facilities';
+import Facilities from './index';
+import * as facilitiesUtils from '../utils/facilities';
 
 describe('Facilities', function() {
   let baseRequest;
@@ -47,72 +47,6 @@ describe('Facilities', function() {
 
     it('appends the supplied sdk to the class instance', function() {
       expect(facilities._sdk).to.equal(baseSdk);
-    });
-  });
-
-  describe('addFacilityToGrouping', function() {
-    context('when all required information is supplied', function() {
-      let expectedFacilityId;
-      let expectedGroupingFacility;
-      let expectedGroupingId;
-      let formatGroupingFacilityFromServer;
-      let promise;
-      let rawGroupingFacility;
-      let request;
-
-      beforeEach(function() {
-        expectedGroupingFacility = fixture.build('facilityGroupingFacility');
-        expectedFacilityId = expectedGroupingFacility.facilityId;
-        expectedGroupingId = expectedGroupingFacility.facilityGroupingId;
-        rawGroupingFacility = fixture.build('facilityGroupingFacility', { fromServer: true });
-
-        formatGroupingFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingFacilityFromServer')
-          .returns(expectedGroupingFacility);
-        request = {
-          ...baseRequest,
-          post: this.sandbox.stub().resolves(rawGroupingFacility)
-        };
-
-        const facilities = new Facilities(baseSdk, request);
-        facilities._baseUrl = expectedHost;
-
-        promise = facilities.addFacilityToGrouping(expectedGroupingId, expectedFacilityId);
-      });
-
-      it('creates the new facility grouping <--> facility relationship', function() {
-        expect(request.post).to.be.calledWith(
-          `${expectedHost}/groupings/${expectedGroupingId}/facility/${expectedFacilityId}`
-        );
-      });
-
-      it('formats the returning facility grouping facility object', function() {
-        return promise.then(() => {
-          expect(formatGroupingFacilityFromServer).to.be.calledWith(rawGroupingFacility);
-        });
-      });
-
-      it('returns a fulfilled promise with the new facility information', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.equal(expectedGroupingFacility);
-      });
-    });
-
-    context('when there is missing required information', function() {
-      ['facilityGroupingId', 'facilityId'].forEach(function(field) {
-        it(`it throws an error when ${field} is missing`, function() {
-          const groupingFacility = fixture.build('facilityGroupingFacility');
-          delete groupingFacility[field];
-
-          const facilities = new Facilities(baseSdk, baseRequest);
-          const promise = facilities.addFacilityToGrouping(
-            groupingFacility.facilityGroupingId,
-            groupingFacility.facilityId
-          );
-
-          return expect(promise).to.be
-            .rejectedWith(`A ${field} is required to create a between a facility grouping and a facility.`);
-        });
-      });
     });
   });
 
@@ -181,73 +115,6 @@ describe('Facilities', function() {
 
           return expect(promise).to.be
             .rejectedWith(`A ${field} is required to create a new facility.`);
-        });
-      });
-    });
-  });
-
-  describe('createGrouping', function() {
-    context('when all required information is supplied', function() {
-      let expectedGrouping;
-      let formatGroupingFromServer;
-      let formatGroupingToServer;
-      let formattedGroupingFromServer;
-      let formattedGroupingToServer;
-      let initialGrouping;
-      let promise;
-      let request;
-
-      beforeEach(function() {
-        initialGrouping = fixture.build('facilityGrouping');
-        formattedGroupingToServer = fixture.build('facilityGrouping', null, { fromServer: true });
-        formattedGroupingFromServer = fixture.build('facilityGrouping', null, { fromServer: true });
-        expectedGrouping = fixture.build('facilityGrouping', null, { fromServer: true });
-
-        formatGroupingFromServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingFromServer')
-          .returns(expectedGrouping);
-        formatGroupingToServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingToServer')
-          .returns(formattedGroupingToServer);
-        request = {
-          ...baseRequest,
-          post: this.sandbox.stub().resolves(formattedGroupingFromServer)
-        };
-
-        const facilities = new Facilities(baseSdk, request);
-        facilities._baseUrl = expectedHost;
-
-        promise = facilities.createGrouping(initialGrouping);
-      });
-
-      it('formats the submitted facility grouping object to send to the server', function() {
-        expect(formatGroupingToServer).to.be.calledWith(initialGrouping);
-      });
-
-      it('creates a new facility grouping', function() {
-        expect(request.post)
-          .to.be.deep.calledWith(`${expectedHost}/groupings`, formattedGroupingToServer);
-      });
-
-      it('formats the returned facility grouping object', function() {
-        return promise.then(() => {
-          expect(formatGroupingFromServer).to.be.calledWith(formattedGroupingFromServer);
-        });
-      });
-
-      it('returns a fulfilled promise with the new facility grouping information', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.equal(expectedGrouping);
-      });
-    });
-
-    context('when there is missing required information', function() {
-      ['name', 'organizationId'].forEach(function(field) {
-        it(`it throws an error when ${field} is missing`, function() {
-          const facilityGrouping = fixture.build('facilityGrouping');
-          const facilities = new Facilities(baseSdk, baseRequest);
-          const promise = facilities.createGrouping(omit(facilityGrouping, [field]));
-
-          return expect(promise).to.be
-            .rejectedWith(`A ${field} is required to create a new facility grouping.`);
         });
       });
     });
