@@ -138,7 +138,7 @@ class Facilities {
    *     organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
    *     parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
    *   })
-   *   .then((facilities) => console.log(facilities));
+   *   .then((grouping) => console.log(grouping));
    *   .catch((err) => console.log(err));
    */
   createGrouping(grouping = {}) {

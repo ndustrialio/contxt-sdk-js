@@ -19,7 +19,7 @@ factory.define('facilityGrouping')
   .after((facilityGrouping, options) => {
     // If building a facility grouping object that comes from the server, transform it to have camel
     // case and capital letters in the right spots
-    if (options.formServer) {
+    if (options.fromServer) {
       facilityGrouping.created_at = facilityGrouping.createdAt;
       delete facilityGrouping.createdAt;
 
