@@ -1,10 +1,9 @@
 import isPlainObject from 'lodash.isplainobject';
+import FacilityGroupings from './groupings';
 import {
   formatFacilityFromServer,
-  formatFacilityToServer,
-  formatGroupingFromServer,
-  formatGroupingToServer
-} from './utils/facilities';
+  formatFacilityToServer
+} from '../utils/facilities';
 
 /**
  * @typedef {Object} Facility
@@ -34,19 +33,6 @@ import {
  */
 
 /**
- * @typedef {Object} FacilityGrouping
- * @param {string} createdAt ISO 8601 Extended Format date/time string
- * @param {string} description
- * @param {string} id UUID
- * @param {boolean} isPrivate
- * @param {string} name
- * @param {string} organizationId UUID
- * @param {string} ownerId Auth0 identifer of the user
- * @param {string} parentGroupingId UUID
- * @param {string} updatedAt ISO 8601 Extended Format date/time string
- */
-
-/**
  * Module that provides access to, and the manipulation
  * of, information about different facilities
  *
@@ -58,9 +44,13 @@ class Facilities {
    * @param {Object} request An instance of the request module tied to this module's audience.
    */
   constructor(sdk, request) {
-    this._baseUrl = `${sdk.config.audiences.facilities.host}/v1`;
+    const baseUrl = `${sdk.config.audiences.facilities.host}/v1`;
+
+    this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+
+    this.groupings = new FacilityGroupings(sdk, request, baseUrl);
   }
 
   /**
@@ -110,54 +100,6 @@ class Facilities {
 
     return this._request.post(`${this._baseUrl}/facilities`, data)
       .then((facility) => formatFacilityFromServer(facility));
-  }
-
-  /**
-   * Creates a new facility grouping
-   *
-   * API Endpoint: '/groupings'
-   * Method: POST
-   *
-   * @param {Object} facilityGrouping
-   * @param {string} [facilityGrouping.description]
-   * @param {boolean} [facilityGrouping.isPrivate = false]
-   * @param {string} facilityGrouping.name
-   * @param {string} facilityGrouping.organizationId UUID
-   * @param {string} [facilityGrouping.parentGroupingId] UUID
-   *
-   * @returns {Promise}
-   * @fulfill {FacilityGrouping} Information about the new facility grouping
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.facilities
-   *   .createGrouping({
-   *     description: 'US States of CT, MA, ME, NH, RI, VT',
-   *     isPrivate: false,
-   *     name: 'New England, USA',
-   *     organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
-   *     parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
-   *   })
-   *   .then((grouping) => console.log(grouping));
-   *   .catch((err) => console.log(err));
-   */
-  createGrouping(grouping = {}) {
-    const requiredFields = ['name', 'organizationId'];
-
-    for (let i = 0; requiredFields.length > i; i++) {
-      const field = requiredFields[i];
-
-      if (!grouping[field]) {
-        return Promise.reject(
-          new Error(`A ${field} is required to create a new facility grouping.`)
-        );
-      }
-    }
-
-    const data = formatGroupingToServer(grouping);
-
-    return this._request.post(`${this._baseUrl}/groupings`, data)
-      .then((grouping) => formatGroupingFromServer(grouping));
   }
 
   /**

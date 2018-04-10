@@ -107,6 +107,19 @@ for authenticating and communicating with an individual API and the external mod
 | parentGroupingId | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="FacilityGroupingFacility"></a>
+
+## FacilityGroupingFacility : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| facilityGroupingId | <code>string</code> | UUID |
+| facilityId | <code>number</code> |  |
+| id | <code>string</code> | UUID |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>

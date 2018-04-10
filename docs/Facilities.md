@@ -9,7 +9,6 @@ of, information about different facilities
 * [Facilities](#Facilities)
     * [new Facilities(sdk, request)](#new_Facilities_new)
     * [.create(facility)](#Facilities+create) ⇒ <code>Promise</code>
-    * [.createGrouping(facilityGrouping)](#Facilities+createGrouping) ⇒ <code>Promise</code>
     * [.createOrUpdateInfo(facilityId, update)](#Facilities+createOrUpdateInfo) ⇒ <code>Promise</code>
     * [.delete(facilityId)](#Facilities+delete) ⇒ <code>Promise</code>
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
@@ -59,40 +58,6 @@ contxtSdk.facilities
     address: '221 B Baker St, London, England',
     name: 'Sherlock Holmes Museum',
     organizationId: 25
-  })
-  .then((facilities) => console.log(facilities));
-  .catch((err) => console.log(err));
-```
-<a name="Facilities+createGrouping"></a>
-
-### contxtSdk.facilities.createGrouping(facilityGrouping) ⇒ <code>Promise</code>
-Creates a new facility grouping
-
-API Endpoint: '/groupings'
-Method: POST
-
-**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Fulfill**: [<code>FacilityGrouping</code>](./Typedefs.md#FacilityGrouping) Information about the new facility grouping  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| facilityGrouping | <code>Object</code> |  |  |
-| [facilityGrouping.description] | <code>string</code> |  |  |
-| [facilityGrouping.isPrivate] | <code>boolean</code> | <code>false</code> |  |
-| facilityGrouping.name | <code>string</code> |  |  |
-| facilityGrouping.organizationId | <code>string</code> |  | UUID |
-| [facilityGrouping.parentGroupingId] | <code>string</code> |  | UUID |
-
-**Example**  
-```js
-contxtSdk.facilities
-  .createGrouping({
-    description: 'US States of CT, MA, ME, NH, RI, VT',
-    isPrivate: false,
-    name: 'New England, USA',
-    organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
-    parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
   })
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
