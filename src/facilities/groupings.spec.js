@@ -106,7 +106,7 @@ describe('Facilities/Groupings', function() {
           );
 
           return expect(promise).to.be
-            .rejectedWith(`A ${field} is required to create a between a facility grouping and a facility.`);
+            .rejectedWith(`A ${field} is required to create a relationship between a facility grouping and a facility.`);
         });
       });
     });

@@ -66,9 +66,9 @@ class FacilityGroupings {
     let errorMsg;
 
     if (!facilityGroupingId) {
-      errorMsg = 'A facilityGroupingId is required to create a between a facility grouping and a facility.';
+      errorMsg = 'A facilityGroupingId is required to create a relationship between a facility grouping and a facility.';
     } else if (!facilityId) {
-      errorMsg = 'A facilityId is required to create a between a facility grouping and a facility.';
+      errorMsg = 'A facilityId is required to create a relationship between a facility grouping and a facility.';
     }
 
     if (errorMsg) {
@@ -102,8 +102,8 @@ class FacilityGroupings {
    *     description: 'US States of CT, MA, ME, NH, RI, VT',
    *     isPrivate: false,
    *     name: 'New England, USA',
-   *     organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
-   *     parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
+   *     organizationId: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
+   *     parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
    *   })
    *   .then((grouping) => console.log(grouping));
    *   .catch((err) => console.log(err));

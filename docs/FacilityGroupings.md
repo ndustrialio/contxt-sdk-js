@@ -72,8 +72,8 @@ contxtSdk.facilities.groupings
     description: 'US States of CT, MA, ME, NH, RI, VT',
     isPrivate: false,
     name: 'New England, USA',
-    organization_id: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
-    parent_grouping_id: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
+    organizationId: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
+    parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
   })
   .then((grouping) => console.log(grouping));
   .catch((err) => console.log(err));
