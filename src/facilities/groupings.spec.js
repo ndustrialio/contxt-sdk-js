@@ -11,6 +11,7 @@ describe('Facilities/Groupings', function() {
     this.sandbox = sandbox.create();
 
     baseRequest = {
+      delete: this.sandbox.stub().resolves(),
       post: this.sandbox.stub().resolves()
     };
     baseSdk = {
@@ -173,6 +174,54 @@ describe('Facilities/Groupings', function() {
 
           return expect(promise).to.be
             .rejectedWith(`A ${field} is required to create a new facility grouping.`);
+        });
+      });
+    });
+  });
+
+  describe('removeFacility', function() {
+    context('when all required information is supplied', function() {
+      let facilityGroupingFacility;
+      let promise;
+
+      beforeEach(function() {
+        facilityGroupingFacility = fixture.build('facilityGroupingFacility');
+
+        const facilityGroupings = new FacilityGroupings(baseSdk, baseRequest, expectedHost);
+        promise = facilityGroupings.removeFacility(
+          facilityGroupingFacility.facilityGroupingId,
+          facilityGroupingFacility.facilityId
+        );
+      });
+
+      it('requests to remove the facility', function() {
+        const facilityGroupingId = facilityGroupingFacility.facilityGroupingId;
+        const facilityId = facilityGroupingFacility.facilityId;
+
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/groupings/${facilityGroupingId}/facility/${facilityId}`
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is missing required information', function() {
+      ['facilityGroupingId', 'facilityId'].forEach(function(field) {
+        it(`it throws an error when ${field} is missing`, function() {
+          const expectedErrorMessage = `A ${field} is required to remove a relationship between a facility grouping and a facility.`;
+          const groupingFacility = fixture.build('facilityGroupingFacility');
+          delete groupingFacility[field];
+
+          const facilityGroupings = new FacilityGroupings(baseSdk, baseRequest);
+          const promise = facilityGroupings.removeFacility(
+            groupingFacility.facilityGroupingId,
+            groupingFacility.facilityId
+          );
+
+          return expect(promise).to.be.rejectedWith(expectedErrorMessage);
         });
       });
     });

@@ -10,6 +10,7 @@ the relationship between those groupings and facilities
     * [new FacilityGroupings(sdk, request, baseUrl)](#new_FacilityGroupings_new)
     * [.addFacility(facilityGroupingId, facilityId)](#FacilityGroupings+addFacility) ⇒ <code>Promise</code>
     * [.create(facilityGrouping)](#FacilityGroupings+create) ⇒ <code>Promise</code>
+    * [.removeFacility(facilityGroupingId, facilityId)](#FacilityGroupings+removeFacility) ⇒ <code>Promise</code>
 
 <a name="new_FacilityGroupings_new"></a>
 
@@ -76,5 +77,26 @@ contxtSdk.facilities.groupings
     parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
   })
   .then((grouping) => console.log(grouping));
+  .catch((err) => console.log(err));
+```
+<a name="FacilityGroupings+removeFacility"></a>
+
+### contxtSdk.facilities.groupings.removeFacility(facilityGroupingId, facilityId) ⇒ <code>Promise</code>
+Removes a facility from a facility grouping
+
+API Endpoint: '/groupings/:facilityGroupingId/facilities/:facilityId'
+Method: DELETE
+
+**Kind**: instance method of [<code>FacilityGroupings</code>](#FacilityGroupings)  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityGroupingId | <code>string</code> | UUID corresponding with a facility grouping |
+| facilityId | <code>number</code> |  |
+
+**Example**  
+```js
+contxtSdk.facilities.groupings.removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
   .catch((err) => console.log(err));
 ```

@@ -126,6 +126,40 @@ class FacilityGroupings {
     return this._request.post(`${this._baseUrl}/groupings`, data)
       .then((grouping) => formatGroupingFromServer(grouping));
   }
+
+  /**
+   * Removes a facility from a facility grouping
+   *
+   * API Endpoint: '/groupings/:facilityGroupingId/facilities/:facilityId'
+   * Method: DELETE
+   *
+   * @param {string} facilityGroupingId UUID corresponding with a facility grouping
+   * @param {number} facilityId
+   *
+   * @returns {Promise}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.groupings.removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+   *   .catch((err) => console.log(err));
+   */
+  removeFacility(facilityGroupingId, facilityId) {
+    let errorMsg;
+
+    if (!facilityGroupingId) {
+      errorMsg = 'A facilityGroupingId is required to remove a relationship between a facility grouping and a facility.';
+    } else if (!facilityId) {
+      errorMsg = 'A facilityId is required to remove a relationship between a facility grouping and a facility.';
+    }
+
+    if (errorMsg) {
+      return Promise.reject(new Error(errorMsg));
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/groupings/${facilityGroupingId}/facility/${facilityId}`
+    );
+  }
 }
 
 export default FacilityGroupings;
