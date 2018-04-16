@@ -1,6 +1,10 @@
-## [v0.0.8](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.8) (2018-??-??)
+## [v0.0.8](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.8) (2018-04-16)
 **Added**
-- Facilities#createGrouping for creating new facility groupings
+- Added some methods to help out when working with facility groupings. They are namespaced under facilities (i.e. `facilities.groupings.methodName()`) and include:
+  - FacilityGroupings#addFacility to add a facility to a facility grouping
+  - FacilityGroupings#create for creating new facility groupings
+  - FacilityGroupings#getAll for getting a list of all facility groupings
+  - FacilityGroupings#removeFacility to remove a facility from a facility grouping
 
 ## [v0.0.7](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.7) (2018-03-29)
 **Renamed**
