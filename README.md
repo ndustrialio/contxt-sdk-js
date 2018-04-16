@@ -1,4 +1,4 @@
-# contxt-sdk
+# contxt-sdk [![wercker status](https://app.wercker.com/status/869ef086297da79ddd0cbf3564f7cba6/s/master "wercker status")](https://app.wercker.com/project/byKey/869ef086297da79ddd0cbf3564f7cba6)
 
 ## Installation
 
