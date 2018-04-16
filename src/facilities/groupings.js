@@ -8,6 +8,7 @@ import {
  * @typedef {Object} FacilityGrouping
  * @param {string} createdAt ISO 8601 Extended Format date/time string
  * @param {string} description
+ * @param {Facility[]} [facilities]
  * @param {string} id UUID
  * @param {boolean} isPrivate
  * @param {string} name
@@ -59,7 +60,7 @@ class FacilityGroupings {
    *
    * @example
    * contxtSdk.facilities.groupings.addFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
-   *   .then((grouping) => console.log(grouping));
+   *   .then((grouping) => console.log(grouping))
    *   .catch((err) => console.log(err));
    */
   addFacility(facilityGroupingId, facilityId) {
@@ -105,7 +106,7 @@ class FacilityGroupings {
    *     organizationId: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
    *     parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
    *   })
-   *   .then((grouping) => console.log(grouping));
+   *   .then((grouping) => console.log(grouping))
    *   .catch((err) => console.log(err));
    */
   create(grouping = {}) {
@@ -125,6 +126,26 @@ class FacilityGroupings {
 
     return this._request.post(`${this._baseUrl}/groupings`, data)
       .then((grouping) => formatGroupingFromServer(grouping));
+  }
+
+  /**
+   * Get a listing of all facility groupings for the user's organization
+   *
+   * API Endpoint: '/groupings'
+   * Method: GET
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityGrouping[]}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilites.groupings.getAll()
+   *   .then((groupings) => console.log(groupings))
+   *   .catch((err) => console.log(err));
+   */
+  getAll() {
+    return this._request.get(`${this._baseUrl}/groupings`)
+      .then((groupings) => groupings.map(formatGroupingFromServer));
   }
 
   /**

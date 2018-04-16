@@ -72,20 +72,20 @@ for authenticating and communicating with an individual API and the external mod
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | geometryId | <code>string</code> | UUID corresponding with a geometry |
 | id | <code>number</code> |  |
-| Info | <code>Object</code> | User declared information |
+| [Info] | <code>Object</code> | User declared information |
 | name | <code>string</code> |  |
-| Organization | <code>Object</code> |  |
-| Organization.createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| Organization.id | <code>string</code> | UUID formatted id |
-| Organization.name | <code>string</code> |  |
-| Organization.updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [Organization] | <code>Object</code> |  |
+| [Organization.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [Organization.id] | <code>string</code> | UUID formatted id |
+| [Organization.name] | <code>string</code> |  |
+| [Organization.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | state | <code>string</code> |  |
-| tags | <code>Array.&lt;Object&gt;</code> |  |
-| tags[].createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| tags[].id | <code>number</code> |  |
-| tags[].facilityId | <code>number</code> |  |
-| tags[].name | <code>string</code> |  |
-| tags[].updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [tags] | <code>Array.&lt;Object&gt;</code> |  |
+| [tags[].createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [tags[].id] | <code>number</code> |  |
+| [tags[].facilityId] | <code>number</code> |  |
+| [tags[].name] | <code>string</code> |  |
+| [tags[].updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | timezone | <code>string</code> | An IANA Time Zone Database string, i.e. America/Los_Angeles |
 | weatherLocationId | <code>number</code> |  |
 | zip | <code>string</code> | US Zip Code |
@@ -99,6 +99,7 @@ for authenticating and communicating with an individual API and the external mod
 | --- | --- | --- |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | description | <code>string</code> |  |
+| [facilities] | [<code>Array.&lt;Facility&gt;</code>](#Facility) |  |
 | id | <code>string</code> | UUID |
 | isPrivate | <code>boolean</code> |  |
 | name | <code>string</code> |  |

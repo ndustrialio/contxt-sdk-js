@@ -13,20 +13,20 @@ import {
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} geometryId UUID corresponding with a geometry
  * @property {number} id
- * @property {Object} Info User declared information
+ * @property {Object} [Info] User declared information
  * @property {string} name
- * @property {Object} Organization
- * @property {string} Organization.createdAt ISO 8601 Extended Format date/time string
- * @property {string} Organization.id UUID formatted id
- * @property {string} Organization.name
- * @property {string} Organization.updatedAt ISO 8601 Extended Format date/time string
+ * @property {Object} [Organization]
+ * @property {string} [Organization.createdAt] ISO 8601 Extended Format date/time string
+ * @property {string} [Organization.id] UUID formatted id
+ * @property {string} [Organization.name]
+ * @property {string} [Organization.updatedAt] ISO 8601 Extended Format date/time string
  * @property {string} state
- * @property {Object[]} tags
- * @property {string} tags[].createdAt ISO 8601 Extended Format date/time string
- * @property {number} tags[].id
- * @property {number} tags[].facilityId
- * @property {string} tags[].name
- * @property {string} tags[].updatedAt ISO 8601 Extended Format date/time string
+ * @property {Object[]} [tags]
+ * @property {string} [tags[].createdAt] ISO 8601 Extended Format date/time string
+ * @property {number} [tags[].id]
+ * @property {number} [tags[].facilityId]
+ * @property {string} [tags[].name]
+ * @property {string} [tags[].updatedAt] ISO 8601 Extended Format date/time string
  * @property {string} timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
  * @property {number} weatherLocationId
  * @property {string} zip US Zip Code
