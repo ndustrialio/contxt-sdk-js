@@ -63,3 +63,5 @@ typings/
 # rollup build output
 es/*
 lib/*
+
+.wercker
