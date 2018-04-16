@@ -1,9 +1,14 @@
+import {
+  formatFacilityFromServer
+} from './index';
+
 /**
  * Normalizes the facility grouping object returned from the API server
  *
  * @param {Object} input
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
  * @param {string} input.description
+ * @param {Facility[]} [input.facilities]
  * @param {string} input.id UUID
  * @param {boolean} input.is_private
  * @param {string} input.name
@@ -16,9 +21,8 @@
  *
  * @private
  */
-
 function formatGroupingFromServer(input = {}) {
-  return {
+  const grouping = {
     createdAt: input.created_at,
     description: input.description,
     id: input.id,
@@ -29,6 +33,12 @@ function formatGroupingFromServer(input = {}) {
     parentGroupingId: input.parent_grouping_id,
     updatedAt: input.updated_at
   };
+
+  if (input.facilities) {
+    grouping.facilities = input.facilities.map(formatFacilityFromServer);
+  }
+
+  return grouping;
 }
 
 export default formatGroupingFromServer;

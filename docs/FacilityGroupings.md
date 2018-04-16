@@ -10,6 +10,7 @@ the relationship between those groupings and facilities
     * [new FacilityGroupings(sdk, request, baseUrl)](#new_FacilityGroupings_new)
     * [.addFacility(facilityGroupingId, facilityId)](#FacilityGroupings+addFacility) ⇒ <code>Promise</code>
     * [.create(facilityGrouping)](#FacilityGroupings+create) ⇒ <code>Promise</code>
+    * [.getAll()](#FacilityGroupings+getAll) ⇒ <code>Promise</code>
     * [.removeFacility(facilityGroupingId, facilityId)](#FacilityGroupings+removeFacility) ⇒ <code>Promise</code>
 
 <a name="new_FacilityGroupings_new"></a>
@@ -42,7 +43,7 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.facilities.groupings.addFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
-  .then((grouping) => console.log(grouping));
+  .then((grouping) => console.log(grouping))
   .catch((err) => console.log(err));
 ```
 <a name="FacilityGroupings+create"></a>
@@ -76,7 +77,24 @@ contxtSdk.facilities.groupings
     organizationId: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
     parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
   })
-  .then((grouping) => console.log(grouping));
+  .then((grouping) => console.log(grouping))
+  .catch((err) => console.log(err));
+```
+<a name="FacilityGroupings+getAll"></a>
+
+### contxtSdk.facilities.groupings.getAll() ⇒ <code>Promise</code>
+Get a listing of all facility groupings for the user's organization
+
+API Endpoint: '/groupings'
+Method: GET
+
+**Kind**: instance method of [<code>FacilityGroupings</code>](#FacilityGroupings)  
+**Fulfill**: <code>FacilityGrouping[]</code>  
+**Reject**: <code>Error</code>  
+**Example**  
+```js
+contxtSdk.facilites.groupings.getAll()
+  .then((groupings) => console.log(groupings))
   .catch((err) => console.log(err));
 ```
 <a name="FacilityGroupings+removeFacility"></a>

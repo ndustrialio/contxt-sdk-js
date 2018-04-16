@@ -12,6 +12,7 @@ describe('Facilities/Groupings', function() {
 
     baseRequest = {
       delete: this.sandbox.stub().resolves(),
+      get: this.sandbox.stub().resolves(),
       post: this.sandbox.stub().resolves()
     };
     baseSdk = {
@@ -176,6 +177,48 @@ describe('Facilities/Groupings', function() {
             .rejectedWith(`A ${field} is required to create a new facility grouping.`);
         });
       });
+    });
+  });
+
+  describe('getAll', function() {
+    let expectedGrouping;
+    let formatGroupingFromServer;
+    let groupingsFromServer;
+    let promise;
+    let request;
+
+    beforeEach(function() {
+      const numberOfGroupings = faker.random.number({ min: 1, max: 10 });
+      expectedGrouping = fixture.buildList('facilityGrouping', numberOfGroupings);
+      groupingsFromServer = fixture.buildList('facilityGrouping', numberOfGroupings);
+
+      formatGroupingFromServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingFromServer')
+        .callsFake((grouping, index) => expectedGrouping[index]);
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves(groupingsFromServer)
+      };
+
+      const facilityGroupings = new FacilityGroupings(baseSdk, request, expectedHost);
+      promise = facilityGroupings.getAll();
+    });
+
+    it('gets a list of facility groupings', function() {
+      expect(request.get).to.be.calledOnce;
+    });
+
+    it('formats the list of facility groupings', function() {
+      return promise.then(() => {
+        expect(formatGroupingFromServer).to.have.callCount(groupingsFromServer.length);
+        groupingsFromServer.forEach((grouping) => {
+          expect(formatGroupingFromServer).to.be.calledWith(grouping);
+        });
+      });
+    });
+
+    it('returns a fulfilled promise with the facility groupings', function() {
+      return expect(promise).to.be.fulfilled
+        .and.to.eventually.deep.equal(expectedGrouping);
     });
   });
 
