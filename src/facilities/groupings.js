@@ -129,7 +129,8 @@ class FacilityGroupings {
   }
 
   /**
-   * Get a listing of all facility groupings for the user's organization
+   * Get a listing of all facility groupings available to a user. Includes public groupings across
+   * any organization the user has access to and the user's private groupings.
    *
    * API Endpoint: '/groupings'
    * Method: GET
@@ -145,6 +146,35 @@ class FacilityGroupings {
    */
   getAll() {
     return this._request.get(`${this._baseUrl}/groupings`)
+      .then((groupings) => groupings.map(formatGroupingFromServer));
+  }
+
+  /**
+   * Get a listing of all facility groupings for an organization. Includes public groupings
+   * across that specific organization and the user's private groupings for that organization.
+   *
+   * API Endpoint: '/organizations/:organizationId/groupings'
+   * Method: GET
+   *
+   * @param {string} organizationId UUID corresponding with an organization
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityGrouping[]}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilites.groupings.getAll()
+   *   .then((groupings) => console.log(groupings))
+   *   .catch((err) => console.log(err));
+   */
+  getAllByOrganizationId(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error("An organization id is required for getting a list of an organization's facility groupings")
+      );
+    }
+
+    return this._request.get(`${this._baseUrl}/organizations/${organizationId}/groupings`)
       .then((groupings) => groupings.map(formatGroupingFromServer));
   }
 

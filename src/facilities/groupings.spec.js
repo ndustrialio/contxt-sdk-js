@@ -101,7 +101,7 @@ describe('Facilities/Groupings', function() {
           const groupingFacility = fixture.build('facilityGroupingFacility');
           delete groupingFacility[field];
 
-          const facilityGroupings = new FacilityGroupings(baseSdk, baseRequest);
+          const facilityGroupings = new FacilityGroupings(baseSdk, baseRequest, expectedHost);
           const promise = facilityGroupings.addFacility(
             groupingFacility.facilityGroupingId,
             groupingFacility.facilityId
@@ -204,7 +204,7 @@ describe('Facilities/Groupings', function() {
     });
 
     it('gets a list of facility groupings', function() {
-      expect(request.get).to.be.calledOnce;
+      expect(request.get).to.be.calledWith(`${expectedHost}/groupings`);
     });
 
     it('formats the list of facility groupings', function() {
@@ -219,6 +219,65 @@ describe('Facilities/Groupings', function() {
     it('returns a fulfilled promise with the facility groupings', function() {
       return expect(promise).to.be.fulfilled
         .and.to.eventually.deep.equal(expectedGrouping);
+    });
+  });
+
+  describe('getAllByOrganizationId', function() {
+    context('when all required information is provided', function() {
+      let expectedGrouping;
+      let expectedOrganizationId;
+      let formatGroupingFromServer;
+      let groupingsFromServer;
+      let promise;
+      let request;
+
+      beforeEach(function() {
+        const numberOfGroupings = faker.random.number({ min: 1, max: 10 });
+        expectedGrouping = fixture.buildList('facilityGrouping', numberOfGroupings);
+        groupingsFromServer = fixture.buildList('facilityGrouping', numberOfGroupings);
+        expectedOrganizationId = fixture.build('organization').id;
+
+        formatGroupingFromServer = this.sandbox.stub(facilitiesUtils, 'formatGroupingFromServer')
+          .callsFake((grouping, index) => expectedGrouping[index]);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(groupingsFromServer)
+        };
+
+        const facilityGroupings = new FacilityGroupings(baseSdk, request, expectedHost);
+        promise = facilityGroupings.getAllByOrganizationId(expectedOrganizationId);
+      });
+
+      it('gets a list of facility groupings', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/groupings`
+        );
+      });
+
+      it('formats the list of facility groupings', function() {
+        return promise.then(() => {
+          expect(formatGroupingFromServer).to.have.callCount(groupingsFromServer.length);
+          groupingsFromServer.forEach((grouping) => {
+            expect(formatGroupingFromServer).to.be.calledWith(grouping);
+          });
+        });
+      });
+
+      it('returns a fulfilled promise with the facility groupings', function() {
+        return expect(promise).to.be.fulfilled
+          .and.to.eventually.deep.equal(expectedGrouping);
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('returns a rejected promise with an error when no organizationId is provided', function() {
+        const facilityGroupings = new FacilityGroupings(baseSdk, baseRequest, expectedHost);
+        const promise = facilityGroupings.getAllByOrganizationId();
+
+        return expect(promise).to.be.rejectedWith(
+          `An organization id is required for getting a list of an organization's facility groupings`
+        );
+      });
     });
   });
 
@@ -258,7 +317,7 @@ describe('Facilities/Groupings', function() {
           const groupingFacility = fixture.build('facilityGroupingFacility');
           delete groupingFacility[field];
 
-          const facilityGroupings = new FacilityGroupings(baseSdk, baseRequest);
+          const facilityGroupings = new FacilityGroupings(baseSdk, baseRequest, expectedHost);
           const promise = facilityGroupings.removeFacility(
             groupingFacility.facilityGroupingId,
             groupingFacility.facilityId
