@@ -11,6 +11,7 @@ the relationship between those groupings and facilities
     * [.addFacility(facilityGroupingId, facilityId)](#FacilityGroupings+addFacility) ⇒ <code>Promise</code>
     * [.create(facilityGrouping)](#FacilityGroupings+create) ⇒ <code>Promise</code>
     * [.getAll()](#FacilityGroupings+getAll) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId)](#FacilityGroupings+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.removeFacility(facilityGroupingId, facilityId)](#FacilityGroupings+removeFacility) ⇒ <code>Promise</code>
 
 <a name="new_FacilityGroupings_new"></a>
@@ -83,7 +84,8 @@ contxtSdk.facilities.groupings
 <a name="FacilityGroupings+getAll"></a>
 
 ### contxtSdk.facilities.groupings.getAll() ⇒ <code>Promise</code>
-Get a listing of all facility groupings for the user's organization
+Get a listing of all facility groupings available to a user. Includes public groupings across
+any organization the user has access to and the user's private groupings.
 
 API Endpoint: '/groupings'
 Method: GET
@@ -91,6 +93,29 @@ Method: GET
 **Kind**: instance method of [<code>FacilityGroupings</code>](#FacilityGroupings)  
 **Fulfill**: <code>FacilityGrouping[]</code>  
 **Reject**: <code>Error</code>  
+**Example**  
+```js
+contxtSdk.facilites.groupings.getAll()
+  .then((groupings) => console.log(groupings))
+  .catch((err) => console.log(err));
+```
+<a name="FacilityGroupings+getAllByOrganizationId"></a>
+
+### contxtSdk.facilities.groupings.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
+Get a listing of all facility groupings for an organization. Includes public groupings
+across that specific organization and the user's private groupings for that organization.
+
+API Endpoint: '/organizations/:organizationId/groupings'
+Method: GET
+
+**Kind**: instance method of [<code>FacilityGroupings</code>](#FacilityGroupings)  
+**Fulfill**: <code>FacilityGrouping[]</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | UUID corresponding with an organization |
+
 **Example**  
 ```js
 contxtSdk.facilites.groupings.getAll()
