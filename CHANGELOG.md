@@ -1,3 +1,7 @@
+## [v0.0.8](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.9) (2018-04-19)
+**Added**
+- FacilityGroupings#getAllByOrganizationId for getting all facility groupings for a specific organization
+
 ## [v0.0.8](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.8) (2018-04-16)
 **Added**
 - Added some methods to help out when working with facility groupings. They are namespaced under facilities (i.e. `facilities.groupings.methodName()`) and include:
