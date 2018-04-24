@@ -67,17 +67,26 @@ class FacilityGroupings {
     let errorMsg;
 
     if (!facilityGroupingId) {
-      errorMsg = 'A facilityGroupingId is required to create a relationship between a facility grouping and a facility.';
+      errorMsg =
+        'A facilityGroupingId is required to create a relationship between a facility grouping and a facility.';
     } else if (!facilityId) {
-      errorMsg = 'A facilityId is required to create a relationship between a facility grouping and a facility.';
+      errorMsg =
+        'A facilityId is required to create a relationship between a facility grouping and a facility.';
     }
 
     if (errorMsg) {
       return Promise.reject(new Error(errorMsg));
     }
 
-    return this._request.post(`${this._baseUrl}/groupings/${facilityGroupingId}/facility/${facilityId}`)
-      .then((groupingFacility) => formatGroupingFacilityFromServer(groupingFacility));
+    return this._request
+      .post(
+        `${
+          this._baseUrl
+        }/groupings/${facilityGroupingId}/facility/${facilityId}`
+      )
+      .then(groupingFacility =>
+        formatGroupingFacilityFromServer(groupingFacility)
+      );
   }
 
   /**
@@ -124,8 +133,38 @@ class FacilityGroupings {
 
     const data = formatGroupingToServer(grouping);
 
-    return this._request.post(`${this._baseUrl}/groupings`, data)
-      .then((grouping) => formatGroupingFromServer(grouping));
+    return this._request
+      .post(`${this._baseUrl}/groupings`, data)
+      .then(grouping => formatGroupingFromServer(grouping));
+  }
+
+  /**
+   * Delete a facility groupings
+   *
+   * API Endpoint: '/groupings/:facilityGroupingId'
+   * Method: DELETE
+   *
+   * @param {string} facilityGroupingId The id of the facility grouping (formatted as a UUID)
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.groupings.delete('e4fec739-56aa-4b50-8dab-e9d6b9c91a5d')
+   */
+  delete(facilityGroupingId) {
+    if (!facilityGroupingId) {
+      return Promise.reject(
+        new Error(
+          'A facility grouping id is required for deleting a facility grouping.'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/groupings/${facilityGroupingId}`
+    );
   }
 
   /**
@@ -145,8 +184,9 @@ class FacilityGroupings {
    *   .catch((err) => console.log(err));
    */
   getAll() {
-    return this._request.get(`${this._baseUrl}/groupings`)
-      .then((groupings) => groupings.map(formatGroupingFromServer));
+    return this._request
+      .get(`${this._baseUrl}/groupings`)
+      .then(groupings => groupings.map(formatGroupingFromServer));
   }
 
   /**
@@ -170,12 +210,15 @@ class FacilityGroupings {
   getAllByOrganizationId(organizationId) {
     if (!organizationId) {
       return Promise.reject(
-        new Error("An organization id is required for getting a list of an organization's facility groupings")
+        new Error(
+          "An organization id is required for getting a list of an organization's facility groupings"
+        )
       );
     }
 
-    return this._request.get(`${this._baseUrl}/organizations/${organizationId}/groupings`)
-      .then((groupings) => groupings.map(formatGroupingFromServer));
+    return this._request
+      .get(`${this._baseUrl}/organizations/${organizationId}/groupings`)
+      .then(groupings => groupings.map(formatGroupingFromServer));
   }
 
   /**
@@ -198,9 +241,11 @@ class FacilityGroupings {
     let errorMsg;
 
     if (!facilityGroupingId) {
-      errorMsg = 'A facilityGroupingId is required to remove a relationship between a facility grouping and a facility.';
+      errorMsg =
+        'A facilityGroupingId is required to remove a relationship between a facility grouping and a facility.';
     } else if (!facilityId) {
-      errorMsg = 'A facilityId is required to remove a relationship between a facility grouping and a facility.';
+      errorMsg =
+        'A facilityId is required to remove a relationship between a facility grouping and a facility.';
     }
 
     if (errorMsg) {
