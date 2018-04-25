@@ -10,6 +10,7 @@ the relationship between those groupings and facilities
     * [new FacilityGroupings(sdk, request, baseUrl)](#new_FacilityGroupings_new)
     * [.addFacility(facilityGroupingId, facilityId)](#FacilityGroupings+addFacility) ⇒ <code>Promise</code>
     * [.create(facilityGrouping)](#FacilityGroupings+create) ⇒ <code>Promise</code>
+    * [.delete(facilityGroupingId)](#FacilityGroupings+delete) ⇒ <code>Promise</code>
     * [.getAll()](#FacilityGroupings+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#FacilityGroupings+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.removeFacility(facilityGroupingId, facilityId)](#FacilityGroupings+removeFacility) ⇒ <code>Promise</code>
@@ -80,6 +81,26 @@ contxtSdk.facilities.groupings
   })
   .then((grouping) => console.log(grouping))
   .catch((err) => console.log(err));
+```
+<a name="FacilityGroupings+delete"></a>
+
+### contxtSdk.facilities.groupings.delete(facilityGroupingId) ⇒ <code>Promise</code>
+Delete a facility groupings
+
+API Endpoint: '/groupings/:facilityGroupingId'
+Method: DELETE
+
+**Kind**: instance method of [<code>FacilityGroupings</code>](#FacilityGroupings)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityGroupingId | <code>string</code> | The id of the facility grouping (formatted as a UUID) |
+
+**Example**  
+```js
+contxtSdk.facilities.groupings.delete('e4fec739-56aa-4b50-8dab-e9d6b9c91a5d')
 ```
 <a name="FacilityGroupings+getAll"></a>
 
