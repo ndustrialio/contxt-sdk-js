@@ -1,3 +1,4 @@
+import isPlainObject from 'lodash.isplainobject';
 import {
   formatGroupingFacilityFromServer,
   formatGroupingFromServer,
@@ -255,6 +256,64 @@ class FacilityGroupings {
     return this._request.delete(
       `${this._baseUrl}/groupings/${facilityGroupingId}/facility/${facilityId}`
     );
+  }
+
+  /**
+   * Updates an existing facility grouping
+   *
+   * API Endpoint: '/groupings/:facilityGroupingId'
+   * Method: PUT
+   *
+   * @param {String} facilityGroupingId
+   * @param {Object} update
+   * @param {string} [update.description]
+   * @param {boolean} [update.isPrivate]
+   * @param {string} [update.name]
+   * @param {string} [update.parentGroupingId] UUID corresponding with another facility grouping
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityGrouping} Information about the updated facility grouping
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.groupings
+   *   .update({
+   *     description: 'US States of CT, MA, ME, NH, RI, VT',
+   *     isPrivate: false,
+   *     name: 'New England, USA',
+   *     parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
+   *   })
+   *   .then((grouping) => console.log(grouping))
+   *   .catch((err) => console.log(err));
+   */
+  update(facilityGroupingId, update) {
+    if (!facilityGroupingId) {
+      return Promise.reject(
+        new Error(
+          'A facility grouping id is required to update a facility grouping.'
+        )
+      );
+    }
+
+    if (!update) {
+      return Promise.reject(
+        new Error('An update is required to update a facility grouping')
+      );
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error(
+          'The facility grouping update must be a well-formed object with the data you wish to update.'
+        )
+      );
+    }
+
+    const formattedUpdate = formatGroupingToServer(update);
+
+    return this._request
+      .put(`${this._baseUrl}/groupings/${facilityGroupingId}`, formattedUpdate)
+      .then(grouping => formatGroupingFromServer(grouping));
   }
 }
 

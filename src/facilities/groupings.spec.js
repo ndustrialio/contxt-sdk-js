@@ -13,7 +13,8 @@ describe('Facilities/Groupings', function() {
     baseRequest = {
       delete: this.sandbox.stub().resolves(),
       get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves()
+      post: this.sandbox.stub().resolves(),
+      put: this.sandbox.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -459,4 +460,122 @@ describe('Facilities/Groupings', function() {
       });
     });
   });
+
+  describe('update', function() {
+    context('when all required information is available', function() {
+      let formatGroupingFromServer;
+      let formatGroupingToServer;
+      let formattedGroupingFromServer;
+      let formattedUpdateToServer;
+      let groupingFromServer;
+      let promise;
+      let request;
+      let update;
+
+      beforeEach(function() {
+        formattedGroupingFromServer = fixture.build('facilityGrouping');
+        groupingFromServer = fixture.build(
+          'facilityGrouping',
+          formattedGroupingFromServer,
+          {
+            fromServer: true
+          }
+        );
+        update = omit(formattedGroupingFromServer, [
+          'createdAt',
+          'id',
+          'organizationId',
+          'ownerId',
+          'updatedAt'
+        ]);
+        formattedUpdateToServer = fixture.build('facilityGrouping', update, {
+          fromServer: true
+        });
+
+        formatGroupingFromServer = this.sandbox
+          .stub(facilitiesUtils, 'formatGroupingFromServer')
+          .returns(formattedGroupingFromServer);
+        formatGroupingToServer = this.sandbox
+          .stub(facilitiesUtils, 'formatGroupingToServer')
+          .returns(formattedUpdateToServer);
+        request = {
+          ...baseRequest,
+          put: this.sandbox.stub().resolves(groupingFromServer)
+        };
+
+        const facilityGroupings = new FacilityGroupings(
+          baseSdk,
+          request,
+          expectedHost
+        );
+        promise = facilityGroupings.update(
+          formattedGroupingFromServer.id,
+          update
+        );
+      });
+
+      it('formats the facility grouping update for the server', function() {
+        expect(formatGroupingToServer).to.be.calledWith(update);
+      });
+
+      it('updates the facility groupings', function() {
+        expect(request.put).to.be.calledWith(
+          `${expectedHost}/groupings/${formattedGroupingFromServer.id}`,
+          formattedUpdateToServer
+        );
+      });
+
+      it('formats the returned facility grouping', function() {
+        return promise.then(() => {
+          expect(formatGroupingFromServer).to.be.calledWith(groupingFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the updated facility grouping', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          formattedGroupingFromServer
+        );
+      });
+    });
+  });
+
+  context(
+    'when there is missing or malformed required information',
+    function() {
+      let facilityGroupings;
+
+      beforeEach(function() {
+        facilityGroupings = new FacilityGroupings(baseSdk, baseRequest);
+      });
+
+      it('throws an error when there is no provided facility grouping id', function() {
+        const groupingUpdate = fixture.build('facilityGrouping');
+        const promise = facilityGroupings.update(null, groupingUpdate);
+
+        return expect(promise).to.be.rejectedWith(
+          'A facility grouping id is required to update a facility grouping.'
+        );
+      });
+
+      it('throws an error when there is no update provided', function() {
+        const groupingUpdate = fixture.build('facilityGrouping');
+        const promise = facilityGroupings.update(groupingUpdate.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'An update is required to update a facility grouping'
+        );
+      });
+
+      it('throws an error when the update is not an object', function() {
+        const groupingUpdate = fixture.build('facilityGrouping');
+        const promise = facilityGroupings.update(groupingUpdate.id, [
+          groupingUpdate
+        ]);
+
+        return expect(promise).to.be.rejectedWith(
+          'The facility grouping update must be a well-formed object with the data you wish to update.'
+        );
+      });
+    }
+  );
 });
