@@ -1,3 +1,4 @@
+import isPlainObject from 'lodash.isplainobject';
 import {
   formatGroupingFacilityFromServer,
   formatGroupingFromServer,
@@ -286,6 +287,28 @@ class FacilityGroupings {
    *   .catch((err) => console.log(err));
    */
   update(facilityGroupingId, update) {
+    if (!facilityGroupingId) {
+      return Promise.reject(
+        new Error(
+          'A facility grouping id is required to update a facility grouping.'
+        )
+      );
+    }
+
+    if (!update) {
+      return Promise.reject(
+        new Error('An update is required to update a facility grouping')
+      );
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error(
+          'The facility grouping update must be a well-formed object with the data you wish to update.'
+        )
+      );
+    }
+
     const formattedUpdate = formatGroupingToServer(update);
 
     return this._request
