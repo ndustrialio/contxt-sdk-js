@@ -14,6 +14,7 @@ the relationship between those groupings and facilities
     * [.getAll()](#FacilityGroupings+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#FacilityGroupings+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.removeFacility(facilityGroupingId, facilityId)](#FacilityGroupings+removeFacility) ⇒ <code>Promise</code>
+    * [.update(facilityGroupingId, update)](#FacilityGroupings+update) ⇒ <code>Promise</code>
 
 <a name="new_FacilityGroupings_new"></a>
 
@@ -162,5 +163,38 @@ Method: DELETE
 **Example**  
 ```js
 contxtSdk.facilities.groupings.removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+  .catch((err) => console.log(err));
+```
+<a name="FacilityGroupings+update"></a>
+
+### contxtSdk.facilities.groupings.update(facilityGroupingId, update) ⇒ <code>Promise</code>
+Updates an existing facility grouping
+
+API Endpoint: '/groupings/:facilityGroupingId'
+Method: PUT
+
+**Kind**: instance method of [<code>FacilityGroupings</code>](#FacilityGroupings)  
+**Fulfill**: [<code>FacilityGrouping</code>](./Typedefs.md#FacilityGrouping) Information about the updated facility grouping  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityGroupingId | <code>String</code> |  |
+| update | <code>Object</code> |  |
+| [update.description] | <code>string</code> |  |
+| [update.isPrivate] | <code>boolean</code> |  |
+| [update.name] | <code>string</code> |  |
+| [update.parentGroupingId] | <code>string</code> | UUID corresponding with another facility grouping |
+
+**Example**  
+```js
+contxtSdk.facilities.groupings
+  .update({
+    description: 'US States of CT, MA, ME, NH, RI, VT',
+    isPrivate: false,
+    name: 'New England, USA',
+    parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
+  })
+  .then((grouping) => console.log(grouping))
   .catch((err) => console.log(err));
 ```

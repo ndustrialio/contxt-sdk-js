@@ -459,4 +459,80 @@ describe('Facilities/Groupings', function() {
       });
     });
   });
+
+  describe('update', function() {
+    let formatGroupingFromServer;
+    let formatGroupingToServer;
+    let formattedGroupingFromServer;
+    let formattedUpdateToServer;
+    let groupingFromServer;
+    let promise;
+    let request;
+    let update;
+
+    beforeEach(function() {
+      formattedGroupingFromServer = fixture.build('facilityGrouping');
+      groupingFromServer = fixture.build(
+        'facilityGrouping',
+        formattedGroupingFromServer,
+        {
+          fromServer: true
+        }
+      );
+      update = omit(formattedGroupingFromServer, [
+        'createdAt',
+        'id',
+        'organizationId',
+        'ownerId',
+        'updatedAt'
+      ]);
+      formattedUpdateToServer = fixture.build('facilityGrouping', update, {
+        fromServer: true
+      });
+
+      formatGroupingFromServer = this.sandbox
+        .stub(facilitiesUtils, 'formatGroupingFromServer')
+        .returns(formattedGroupingFromServer);
+      formatGroupingToServer = this.sandbox
+        .stub(facilitiesUtils, 'formatGroupingToServer')
+        .returns(formattedUpdateToServer);
+      request = {
+        ...baseRequest,
+        put: this.sandbox.stub().resolves(groupingFromServer)
+      };
+
+      const facilityGroupings = new FacilityGroupings(
+        baseSdk,
+        request,
+        expectedHost
+      );
+      promise = facilityGroupings.update(
+        formattedGroupingFromServer.id,
+        update
+      );
+    });
+
+    it('formats the facility grouping update for the server', function() {
+      expect(formatGroupingToServer).to.be.calledWith(update);
+    });
+
+    it('updates the facility groupings', function() {
+      expect(request.put).to.be.calledWith(
+        `${expectedHost}/groupings/${formattedGroupingFromServer.id}`,
+        formattedUpdateToServer
+      );
+    });
+
+    it('formats the returned facility grouping', function() {
+      return promise.then(() => {
+        expect(formatGroupingFromServer).to.be.calledWith(groupingFromServer);
+      });
+    });
+
+    it('returns a fulfilled promise with the updated facility grouping', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+        formattedGroupingFromServer
+      );
+    });
+  });
 });
