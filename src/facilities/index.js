@@ -92,14 +92,17 @@ class Facilities {
       const field = requiredFields[i];
 
       if (!facility[field]) {
-        return Promise.reject(new Error(`A ${field} is required to create a new facility.`));
+        return Promise.reject(
+          new Error(`A ${field} is required to create a new facility.`)
+        );
       }
     }
 
     const data = formatFacilityToServer(facility);
 
-    return this._request.post(`${this._baseUrl}/facilities`, data)
-      .then((facility) => formatFacilityFromServer(facility));
+    return this._request
+      .post(`${this._baseUrl}/facilities`, data)
+      .then(facility => formatFacilityFromServer(facility));
   }
 
   /**
@@ -122,16 +125,22 @@ class Facilities {
    */
   createOrUpdateInfo(facilityId, update) {
     if (!facilityId) {
-      return Promise.reject(new Error("A facility id is required to update a facility's info."));
+      return Promise.reject(
+        new Error("A facility id is required to update a facility's info.")
+      );
     }
 
     if (!update) {
-      return Promise.reject(new Error("An update is required to update a facility's info."));
+      return Promise.reject(
+        new Error("An update is required to update a facility's info.")
+      );
     }
 
     if (!isPlainObject(update)) {
       return Promise.reject(
-        new Error('The facility info update must be a well-formed object with the data you wish to update.')
+        new Error(
+          'The facility info update must be a well-formed object with the data you wish to update.'
+        )
       );
     }
 
@@ -141,7 +150,11 @@ class Facilities {
       }
     };
 
-    return this._request.post(`${this._baseUrl}/facilities/${facilityId}/info`, update, options);
+    return this._request.post(
+      `${this._baseUrl}/facilities/${facilityId}/info`,
+      update,
+      options
+    );
   }
 
   /**
@@ -161,7 +174,9 @@ class Facilities {
    */
   delete(facilityId) {
     if (!facilityId) {
-      return Promise.reject(new Error('A facility id is required for deleting a facility'));
+      return Promise.reject(
+        new Error('A facility id is required for deleting a facility')
+      );
     }
 
     return this._request.delete(`${this._baseUrl}/facilities/${facilityId}`);
@@ -187,12 +202,15 @@ class Facilities {
   get(facilityId) {
     if (!facilityId) {
       return Promise.reject(
-        new Error('A facility id is required for getting information about a facility')
+        new Error(
+          'A facility id is required for getting information about a facility'
+        )
       );
     }
 
-    return this._request.get(`${this._baseUrl}/facilities/${facilityId}`)
-      .then((facility) => formatFacilityFromServer(facility));
+    return this._request
+      .get(`${this._baseUrl}/facilities/${facilityId}`)
+      .then(facility => formatFacilityFromServer(facility));
   }
 
   /**
@@ -211,8 +229,11 @@ class Facilities {
    *   .catch((err) => console.log(err));
    */
   getAll() {
-    return this._request.get(`${this._baseUrl}/facilities`)
-      .then((facilities) => facilities.map((facility) => formatFacilityFromServer(facility)));
+    return this._request
+      .get(`${this._baseUrl}/facilities`)
+      .then(facilities =>
+        facilities.map(facility => formatFacilityFromServer(facility))
+      );
   }
 
   /**
@@ -235,12 +256,55 @@ class Facilities {
   getAllByOrganizationId(organizationId) {
     if (!organizationId) {
       return Promise.reject(
-        new Error("An organization id is required for getting a list of an organization's facilities")
+        new Error(
+          "An organization id is required for getting a list of an organization's facilities"
+        )
       );
     }
 
-    return this._request.get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
-      .then((facilities) => facilities.map((facility) => formatFacilityFromServer(facility)));
+    return this._request
+      .get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
+      .then(facilities =>
+        facilities.map(facility => formatFacilityFromServer(facility))
+      );
+  }
+
+  /**
+   * Gets a list of all facilities that belong to a particular organization.
+   * Also, includes the groupings that each facility belongs to.
+   *
+   * API Endpoint: '/organizations/:organizationId/facilities?includeGroupings=true'
+   * Method: GET
+   *
+   * @param {string} organizationId UUID corresponding with an organization
+   *
+   * @returns {Promise}
+   * @fulfill {Facility[]} Information about all facilities
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.getAllByOrganizationId(25)
+   *   .then((facilities) => console.log(facilities));
+   *   .catch((err) => console.log(err));
+   */
+  getAllByOrganizationIdWithGroupings(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          "An organization id is required for getting a list of an organization's facilities"
+        )
+      );
+    }
+
+    return this._request
+      .get(
+        `${
+          this._baseUrl
+        }/organizations/${organizationId}/facilities?includeGroupings=true`
+      )
+      .then(facilities =>
+        facilities.map(facility => formatFacilityFromServer(facility))
+      );
   }
 
   /**
@@ -276,22 +340,31 @@ class Facilities {
    */
   update(facilityId, update) {
     if (!facilityId) {
-      return Promise.reject(new Error('A facility id is required to update a facility.'));
+      return Promise.reject(
+        new Error('A facility id is required to update a facility.')
+      );
     }
 
     if (!update) {
-      return Promise.reject(new Error('An update is required to update a facility.'));
+      return Promise.reject(
+        new Error('An update is required to update a facility.')
+      );
     }
 
     if (!isPlainObject(update)) {
       return Promise.reject(
-        new Error('The facility update must be a well-formed object with the data you wish to update.')
+        new Error(
+          'The facility update must be a well-formed object with the data you wish to update.'
+        )
       );
     }
 
     const formattedUpdate = formatFacilityToServer(update);
 
-    return this._request.put(`${this._baseUrl}/facilities/${facilityId}`, formattedUpdate);
+    return this._request.put(
+      `${this._baseUrl}/facilities/${facilityId}`,
+      formattedUpdate
+    );
   }
 }
 

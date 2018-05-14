@@ -1,6 +1,7 @@
 import {
   formatOrganizationFromServer,
-  formatTagsFromServer
+  formatTagsFromServer,
+  formatGroupingFromServer
 } from './index';
 
 /**
@@ -11,6 +12,12 @@ import {
  * @param {string} input.address2
  * @param {string} input.city
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
+ * @param {Object[]} [input.facilitiesGroupings]
+ * @param {string} input.facilitiesGroupings[].created_at ISO 8601 Extended Format date/time string
+ * @param {number} input.facilitiesGroupings[].facility_id Id corresponding with the parent facility
+ * @param {number} input.facilitiesGroupings[].id
+ * @param {string} input.facilitiesGroupings[].name
+ * @param {string} input.facilitiesGroupings[].updated_at ISO 8601 Extended Format date/time string
  * @param {string} input.geometry_id UUID corresponding with a geometry
  * @param {number} input.id
  * @param {Object} [input.Info] User declared information
@@ -62,6 +69,12 @@ function formatFacilityFromServer(input = {}) {
 
   if (input.tags) {
     facility.tags = formatTagsFromServer(input.tags);
+  }
+
+  if (input.facilitiesGroupings) {
+    facility.facilitiesGroupings = input.facilitiesGroupings.map(grouping => {
+      return formatGroupingFromServer(grouping);
+    });
   }
 
   return facility;

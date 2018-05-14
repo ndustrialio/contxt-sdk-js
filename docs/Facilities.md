@@ -14,6 +14,7 @@ of, information about different facilities
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationIdWithGroupings(organizationId)](#Facilities+getAllByOrganizationIdWithGroupings) ⇒ <code>Promise</code>
     * [.update(facilityId, update)](#Facilities+update) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
@@ -150,6 +151,29 @@ contxtSdk.facilities.getAll()
 Gets a list of all facilities that belong to a particular organization
 
 API Endpoint: '/organizations/:organizationId/facilities'
+Method: GET
+
+**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
+**Fulfill**: <code>Facility[]</code> Information about all facilities  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | UUID corresponding with an organization |
+
+**Example**  
+```js
+contxtSdk.facilities.getAllByOrganizationId(25)
+  .then((facilities) => console.log(facilities));
+  .catch((err) => console.log(err));
+```
+<a name="Facilities+getAllByOrganizationIdWithGroupings"></a>
+
+### contxtSdk.facilities.getAllByOrganizationIdWithGroupings(organizationId) ⇒ <code>Promise</code>
+Gets a list of all facilities that belong to a particular organization.
+Also, includes the groupings that each facility belongs to.
+
+API Endpoint: '/organizations/:organizationId/facilities?includeGroupings=true'
 Method: GET
 
 **Kind**: instance method of [<code>Facilities</code>](#Facilities)  
