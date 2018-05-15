@@ -54,7 +54,9 @@ describe('utils/facilities/formatFacilityFromServer', function () {
     it('formats the necessary children objects', function () {
       expect(formatOrganizationFromServer).to.be.calledWith(facility.Organization);
       expect(formatTagsFromServer).to.be.calledWith(facility.tags);
-      expect(formatGroupingFromServer).to.be.calledWith(facility.facilitiesGroupings[0]);
+      facility.facility_groupings.forEach((grouping) =>
+        expect(formatGroupingFromServer).to.be.calledWith(grouping)
+      );
     });
 
     it('converts the object keys to the camelCase', function () {
@@ -103,7 +105,7 @@ describe('utils/facilities/formatFacilityFromServer', function () {
       const formattedFacility = formatFacilityFromServer(facility);
 
       expect(formatGroupingFromServer).to.be.not.called;
-      expect(formattedFacility).to.not.include.keys(['facilitiesGroupings']);
+      expect(formattedFacility).to.not.include.keys(['facility_groupings']);
     });
   });
 });

@@ -26,6 +26,18 @@ factory.define('facility')
     weatherLocationId: () => null,
     zip: () => faker.address.zipCode()
   })
+  .attr('facility_groupings', ['id', 'fromServer'], (id, fromServer) => {
+    return times(faker.random.number({
+      min: 0,
+      max: 5
+    }), () => {
+      return factory.build('facilityGrouping', {
+        facilityId: id
+      }, {
+        fromServer
+      });
+    });
+  })
   .attr('name', ['city'], (city) => `${faker.address.cityPrefix()} ${city}`)
   .attr('organization', ['fromServer'], (fromServer) => {
     return factory.build('organization', null, {
@@ -45,24 +57,15 @@ factory.define('facility')
       });
     });
   })
-  .attr('facilitiesGroupings', ['id', 'fromServer'], (id, fromServer) => {
-    return times(faker.random.number({
-      min: 0,
-      max: 5
-    }), () => {
-      return factory.build('facilityGrouping', {
-        facilityId: id
-      }, {
-        fromServer
-      });
-    });
-  })
   .after((facility, options) => {
     // If building a facility object that comes from the server, transform it to have camel case and
     // capital letters in the right spots
     if (options.fromServer) {
       facility.created_at = facility.createdAt;
       delete facility.createdAt;
+
+      facility.facility_grouping = facility.facilityGrouping;
+      delete facility.facilityGrouping;
 
       facility.geometry_id = facility.geometryId;
       delete facility.geometryId;

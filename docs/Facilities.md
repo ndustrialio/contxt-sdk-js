@@ -13,8 +13,7 @@ of, information about different facilities
     * [.delete(facilityId)](#Facilities+delete) ⇒ <code>Promise</code>
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
-    * [.getAllByOrganizationId(organizationId)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
-    * [.getAllByOrganizationIdWithGroupings(organizationId)](#Facilities+getAllByOrganizationIdWithGroupings) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId, options)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.update(facilityId, update)](#Facilities+update) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
@@ -77,7 +76,7 @@ Method: POST
 
 | Param | Type | Description |
 | --- | --- | --- |
-| facilityId | <code>number</code> | The id of the facility to update |
+| facilityId | <code>number</code> | The ID of the facility to update |
 | update | <code>Object</code> | An object containing the facility info for the facility |
 
 **Example**  
@@ -100,7 +99,7 @@ Method: DELETE
 
 | Param | Type | Description |
 | --- | --- | --- |
-| facilityId | <code>number</code> | The id of the facility |
+| facilityId | <code>number</code> | The ID of the facility |
 
 **Example**  
 ```js
@@ -120,7 +119,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| facilityId | <code>number</code> | The id of the facility |
+| facilityId | <code>number</code> | The ID of the facility |
 
 **Example**  
 ```js
@@ -147,7 +146,7 @@ contxtSdk.facilities.getAll()
 ```
 <a name="Facilities+getAllByOrganizationId"></a>
 
-### contxtSdk.facilities.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
+### contxtSdk.facilities.getAllByOrganizationId(organizationId, options) ⇒ <code>Promise</code>
 Gets a list of all facilities that belong to a particular organization
 
 API Endpoint: '/organizations/:organizationId/facilities'
@@ -157,36 +156,14 @@ Method: GET
 **Fulfill**: <code>Facility[]</code> Information about all facilities  
 **Reject**: <code>Error</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| organizationId | <code>string</code> | UUID corresponding with an organization |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| organizationId | <code>string</code> |  | UUID corresponding with an organization |
+| options | <code>object</code> | <code></code> | Object containing parameters to be called with the request |
 
 **Example**  
 ```js
-contxtSdk.facilities.getAllByOrganizationId(25)
-  .then((facilities) => console.log(facilities));
-  .catch((err) => console.log(err));
-```
-<a name="Facilities+getAllByOrganizationIdWithGroupings"></a>
-
-### contxtSdk.facilities.getAllByOrganizationIdWithGroupings(organizationId) ⇒ <code>Promise</code>
-Gets a list of all facilities that belong to a particular organization.
-Also, includes the groupings that each facility belongs to.
-
-API Endpoint: '/organizations/:organizationId/facilities?includeGroupings=true'
-Method: GET
-
-**Kind**: instance method of [<code>Facilities</code>](#Facilities)  
-**Fulfill**: <code>Facility[]</code> Information about all facilities  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| organizationId | <code>string</code> | UUID corresponding with an organization |
-
-**Example**  
-```js
-contxtSdk.facilities.getAllByOrganizationIdWithGroupings(25)
+contxtSdk.facilities.getAllByOrganizationId(25, {include_groupings: true})
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
 ```
@@ -204,7 +181,7 @@ Method: PUT
 
 | Param | Type | Description |
 | --- | --- | --- |
-| facilityId | <code>number</code> | The id of the facility to update |
+| facilityId | <code>number</code> | The ID of the facility to update |
 | update | <code>Object</code> | An object containing the updated data for the facility |
 | [update.address1] | <code>string</code> |  |
 | [update.address2] | <code>string</code> |  |

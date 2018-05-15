@@ -16,14 +16,14 @@ describe('utils/facilities/formatFacilityToServer', function () {
       weather_location_id: facility.weatherLocationId
     }, [
       'createdAt',
+      'facility_groupings',
       'geometryId',
       'id',
       'info',
       'organization',
       'organizationId',
       'tags',
-      'weatherLocationId',
-      'facilitiesGroupings'
+      'weatherLocationId'
     ]);
 
     formattedFacility = formatFacilityToServer(facility);

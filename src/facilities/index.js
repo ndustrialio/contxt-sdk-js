@@ -243,17 +243,18 @@ class Facilities {
    * Method: GET
    *
    * @param {string} organizationId UUID corresponding with an organization
+   * @param {object} options Object containing parameters to be called with the request
    *
    * @returns {Promise}
    * @fulfill {Facility[]} Information about all facilities
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.getAllByOrganizationId(25)
+   * contxtSdk.facilities.getAllByOrganizationId(25, {include_groupings: true})
    *   .then((facilities) => console.log(facilities));
    *   .catch((err) => console.log(err));
    */
-  getAllByOrganizationId(organizationId) {
+  getAllByOrganizationId(organizationId, options = null) {
     if (!organizationId) {
       return Promise.reject(
         new Error(
@@ -263,45 +264,9 @@ class Facilities {
     }
 
     return this._request
-      .get(`${this._baseUrl}/organizations/${organizationId}/facilities`)
-      .then(facilities =>
-        facilities.map(facility => formatFacilityFromServer(facility))
-      );
-  }
-
-  /**
-   * Gets a list of all facilities that belong to a particular organization.
-   * Also, includes the groupings that each facility belongs to.
-   *
-   * API Endpoint: '/organizations/:organizationId/facilities?includeGroupings=true'
-   * Method: GET
-   *
-   * @param {string} organizationId UUID corresponding with an organization
-   *
-   * @returns {Promise}
-   * @fulfill {Facility[]} Information about all facilities
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.facilities.getAllByOrganizationIdWithGroupings(25)
-   *   .then((facilities) => console.log(facilities));
-   *   .catch((err) => console.log(err));
-   */
-  getAllByOrganizationIdWithGroupings(organizationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error(
-          "An organization ID is required for getting a list of an organization's facilities"
-        )
-      );
-    }
-
-    return this._request
-      .get(
-        `${
-          this._baseUrl
-        }/organizations/${organizationId}/facilities?includeGroupings=true`
-      )
+      .get(`${this._baseUrl}/organizations/${organizationId}/facilities`, {
+        params: options
+      })
       .then(facilities =>
         facilities.map(facility => formatFacilityFromServer(facility))
       );
