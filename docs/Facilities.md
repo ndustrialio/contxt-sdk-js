@@ -186,7 +186,7 @@ Method: GET
 
 **Example**  
 ```js
-contxtSdk.facilities.getAllByOrganizationId(25)
+contxtSdk.facilities.getAllByOrganizationIdWithGroupings(25)
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
 ```
