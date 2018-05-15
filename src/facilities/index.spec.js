@@ -165,12 +165,12 @@ describe('Facilities', function () {
         facilities = new Facilities(baseSdk, baseRequest);
       });
 
-      it('throws an error when there is no provided facility id', function () {
+      it('throws an error when there is no provided facility ID', function () {
         const facilityInfoUpdate = fixture.build('facilityInfo');
         const promise = facilities.createOrUpdateInfo(null, facilityInfoUpdate);
 
         return expect(promise).to.be
-          .rejectedWith("A facility id is required to update a facility's info.");
+          .rejectedWith("A facility ID is required to update a facility's info.");
       });
 
       it('throws an error when there is no update provided', function () {
@@ -192,7 +192,7 @@ describe('Facilities', function () {
   });
 
   describe('delete', function () {
-    context('the facility id is provided', function () {
+    context('the facility ID is provided', function () {
       let facility;
       let promise;
 
@@ -215,19 +215,19 @@ describe('Facilities', function () {
       });
     });
 
-    context('the facility id is not provided', function () {
+    context('the facility ID is not provided', function () {
       it('throws an error', function () {
         const facilities = new Facilities(baseSdk, baseRequest);
         const promise = facilities.delete();
 
         return expect(promise).to.be
-          .rejectedWith('A facility id is required for deleting a facility');
+          .rejectedWith('A facility ID is required for deleting a facility');
       });
     });
   });
 
   describe('get', function () {
-    context('the facility id is provided', function () {
+    context('the facility ID is provided', function () {
       let expectedFacilityId;
       let formatFacilityFromServer;
       let formattedFacility;
@@ -273,13 +273,13 @@ describe('Facilities', function () {
       });
     });
 
-    context('the facility id is not provided', function () {
+    context('the facility ID is not provided', function () {
       it('throws an error', function () {
         const facilities = new Facilities(baseSdk, baseRequest);
         const promise = facilities.get();
 
         return expect(promise).to.be
-          .rejectedWith('A facility id is required for getting information about a facility');
+          .rejectedWith('A facility ID is required for getting information about a facility');
       });
     });
   });
@@ -338,7 +338,7 @@ describe('Facilities', function () {
   });
 
   describe('getAllByOrganizationId', function () {
-    context('the organization id is provided', function () {
+    context('the organization ID is provided', function () {
       let expectedOrganizationId;
       let formatFacilityFromServer;
       let formattedFacilities;
@@ -401,14 +401,14 @@ describe('Facilities', function () {
         const promise = facilities.getAllByOrganizationId();
 
         return expect(promise).to.be.rejectedWith(
-          "An organization id is required for getting a list of an organization's facilities"
+          "An organization ID is required for getting a list of an organization's facilities"
         );
       });
     });
   });
 
   describe('getAllByOrganizationIdWithGroupings', function () {
-    context('the organization id is provided', function () {
+    context('the organization ID is provided', function () {
       let expectedOrganizationId;
       let formatFacilityFromServer;
       let formattedFacilities;
@@ -465,13 +465,13 @@ describe('Facilities', function () {
       });
     });
 
-    context('the organization id is not provided', function () {
+    context('the organization ID is not provided', function () {
       it('throws an error', function () {
         const facilities = new Facilities(baseSdk, baseRequest);
         const promise = facilities.getAllByOrganizationIdWithGroupings();
 
         return expect(promise).to.be.rejectedWith(
-          "An organization id is required for getting a list of an organization's facilities"
+          "An organization ID is required for getting a list of an organization's facilities"
         );
       });
     });
@@ -527,7 +527,7 @@ describe('Facilities', function () {
         const promise = facilities.update(null, facilityUpdate);
 
         return expect(promise).to.be
-          .rejectedWith('A facility id is required to update a facility.');
+          .rejectedWith('A facility ID is required to update a facility.');
       });
 
       it('throws an error when there is no update provided', function () {

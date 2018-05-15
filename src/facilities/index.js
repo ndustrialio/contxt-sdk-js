@@ -17,7 +17,7 @@ import {
  * @property {string} name
  * @property {Object} [Organization]
  * @property {string} [Organization.createdAt] ISO 8601 Extended Format date/time string
- * @property {string} [Organization.id] UUID formatted id
+ * @property {string} [Organization.id] UUID formatted ID
  * @property {string} [Organization.name]
  * @property {string} [Organization.updatedAt] ISO 8601 Extended Format date/time string
  * @property {string} state
@@ -111,7 +111,7 @@ class Facilities {
    * API Endpoint: '/facilities/:facilityId/info?should_update=true'
    * Method: POST
    *
-   * @param {number} facilityId The id of the facility to update
+   * @param {number} facilityId The ID of the facility to update
    * @param {Object} update An object containing the facility info for the facility
    *
    * @returns {Promise}
@@ -126,7 +126,7 @@ class Facilities {
   createOrUpdateInfo(facilityId, update) {
     if (!facilityId) {
       return Promise.reject(
-        new Error("A facility id is required to update a facility's info.")
+        new Error("A facility ID is required to update a facility's info.")
       );
     }
 
@@ -163,7 +163,7 @@ class Facilities {
    * API Endpoint: '/facilities/:facilityId'
    * Method: DELETE
    *
-   * @param {number} facilityId The id of the facility
+   * @param {number} facilityId The ID of the facility
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -175,7 +175,7 @@ class Facilities {
   delete(facilityId) {
     if (!facilityId) {
       return Promise.reject(
-        new Error('A facility id is required for deleting a facility')
+        new Error('A facility ID is required for deleting a facility')
       );
     }
 
@@ -188,7 +188,7 @@ class Facilities {
    * API Endpoint: '/facilities/:facilityId'
    * Method: GET
    *
-   * @param {number} facilityId The id of the facility
+   * @param {number} facilityId The ID of the facility
    *
    * @returns {Promise}
    * @fulfill {Facility} Information about a facility
@@ -203,7 +203,7 @@ class Facilities {
     if (!facilityId) {
       return Promise.reject(
         new Error(
-          'A facility id is required for getting information about a facility'
+          'A facility ID is required for getting information about a facility'
         )
       );
     }
@@ -257,7 +257,7 @@ class Facilities {
     if (!organizationId) {
       return Promise.reject(
         new Error(
-          "An organization id is required for getting a list of an organization's facilities"
+          "An organization ID is required for getting a list of an organization's facilities"
         )
       );
     }
@@ -291,7 +291,7 @@ class Facilities {
     if (!organizationId) {
       return Promise.reject(
         new Error(
-          "An organization id is required for getting a list of an organization's facilities"
+          "An organization ID is required for getting a list of an organization's facilities"
         )
       );
     }
@@ -313,7 +313,7 @@ class Facilities {
    * API Endpoint: '/facilities/:facilityId'
    * Method: PUT
    *
-   * @param {number} facilityId The id of the facility to update
+   * @param {number} facilityId The ID of the facility to update
    * @param {Object} update An object containing the updated data for the facility
    * @param {string} [update.address1]
    * @param {string} [update.address2]
@@ -341,7 +341,7 @@ class Facilities {
   update(facilityId, update) {
     if (!facilityId) {
       return Promise.reject(
-        new Error('A facility id is required to update a facility.')
+        new Error('A facility ID is required to update a facility.')
       );
     }
 

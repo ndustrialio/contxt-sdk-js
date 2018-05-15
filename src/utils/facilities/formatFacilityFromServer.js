@@ -14,7 +14,7 @@ import {
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
  * @param {Object[]} [input.facilitiesGroupings]
  * @param {string} input.facilitiesGroupings[].created_at ISO 8601 Extended Format date/time string
- * @param {number} input.facilitiesGroupings[].facility_id Id corresponding with the parent facility
+ * @param {number} input.facilitiesGroupings[].facility_id ID corresponding with the parent facility
  * @param {number} input.facilitiesGroupings[].id
  * @param {string} input.facilitiesGroupings[].name
  * @param {string} input.facilitiesGroupings[].updated_at ISO 8601 Extended Format date/time string
@@ -31,7 +31,7 @@ import {
  * @param {string} input.state
  * @param {Object[]} [input.tags]
  * @param {string} [input.tags[].created_at] ISO 8601 Extended Format date/time string
- * @param {number} [input.tags[].facility_id] Id corresponding with the parent facility
+ * @param {number} [input.tags[].facility_id] ID corresponding with the parent facility
  * @param {number} [input.tags[].id]
  * @param {string} [input.tags[].name]
  * @param {string} [input.tags[].updated_at] ISO 8601 Extended Format date/time string
@@ -72,9 +72,7 @@ function formatFacilityFromServer(input = {}) {
   }
 
   if (input.facilitiesGroupings) {
-    facility.facilitiesGroupings = input.facilitiesGroupings.map(grouping => {
-      return formatGroupingFromServer(grouping);
-    });
+    facility.facilitiesGroupings = input.facilitiesGroupings.map(formatGroupingFromServer);
   }
 
   return facility;
