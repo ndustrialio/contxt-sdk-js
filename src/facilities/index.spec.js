@@ -341,9 +341,12 @@ describe('Facilities', function () {
     context('the organization ID is provided', function () {
       let expectedOrganizationId;
       let formatFacilityFromServer;
+      let formatFacilityOptionsToServer;
       let formattedFacilities;
+      let initialOptions;
       let promise;
       let rawFacilities;
+      let rawFacilityOptions;
       let request;
 
       beforeEach(function () {
@@ -356,7 +359,11 @@ describe('Facilities', function () {
         rawFacilities = fixture.buildList('facility', numberOfFacilities, null, {
           fromServer: true
         });
+        initialOptions = faker.helpers.createTransaction();
+        rawFacilityOptions = faker.helpers.createTransaction();
 
+        formatFacilityOptionsToServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityOptionsToServer')
+          .returns(rawFacilityOptions);
         formatFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityFromServer')
           .callsFake((facility) => {
             const index = rawFacilities.indexOf(facility);
@@ -370,12 +377,18 @@ describe('Facilities', function () {
         const facilities = new Facilities(baseSdk, request);
         facilities._baseUrl = expectedHost;
 
-        promise = facilities.getAllByOrganizationId(expectedOrganizationId);
+        promise = facilities.getAllByOrganizationId(expectedOrganizationId, initialOptions);
+      });
+
+      it('gets options that are in a format suitable for the API', function () {
+        expect(formatFacilityOptionsToServer).to.be.calledWith(initialOptions);
       });
 
       it('gets a list of facilities for an organization from the server', function () {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/organizations/${expectedOrganizationId}/facilities`
+          `${expectedHost}/organizations/${expectedOrganizationId}/facilities`, {
+            params: rawFacilityOptions
+          }
         );
       });
 
@@ -392,24 +405,6 @@ describe('Facilities', function () {
       it('returns a list of facilities', function () {
         return expect(promise).to.be.fulfilled
           .and.to.eventually.deep.equal(formattedFacilities);
-      });
-
-      context('include_groupings options are passed', function () {
-        it('includes the query parameter in the request', function () {
-          request = {
-            ...baseRequest,
-            get: this.sandbox.stub().resolves(rawFacilities)
-          };
-          const facilities = new Facilities(baseSdk, request);
-          facilities.getAllByOrganizationId(expectedOrganizationId, {
-            includeGroupings: true
-          });
-          expect(request.get.firstCall.args).to.deep.include({
-            params: {
-              include_groupings: true
-            }
-          });
-        });
       });
     });
 

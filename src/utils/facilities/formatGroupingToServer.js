@@ -3,13 +3,13 @@
  *
  * @param {FacilityGrouping} input
  *
- * @param {Object} output
- * @param {string} output.description
- * @param {boolean} output.is_private
- * @param {string} output.name
- * @param {string} output.organization_id UUID
- * @param {string} output.owner_id Auth0 identifer of the owner
- * @param {string} output.parent_grouping_id UUID
+ * @returns {Object} output
+ * @returns {string} output.description
+ * @returns {boolean} output.is_private
+ * @returns {string} output.name
+ * @returns {string} output.organization_id UUID
+ * @returns {string} output.owner_id Auth0 identifer of the owner
+ * @returns {string} output.parent_grouping_id UUID
  *
  * @private
  */

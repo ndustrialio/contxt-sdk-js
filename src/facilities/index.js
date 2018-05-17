@@ -2,7 +2,8 @@ import isPlainObject from 'lodash.isplainobject';
 import FacilityGroupings from './groupings';
 import {
   formatFacilityFromServer,
-  formatFacilityToServer
+  formatFacilityToServer,
+  formatFacilityOptionsToServer
 } from '../utils/facilities';
 
 /**
@@ -264,11 +265,7 @@ class Facilities {
       );
     }
 
-    const params = {
-      ...options,
-      include_groupings: options ? options.includeGroupings : false
-    };
-    delete params.includeGroupings;
+    const params = formatFacilityOptionsToServer(options);
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/facilities`, {

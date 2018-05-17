@@ -1,5 +1,6 @@
 import formatFacilityFromServer from './formatFacilityFromServer';
 import formatFacilityToServer from './formatFacilityToServer';
+import formatFacilityOptionsToServer from './formatFacilityOptionsToServer';
 import formatGroupingFacilityFromServer from './formatGroupingFacilityFromServer';
 import formatGroupingFromServer from './formatGroupingFromServer';
 import formatGroupingToServer from './formatGroupingToServer';
@@ -9,6 +10,7 @@ import formatTagsFromServer from './formatTagsFromServer';
 export {
   formatFacilityFromServer,
   formatFacilityToServer,
+  formatFacilityOptionsToServer,
   formatGroupingFacilityFromServer,
   formatGroupingFromServer,
   formatGroupingToServer,

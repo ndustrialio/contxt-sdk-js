@@ -160,11 +160,11 @@ Method: GET
 | --- | --- | --- |
 | organizationId | <code>string</code> | UUID corresponding with an organization |
 | [options] | <code>object</code> | Object containing parameters to be called with the request |
-| [options.include_groupings] | <code>boolean</code> | Boolean flag for including groupings data with each facility |
+| [options.includeGroupings] | <code>boolean</code> | Boolean flag for including groupings data with each facility |
 
 **Example**  
 ```js
-contxtSdk.facilities.getAllByOrganizationId(25, {include_groupings: true})
+contxtSdk.facilities.getAllByOrganizationId(25, {includeGroupings: true})
   .then((facilities) => console.log(facilities));
   .catch((err) => console.log(err));
 ```
