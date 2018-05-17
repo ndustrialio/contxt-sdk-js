@@ -1,4 +1,3 @@
-import omit from 'lodash.omit';
 import times from 'lodash.times';
 import formatFacilityOptionsToServer from './formatFacilityOptionsToServer';
 
