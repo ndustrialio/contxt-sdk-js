@@ -13,7 +13,7 @@ of, information about different facilities
     * [.delete(facilityId)](#Facilities+delete) ⇒ <code>Promise</code>
     * [.get(facilityId)](#Facilities+get) ⇒ <code>Promise</code>
     * [.getAll()](#Facilities+getAll) ⇒ <code>Promise</code>
-    * [.getAllByOrganizationId(organizationId, options)](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId, [options])](#Facilities+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.update(facilityId, update)](#Facilities+update) ⇒ <code>Promise</code>
 
 <a name="new_Facilities_new"></a>
@@ -146,7 +146,7 @@ contxtSdk.facilities.getAll()
 ```
 <a name="Facilities+getAllByOrganizationId"></a>
 
-### contxtSdk.facilities.getAllByOrganizationId(organizationId, options) ⇒ <code>Promise</code>
+### contxtSdk.facilities.getAllByOrganizationId(organizationId, [options]) ⇒ <code>Promise</code>
 Gets a list of all facilities that belong to a particular organization
 
 API Endpoint: '/organizations/:organizationId/facilities'
@@ -156,10 +156,11 @@ Method: GET
 **Fulfill**: <code>Facility[]</code> Information about all facilities  
 **Reject**: <code>Error</code>  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| organizationId | <code>string</code> |  | UUID corresponding with an organization |
-| options | <code>object</code> | <code></code> | Object containing parameters to be called with the request |
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | UUID corresponding with an organization |
+| [options] | <code>object</code> | Object containing parameters to be called with the request |
+| [options.include_groupings] | <code>boolean</code> | Boolean flag for including groupings data with each facility |
 
 **Example**  
 ```js

@@ -243,7 +243,8 @@ class Facilities {
    * Method: GET
    *
    * @param {string} organizationId UUID corresponding with an organization
-   * @param {object} options Object containing parameters to be called with the request
+   * @param {object} [options] Object containing parameters to be called with the request
+   * @param {boolean} [options.include_groupings] Boolean flag for including groupings data with each facility
    *
    * @returns {Promise}
    * @fulfill {Facility[]} Information about all facilities
@@ -254,7 +255,7 @@ class Facilities {
    *   .then((facilities) => console.log(facilities));
    *   .catch((err) => console.log(err));
    */
-  getAllByOrganizationId(organizationId, options = null) {
+  getAllByOrganizationId(organizationId, options) {
     if (!organizationId) {
       return Promise.reject(
         new Error(

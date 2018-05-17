@@ -393,82 +393,30 @@ describe('Facilities', function () {
         return expect(promise).to.be.fulfilled
           .and.to.eventually.deep.equal(formattedFacilities);
       });
+
+      context('include_groupings options are passed', function () {
+        it('includes the query parameter in the request', function () {
+          request = {
+            ...baseRequest,
+            get: this.sandbox.stub().resolves(rawFacilities)
+          };
+          const facilities = new Facilities(baseSdk, request);
+          facilities.getAllByOrganizationId(expectedOrganizationId, {
+            include_groupings: true
+          });
+          expect(request.get.firstCall.args).to.deep.include({
+            params: {
+              include_groupings: true
+            }
+          });
+        });
+      });
     });
 
     context('the organization id is not provided', function () {
       it('throws an error', function () {
         const facilities = new Facilities(baseSdk, baseRequest);
         const promise = facilities.getAllByOrganizationId();
-
-        return expect(promise).to.be.rejectedWith(
-          "An organization ID is required for getting a list of an organization's facilities"
-        );
-      });
-    });
-  });
-
-  describe('getAllByOrganizationIdWithGroupings', function () {
-    context('the organization ID is provided', function () {
-      let expectedOrganizationId;
-      let formatFacilityFromServer;
-      let formattedFacilities;
-      let promise;
-      let rawFacilities;
-      let request;
-
-      beforeEach(function () {
-        expectedOrganizationId = faker.random.number();
-        const numberOfFacilities = faker.random.number({
-          min: 1,
-          max: 10
-        });
-        formattedFacilities = fixture.buildList('facility', numberOfFacilities);
-        rawFacilities = fixture.buildList('facility', numberOfFacilities, null, {
-          fromServer: true
-        });
-
-        formatFacilityFromServer = this.sandbox.stub(facilitiesUtils, 'formatFacilityFromServer')
-          .callsFake((facility) => {
-            const index = rawFacilities.indexOf(facility);
-            return formattedFacilities[index];
-          });
-        request = {
-          ...baseRequest,
-          get: this.sandbox.stub().resolves(rawFacilities)
-        };
-
-        const facilities = new Facilities(baseSdk, request);
-        facilities._baseUrl = expectedHost;
-
-        promise = facilities.getAllByOrganizationIdWithGroupings(expectedOrganizationId);
-      });
-
-      it('gets a list of facilities for an organization from the server', function () {
-        expect(request.get).to.be.calledWith(
-          `${expectedHost}/organizations/${expectedOrganizationId}/facilities?includeGroupings=true`
-        );
-      });
-
-      it('formats the facility object', function () {
-        return promise.then(() => {
-          expect(formatFacilityFromServer).to.have.callCount(rawFacilities.length);
-
-          rawFacilities.forEach((facility) => {
-            expect(formatFacilityFromServer).to.be.calledWith(facility);
-          });
-        });
-      });
-
-      it('returns a list of facilities', function () {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.deep.equal(formattedFacilities);
-      });
-    });
-
-    context('the organization ID is not provided', function () {
-      it('throws an error', function () {
-        const facilities = new Facilities(baseSdk, baseRequest);
-        const promise = facilities.getAllByOrganizationIdWithGroupings();
 
         return expect(promise).to.be.rejectedWith(
           "An organization ID is required for getting a list of an organization's facilities"
