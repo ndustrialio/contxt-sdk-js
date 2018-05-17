@@ -3,7 +3,8 @@
 const factory = require('rosie').Factory;
 const faker = require('faker');
 
-factory.define('userProfile')
+factory
+  .define('userProfile')
   .attrs({
     name: () => faker.name.findName(),
     nickname: () => faker.name.firstName(),

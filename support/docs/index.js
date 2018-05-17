@@ -14,6 +14,9 @@ const OUTPUT_DIR = path.join(ROOT_DIR, 'docs');
 const data = jsdoc2md.getTemplateDataSync({ files: INPUT_FILES });
 
 buildIndex({ data, outputDir: OUTPUT_DIR });
-data.filter((item) => item.kind === 'class')
-  .forEach((item) => buildClass({ data, name: item.name, outputDir: OUTPUT_DIR }));
+data
+  .filter((item) => item.kind === 'class')
+  .forEach((item) =>
+    buildClass({ data, name: item.name, outputDir: OUTPUT_DIR })
+  );
 buildTypedefs({ data, outputDir: OUTPUT_DIR });

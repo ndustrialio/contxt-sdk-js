@@ -4,7 +4,8 @@ const factory = require('rosie').Factory;
 const faker = require('faker');
 const times = require('lodash.times');
 
-factory.define('facility')
+factory
+  .define('facility')
   .option('fromServer', false)
   .sequence('id')
   .attrs({
@@ -27,16 +28,23 @@ factory.define('facility')
     zip: () => faker.address.zipCode()
   })
   .attr('facility_groupings', ['id', 'fromServer'], (id, fromServer) => {
-    return times(faker.random.number({
-      min: 0,
-      max: 5
-    }), () => {
-      return factory.build('facilityGrouping', {
-        facilityId: id
-      }, {
-        fromServer
-      });
-    });
+    return times(
+      faker.random.number({
+        min: 0,
+        max: 5
+      }),
+      () => {
+        return factory.build(
+          'facilityGrouping',
+          {
+            facilityId: id
+          },
+          {
+            fromServer
+          }
+        );
+      }
+    );
   })
   .attr('name', ['city'], (city) => `${faker.address.cityPrefix()} ${city}`)
   .attr('organization', ['fromServer'], (fromServer) => {
@@ -46,16 +54,23 @@ factory.define('facility')
   })
   .attr('organizationId', ['organization'], (organization) => organization.id)
   .attr('tags', ['id', 'fromServer'], (id, fromServer) => {
-    return times(faker.random.number({
-      min: 0,
-      max: 5
-    }), () => {
-      return factory.build('facilityTag', {
-        facilityId: id
-      }, {
-        fromServer
-      });
-    });
+    return times(
+      faker.random.number({
+        min: 0,
+        max: 5
+      }),
+      () => {
+        return factory.build(
+          'facilityTag',
+          {
+            facilityId: id
+          },
+          {
+            fromServer
+          }
+        );
+      }
+    );
   })
   .after((facility, options) => {
     // If building a facility object that comes from the server, transform it to have camel case and

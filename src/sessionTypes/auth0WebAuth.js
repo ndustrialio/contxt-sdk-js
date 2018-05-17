@@ -67,7 +67,8 @@ class Auth0WebAuth {
       throw new Error('clientId is required for the WebAuth config');
     }
 
-    this._onRedirect = this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
+    this._onRedirect =
+      this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
     this._sessionInfo = this._loadSession();
 
     const currentUrl = new URL(window.location);
@@ -111,24 +112,23 @@ class Auth0WebAuth {
    * @rejects {Error}
    */
   getProfile() {
-    return this.getCurrentAccessToken()
-      .then((accessToken) => {
-        return new Promise((resolve, reject) => {
-          this._auth0.client.userInfo(accessToken, (err, profile) => {
-            if (err) {
-              reject(err);
-            }
+    return this.getCurrentAccessToken().then((accessToken) => {
+      return new Promise((resolve, reject) => {
+        this._auth0.client.userInfo(accessToken, (err, profile) => {
+          if (err) {
+            reject(err);
+          }
 
-            const formattedProfile = {
-              ...profile,
-              updatedAt: profile.updated_at
-            };
-            delete formattedProfile.updated_at;
+          const formattedProfile = {
+            ...profile,
+            updatedAt: profile.updated_at
+          };
+          delete formattedProfile.updated_at;
 
-            resolve(formattedProfile);
-          });
+          resolve(formattedProfile);
         });
       });
+    });
   }
 
   /**
@@ -145,7 +145,7 @@ class Auth0WebAuth {
         return Promise.all([
           {
             accessToken: hash.accessToken,
-            expiresAt: (hash.expiresIn * 1000) + Date.now()
+            expiresAt: hash.expiresIn * 1000 + Date.now()
           },
           this._getApiToken(hash.accessToken)
         ]);
@@ -182,8 +182,12 @@ class Auth0WebAuth {
    * @returns {boolean}
    */
   isAuthenticated() {
-    const hasTokens = !!(this._sessionInfo && this._sessionInfo.accessToken &&
-      this._sessionInfo.apiToken && this._sessionInfo.expiresAt);
+    const hasTokens = !!(
+      this._sessionInfo &&
+      this._sessionInfo.accessToken &&
+      this._sessionInfo.apiToken &&
+      this._sessionInfo.expiresAt
+    );
 
     return hasTokens && this._sessionInfo.expiresAt > Date.now();
   }
@@ -232,8 +236,14 @@ class Auth0WebAuth {
         `${this._sdk.config.audiences.contxtAuth.host}/v1/token`,
         {
           audiences: Object.keys(this._sdk.config.audiences)
-            .map((audienceName) => this._sdk.config.audiences[audienceName].clientId)
-            .filter((clientId) => clientId !== this._sdk.config.audiences.contxtAuth.clientId),
+            .map(
+              (audienceName) =>
+                this._sdk.config.audiences[audienceName].clientId
+            )
+            .filter(
+              (clientId) =>
+                clientId !== this._sdk.config.audiences.contxtAuth.clientId
+            ),
           nonce: 'nonce'
         },
         {
@@ -310,7 +320,9 @@ class Auth0WebAuth {
     return new Promise((resolve, reject) => {
       this._auth0.parseHash((err, hashResponse) => {
         if (err || !hashResponse) {
-          return reject(err || new Error('No valid tokens returned from auth0'));
+          return reject(
+            err || new Error('No valid tokens returned from auth0')
+          );
         }
 
         return resolve(hashResponse);

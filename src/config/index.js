@@ -56,9 +56,9 @@ import defaultConfigs from './defaults';
  *   their clientId and host
  * @property {function} [auth.onRedirect = (pathname) => { window.location = pathname; }] A redirect
  *   method used for navigating through Auth0 callbacks in Web applications
-* @property {number} [auth.tokenExpiresAtBufferMs = 300000] The time (in milliseconds) before a
-*   token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated
-*   expiresAt). Defaults to 5 minutes.
+ * @property {number} [auth.tokenExpiresAtBufferMs = 300000] The time (in milliseconds) before a
+ *   token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated
+ *   expiresAt). Defaults to 5 minutes.
  */
 
 /**
@@ -107,7 +107,9 @@ class Config {
     } else if (config.env) {
       return audiences[config.env];
     } else {
-      throw new Error('Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property');
+      throw new Error(
+        'Custom module configurations must either contain a `host` and `clientId` or specify a specific target environment via the `env` property'
+      );
     }
   }
 
@@ -158,7 +160,9 @@ class Config {
   _getExternalAudiences({ externalModules }) {
     return Object.keys(externalModules).reduce((memo, key) => {
       if (!(externalModules[key].clientId && externalModules[key].host)) {
-        throw new Error('External modules must contain `clientId` and `host` properties');
+        throw new Error(
+          'External modules must contain `clientId` and `host` properties'
+        );
       }
 
       memo[key] = {
@@ -190,7 +194,10 @@ class Config {
       const moduleAudiences = audiences[key];
 
       if (customModuleConfig) {
-        memo[key] = this._getAudienceFromCustomConfig(customModuleConfig, moduleAudiences);
+        memo[key] = this._getAudienceFromCustomConfig(
+          customModuleConfig,
+          moduleAudiences
+        );
       } else {
         memo[key] = moduleAudiences[env];
       }

@@ -7,7 +7,9 @@ describe('utils/facilities/formatGroupingFacilityFromServer', function() {
   let groupingFacility;
 
   beforeEach(function() {
-    groupingFacility = fixture.build('facilityGroupingFacility', null, { fromServer: true });
+    groupingFacility = fixture.build('facilityGroupingFacility', null, {
+      fromServer: true
+    });
     expectedGroupingFacility = omit(
       {
         ...groupingFacility,
@@ -19,7 +21,9 @@ describe('utils/facilities/formatGroupingFacilityFromServer', function() {
       ['created_at', 'facility_grouping_id', 'facility_id', 'updated_at']
     );
 
-    formattedGroupingFacility = formatGroupingFacilityFromServer(groupingFacility);
+    formattedGroupingFacility = formatGroupingFacilityFromServer(
+      groupingFacility
+    );
   });
 
   it('converts the object keys to camelCase', function() {

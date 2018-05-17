@@ -22,8 +22,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   delete(...args) {
-    return this._axios.delete(...args)
-      .then(({ data }) => data);
+    return this._axios.delete(...args).then(({ data }) => data);
   }
 
   /**
@@ -34,8 +33,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   get(...args) {
-    return this._axios.get(...args)
-      .then(({ data }) => data);
+    return this._axios.get(...args).then(({ data }) => data);
   }
 
   /**
@@ -46,8 +44,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   head(...args) {
-    return this._axios.head(...args)
-      .then(({ data }) => data);
+    return this._axios.head(...args).then(({ data }) => data);
   }
 
   /**
@@ -58,8 +55,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   options(...args) {
-    return this._axios.options(...args)
-      .then(({ data }) => data);
+    return this._axios.options(...args).then(({ data }) => data);
   }
 
   /**
@@ -70,8 +66,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   patch(...args) {
-    return this._axios.patch(...args)
-      .then(({ data }) => data);
+    return this._axios.patch(...args).then(({ data }) => data);
   }
 
   /**
@@ -82,8 +77,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   post(...args) {
-    return this._axios.post(...args)
-      .then(({ data }) => data);
+    return this._axios.post(...args).then(({ data }) => data);
   }
 
   /**
@@ -94,8 +88,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   put(...args) {
-    return this._axios.put(...args)
-      .then(({ data }) => data);
+    return this._axios.put(...args).then(({ data }) => data);
   }
 
   /**
@@ -106,8 +99,7 @@ class Request {
    * @fulfill {string|number|object|array} data
    */
   request(...args) {
-    return this._axios.request(...args)
-      .then(({ data }) => data);
+    return this._axios.request(...args).then(({ data }) => data);
   }
 
   /**
@@ -123,13 +115,14 @@ class Request {
    * @private
    */
   _insertHeaders = (config) => {
-    return this._sdk.auth.getCurrentApiToken(this._audienceName)
+    return this._sdk.auth
+      .getCurrentApiToken(this._audienceName)
       .then((apiToken) => {
         config.headers.common.Authorization = `Bearer ${apiToken}`;
 
         return config;
       });
-  }
+  };
 }
 
 export default Request;

@@ -51,7 +51,9 @@ describe('Request', function() {
 
     it("sets up axios's interceptors", function() {
       expect(baseAxiosInstance.interceptors.request.use).to.be.calledOnce;
-      const [requestInterceptor] = baseAxiosInstance.interceptors.request.use.firstCall.args;
+      const [
+        requestInterceptor
+      ] = baseAxiosInstance.interceptors.request.use.firstCall.args;
       expect(requestInterceptor).to.be.a('function');
       expect(requestInterceptor).to.equal(request._insertHeaders);
     });
@@ -74,11 +76,15 @@ describe('Request', function() {
       let response;
 
       beforeEach(function() {
-        expectedArgs = times(faker.random.number({ min: 1, max: 10 })).map(faker.hacker.phrase);
+        expectedArgs = times(faker.random.number({ min: 1, max: 10 })).map(
+          faker.hacker.phrase
+        );
         expectedResponse = faker.hacker.phrase();
         axiosInstance = {
           ...baseAxiosInstance,
-          [method]: this.sandbox.stub().callsFake(() => Promise.resolve({ data: expectedResponse }))
+          [method]: this.sandbox
+            .stub()
+            .callsFake(() => Promise.resolve({ data: expectedResponse }))
         };
 
         this.sandbox.stub(axios, 'create').returns(axiosInstance);
@@ -92,8 +98,9 @@ describe('Request', function() {
       });
 
       it('returns the promise with the requested data', function() {
-        return expect(response).to.be.fulfilled
-          .and.to.eventually.equal(expectedResponse);
+        return expect(response).to.be.fulfilled.and.to.eventually.equal(
+          expectedResponse
+        );
       });
     });
   });
@@ -125,7 +132,9 @@ describe('Request', function() {
     });
 
     it("gets a current token from the sdk's auth module", function() {
-      expect(sdk.auth.getCurrentApiToken).to.be.calledWith(expectedAudienceName);
+      expect(sdk.auth.getCurrentApiToken).to.be.calledWith(
+        expectedAudienceName
+      );
     });
 
     it('returns a resolved promise', function() {
@@ -135,7 +144,9 @@ describe('Request', function() {
     it('resolves a config with an Authorization header appended', function() {
       return promise.then((config) => {
         expect(config).to.equal(initialConfig);
-        expect(config.headers.common.Authorization).to.equal(`Bearer ${expectedToken}`);
+        expect(config.headers.common.Authorization).to.equal(
+          `Bearer ${expectedToken}`
+        );
       });
     });
   });

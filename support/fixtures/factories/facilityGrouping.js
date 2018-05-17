@@ -3,7 +3,8 @@
 const factory = require('rosie').Factory;
 const faker = require('faker');
 
-factory.define('facilityGrouping')
+factory
+  .define('facilityGrouping')
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),

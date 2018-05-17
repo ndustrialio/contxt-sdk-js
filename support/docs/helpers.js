@@ -40,7 +40,9 @@ function readmeLink(options) {
 function typedefs(options) {
   return handlebars.helpers.each(
     sortBy(
-      identifiers(options).filter((identifier) => identifier.kind === 'typedef'),
+      identifiers(options).filter(
+        (identifier) => identifier.kind === 'typedef'
+      ),
       'longname'
     ),
     options

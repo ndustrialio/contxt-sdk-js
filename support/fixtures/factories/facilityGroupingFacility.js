@@ -3,7 +3,8 @@
 const factory = require('rosie').Factory;
 const faker = require('faker');
 
-factory.define('facilityGroupingFacility')
+factory
+  .define('facilityGroupingFacility')
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
@@ -19,10 +20,12 @@ factory.define('facilityGroupingFacility')
       facilityGroupingFacility.created_at = facilityGroupingFacility.createdAt;
       delete facilityGroupingFacility.createdAt;
 
-      facilityGroupingFacility.facility_grouping_id = facilityGroupingFacility.facilityGroupingId;
+      facilityGroupingFacility.facility_grouping_id =
+        facilityGroupingFacility.facilityGroupingId;
       delete facilityGroupingFacility.facilityGroupingId;
 
-      facilityGroupingFacility.facility_id = facilityGroupingFacility.facilityId;
+      facilityGroupingFacility.facility_id =
+        facilityGroupingFacility.facilityId;
       delete facilityGroupingFacility.facilityId;
 
       facilityGroupingFacility.updated_at = facilityGroupingFacility.updatedAt;

@@ -72,7 +72,9 @@ function formatFacilityFromServer(input = {}) {
   }
 
   if (input.facility_groupings) {
-    facility.facility_groupings = input.facility_groupings.map(formatGroupingFromServer);
+    facility.facility_groupings = input.facility_groupings.map(
+      formatGroupingFromServer
+    );
   }
 
   return facility;

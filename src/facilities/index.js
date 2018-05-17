@@ -103,7 +103,7 @@ class Facilities {
 
     return this._request
       .post(`${this._baseUrl}/facilities`, data)
-      .then(facility => formatFacilityFromServer(facility));
+      .then((facility) => formatFacilityFromServer(facility));
   }
 
   /**
@@ -211,7 +211,7 @@ class Facilities {
 
     return this._request
       .get(`${this._baseUrl}/facilities/${facilityId}`)
-      .then(facility => formatFacilityFromServer(facility));
+      .then((facility) => formatFacilityFromServer(facility));
   }
 
   /**
@@ -232,8 +232,8 @@ class Facilities {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/facilities`)
-      .then(facilities =>
-        facilities.map(facility => formatFacilityFromServer(facility))
+      .then((facilities) =>
+        facilities.map((facility) => formatFacilityFromServer(facility))
       );
   }
 
@@ -271,8 +271,8 @@ class Facilities {
       .get(`${this._baseUrl}/organizations/${organizationId}/facilities`, {
         params
       })
-      .then(facilities =>
-        facilities.map(facility => formatFacilityFromServer(facility))
+      .then((facilities) =>
+        facilities.map((facility) => formatFacilityFromServer(facility))
       );
   }
 
