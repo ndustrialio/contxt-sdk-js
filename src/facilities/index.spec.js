@@ -404,7 +404,6 @@ describe('Facilities', function () {
           facilities.getAllByOrganizationId(expectedOrganizationId, {
             includeGroupings: true
           });
-          debugger;
           expect(request.get.firstCall.args).to.deep.include({
             params: {
               include_groupings: true
