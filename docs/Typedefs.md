@@ -76,7 +76,7 @@ for authenticating and communicating with an individual API and the external mod
 | name | <code>string</code> |  |
 | [Organization] | <code>Object</code> |  |
 | [Organization.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
-| [Organization.id] | <code>string</code> | UUID formatted id |
+| [Organization.id] | <code>string</code> | UUID formatted ID |
 | [Organization.name] | <code>string</code> |  |
 | [Organization.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | state | <code>string</code> |  |

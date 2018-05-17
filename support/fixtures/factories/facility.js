@@ -26,14 +26,35 @@ factory.define('facility')
     weatherLocationId: () => null,
     zip: () => faker.address.zipCode()
   })
+  .attr('facility_groupings', ['id', 'fromServer'], (id, fromServer) => {
+    return times(faker.random.number({
+      min: 0,
+      max: 5
+    }), () => {
+      return factory.build('facilityGrouping', {
+        facilityId: id
+      }, {
+        fromServer
+      });
+    });
+  })
   .attr('name', ['city'], (city) => `${faker.address.cityPrefix()} ${city}`)
   .attr('organization', ['fromServer'], (fromServer) => {
-    return factory.build('organization', null, { fromServer });
+    return factory.build('organization', null, {
+      fromServer
+    });
   })
   .attr('organizationId', ['organization'], (organization) => organization.id)
   .attr('tags', ['id', 'fromServer'], (id, fromServer) => {
-    return times(faker.random.number({ min: 0, max: 5 }), () => {
-      return factory.build('facilityTag', { facilityId: id }, { fromServer });
+    return times(faker.random.number({
+      min: 0,
+      max: 5
+    }), () => {
+      return factory.build('facilityTag', {
+        facilityId: id
+      }, {
+        fromServer
+      });
     });
   })
   .after((facility, options) => {

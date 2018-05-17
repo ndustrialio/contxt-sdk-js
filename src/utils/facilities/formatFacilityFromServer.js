@@ -1,6 +1,7 @@
 import {
   formatOrganizationFromServer,
-  formatTagsFromServer
+  formatTagsFromServer,
+  formatGroupingFromServer
 } from './index';
 
 /**
@@ -11,6 +12,12 @@ import {
  * @param {string} input.address2
  * @param {string} input.city
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
+ * @param {Object[]}[input.facility_groupings]
+ * @param {string} [input.facility_groupings[].created_at] ISO 8601 Extended Format date/time string
+ * @param {number} [input.facility_groupings[].facility_id] ID corresponding with the parent facility
+ * @param {number} [input.facility_groupings[].id]
+ * @param {string} [input.facility_groupings[].name]
+ * @param {string} [input.facility_groupings[].updated_at] ISO 8601 Extended Format date/time string
  * @param {string} input.geometry_id UUID corresponding with a geometry
  * @param {number} input.id
  * @param {Object} [input.Info] User declared information
@@ -24,7 +31,7 @@ import {
  * @param {string} input.state
  * @param {Object[]} [input.tags]
  * @param {string} [input.tags[].created_at] ISO 8601 Extended Format date/time string
- * @param {number} [input.tags[].facility_id] Id corresponding with the parent facility
+ * @param {number} [input.tags[].facility_id] ID corresponding with the parent facility
  * @param {number} [input.tags[].id]
  * @param {string} [input.tags[].name]
  * @param {string} [input.tags[].updated_at] ISO 8601 Extended Format date/time string
@@ -62,6 +69,10 @@ function formatFacilityFromServer(input = {}) {
 
   if (input.tags) {
     facility.tags = formatTagsFromServer(input.tags);
+  }
+
+  if (input.facility_groupings) {
+    facility.facility_groupings = input.facility_groupings.map(formatGroupingFromServer);
   }
 
   return facility;

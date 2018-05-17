@@ -1,3 +1,9 @@
+## [v0.0.11](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.11) (2018-05-16)
+
+**Changed**
+
+* Facilities#getAllByOrganizationId to accept parameters to include facility grouping information
+
 ## [v0.0.10](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.10) (2018-05-01)
 
 **Added**
