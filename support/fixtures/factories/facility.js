@@ -64,9 +64,6 @@ factory.define('facility')
       facility.created_at = facility.createdAt;
       delete facility.createdAt;
 
-      facility.facility_grouping = facility.facilityGrouping;
-      delete facility.facilityGrouping;
-
       facility.geometry_id = facility.geometryId;
       delete facility.geometryId;
 

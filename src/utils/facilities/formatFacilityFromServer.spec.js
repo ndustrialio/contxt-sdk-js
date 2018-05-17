@@ -101,7 +101,7 @@ describe('utils/facilities/formatFacilityFromServer', function () {
       const facility = fixture.build('facility', null, {
         fromServer: true
       });
-      delete facility.facilitiesGroupings;
+      delete facility.facility_groupings;
       const formattedFacility = formatFacilityFromServer(facility);
 
       expect(formatGroupingFromServer).to.be.not.called;

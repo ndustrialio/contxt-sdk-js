@@ -244,14 +244,14 @@ class Facilities {
    *
    * @param {string} organizationId UUID corresponding with an organization
    * @param {object} [options] Object containing parameters to be called with the request
-   * @param {boolean} [options.include_groupings] Boolean flag for including groupings data with each facility
+   * @param {boolean} [options.includeGroupings] Boolean flag for including groupings data with each facility
    *
    * @returns {Promise}
    * @fulfill {Facility[]} Information about all facilities
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.getAllByOrganizationId(25, {include_groupings: true})
+   * contxtSdk.facilities.getAllByOrganizationId(25, {includeGroupings: true})
    *   .then((facilities) => console.log(facilities));
    *   .catch((err) => console.log(err));
    */
@@ -264,9 +264,15 @@ class Facilities {
       );
     }
 
+    const params = {
+      ...options,
+      include_groupings: options ? options.includeGroupings : false
+    };
+    delete params.includeGroupings;
+
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/facilities`, {
-        params: options
+        params
       })
       .then(facilities =>
         facilities.map(facility => formatFacilityFromServer(facility))

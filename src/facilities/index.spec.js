@@ -402,8 +402,9 @@ describe('Facilities', function () {
           };
           const facilities = new Facilities(baseSdk, request);
           facilities.getAllByOrganizationId(expectedOrganizationId, {
-            include_groupings: true
+            includeGroupings: true
           });
+          debugger;
           expect(request.get.firstCall.args).to.deep.include({
             params: {
               include_groupings: true
