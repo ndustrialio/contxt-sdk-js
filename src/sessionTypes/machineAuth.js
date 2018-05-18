@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 /**
-* @typedef {Object} MachineAuthSessionInfo
-* @property {string} apiToken
-* @property {number} expiresAt
-*/
+ * @typedef {Object} MachineAuthSessionInfo
+ * @property {string} apiToken
+ * @property {number} expiresAt
+ */
 
 /**
  * A SessionType that allows machine to machine communication between Node.js servers. This would
@@ -59,8 +59,9 @@ class MachineAuth {
       return Promise.resolve(this._sessionInfo[audienceName].apiToken);
     }
 
-    return this._getNewSessionInfo(audienceName)
-      .then((sessionInfo) => sessionInfo.apiToken);
+    return this._getNewSessionInfo(audienceName).then(
+      (sessionInfo) => sessionInfo.apiToken
+    );
   }
 
   /**
@@ -75,11 +76,9 @@ class MachineAuth {
       return false;
     }
 
-    const {
-      apiToken,
-      expiresAt
-    } = this._sessionInfo[audienceName];
-    const tokenExpiresAtBufferMs = this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
+    const { apiToken, expiresAt } = this._sessionInfo[audienceName];
+    const tokenExpiresAtBufferMs =
+      this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
     const bufferedExpiresAt = expiresAt - tokenExpiresAtBufferMs;
 
     return !!(apiToken && bufferedExpiresAt > Date.now());
@@ -104,19 +103,16 @@ class MachineAuth {
 
     if (!this._tokenPromise) {
       this._tokenPromise = axios
-        .post(
-          `${this._sdk.config.audiences.contxtAuth.host}/v1/oauth/token`,
-          {
-            audience: audience.clientId,
-            client_id: this._sdk.config.auth.clientId,
-            client_secret: this._sdk.config.auth.clientSecret,
-            grant_type: 'client_credentials'
-          }
-        )
+        .post(`${this._sdk.config.audiences.contxtAuth.host}/v1/oauth/token`, {
+          audience: audience.clientId,
+          client_id: this._sdk.config.auth.clientId,
+          client_secret: this._sdk.config.auth.clientSecret,
+          grant_type: 'client_credentials'
+        })
         .then(({ data }) => {
           return {
             apiToken: data.access_token,
-            expiresAt: Date.now() + (data.expires_in * 1000)
+            expiresAt: Date.now() + data.expires_in * 1000
           };
         })
         .then((sessionInfo) => {
@@ -127,7 +123,9 @@ class MachineAuth {
         })
         .catch((err) => {
           if (!(err.response && err.response.status)) {
-            throw new Error('There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.');
+            throw new Error(
+              'There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.'
+            );
           }
 
           throw err;

@@ -313,7 +313,7 @@ describe('Facilities/Groupings', function() {
         expect(formatGroupingFromServer).to.have.callCount(
           groupingsFromServer.length
         );
-        groupingsFromServer.forEach(grouping => {
+        groupingsFromServer.forEach((grouping) => {
           expect(formatGroupingFromServer).to.be.calledWith(grouping);
         });
       });
@@ -376,7 +376,7 @@ describe('Facilities/Groupings', function() {
           expect(formatGroupingFromServer).to.have.callCount(
             groupingsFromServer.length
           );
-          groupingsFromServer.forEach(grouping => {
+          groupingsFromServer.forEach((grouping) => {
             expect(formatGroupingFromServer).to.be.calledWith(grouping);
           });
         });

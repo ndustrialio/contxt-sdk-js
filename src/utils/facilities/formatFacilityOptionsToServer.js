@@ -13,7 +13,8 @@
 function formatFacilityOptionsToServer(options) {
   const output = {
     ...options,
-    include_groupings: options && options.includeGroupings ? options.includeGroupings : false
+    include_groupings:
+      options && options.includeGroupings ? options.includeGroupings : false
   };
 
   delete output.includeGroupings;

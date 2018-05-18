@@ -30,7 +30,9 @@ describe('ContxtSdk', function() {
     let expectedAuthSessionType;
 
     beforeEach(function() {
-      expectedExternalModules = times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
+      expectedExternalModules = times(
+        faker.random.number({ min: 1, max: 5 })
+      ).reduce((memo) => {
         const moduleName = faker.hacker.verb();
         memo[moduleName] = {
           ...fixture.build('audience'),
@@ -41,7 +43,8 @@ describe('ContxtSdk', function() {
       expectedAuthSession = faker.helpers.createTransaction();
       expectedAuthSessionType = faker.hacker.verb();
 
-      createAuthSession = this.sandbox.stub(ContxtSdk.prototype, '_createAuthSession')
+      createAuthSession = this.sandbox
+        .stub(ContxtSdk.prototype, '_createAuthSession')
         .returns(expectedAuthSession);
       createRequest = this.sandbox.stub(ContxtSdk.prototype, '_createRequest');
       decorate = this.sandbox.stub(ContxtSdk.prototype, '_decorate');
@@ -84,10 +87,14 @@ describe('ContxtSdk', function() {
         const instance = { config: baseConfig };
         const expectedSession = faker.helpers.createTransaction();
 
-        const authSessionStub = this.sandbox.stub(sessionTypes, authSessionConfig.moduleName)
+        const authSessionStub = this.sandbox
+          .stub(sessionTypes, authSessionConfig.moduleName)
           .returns(expectedSession);
 
-        const authSession = ContxtSdk.prototype._createAuthSession.call(instance, authSessionConfig.sessionType);
+        const authSession = ContxtSdk.prototype._createAuthSession.call(
+          instance,
+          authSessionConfig.sessionType
+        );
 
         expect(authSessionStub).to.be.calledWithNew;
         expect(authSessionStub).to.be.calledWith(instance);
@@ -106,7 +113,8 @@ describe('ContxtSdk', function() {
     });
 
     it('throws an error if no session type is provided', function() {
-      const fn = () => ContxtSdk.prototype._createAuthSession.call({ config: baseConfig });
+      const fn = () =>
+        ContxtSdk.prototype._createAuthSession.call({ config: baseConfig });
 
       expect(fn).to.throw('Invalid sessionType provided');
     });
@@ -121,7 +129,10 @@ describe('ContxtSdk', function() {
       expectedAudienceName = faker.hacker.noun();
       expectedInstance = {};
 
-      request = ContxtSdk.prototype._createRequest.call(expectedInstance, expectedAudienceName);
+      request = ContxtSdk.prototype._createRequest.call(
+        expectedInstance,
+        expectedAudienceName
+      );
     });
 
     it('returns an instance of the Request module tied to the sdk and the passed audience name', function() {
@@ -136,13 +147,17 @@ describe('ContxtSdk', function() {
     let instance;
 
     beforeEach(function() {
-      externalModules = times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
-        const moduleName = faker.hacker.verb();
-        memo[moduleName] = { module: this.sandbox.stub() };
-        return memo;
-      }, {});
+      externalModules = times(faker.random.number({ min: 1, max: 5 })).reduce(
+        (memo) => {
+          const moduleName = faker.hacker.verb();
+          memo[moduleName] = { module: this.sandbox.stub() };
+          return memo;
+        },
+        {}
+      );
       instance = {
-        _createRequest: this.sandbox.stub()
+        _createRequest: this.sandbox
+          .stub()
           .callsFake((moduleName) => `request module for: ${moduleName}`)
       };
 
@@ -158,14 +173,18 @@ describe('ContxtSdk', function() {
     it('creates new instances of the provided modules', function() {
       for (const module in externalModules) {
         expect(externalModules[module].module).to.be.calledWithNew;
-        expect(externalModules[module].module)
-          .to.be.calledWith(instance, `request module for: ${module}`);
+        expect(externalModules[module].module).to.be.calledWith(
+          instance,
+          `request module for: ${module}`
+        );
       }
     });
 
     it('sets the new instances of the provided modules to the sdk instance', function() {
       for (const module in externalModules) {
-        expect(instance[module]).to.be.an.instanceof(externalModules[module].module);
+        expect(instance[module]).to.be.an.instanceof(
+          externalModules[module].module
+        );
       }
     });
   });

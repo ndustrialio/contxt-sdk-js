@@ -56,7 +56,9 @@ describe('sessionTypes/MachineAuth', function() {
         delete sdk.config.auth.clientSecret;
         const fn = () => new MachineAuth(sdk);
 
-        expect(fn).to.throw('clientSecret is required for the MachineAuth config');
+        expect(fn).to.throw(
+          'clientSecret is required for the MachineAuth config'
+        );
       });
     });
   });
@@ -77,13 +79,15 @@ describe('sessionTypes/MachineAuth', function() {
         expiresAt: faker.date.future().getTime()
       };
 
-      getNewSessionInfo = this.sandbox.stub(MachineAuth.prototype, '_getNewSessionInfo')
+      getNewSessionInfo = this.sandbox
+        .stub(MachineAuth.prototype, '_getNewSessionInfo')
         .resolves(expectedSessionInfo);
     });
 
     context('when getting a new token', function() {
       beforeEach(function() {
-        isAuthenticated = this.sandbox.stub(MachineAuth.prototype, 'isAuthenticated')
+        isAuthenticated = this.sandbox
+          .stub(MachineAuth.prototype, 'isAuthenticated')
           .returns(false);
 
         const machineAuth = new MachineAuth(sdk);
@@ -99,14 +103,16 @@ describe('sessionTypes/MachineAuth', function() {
       });
 
       it('returns a promise with the new apiToken', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.equal(expectedApiToken);
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedApiToken
+        );
       });
     });
 
     context('when using a previously acquired token', function() {
       beforeEach(function() {
-        isAuthenticated = this.sandbox.stub(MachineAuth.prototype, 'isAuthenticated')
+        isAuthenticated = this.sandbox
+          .stub(MachineAuth.prototype, 'isAuthenticated')
           .returns(true);
 
         const machineAuth = new MachineAuth(sdk);
@@ -124,8 +130,9 @@ describe('sessionTypes/MachineAuth', function() {
       });
 
       it('returns a promise with the previously acquired apiToken', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.equal(expectedApiToken);
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedApiToken
+        );
       });
     });
   });
@@ -241,7 +248,9 @@ describe('sessionTypes/MachineAuth', function() {
             expires_in: expiresInMs / 1000
           }
         });
-        post = this.sandbox.stub(axios, 'post').callsFake(() => expectedPromise);
+        post = this.sandbox
+          .stub(axios, 'post')
+          .callsFake(() => expectedPromise);
         saveSession = this.sandbox.stub(MachineAuth.prototype, '_saveSession');
 
         machineAuth = new MachineAuth(sdk);
@@ -255,7 +264,9 @@ describe('sessionTypes/MachineAuth', function() {
       it('grabs a new token from the contxtAuth service', function() {
         expect(post).to.be.calledOnce;
         const [endpoint, credentials] = post.firstCall.args;
-        expect(endpoint).to.equal(`${sdk.config.audiences.contxtAuth.host}/v1/oauth/token`);
+        expect(endpoint).to.equal(
+          `${sdk.config.audiences.contxtAuth.host}/v1/oauth/token`
+        );
         expect(credentials).to.deep.equal({
           audience: expectedAudience.clientId,
           client_id: sdk.config.auth.clientId,
@@ -270,7 +281,10 @@ describe('sessionTypes/MachineAuth', function() {
 
       it("saves the new session info the module's instance", function() {
         return promise.then(() => {
-          expect(saveSession).to.be.calledWith(audienceName, expectedSessionInfo);
+          expect(saveSession).to.be.calledWith(
+            audienceName,
+            expectedSessionInfo
+          );
         });
       });
 
@@ -281,8 +295,9 @@ describe('sessionTypes/MachineAuth', function() {
       });
 
       it('returns a fulfilled promise with the api token and an expiration time', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.deep.equal(expectedSessionInfo);
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedSessionInfo
+        );
       });
     });
 
@@ -305,22 +320,25 @@ describe('sessionTypes/MachineAuth', function() {
       });
     });
 
-    context('when there is not a configuration for chosen audience', function() {
-      let promise;
+    context(
+      'when there is not a configuration for chosen audience',
+      function() {
+        let promise;
 
-      beforeEach(function() {
-        const audienceName = faker.hacker.adjective();
+        beforeEach(function() {
+          const audienceName = faker.hacker.adjective();
 
-        this.sandbox.stub(axios, 'post');
+          this.sandbox.stub(axios, 'post');
 
-        const machineAuth = new MachineAuth(sdk);
-        promise = machineAuth._getNewSessionInfo(audienceName);
-      });
+          const machineAuth = new MachineAuth(sdk);
+          promise = machineAuth._getNewSessionInfo(audienceName);
+        });
 
-      it('returns a rejected promise', function() {
-        return expect(promise).to.be.rejectedWith('No valid audience found');
-      });
-    });
+        it('returns a rejected promise', function() {
+          return expect(promise).to.be.rejectedWith('No valid audience found');
+        });
+      }
+    );
 
     context('when there is an error getting a token', function() {
       it('throws a human readable error when unable to reach the server', function() {
@@ -365,7 +383,9 @@ describe('sessionTypes/MachineAuth', function() {
         apiToken: faker.internet.password(),
         expiresAt: faker.date.future().getTime()
       };
-      initialSessionInfo = times(faker.random.number({ min: 1, max: 10 })).reduce((memo) => {
+      initialSessionInfo = times(
+        faker.random.number({ min: 1, max: 10 })
+      ).reduce((memo) => {
         memo[faker.hacker.verb()] = {
           apiToken: faker.internet.password(),
           expiresAt: faker.date.future().getTime()
@@ -384,7 +404,9 @@ describe('sessionTypes/MachineAuth', function() {
     });
 
     it("saves the new session info the auth module's instance", function() {
-      expect(machineAuth._sessionInfo[audienceName]).to.include(expectedSessionInfo);
+      expect(machineAuth._sessionInfo[audienceName]).to.include(
+        expectedSessionInfo
+      );
     });
   });
 });

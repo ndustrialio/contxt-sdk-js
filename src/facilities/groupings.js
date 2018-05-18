@@ -85,7 +85,7 @@ class FacilityGroupings {
           this._baseUrl
         }/groupings/${facilityGroupingId}/facility/${facilityId}`
       )
-      .then(groupingFacility =>
+      .then((groupingFacility) =>
         formatGroupingFacilityFromServer(groupingFacility)
       );
   }
@@ -136,7 +136,7 @@ class FacilityGroupings {
 
     return this._request
       .post(`${this._baseUrl}/groupings`, data)
-      .then(grouping => formatGroupingFromServer(grouping));
+      .then((grouping) => formatGroupingFromServer(grouping));
   }
 
   /**
@@ -187,7 +187,7 @@ class FacilityGroupings {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/groupings`)
-      .then(groupings => groupings.map(formatGroupingFromServer));
+      .then((groupings) => groupings.map(formatGroupingFromServer));
   }
 
   /**
@@ -219,7 +219,7 @@ class FacilityGroupings {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/groupings`)
-      .then(groupings => groupings.map(formatGroupingFromServer));
+      .then((groupings) => groupings.map(formatGroupingFromServer));
   }
 
   /**
@@ -313,7 +313,7 @@ class FacilityGroupings {
 
     return this._request
       .put(`${this._baseUrl}/groupings/${facilityGroupingId}`, formattedUpdate)
-      .then(grouping => formatGroupingFromServer(grouping));
+      .then((grouping) => formatGroupingFromServer(grouping));
   }
 }
 

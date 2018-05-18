@@ -3,7 +3,8 @@
 const factory = require('rosie').Factory;
 const faker = require('faker');
 
-factory.define('organization')
+factory
+  .define('organization')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     id: () => faker.random.uuid(),

@@ -12,9 +12,7 @@ module.exports = function({ data, outputDir }) {
     template,
     data: sortedData,
     helper: path.join(__dirname, 'helpers.js'),
-    partial: [
-      path.join(__dirname, 'partials', 'sig-link-html.hbs')
-    ]
+    partial: [path.join(__dirname, 'partials', 'sig-link-html.hbs')]
   });
   const outputPath = path.resolve(outputDir, 'README.md');
 

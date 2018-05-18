@@ -7,11 +7,7 @@ describe('utils/facilities/formatOrganizationFromServer', function() {
   let organization;
 
   beforeEach(function() {
-    organization = fixture.build(
-      'organization',
-      null,
-      { fromServer: true }
-    );
+    organization = fixture.build('organization', null, { fromServer: true });
     expectedOrganization = omit(
       {
         ...organization,

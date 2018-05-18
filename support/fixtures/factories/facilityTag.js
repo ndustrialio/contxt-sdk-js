@@ -3,7 +3,8 @@
 const factory = require('rosie').Factory;
 const faker = require('faker');
 
-factory.define('facilityTag')
+factory
+  .define('facilityTag')
   .option('fromServer', false)
   .sequence('id')
   .attrs({

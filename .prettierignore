@@ -1,0 +1,8 @@
+.git
+.wercker
+babel_cache
+dist
+node_modules
+wercker_scripts
+package.json
+package-lock.json

@@ -1,6 +1,4 @@
-import {
-  formatFacilityFromServer
-} from './index';
+import { formatFacilityFromServer } from './index';
 
 /**
  * Normalizes the facility grouping object returned from the API server

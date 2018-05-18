@@ -5,11 +5,5 @@
       "presets": ["env", "stage-2"]
     }
   },
-  "presets": [
-    [
-      "env",
-      { "modules": false }
-    ],
-    "stage-2"
-  ]
+  "presets": [["env", { "modules": false }], "stage-2"]
 }

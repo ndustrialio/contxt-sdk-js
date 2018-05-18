@@ -54,7 +54,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
           expiresAt: faker.date.future().getTime()
         };
 
-        loadSession = this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession').returns(expectedSession);
+        loadSession = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_loadSession')
+          .returns(expectedSession);
 
         auth0WebAuth = new Auth0WebAuth(sdk);
       });
@@ -64,7 +66,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('sets the default onRedirect method to the class instance', function() {
-        expect(auth0WebAuth._onRedirect).to.equal(Auth0WebAuth.prototype._defaultOnRedirect);
+        expect(auth0WebAuth._onRedirect).to.equal(
+          Auth0WebAuth.prototype._defaultOnRedirect
+        );
       });
 
       it('loads the session from memory', function() {
@@ -81,7 +85,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
           audience: sdk.config.audiences.contxtAuth.clientId,
           clientID: sdk.config.auth.clientId,
           domain: 'ndustrial.auth0.com',
-          redirectUri: `${global.window.location}/${sdk.config.auth.authorizationPath}`,
+          redirectUri: `${global.window.location}/${
+            sdk.config.auth.authorizationPath
+          }`,
           responseType: 'token',
           scope: 'profile openid'
         });
@@ -114,7 +120,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
         const [{ redirectUri }] = webAuth.firstCall.args;
-        expect(redirectUri).to.match(new RegExp(`${expectedAuthorizationPath}$`));
+        expect(redirectUri).to.match(
+          new RegExp(`${expectedAuthorizationPath}$`)
+        );
       });
     });
 
@@ -141,7 +149,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedToken = faker.internet.password();
 
-        getCurrentTokenByType = this.sandbox.stub(Auth0WebAuth.prototype, '_getCurrentTokenByType')
+        getCurrentTokenByType = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_getCurrentTokenByType')
           .resolves(expectedToken);
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
 
@@ -154,8 +163,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('returns a promise with the token', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.equal(expectedToken);
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedToken
+        );
       });
     });
   });
@@ -172,9 +182,12 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedAccessToken = faker.internet.password();
         profile = fixture.build('userProfile', null, { fromServer: true });
-        expectedProfile = omit({ ...profile, updatedAt: profile.updated_at }, ['updated_at']);
+        expectedProfile = omit({ ...profile, updatedAt: profile.updated_at }, [
+          'updated_at'
+        ]);
 
-        getCurrentAccessToken = this.sandbox.stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
+        getCurrentAccessToken = this.sandbox
+          .stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
           .resolves(expectedAccessToken);
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         webAuthSession.client = {
@@ -193,13 +206,16 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it("gets the user's profile", function() {
         return promise.then(() => {
-          expect(webAuthSession.client.userInfo).to.be.calledWith(expectedAccessToken);
+          expect(webAuthSession.client.userInfo).to.be.calledWith(
+            expectedAccessToken
+          );
         });
       });
 
       it("returns a fulfilled promise with the users's profile", function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.deep.equal(expectedProfile);
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedProfile
+        );
       });
     });
 
@@ -210,7 +226,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
 
-        this.sandbox.stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
+        this.sandbox
+          .stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
           .resolves(faker.internet.password());
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         webAuthSession.client = {
@@ -252,19 +269,25 @@ describe('sessionTypes/Auth0WebAuth', function() {
         };
 
         clock = sinon.useFakeTimers(currentDate);
-        getApiToken = this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
-          return Promise.resolve(expectedSessionInfo.apiToken);
-        });
-        getRedirectPathname = this.sandbox.stub(Auth0WebAuth.prototype, '_getRedirectPathname')
+        getApiToken = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_getApiToken')
+          .callsFake(() => {
+            return Promise.resolve(expectedSessionInfo.apiToken);
+          });
+        getRedirectPathname = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_getRedirectPathname')
           .returns(expectedRedirectPathname);
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         onRedirect = this.sandbox.stub();
-        parseWebAuthHash = this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
-          return Promise.resolve({
-            accessToken: expectedSessionInfo.accessToken,
-            expiresIn: (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
+        parseWebAuthHash = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_parseWebAuthHash')
+          .callsFake(() => {
+            return Promise.resolve({
+              accessToken: expectedSessionInfo.accessToken,
+              expiresIn:
+                (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
+            });
           });
-        });
         saveSession = this.sandbox.stub(Auth0WebAuth.prototype, '_saveSession');
         global.window = {
           _location: `${faker.internet.url()}/${faker.hacker.adjective()}`,
@@ -315,8 +338,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('returns a promise that is fulfilled with the web auth info and contxt api token', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.deep.equal(expectedSessionInfo);
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedSessionInfo
+        );
       });
     });
 
@@ -328,14 +352,18 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = faker.hacker.phrase();
 
-        this.sandbox.stub(Auth0WebAuth.prototype, '_getApiToken').callsFake(() => {
-          return Promise.reject(expectedError);
-        });
+        this.sandbox
+          .stub(Auth0WebAuth.prototype, '_getApiToken')
+          .callsFake(() => {
+            return Promise.reject(expectedError);
+          });
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         onRedirect = this.sandbox.stub();
-        this.sandbox.stub(Auth0WebAuth.prototype, '_parseWebAuthHash').callsFake(() => {
-          return Promise.resolve({});
-        });
+        this.sandbox
+          .stub(Auth0WebAuth.prototype, '_parseWebAuthHash')
+          .callsFake(() => {
+            return Promise.resolve({});
+          });
         global.window = {
           _location: `${faker.internet.url()}/${faker.hacker.adjective()}`,
           get location() {
@@ -352,11 +380,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it("assigns the new redirect url to the browsers's location", function() {
-        return promise
-          .then(expect.fail)
-          .catch(() => {
-            expect(onRedirect).to.be.calledWith('/');
-          });
+        return promise.then(expect.fail).catch(() => {
+          expect(onRedirect).to.be.calledWith('/');
+        });
       });
 
       it('returns with a rejected promise', function() {
@@ -556,8 +582,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
 
     it('returns a promise that fulfills with the api access token', function() {
-      return expect(promise).to.be.fulfilled
-        .and.to.eventually.equal(expectedApiToken);
+      return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+        expectedApiToken
+      );
     });
   });
 
@@ -584,8 +611,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       auth0WebAuth._sessionInfo = { [`${type}Token`]: expectedToken };
       const promise = auth0WebAuth._getCurrentTokenByType(type);
 
-      return expect(promise).to.be.fulfilled
-        .and.to.eventually.equal(expectedToken);
+      return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+        expectedToken
+      );
     });
   });
 
@@ -608,18 +636,24 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
         this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        global.localStorage.getItem = this.sandbox.stub().returns(expectedPathname);
+        global.localStorage.getItem = this.sandbox
+          .stub()
+          .returns(expectedPathname);
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         pathname = auth0WebAuth._getRedirectPathname();
       });
 
       it('gets the stored pathname from local storage', function() {
-        expect(global.localStorage.getItem).to.be.calledWith('redirect_pathname');
+        expect(global.localStorage.getItem).to.be.calledWith(
+          'redirect_pathname'
+        );
       });
 
       it('removes the previously stored pathname from local storage', function() {
-        expect(global.localStorage.removeItem).to.be.calledWith('redirect_pathname');
+        expect(global.localStorage.removeItem).to.be.calledWith(
+          'redirect_pathname'
+        );
       });
 
       it('returns the stored pathname', function() {
@@ -712,7 +746,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedHash = faker.helpers.createTransaction();
-        webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, expectedHash));
+        webAuthSession.parseHash = this.sandbox
+          .stub()
+          .callsFake((cb) => cb(null, expectedHash));
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         promise = auth0WebAuth._parseWebAuthHash();
@@ -733,13 +769,17 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
-        webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(expectedError));
+        webAuthSession.parseHash = this.sandbox
+          .stub()
+          .callsFake((cb) => cb(expectedError));
 
         auth0WebAuth = new Auth0WebAuth(sdk);
       });
 
       it('returns with a rejected promise', function() {
-        return expect(auth0WebAuth._parseWebAuthHash()).to.be.rejectedWith(expectedError);
+        return expect(auth0WebAuth._parseWebAuthHash()).to.be.rejectedWith(
+          expectedError
+        );
       });
     });
 
@@ -747,14 +787,17 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let auth0WebAuth;
 
       beforeEach(function() {
-        webAuthSession.parseHash = this.sandbox.stub().callsFake((cb) => cb(null, null));
+        webAuthSession.parseHash = this.sandbox
+          .stub()
+          .callsFake((cb) => cb(null, null));
 
         auth0WebAuth = new Auth0WebAuth(sdk);
       });
 
       it('returns with a rejected promise', function() {
-        return expect(auth0WebAuth._parseWebAuthHash())
-          .to.be.rejectedWith('No valid tokens returned from auth0');
+        return expect(auth0WebAuth._parseWebAuthHash()).to.be.rejectedWith(
+          'No valid tokens returned from auth0'
+        );
       });
     });
   });
@@ -790,18 +833,24 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
 
     it('saves the access token to local storage', function() {
-      expect(localStorage.setItem)
-        .to.be.calledWith('access_token', expectedSessionInfo.accessToken);
+      expect(localStorage.setItem).to.be.calledWith(
+        'access_token',
+        expectedSessionInfo.accessToken
+      );
     });
 
     it('saves the api access token to local storage', function() {
-      expect(localStorage.setItem)
-        .to.be.calledWith('api_token', expectedSessionInfo.apiToken);
+      expect(localStorage.setItem).to.be.calledWith(
+        'api_token',
+        expectedSessionInfo.apiToken
+      );
     });
 
     it('saves the expires at information to local storage', function() {
-      expect(localStorage.setItem)
-        .to.be.calledWith('expires_at', expectedSessionInfo.expiresAt);
+      expect(localStorage.setItem).to.be.calledWith(
+        'expires_at',
+        expectedSessionInfo.expiresAt
+      );
     });
   });
 });
