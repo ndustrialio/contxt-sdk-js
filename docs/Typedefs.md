@@ -24,6 +24,35 @@ A single audience used for authenticating and communicating with an individual A
 | apiToken    | <code>string</code> |
 | expiresAt   | <code>number</code> |
 
+<a name="CostCenter"></a>
+
+## CostCenter : <code>Object</code>
+
+**Kind**: global typedef
+
+| Param          | Type                | Description                               |
+| -------------- | ------------------- | ----------------------------------------- |
+| createdAt      | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [description]  | <code>string</code> |                                           |
+| id             | <code>string</code> | UUID                                      |
+| name           | <code>string</code> |                                           |
+| organizationId | <code>string</code> | UUID                                      |
+| updatedAt      | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="CostCenterFacility"></a>
+
+## CostCenterFacility : <code>Object</code>
+
+**Kind**: global typedef
+
+| Param        | Type                | Description                               |
+| ------------ | ------------------- | ----------------------------------------- |
+| costCenterId | <code>string</code> | UUID                                      |
+| createdAt    | <code>string</code> | ISO 8601 Extended Format date/time string |
+| facilityId   | <code>number</code> |                                           |
+| id           | <code>string</code> | UUID                                      |
+| updatedAt    | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="CustomAudience"></a>
 
 ## CustomAudience : <code>Object</code>
