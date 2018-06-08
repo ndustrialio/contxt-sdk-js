@@ -148,6 +148,36 @@ class CostCenters {
       .get(`${this._baseUrl}/costcenters`)
       .then((costCenters) => costCenters.map(formatCostCenterFromServer));
   }
+
+  /**
+   * Get a listing of all cost centers for an organization
+   *
+   * API Endpoint: '/organizations/:organizationId/costcenters'
+   * METHOD: GET
+   *
+   * @returns {Promise}
+   * @fulfill {CostCenter[]}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.costcenters
+   *   .getAllByOrganizationId('59270c25-4de9-4b22-8e0b-ab287ac344ce')
+   *   .then((costCenters) => console.log(costCenters))
+   *   .catch((err) => console.log(err));
+   */
+  getAllByOrganizationId(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          "An organization id is required for getting a list of an organization's cost centers."
+        )
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/organizations/${organizationId}/costcenters`)
+      .then((costCenters) => costCenters.map(formatCostCenterFromServer));
+  }
 }
 
 export default CostCenters;

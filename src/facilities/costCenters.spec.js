@@ -264,4 +264,78 @@ describe('Facilities/CostCenters', function() {
       );
     });
   });
+
+  describe('getAllByOrganizationId', function() {
+    context('when all required information is provided', function() {
+      let expectedCostCenter;
+      let expectedOrganizationId;
+      let formatCostCenterFromServer;
+      let costCentersFromServer;
+      let promise;
+      let request;
+
+      beforeEach(function() {
+        const numberOfCostCenters = faker.random.number({
+          min: 1,
+          max: 10
+        });
+        expectedCostCenter = fixture.buildList(
+          'costCenter',
+          numberOfCostCenters,
+          false
+        );
+        costCentersFromServer = fixture.buildList(
+          'costCenter',
+          numberOfCostCenters,
+          true
+        );
+        expectedOrganizationId = fixture.build('organization').id;
+
+        formatCostCenterFromServer = this.sandbox
+          .stub(facilitiesUtils, 'formatCostCenterFromServer')
+          .callsFake((costCenter, index) => expectedCostCenter[index]);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(costCentersFromServer)
+        };
+
+        const costCenters = new CostCenters(baseSdk, request, expectedHost);
+        promise = costCenters.getAllByOrganizationId(expectedOrganizationId);
+      });
+
+      it('gets a list of cost centers', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/costcenters`
+        );
+      });
+
+      it('formats the list of cost centers', function() {
+        return promise.then(() => {
+          expect(formatCostCenterFromServer).to.have.callCount(
+            costCentersFromServer.length
+          );
+          costCentersFromServer.forEach((costCenter) => {
+            expect(formatCostCenterFromServer).to.be.calledWith(costCenter);
+          });
+        });
+      });
+
+      it('returns a fulfilled promise with the cost centers', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedCostCenter
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('returns a rejected promise with an error when no organizationId is provided', function() {
+        const costCenters = new CostCenters(baseSdk, baseRequest, expectedHost);
+        const promise = costCenters.getAllByOrganizationId();
+
+        return expect(promise).to.be.rejectedWith(
+          `An organization id is required for getting a list of an organization's cost centers.`
+        );
+      });
+    });
+  });
 });
