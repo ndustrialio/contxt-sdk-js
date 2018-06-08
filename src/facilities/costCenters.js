@@ -45,7 +45,7 @@ class CostCenters {
    * API Endpoint: '/costcenters/:costCenterId/facilities/:facilityId'
    * Method: POST
    *
-   * @param {string} costCenterId UUID corresponding with a cost center facility
+   * @param {string} costCenterId UUID corresponding with a cost center
    * @param {number} facilityId The ID of a facility
    *
    * @returns {Promise}
