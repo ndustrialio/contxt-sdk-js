@@ -12,7 +12,7 @@ factory
     id: () => faker.random.uuid()
   })
   .after((costCenterFacility, options) => {
-    // If building a facility grouping facility object that comes from the server, transform it to
+    // If building a cost center facility object that comes from the server, transform it to
     // have camel case and capital letters in the right spots
     if (options.fromServer) {
       costCenterFacility.cost_center_id = costCenterFacility.costCenterId;

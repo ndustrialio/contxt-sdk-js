@@ -45,7 +45,7 @@ class CostCenters {
    * API Endpoint: '/costcenters/:costCenterId/facilities/:facilityId'
    * Method: POST
    *
-   * @param {string} costCenterId UUID corresponding with a facility grouping
+   * @param {string} costCenterId UUID corresponding with a cost center facility
    * @param {number} facilityId The ID of a facility
    *
    * @returns {Promise}
@@ -55,7 +55,7 @@ class CostCenters {
    * @example
    * contxtSdk.facilities.costCenters
    *   .addFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
-   *   .then((grouping) => console.log(grouping))
+   *   .then((costCenter) => console.log(costCenter))
    *   .catch((err) => console.log(err));
    */
   addFacility(costCenterId, facilityId) {
@@ -98,7 +98,7 @@ class CostCenters {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.costCenters
+   * contxtSdk.facilities.costCenters
    *   .create({
    *     decsription: 'Cost center number 1',
    *     name: 'North Carolina, USA',
@@ -138,7 +138,7 @@ class CostCenters {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.costCenters
+   * contxtSdk.facilities.costCenters
    *   .getAll()
    *   .then((costCenters) => console.log(costCenters))
    *   .catch((err) => console.log(err));

@@ -33,17 +33,17 @@ Method: POST
 **Fulfill**: [<code>CostCenterFacility</code>](./Typedefs.md#CostCenterFacility) Information about the new cost center facility relationship  
 **Reject**: <code>Error</code>
 
-| Param        | Type                | Description                                 |
-| ------------ | ------------------- | ------------------------------------------- |
-| costCenterId | <code>string</code> | UUID corresponding with a facility grouping |
-| facilityId   | <code>number</code> | The ID of a facility                        |
+| Param        | Type                | Description                                    |
+| ------------ | ------------------- | ---------------------------------------------- |
+| costCenterId | <code>string</code> | UUID corresponding with a cost center facility |
+| facilityId   | <code>number</code> | The ID of a facility                           |
 
 **Example**
 
 ```js
 contxtSdk.facilities.costCenters
   .addFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
-  .then((grouping) => console.log(grouping))
+  .then((costCenter) => console.log(costCenter))
   .catch((err) => console.log(err));
 ```
 
@@ -70,7 +70,7 @@ Method: POST
 **Example**
 
 ```js
-contxtSdk.costCenters
+contxtSdk.facilities.costCenters
   .create({
     decsription: 'Cost center number 1',
     name: 'North Carolina, USA',
@@ -95,7 +95,7 @@ METHOD: GET
 **Example**
 
 ```js
-contxtSdk.costCenters
+contxtSdk.facilities.costCenters
   .getAll()
   .then((costCenters) => console.log(costCenters))
   .catch((err) => console.log(err));
