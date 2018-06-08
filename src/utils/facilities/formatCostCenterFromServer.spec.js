@@ -24,6 +24,10 @@ describe('utils/facilities/formatCostCenterFromServer', function() {
   });
 
   it('converts the object keys to camelCase', function() {
+    console.log('formattedCostCenter');
+    console.log(formattedCostCenter);
+    console.log('expectedCostCenter');
+    console.log(expectedCostCenter);
     expect(formattedCostCenter).to.deep.equal(expectedCostCenter);
   });
 });
