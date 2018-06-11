@@ -15,7 +15,25 @@ factory
     organizationId: () => factory.build('organization').id,
     updatedAt: () => faker.date.recent().toISOString()
   })
-
+  .attr('facilities', ['id', 'fromServer'], (id, fromServer) => {
+    return times(
+      faker.random.number({
+        min: 0,
+        max: 5
+      }),
+      () => {
+        return factory.build(
+          'facility',
+          {
+            facilityId: id
+          },
+          {
+            fromServer
+          }
+        );
+      }
+    );
+  })
   .after((costCenter, options) => {
     // If building a cost center object that comes from the server, transform it to have camel
     // case and capital letters in the right spots
