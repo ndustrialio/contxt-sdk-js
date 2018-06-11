@@ -1,3 +1,4 @@
+import isPlainObject from 'lodash.isplainobject';
 import {
   formatCostCenterFromServer,
   formatCostCenterToServer,
@@ -42,10 +43,10 @@ class CostCenters {
   /**
    * Adds a facility to a cost center
    *
-   * API Endpoint: '/costcenters/:costCenterId/facilities/:facilityId'
+   * API Endpoint: '/costcenters/:costCenterId/facility/:facilityId'
    * Method: POST
    *
-   * @param {string} costCenterId UUID corresponding with a cost center facility
+   * @param {string} costCenterId UUID corresponding with a cost center
    * @param {number} facilityId The ID of a facility
    *
    * @returns {Promise}
@@ -185,7 +186,7 @@ class CostCenters {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.costcenters
+   * contxtSdk.facilities.costCenters
    *   .getAllByOrganizationId('59270c25-4de9-4b22-8e0b-ab287ac344ce')
    *   .then((costCenters) => console.log(costCenters))
    *   .catch((err) => console.log(err));
@@ -202,6 +203,94 @@ class CostCenters {
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/costcenters`)
       .then((costCenters) => costCenters.map(formatCostCenterFromServer));
+  }
+
+  /**
+   * Removes a facility from a cost center
+   *
+   * API Endpoint: '/costcenters/:costCenterId/facility/:facilityId'
+   * Method: DELETE
+   *
+   * @param {string} costCenterId UUID corresponding with a cost center
+   * @param {number} facilityId
+   *
+   * @returns {Promise}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.costCenters.removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+   *   .catch((err) => console.log(err));
+   */
+  removeFacility(costCenterId, facilityId) {
+    let errorMsg;
+
+    if (!costCenterId) {
+      errorMsg =
+        'A costCenterId is required to remove a relationship between a cost center and a facility.';
+    } else if (!facilityId) {
+      errorMsg =
+        'A facilityId is required to remove a relationship between a cost center and a facility.';
+    }
+
+    if (errorMsg) {
+      return Promise.reject(new Error(errorMsg));
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/costcenters/${costCenterId}/facility/${facilityId}`
+    );
+  }
+
+  /**
+   * Updates an existing cost center
+   *
+   * API Endpoint: '/costcenters/:costCenterId'
+   * Method: PUT
+   *
+   * @param {String} costCenterId
+   * @param {Object} update
+   * @param {string} [update.description]
+   * @param {string} [update.name]
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityGrouping} Information about the updated cost center
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.costCenters
+   *   .update({
+   *     description: 'US States of CT, MA, ME, NH, RI, VT',
+   *     name: 'New England, USA',
+   *   })
+   *   .then((costCenter) => console.log(costCenter))
+   *   .catch((err) => console.log(err));
+   */
+  update(costCenterId, update) {
+    if (!costCenterId) {
+      return Promise.reject(
+        new Error('A cost center id is required to update a cost center.')
+      );
+    }
+
+    if (!update) {
+      return Promise.reject(
+        new Error('An update is required to update a cost center.')
+      );
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error(
+          'The cost center update must be a well-formed object with the data you wish to update.'
+        )
+      );
+    }
+
+    const formattedUpdate = formatCostCenterToServer(update);
+
+    return this._request
+      .put(`${this._baseUrl}/costcenters/${costCenterId}`, formattedUpdate)
+      .then((costCenter) => formatCostCenterFromServer(costCenter));
   }
 }
 

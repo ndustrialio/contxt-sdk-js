@@ -373,4 +373,168 @@ describe('Facilities/CostCenters', function() {
       });
     });
   });
+
+  describe('removeFacility', function() {
+    context('when all required information is supplied', function() {
+      let costCenterFacility;
+      let promise;
+
+      beforeEach(function() {
+        costCenterFacility = fixture.build('costCenterFacility');
+
+        const costCenters = new CostCenters(baseSdk, baseRequest, expectedHost);
+        promise = costCenters.removeFacility(
+          costCenterFacility.costCenterId,
+          costCenterFacility.facilityId
+        );
+      });
+
+      it('requests to remove the facility', function() {
+        const costCenterId = costCenterFacility.costCenterId;
+        const facilityId = costCenterFacility.facilityId;
+
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/costcenters/${costCenterId}/facility/${facilityId}`
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is missing required information', function() {
+      ['costCenterId', 'facilityId'].forEach(function(field) {
+        it(`it throws an error when ${field} is missing`, function() {
+          const expectedErrorMessage = `A ${field} is required to remove a relationship between a cost center and a facility.`;
+          const costCenterFacility = fixture.build('costCenterFacility');
+          delete costCenterFacility[field];
+
+          const costCenters = new CostCenters(
+            baseSdk,
+            baseRequest,
+            expectedHost
+          );
+          const promise = costCenters.removeFacility(
+            costCenterFacility.costCenterId,
+            costCenterFacility.facilityId
+          );
+
+          return expect(promise).to.be.rejectedWith(expectedErrorMessage);
+        });
+      });
+    });
+  });
+
+  describe('update', function() {
+    context('when all required information is available', function() {
+      let formatCostCenterFromServer;
+      let formatCostCenterToServer;
+      let formattedCostCenterFromServer;
+      let formattedUpdateToServer;
+      let costCenterFromServer;
+      let promise;
+      let request;
+      let update;
+
+      beforeEach(function() {
+        formattedCostCenterFromServer = fixture.build('costCenter');
+        costCenterFromServer = fixture.build(
+          'costCenter',
+          formattedCostCenterFromServer,
+          {
+            fromServer: true
+          }
+        );
+        update = omit(formattedCostCenterFromServer, [
+          'createdAt',
+          'id',
+          'organizationId',
+          'updatedAt'
+        ]);
+        formattedUpdateToServer = fixture.build('costCenter', update, {
+          fromServer: true
+        });
+
+        formatCostCenterFromServer = this.sandbox
+          .stub(facilitiesUtils, 'formatCostCenterFromServer')
+          .returns(formattedCostCenterFromServer);
+        formatCostCenterToServer = this.sandbox
+          .stub(facilitiesUtils, 'formatCostCenterToServer')
+          .returns(formattedUpdateToServer);
+        request = {
+          ...baseRequest,
+          put: this.sandbox.stub().resolves(costCenterFromServer)
+        };
+
+        const costCenters = new CostCenters(baseSdk, request, expectedHost);
+        promise = costCenters.update(formattedCostCenterFromServer.id, update);
+      });
+
+      it('formats the cost center update for the server', function() {
+        expect(formatCostCenterToServer).to.be.calledWith(update);
+      });
+
+      it('updates the cost center', function() {
+        expect(request.put).to.be.calledWith(
+          `${expectedHost}/costcenters/${formattedCostCenterFromServer.id}`,
+          formattedUpdateToServer
+        );
+      });
+
+      it('formats the returned cost center', function() {
+        return promise.then(() => {
+          expect(formatCostCenterFromServer).to.be.calledWith(
+            costCenterFromServer
+          );
+        });
+      });
+
+      it('returns a fulfilled promise with the updated cost center', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          formattedCostCenterFromServer
+        );
+      });
+    });
+  });
+
+  context(
+    'when there is missing or malformed required information',
+    function() {
+      let costCenters;
+
+      beforeEach(function() {
+        costCenters = new CostCenters(baseSdk, baseRequest);
+      });
+
+      it('throws an error when there is no provided cost center id', function() {
+        const costCenterUpdate = fixture.build('costCenter');
+        const promise = costCenters.update(null, costCenterUpdate);
+
+        return expect(promise).to.be.rejectedWith(
+          'A cost center id is required to update a cost center.'
+        );
+      });
+
+      it('throws an error when there is no update provided', function() {
+        const costCenterUpdate = fixture.build('costCenter');
+        const promise = costCenters.update(costCenterUpdate.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'An update is required to update a cost center'
+        );
+      });
+
+      it('throws an error when the update is not an object', function() {
+        const costCenterUpdate = fixture.build('costCenter');
+        const promise = costCenters.update(costCenterUpdate.id, [
+          costCenterUpdate
+        ]);
+
+        return expect(promise).to.be.rejectedWith(
+          'The cost center update must be a well-formed object with the data you wish to update.'
+        );
+      });
+    }
+  );
 });
