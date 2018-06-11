@@ -213,6 +213,41 @@ describe('Facilities/CostCenters', function() {
     });
   });
 
+  describe('delete', function() {
+    context('when all required information is supplied', function() {
+      let expectedCostCenterId;
+      let promise;
+
+      beforeEach(function() {
+        expectedCostCenterId = fixture.build('costCenter').id;
+
+        const costCenters = new CostCenters(baseSdk, baseRequest, expectedHost);
+        promise = costCenters.delete(expectedCostCenterId);
+      });
+
+      it('requests to delete the cost center', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/costcenters/${expectedCostCenterId}`
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it(`it throws an error when the cost center id is missing`, function() {
+        const expectedErrorMessage = `A cost center id is required for deleting a cost center.`;
+
+        const costCenters = new CostCenters(baseSdk, baseRequest, expectedHost);
+        const promise = costCenters.delete();
+
+        return expect(promise).to.be.rejectedWith(expectedErrorMessage);
+      });
+    });
+  });
+
   describe('getAll', function() {
     let expectedCostCenter;
     let formatCostCenterFromServer;

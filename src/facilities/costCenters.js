@@ -128,6 +128,31 @@ class CostCenters {
   }
 
   /**
+   * Delete a cost center
+   *
+   * API Endpoint: '/costcenters/:costCenterId'
+   * Method: DELETE
+   *
+   * @param {string} costCenterId The id of the cost center (formatted as a UUID)
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.facilities.costCenters.delete('e4fec739-56aa-4b50-8dab-e9d6b9c91a5d')
+   */
+  delete(costCenterId) {
+    if (!costCenterId) {
+      return Promise.reject(
+        new Error('A cost center id is required for deleting a cost center.')
+      );
+    }
+
+    return this._request.delete(`${this._baseUrl}/costcenters/${costCenterId}`);
+  }
+
+  /**
    * Get a listing of all cost centers
    *
    * API Endpoint: '/costcenters'
