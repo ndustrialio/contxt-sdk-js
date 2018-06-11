@@ -267,6 +267,12 @@ class Facilities {
       );
     }
 
+    if (!isPlainObject(options)) {
+      return Promise.reject(
+        new Error('The options must be a well-formed object.')
+      );
+    }
+
     const params = formatFacilityOptionsToServer(options);
 
     return this._request

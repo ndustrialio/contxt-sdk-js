@@ -464,6 +464,30 @@ describe('Facilities', function() {
         );
       });
     });
+
+    context('the options are not a well-formed object', function() {
+      it('throws an error', function() {
+        const facilities = new Facilities(baseSdk, baseRequest);
+        const initialOrganizationId = faker.random.uuid();
+        const nonPlainObjects = [
+          faker.random.boolean(),
+          faker.random.number(),
+          [],
+          faker.lorem.sentence()
+        ];
+
+        nonPlainObjects.forEach((nonPlainObject) => {
+          const promise = facilities.getAllByOrganizationId(
+            initialOrganizationId,
+            nonPlainObject
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            'The options must be a well-formed object.'
+          );
+        });
+      });
+    });
   });
 
   describe('update', function() {

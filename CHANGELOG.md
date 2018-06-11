@@ -1,3 +1,10 @@
+## [v0.0.14](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.14) (2018-06-18)
+
+**Changed**
+
+* Facilities#getAllByOrganizationId to accept parameters to include cost centers information
+* Facilities#get to include cost centers information for that specific facility
+
 ## [v0.0.13](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.13) (2018-06-16)
 
 * Adds the ability to set up custom axios interceptors to be used on each request and response made to an API. (More information available at at {@link https://github.com/axios/axios#interceptors axios Interceptors})

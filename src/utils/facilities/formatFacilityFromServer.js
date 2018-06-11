@@ -1,7 +1,8 @@
 import {
+  formatCostCenterFromServer,
+  formatGroupingFromServer,
   formatOrganizationFromServer,
-  formatTagsFromServer,
-  formatGroupingFromServer
+  formatTagsFromServer
 } from './index';
 
 /**
@@ -11,6 +12,13 @@ import {
  * @param {string} input.address1
  * @param {string} input.address2
  * @param {string} input.city
+ * @param {Object[]} [input.cost_centers]
+ * @param {string} [input.cost_centers[].created_at] ISO 8601 Extended Format date/time string
+ * @param {string} [input.cost_centers[].description]
+ * @param {string} [input.cost_centers[].id]
+ * @param {string} [input.cost_centers[].name]
+ * @param {string} [input.cost_centers[].organization_id] UUID corresponding with an organization
+ * @param {string} [input.cost_centers[].updated_at] ISO 8601 Extended Format date/time string
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
  * @param {Object[]}[input.facility_groupings]
  * @param {string} [input.facility_groupings[].created_at] ISO 8601 Extended Format date/time string
@@ -75,6 +83,10 @@ function formatFacilityFromServer(input = {}) {
     facility.facility_groupings = input.facility_groupings.map(
       formatGroupingFromServer
     );
+  }
+
+  if (input.cost_centers) {
+    facility.costCenters = input.cost_centers.map(formatCostCenterFromServer);
   }
 
   return facility;
