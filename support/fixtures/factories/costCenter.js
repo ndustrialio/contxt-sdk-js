@@ -2,7 +2,6 @@
 
 const factory = require('rosie').Factory;
 const faker = require('faker');
-const times = require('lodash.times');
 
 factory
   .define('costCenter')
