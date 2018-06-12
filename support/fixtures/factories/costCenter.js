@@ -25,7 +25,7 @@ factory
         return factory.build(
           'facility',
           {
-            facilityId: id
+            facility_id: id
           },
           {
             fromServer
