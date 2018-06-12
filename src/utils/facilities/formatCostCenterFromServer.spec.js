@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
 import formatCostCenterFromServer from './formatCostCenterFromServer';
 
-describe('utils/facilities/formatCostCenterFromServer', function() {
+describe.only('utils/facilities/formatCostCenterFromServer', function() {
   let expectedCostCenter;
   let formattedCostCenter;
   let costCenter;
