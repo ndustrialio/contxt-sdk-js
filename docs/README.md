@@ -17,7 +17,9 @@ default is <code>/callback</code>).</p>
 <dd><p>ContxtSdk constructor</p>
 </dd>
 <dt><a href="./CostCenters.md">CostCenters</a></dt>
-<dd></dd>
+<dd><p>Module that provides access to cost centers, and helps manage
+the relationship between those cost centers and facilities</p>
+</dd>
 <dt><a href="./Facilities.md">Facilities</a></dt>
 <dd><p>Module that provides access to, and the manipulation
 of, information about different facilities</p>

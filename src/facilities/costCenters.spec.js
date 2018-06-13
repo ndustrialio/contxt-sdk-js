@@ -518,7 +518,7 @@ describe('Facilities/CostCenters', function() {
 
       it('throws an error when there is no update provided', function() {
         const costCenterUpdate = fixture.build('costCenter');
-        const promise = costCenters.update(costCenterUpdate.id);
+        const promise = costCenters.update(costCenterUpdate.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'An update is required to update a cost center'

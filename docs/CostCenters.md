@@ -2,6 +2,9 @@
 
 ## CostCenters
 
+Module that provides access to cost centers, and helps manage
+the relationship between those cost centers and facilities
+
 **Kind**: global class
 
 * [CostCenters](#CostCenters)
@@ -26,7 +29,7 @@
 
 <a name="CostCenters+addFacility"></a>
 
-### costCenters.addFacility(costCenterId, facilityId) ⇒ <code>Promise</code>
+### contxtSdk.facilities.costCenters.addFacility(costCenterId, facilityId) ⇒ <code>Promise</code>
 
 Adds a facility to a cost center
 
@@ -53,7 +56,7 @@ contxtSdk.facilities.costCenters
 
 <a name="CostCenters+create"></a>
 
-### costCenters.create(costCenter) ⇒ <code>Promise</code>
+### contxtSdk.facilities.costCenters.create(costCenter) ⇒ <code>Promise</code>
 
 Creates a new cost center
 
@@ -86,7 +89,7 @@ contxtSdk.facilities.costCenters
 
 <a name="CostCenters+delete"></a>
 
-### costCenters.delete(costCenterId) ⇒ <code>Promise</code>
+### contxtSdk.facilities.costCenters.delete(costCenterId) ⇒ <code>Promise</code>
 
 Delete a cost center
 
@@ -109,7 +112,7 @@ contxtSdk.facilities.costCenters.delete('e4fec739-56aa-4b50-8dab-e9d6b9c91a5d');
 
 <a name="CostCenters+getAll"></a>
 
-### costCenters.getAll() ⇒ <code>Promise</code>
+### contxtSdk.facilities.costCenters.getAll() ⇒ <code>Promise</code>
 
 Get a listing of all cost centers
 
@@ -130,7 +133,7 @@ contxtSdk.facilities.costCenters
 
 <a name="CostCenters+getAllByOrganizationId"></a>
 
-### costCenters.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
+### contxtSdk.facilities.costCenters.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
 
 Get a listing of all cost centers for an organization
 
@@ -156,7 +159,7 @@ contxtSdk.facilities.costCenters
 
 <a name="CostCenters+removeFacility"></a>
 
-### costCenters.removeFacility(costCenterId, facilityId) ⇒ <code>Promise</code>
+### contxtSdk.facilities.costCenters.removeFacility(costCenterId, facilityId) ⇒ <code>Promise</code>
 
 Removes a facility from a cost center
 
@@ -182,7 +185,7 @@ contxtSdk.facilities.costCenters
 
 <a name="CostCenters+update"></a>
 
-### costCenters.update(costCenterId, update) ⇒ <code>Promise</code>
+### contxtSdk.facilities.costCenters.update(costCenterId, update) ⇒ <code>Promise</code>
 
 Updates an existing cost center
 
@@ -205,8 +208,8 @@ Method: PUT
 ```js
 contxtSdk.facilities.costCenters
   .update({
-    description: 'US States of CT, MA, ME, NH, RI, VT',
-    name: 'New England, USA'
+    description: 'Refrigeration compressors throughout the facility',
+    name: 'Compressors'
   })
   .then((costCenter) => console.log(costCenter))
   .catch((err) => console.log(err));

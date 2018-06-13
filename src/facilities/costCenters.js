@@ -6,12 +6,6 @@ import {
 } from '../utils/facilities';
 
 /**
- * Module that provides access to cost centers, and helps manage
- * the relationship between those cost centers and facilities
- *
- * @typicalname contxtSdk.facilities.costCenters
- */
-/**
  * @typedef {Object} CostCenter
  * @param {string} createdAt ISO 8601 Extended Format date/time string
  * @param {string} [description]
@@ -20,6 +14,7 @@ import {
  * @param {string} organizationId UUID
  * @param {string} updatedAt ISO 8601 Extended Format date/time string
  */
+
 /**
  * @typedef {Object} CostCenterFacility
  * @param {string} costCenterId UUID
@@ -27,6 +22,13 @@ import {
  * @param {number} facilityId
  * @param {string} id UUID
  * @param {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * Module that provides access to cost centers, and helps manage
+ * the relationship between those cost centers and facilities
+ *
+ * @typicalname contxtSdk.facilities.costCenters
  */
 class CostCenters {
   /**
@@ -262,8 +264,8 @@ class CostCenters {
    * @example
    * contxtSdk.facilities.costCenters
    *   .update({
-   *     description: 'US States of CT, MA, ME, NH, RI, VT',
-   *     name: 'New England, USA',
+   *     description: 'Refrigeration compressors throughout the facility',
+   *     name: 'Compressors',
    *   })
    *   .then((costCenter) => console.log(costCenter))
    *   .catch((err) => console.log(err));

@@ -19,7 +19,7 @@ describe('utils/facilities/formatCostCenterToServer', function() {
     formattedCostCenter = formatCostCenterToServer(costCenter);
   });
 
-  it('converts the object keys to snake case and capitalizes certain keys', function() {
+  it('converts the object keys to snake case', function() {
     expect(formattedCostCenter).to.deep.equal(expectedCostCenter);
   });
 });
