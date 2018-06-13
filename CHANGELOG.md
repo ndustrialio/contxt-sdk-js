@@ -1,3 +1,16 @@
+## [v0.0.12](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.12) (2018-06-13)
+
+**Changed**
+
+* Added methods around the display and manipulation of Cost Centers. They are namespaced under facilities (i.e. `facilities.costCenters.methodName()`) and include:
+  * CostCenters#addFacility to add a facility to a cost center
+  * CostCenters#create for creating a new cost center
+  * CostCenters#getAll for getting a list of all cost centers
+  * CostCenters#getAllByOrganizationId for getting all cost centers for a specific organization
+  * CostCenters#remove to remove an existing cost center
+  * CostCenters#removeFacility to remove a facility from a cost center
+  * CostCenters#update to update an existing cost center
+
 ## [v0.0.11](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.11) (2018-05-16)
 
 **Changed**
