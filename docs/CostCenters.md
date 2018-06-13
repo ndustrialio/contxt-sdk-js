@@ -10,7 +10,7 @@
   * [.create(costCenter)](#CostCenters+create) ⇒ <code>Promise</code>
   * [.delete(costCenterId)](#CostCenters+delete) ⇒ <code>Promise</code>
   * [.getAll()](#CostCenters+getAll) ⇒ <code>Promise</code>
-  * [.getAllByOrganizationId()](#CostCenters+getAllByOrganizationId) ⇒ <code>Promise</code>
+  * [.getAllByOrganizationId(organizationId)](#CostCenters+getAllByOrganizationId) ⇒ <code>Promise</code>
   * [.removeFacility(costCenterId, facilityId)](#CostCenters+removeFacility) ⇒ <code>Promise</code>
   * [.update(costCenterId, update)](#CostCenters+update) ⇒ <code>Promise</code>
 
@@ -99,7 +99,7 @@ Method: DELETE
 
 | Param        | Type                | Description                                     |
 | ------------ | ------------------- | ----------------------------------------------- |
-| costCenterId | <code>string</code> | The id of the cost center (formatted as a UUID) |
+| costCenterId | <code>string</code> | The ID of the cost center (formatted as a UUID) |
 
 **Example**
 
@@ -130,7 +130,7 @@ contxtSdk.facilities.costCenters
 
 <a name="CostCenters+getAllByOrganizationId"></a>
 
-### costCenters.getAllByOrganizationId() ⇒ <code>Promise</code>
+### costCenters.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
 
 Get a listing of all cost centers for an organization
 
@@ -139,7 +139,12 @@ METHOD: GET
 
 **Kind**: instance method of [<code>CostCenters</code>](#CostCenters)  
 **Fulfill**: <code>CostCenter[]</code>  
-**Reject**: <code>Error</code>  
+**Reject**: <code>Error</code>
+
+| Param          | Type                | Description                                      |
+| -------------- | ------------------- | ------------------------------------------------ |
+| organizationId | <code>string</code> | The ID of the organization (formatted as a UUID) |
+
 **Example**
 
 ```js
@@ -159,12 +164,13 @@ API Endpoint: '/costcenters/:costCenterId/facility/:facilityId'
 Method: DELETE
 
 **Kind**: instance method of [<code>CostCenters</code>](#CostCenters)  
+**Fulfill**: <code>undefined</code>  
 **Reject**: <code>Error</code>
 
 | Param        | Type                | Description                           |
 | ------------ | ------------------- | ------------------------------------- |
 | costCenterId | <code>string</code> | UUID corresponding with a cost center |
-| facilityId   | <code>number</code> |                                       |
+| facilityId   | <code>number</code> | ID corresponding with the facility    |
 
 **Example**
 

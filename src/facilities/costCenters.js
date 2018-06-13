@@ -134,7 +134,7 @@ class CostCenters {
    * API Endpoint: '/costcenters/:costCenterId'
    * Method: DELETE
    *
-   * @param {string} costCenterId The id of the cost center (formatted as a UUID)
+   * @param {string} costCenterId The ID of the cost center (formatted as a UUID)
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -181,6 +181,8 @@ class CostCenters {
    * API Endpoint: '/organizations/:organizationId/costcenters'
    * METHOD: GET
    *
+   * @param {string} organizationId The ID of the organization (formatted as a UUID)
+   *
    * @returns {Promise}
    * @fulfill {CostCenter[]}
    * @reject {Error}
@@ -212,9 +214,10 @@ class CostCenters {
    * Method: DELETE
    *
    * @param {string} costCenterId UUID corresponding with a cost center
-   * @param {number} facilityId
+   * @param {number} facilityId ID corresponding with the facility
    *
    * @returns {Promise}
+   * @fulfill {undefined}
    * @reject {Error}
    *
    * @example
