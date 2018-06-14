@@ -52,6 +52,7 @@ class Facilities {
     this._sdk = sdk;
 
     this.groupings = new FacilityGroupings(sdk, request, baseUrl);
+    this.costCenters = new CostCenters(sdk, request, baseUrl);
   }
 
   /**
