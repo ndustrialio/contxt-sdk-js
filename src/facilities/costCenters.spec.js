@@ -64,7 +64,7 @@ describe('Facilities/CostCenters', function() {
         expectedCostCenterFacility = fixture.build('costCenterFacility');
         expectedFacilityId = expectedCostCenterFacility.facilityId;
         expectedCostCenterId = expectedCostCenterFacility.costCenterId;
-        rawCostCenterFacility = fixture.build('costCenterFacility', {
+        rawCostCenterFacility = fixture.build('costCenterFacility', null, {
           fromServer: true
         });
 
@@ -131,7 +131,6 @@ describe('Facilities/CostCenters', function() {
 
   describe('create', function() {
     context('when all required information is supplied', function() {
-      let expectedCostCenter;
       let formatCostCenterFromServer;
       let formatCostCenterToServer;
       let formattedCostCenterFromServer;
@@ -142,19 +141,14 @@ describe('Facilities/CostCenters', function() {
 
       beforeEach(function() {
         initialCostCenter = fixture.build('costCenter');
-        formattedCostCenterToServer = fixture.build('costCenter', null, {
-          fromServer: false
-        });
+        formattedCostCenterToServer = fixture.build('costCenter', null);
         formattedCostCenterFromServer = fixture.build('costCenter', null, {
-          fromServer: true
-        });
-        expectedCostCenter = fixture.build('costCenter', null, {
           fromServer: true
         });
 
         formatCostCenterFromServer = this.sandbox
           .stub(facilitiesUtils, 'formatCostCenterFromServer')
-          .returns(expectedCostCenter);
+          .returns(formattedCostCenterFromServer);
         formatCostCenterToServer = this.sandbox
           .stub(facilitiesUtils, 'formatCostCenterToServer')
           .returns(formattedCostCenterToServer);
@@ -173,7 +167,7 @@ describe('Facilities/CostCenters', function() {
       });
 
       it('creates a new cost center', function() {
-        expect(request.post).to.be.deep.calledWith(
+        expect(request.post).to.be.calledWith(
           `${expectedHost}/costcenters`,
           formattedCostCenterToServer
         );
@@ -189,7 +183,7 @@ describe('Facilities/CostCenters', function() {
 
       it('returns a fulfilled promise with the new cost center information', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedCostCenter
+          formattedCostCenterFromServer
         );
       });
     });
@@ -238,7 +232,8 @@ describe('Facilities/CostCenters', function() {
 
     context('when there is missing required information', function() {
       it(`it throws an error when the cost center id is missing`, function() {
-        const expectedErrorMessage = `A cost center id is required for deleting a cost center.`;
+        const expectedErrorMessage =
+          'A cost center id is required for deleting a cost center.';
 
         const costCenters = new CostCenters(baseSdk, baseRequest, expectedHost);
         const promise = costCenters.delete();
@@ -249,7 +244,7 @@ describe('Facilities/CostCenters', function() {
   });
 
   describe('getAll', function() {
-    let expectedCostCenter;
+    let expectedCostCenters;
     let formatCostCenterFromServer;
     let costCentersFromServer;
     let promise;
@@ -260,15 +255,22 @@ describe('Facilities/CostCenters', function() {
         min: 1,
         max: 10
       });
-      expectedCostCenter = fixture.buildList('costCenter', numberOfCostCenters);
-      costCentersFromServer = fixture.buildList(
+      expectedCostCenters = fixture.buildList(
         'costCenter',
         numberOfCostCenters
+      );
+      costCentersFromServer = fixture.buildList(
+        'costCenter',
+        numberOfCostCenters,
+        null,
+        {
+          fromServer: true
+        }
       );
 
       formatCostCenterFromServer = this.sandbox
         .stub(facilitiesUtils, 'formatCostCenterFromServer')
-        .callsFake((costCenter, index) => expectedCostCenter[index]);
+        .callsFake((costCenter, index) => expectedCostCenters[index]);
       request = {
         ...baseRequest,
         get: this.sandbox.stub().resolves(costCentersFromServer)
@@ -295,14 +297,14 @@ describe('Facilities/CostCenters', function() {
 
     it('returns a fulfilled promise with the cost centers', function() {
       return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-        expectedCostCenter
+        expectedCostCenters
       );
     });
   });
 
   describe('getAllByOrganizationId', function() {
     context('when all required information is provided', function() {
-      let expectedCostCenter;
+      let expectedCostCenters;
       let expectedOrganizationId;
       let formatCostCenterFromServer;
       let costCentersFromServer;
@@ -314,21 +316,27 @@ describe('Facilities/CostCenters', function() {
           min: 1,
           max: 10
         });
-        expectedCostCenter = fixture.buildList(
+        expectedCostCenters = fixture.buildList(
           'costCenter',
-          numberOfCostCenters,
-          false
+          numberOfCostCenters
         );
+
+        expectedOrganizationId = fixture.build('organization').id;
+
         costCentersFromServer = fixture.buildList(
           'costCenter',
           numberOfCostCenters,
-          true
+          {
+            organizationId: expectedOrganizationId
+          },
+          {
+            fromServer: true
+          }
         );
-        expectedOrganizationId = fixture.build('organization').id;
 
         formatCostCenterFromServer = this.sandbox
           .stub(facilitiesUtils, 'formatCostCenterFromServer')
-          .callsFake((costCenter, index) => expectedCostCenter[index]);
+          .callsFake((costCenter, index) => expectedCostCenters[index]);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(costCentersFromServer)
@@ -357,7 +365,7 @@ describe('Facilities/CostCenters', function() {
 
       it('returns a fulfilled promise with the cost centers', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          expectedCostCenter
+          expectedCostCenters
         );
       });
     });
