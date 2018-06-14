@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 import FacilityGroupings from './groupings';
+import CostCenters from './costCenters';
 import {
   formatFacilityFromServer,
   formatFacilityToServer,
