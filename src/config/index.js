@@ -99,6 +99,11 @@ class Config {
       ...defaultConfigs.auth,
       ...userConfig.auth
     };
+
+    this.interceptors = {
+      ...defaultConfigs.interceptors,
+      ...userConfig.interceptors
+    };
   }
 
   /**

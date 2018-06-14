@@ -112,11 +112,9 @@ class Request {
   _attachInterceptors() {
     const requestInterceptors = [
       { fulfilled: this._insertHeaders },
-      ...(this._sdk.config.interceptors.request || [])
+      ...this._sdk.config.interceptors.request
     ];
-    const responseInterceptors = [
-      ...(this._sdk.config.interceptors.response || [])
-    ];
+    const responseInterceptors = [...this._sdk.config.interceptors.response];
 
     requestInterceptors.forEach(({ fulfilled, rejected }) => {
       this._axios.interceptors.request.use(fulfilled, rejected);

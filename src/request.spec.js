@@ -21,7 +21,10 @@ describe('Request', function() {
     };
     baseSdk = {
       config: {
-        interceptors: {}
+        interceptors: {
+          request: [],
+          response: []
+        }
       }
     };
   });

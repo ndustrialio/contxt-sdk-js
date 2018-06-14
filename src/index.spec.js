@@ -129,7 +129,10 @@ describe('ContxtSdk', function() {
       expectedAudienceName = faker.hacker.noun();
       expectedInstance = {
         config: {
-          interceptors: {}
+          interceptors: {
+            request: [],
+            response: []
+          }
         }
       };
 
