@@ -3,6 +3,8 @@
 const factory = require('rosie').Factory;
 
 require('./audience');
+require('./costCenter');
+require('./costCenterFacility');
 require('./defaultAudiences');
 require('./facility');
 require('./facilityGrouping');

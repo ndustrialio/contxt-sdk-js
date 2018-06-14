@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 import FacilityGroupings from './groupings';
+import CostCenters from './costCenters';
 import {
   formatFacilityFromServer,
   formatFacilityToServer,
@@ -52,6 +53,7 @@ class Facilities {
     this._sdk = sdk;
 
     this.groupings = new FacilityGroupings(sdk, request, baseUrl);
+    this.costCenters = new CostCenters(sdk, request, baseUrl);
   }
 
   /**

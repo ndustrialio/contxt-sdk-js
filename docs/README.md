@@ -16,6 +16,10 @@ default is <code>/callback</code>).</p>
 <dt><a href="./ContxtSdk.md">ContxtSdk</a></dt>
 <dd><p>ContxtSdk constructor</p>
 </dd>
+<dt><a href="./CostCenters.md">CostCenters</a></dt>
+<dd><p>Module that provides access to cost centers, and helps manage
+the relationship between those cost centers and facilities</p>
+</dd>
 <dt><a href="./Facilities.md">Facilities</a></dt>
 <dd><p>Module that provides access to, and the manipulation
 of, information about different facilities</p>
@@ -40,6 +44,10 @@ which are obtained from Auth0.</p>
 <dd><p>A single audience used for authenticating and communicating with an individual API.</p>
 </dd>
 <dt><a href="./Typedefs.md#Auth0WebAuthSessionInfo">Auth0WebAuthSessionInfo</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#CostCenter">CostCenter</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#CostCenterFacility">CostCenterFacility</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#CustomAudience">CustomAudience</a> : <code>Object</code></dt>
 <dd><p>A custom audience that will override the configuration of an individual module. Consists of
@@ -74,4 +82,3 @@ the optional methods are documented below.</p>
 <dt><a href="./Typedefs.md#UserProfile">UserProfile</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
-
