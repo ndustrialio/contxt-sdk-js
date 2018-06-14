@@ -141,7 +141,7 @@ describe('Facilities/CostCenters', function() {
 
       beforeEach(function() {
         initialCostCenter = fixture.build('costCenter');
-        formattedCostCenterToServer = fixture.build('costCenter', null);
+        formattedCostCenterToServer = fixture.build('costCenter');
         formattedCostCenterFromServer = fixture.build('costCenter', null, {
           fromServer: true
         });
@@ -231,7 +231,7 @@ describe('Facilities/CostCenters', function() {
     });
 
     context('when there is missing required information', function() {
-      it(`it throws an error when the cost center id is missing`, function() {
+      it('throws an error when the cost center id is missing', function() {
         const expectedErrorMessage =
           'A cost center id is required for deleting a cost center.';
 
