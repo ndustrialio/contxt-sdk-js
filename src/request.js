@@ -8,10 +8,11 @@ class Request {
    */
   constructor(sdk, audienceName) {
     this._audienceName = audienceName;
-    this._sdk = sdk;
     this._axios = axios.create();
+    this._insertHeaders = this._insertHeaders.bind(this);
+    this._sdk = sdk;
 
-    this._axios.interceptors.request.use(this._insertHeaders);
+    this._attachInterceptors(this._axios);
   }
 
   /**
@@ -103,6 +104,29 @@ class Request {
   }
 
   /**
+   * Sets up axios interceptors for the request instance
+   * More information at {@link https://github.com/axios/axios#interceptors axios Interceptors}
+   *
+   * @private
+   */
+  _attachInterceptors() {
+    const requestInterceptors = [
+      { fulfilled: this._insertHeaders },
+      ...(this._sdk.config.interceptors.request || [])
+    ];
+    const responseInterceptors = [
+      ...(this._sdk.config.interceptors.response || [])
+    ];
+
+    requestInterceptors.forEach(({ fulfilled, rejected }) => {
+      this._axios.interceptors.request.use(fulfilled, rejected);
+    });
+    responseInterceptors.forEach(({ fulfilled, rejected }) => {
+      this._axios.interceptors.response.use(fulfilled, rejected);
+    });
+  }
+
+  /**
    * Decorates custom modules onto the SDK instance so they behave as first-class citizens.
    *
    * @param {Object} config
@@ -114,7 +138,7 @@ class Request {
    *
    * @private
    */
-  _insertHeaders = (config) => {
+  _insertHeaders(config) {
     return this._sdk.auth
       .getCurrentApiToken(this._audienceName)
       .then((apiToken) => {
@@ -122,7 +146,7 @@ class Request {
 
         return config;
       });
-  };
+  }
 }
 
 export default Request;
