@@ -24,6 +24,20 @@ A single audience used for authenticating and communicating with an individual A
 | apiToken    | <code>string</code> |
 | expiresAt   | <code>number</code> |
 
+<a name="AxiosInterceptor"></a>
+
+## AxiosInterceptor : <code>Object</code>
+
+An object of interceptors that get called on every request or response.
+More information at [axios Interceptors](https://github.com/axios/axios#interceptors)
+
+**Kind**: global typedef
+
+| Param                 | Type                  | Description                                                    |
+| --------------------- | --------------------- | -------------------------------------------------------------- |
+| interceptor.fulfilled | <code>function</code> | A function that is run on every successful request or response |
+| interceptor.rejected  | <code>function</code> | A function that is run on every failed request or response     |
+
 <a name="CostCenter"></a>
 
 ## CostCenter : <code>Object</code>
@@ -201,16 +215,19 @@ User provided configuration options
 **Kind**: global typedef  
 **Properties**
 
-| Name                          | Type                                               | Default                                                                 | Description                                                                                                                                                            |
-| ----------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| auth                          | <code>Object</code>                                |                                                                         | User assigned configurations specific for their authentication methods                                                                                                 |
-| [auth.authorizationPath]      | <code>string</code>                                |                                                                         | Path Auth0WebAuth process should redirect to after a successful sign in attempt                                                                                        |
-| auth.clientId                 | <code>string</code>                                |                                                                         | Client Id provided by Auth0 for this application                                                                                                                       |
-| [auth.clientSecret]           | <code>string</code>                                |                                                                         | Client secret provided by Auth0 for this application. This is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType                  |
-| [auth.customModuleConfigs]    | <code>Object.&lt;string, CustomAudience&gt;</code> |                                                                         | Custom environment setups for individual modules. Requires clientId/host or env                                                                                        |
-| [auth.env]                    | <code>string</code>                                | <code>&quot;&#x27;production&#x27;&quot;</code>                         | The environment that every module should use for their clientId and host                                                                                               |
-| [auth.onRedirect]             | <code>function</code>                              | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect method used for navigating through Auth0 callbacks in Web applications                                                                                      |
-| [auth.tokenExpiresAtBufferMs] | <code>number</code>                                | <code>300000</code>                                                     | The time (in milliseconds) before a token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated expiresAt). Defaults to 5 minutes. |
+| Name                          | Type                                                             | Default                                                                 | Description                                                                                                                                                            |
+| ----------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| auth                          | <code>Object</code>                                              |                                                                         | User assigned configurations specific for their authentication methods                                                                                                 |
+| [auth.authorizationPath]      | <code>string</code>                                              |                                                                         | Path Auth0WebAuth process should redirect to after a successful sign in attempt                                                                                        |
+| auth.clientId                 | <code>string</code>                                              |                                                                         | Client Id provided by Auth0 for this application                                                                                                                       |
+| [auth.clientSecret]           | <code>string</code>                                              |                                                                         | Client secret provided by Auth0 for this application. This is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType                  |
+| [auth.customModuleConfigs]    | <code>Object.&lt;string, CustomAudience&gt;</code>               |                                                                         | Custom environment setups for individual modules. Requires clientId/host or env                                                                                        |
+| [auth.env]                    | <code>string</code>                                              | <code>&quot;&#x27;production&#x27;&quot;</code>                         | The environment that every module should use for their clientId and host                                                                                               |
+| [auth.onRedirect]             | <code>function</code>                                            | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect method used for navigating through Auth0 callbacks in Web applications                                                                                      |
+| [auth.tokenExpiresAtBufferMs] | <code>number</code>                                              | <code>300000</code>                                                     | The time (in milliseconds) before a token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated expiresAt). Defaults to 5 minutes. |
+| [interceptors]                | <code>Object</code>                                              |                                                                         | Axios interceptors that can transform requests and responses. More information at [axios Interceptors](https://github.com/axios/axios#interceptors)                    |
+| [interceptors.request]        | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |                                                                         | Interceptors that act on every request                                                                                                                                 |
+| [intercepotrs.response]       | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |                                                                         | Intereptors that act on every response                                                                                                                                 |
 
 <a name="UserProfile"></a>
 

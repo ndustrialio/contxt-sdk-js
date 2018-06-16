@@ -13,15 +13,16 @@ describe('Config', function() {
   });
 
   describe('constructor', function() {
-    let baseAuthConfigs;
+    let authConfigs;
     let baseConfigs;
     let config;
     let expectedAudiences;
     let expectedExternalModules;
     let getAudiences;
+    let interceptorConfigs;
 
     beforeEach(function() {
-      baseAuthConfigs = {
+      authConfigs = {
         clientId: faker.internet.password(),
         customModuleConfigs: {
           [faker.hacker.adjective()]: fixture.build('audience')
@@ -38,13 +39,21 @@ describe('Config', function() {
           module: function() {}
         }
       };
+      interceptorConfigs = {
+        [faker.lorem.word()]: [
+          {
+            fulfilled: function() {},
+            rejected: function() {}
+          }
+        ]
+      };
 
       getAudiences = this.sandbox
         .stub(Config.prototype, '_getAudiences')
         .returns(expectedAudiences);
 
       config = new Config(
-        { ...baseConfigs, auth: baseAuthConfigs },
+        { ...baseConfigs, auth: authConfigs, interceptors: interceptorConfigs },
         expectedExternalModules
       );
     });
@@ -55,8 +64,8 @@ describe('Config', function() {
 
     it('gets a list of audiences for the environment', function() {
       expect(getAudiences).to.be.calledWith({
-        customModuleConfigs: baseAuthConfigs.customModuleConfigs,
-        env: baseAuthConfigs.env,
+        customModuleConfigs: authConfigs.customModuleConfigs,
+        env: authConfigs.env,
         externalModules: expectedExternalModules
       });
     });
@@ -70,7 +79,15 @@ describe('Config', function() {
     });
 
     it('assigns the provided user auth configurations to the new config', function() {
-      expect(config.auth).to.include(baseAuthConfigs);
+      expect(config.auth).to.include(authConfigs);
+    });
+
+    it('assigns the default interceptors to the new config', function() {
+      expect(config.interceptors).to.include(defaultConfigs.interceptors);
+    });
+
+    it('assings the provided user interceptors to the new config', function() {
+      expect(config.interceptors).to.include(interceptorConfigs);
     });
   });
 

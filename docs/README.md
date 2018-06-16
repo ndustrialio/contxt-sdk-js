@@ -45,6 +45,10 @@ which are obtained from Auth0.</p>
 </dd>
 <dt><a href="./Typedefs.md#Auth0WebAuthSessionInfo">Auth0WebAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#AxiosInterceptor">AxiosInterceptor</a> : <code>Object</code></dt>
+<dd><p>An object of interceptors that get called on every request or response.
+More information at <a href="https://github.com/axios/axios#interceptors">axios Interceptors</a></p>
+</dd>
 <dt><a href="./Typedefs.md#CostCenter">CostCenter</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#CostCenterFacility">CostCenterFacility</a> : <code>Object</code></dt>

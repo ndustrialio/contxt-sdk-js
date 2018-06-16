@@ -127,7 +127,14 @@ describe('ContxtSdk', function() {
 
     beforeEach(function() {
       expectedAudienceName = faker.hacker.noun();
-      expectedInstance = {};
+      expectedInstance = {
+        config: {
+          interceptors: {
+            request: [],
+            response: []
+          }
+        }
+      };
 
       request = ContxtSdk.prototype._createRequest.call(
         expectedInstance,

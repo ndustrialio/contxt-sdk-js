@@ -41,6 +41,16 @@ import defaultConfigs from './defaults';
  */
 
 /**
+ * An object of interceptors that get called on every request or response.
+ * More information at {@link https://github.com/axios/axios#interceptors axios Interceptors}
+ *
+ * @typedef {Object} AxiosInterceptor
+ * @param {function} interceptor.fulfilled A function that is run on every successful request or
+ *   response
+ * @param {function} interceptor.rejected A function that is run on every failed request or response
+ */
+
+/**
  * User provided configuration options
  *
  * @typedef {Object} UserConfig
@@ -59,6 +69,10 @@ import defaultConfigs from './defaults';
  * @property {number} [auth.tokenExpiresAtBufferMs = 300000] The time (in milliseconds) before a
  *   token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated
  *   expiresAt). Defaults to 5 minutes.
+ * @property {Object} [interceptors] Axios interceptors that can transform requests and responses.
+ *   More information at {@link https://github.com/axios/axios#interceptors axios Interceptors}
+ * @property {AxiosInterceptor[]} [interceptors.request] Interceptors that act on every request
+ * @property {AxiosInterceptor[]} [intercepotrs.response] Intereptors that act on every response
  */
 
 /**
@@ -84,6 +98,11 @@ class Config {
     this.auth = {
       ...defaultConfigs.auth,
       ...userConfig.auth
+    };
+
+    this.interceptors = {
+      ...defaultConfigs.interceptors,
+      ...userConfig.interceptors
     };
   }
 

@@ -13,10 +13,20 @@ describe('Request', function() {
       interceptors: {
         request: {
           use: this.sandbox.stub()
+        },
+        response: {
+          use: this.sandbox.stub()
         }
       }
     };
-    baseSdk = {};
+    baseSdk = {
+      config: {
+        interceptors: {
+          request: [],
+          response: []
+        }
+      }
+    };
   });
 
   afterEach(function() {
@@ -24,6 +34,7 @@ describe('Request', function() {
   });
 
   describe('constructor', function() {
+    let attachInterceptors;
     let create;
     let expectedAudienceName;
     let request;
@@ -31,6 +42,10 @@ describe('Request', function() {
     beforeEach(function() {
       expectedAudienceName = faker.hacker.noun();
 
+      attachInterceptors = this.sandbox.stub(
+        Request.prototype,
+        '_attachInterceptors'
+      );
       create = this.sandbox.stub(axios, 'create').returns(baseAxiosInstance);
 
       request = new Request(baseSdk, expectedAudienceName);
@@ -40,22 +55,21 @@ describe('Request', function() {
       expect(request._audienceName).to.equal(expectedAudienceName);
     });
 
-    it('appends the supplied sdk to the class instance', function() {
-      expect(request._sdk).to.equal(baseSdk);
-    });
-
     it('creates an axios instance and appends it to the class instance', function() {
       expect(create).to.be.calledOnce;
       expect(request._axios).to.equal(baseAxiosInstance);
     });
 
+    it('binds and appends the `insertHeaders` method to the class instance', function() {
+      expect(request._insertHeaders.name).to.equal('bound _insertHeaders');
+    });
+
+    it('appends the supplied sdk to the class instance', function() {
+      expect(request._sdk).to.equal(baseSdk);
+    });
+
     it("sets up axios's interceptors", function() {
-      expect(baseAxiosInstance.interceptors.request.use).to.be.calledOnce;
-      const [
-        requestInterceptor
-      ] = baseAxiosInstance.interceptors.request.use.firstCall.args;
-      expect(requestInterceptor).to.be.a('function');
-      expect(requestInterceptor).to.equal(request._insertHeaders);
+      expect(attachInterceptors).to.be.calledOnce;
     });
   });
 
@@ -101,6 +115,71 @@ describe('Request', function() {
         return expect(response).to.be.fulfilled.and.to.eventually.equal(
           expectedResponse
         );
+      });
+    });
+  });
+
+  describe('_attachInterceptors', function() {
+    let expectedRequestInterceptors;
+    let expectedResponseInterceptors;
+    let requestUse;
+    let responseUse;
+
+    beforeEach(function() {
+      const requestInterceptors = times(
+        faker.random.number({ min: 0, max: 10 }),
+        () => {
+          return {
+            fulfilled: this.sandbox.stub(),
+            rejected: this.sandbox.stub()
+          };
+        }
+      );
+      const responseInterceptors = times(
+        faker.random.number({ min: 0, max: 10 }),
+        () => {
+          return {
+            fulfilled: this.sandbox.stub(),
+            rejected: this.sandbox.stub()
+          };
+        }
+      );
+      expectedRequestInterceptors = [
+        { fulfilled: Request.prototype._insertHeaders }
+      ].concat(requestInterceptors);
+      expectedResponseInterceptors = responseInterceptors;
+
+      requestUse = this.sandbox.stub();
+      responseUse = this.sandbox.stub();
+
+      Request.prototype._attachInterceptors.call({
+        _axios: {
+          interceptors: {
+            request: { use: requestUse },
+            response: { use: responseUse }
+          }
+        },
+        _insertHeaders: Request.prototype._insertHeaders,
+        _sdk: {
+          config: {
+            interceptors: {
+              request: requestInterceptors,
+              response: responseInterceptors
+            }
+          }
+        }
+      });
+    });
+
+    it('sets up the request interceptors', function() {
+      expectedRequestInterceptors.forEach(({ fulfilled, rejected }) => {
+        expect(requestUse).to.be.calledWith(fulfilled, rejected);
+      });
+    });
+
+    it('sets up the response interceptors', function() {
+      expectedResponseInterceptors.forEach(({ fulfilled, rejected }) => {
+        expect(responseUse).to.be.calledWith(fulfilled, rejected);
       });
     });
   });
