@@ -12,7 +12,7 @@ class Request {
     this._insertHeaders = this._insertHeaders.bind(this);
     this._sdk = sdk;
 
-    this._attachInterceptors(this._axios);
+    this._attachInterceptors();
   }
 
   /**

@@ -69,7 +69,7 @@ describe('Request', function() {
     });
 
     it("sets up axios's interceptors", function() {
-      expect(attachInterceptors).to.be.calledWith(request._axios);
+      expect(attachInterceptors).to.be.calledOnce;
     });
   });
 
@@ -126,13 +126,12 @@ describe('Request', function() {
     let responseUse;
 
     beforeEach(function() {
-      /* eslint-disable no-new-func */
       const requestInterceptors = times(
         faker.random.number({ min: 0, max: 10 }),
         () => {
           return {
-            fulfilled: new Function(),
-            rejected: new Function()
+            fulfilled: this.sandbox.stub(),
+            rejected: this.sandbox.stub()
           };
         }
       );
@@ -140,12 +139,11 @@ describe('Request', function() {
         faker.random.number({ min: 0, max: 10 }),
         () => {
           return {
-            fulfilled: new Function(),
-            rejected: new Function()
+            fulfilled: this.sandbox.stub(),
+            rejected: this.sandbox.stub()
           };
         }
       );
-      /* eslint-enable no-new-func */
       expectedRequestInterceptors = [
         { fulfilled: Request.prototype._insertHeaders }
       ].concat(requestInterceptors);
