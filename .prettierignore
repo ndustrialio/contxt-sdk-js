@@ -2,6 +2,7 @@
 .wercker
 babel_cache
 dist
+docs
 node_modules
 wercker_scripts
 package.json

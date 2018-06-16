@@ -1,7 +1,6 @@
 <a name="ContxtSdk"></a>
 
 ## ContxtSdk
-
 ContxtSdk constructor
 
 **Kind**: global class  
@@ -9,14 +8,13 @@ ContxtSdk constructor
 
 ### new ContxtSdk(config, [externalModules], sessionType)
 
-| Param             | Type                                                | Description                                                                   |
-| ----------------- | --------------------------------------------------- | ----------------------------------------------------------------------------- |
-| config            | [<code>UserConfig</code>](./Typedefs.md#UserConfig) | The user provided configuration options                                       |
-| [externalModules] | <code>Object.&lt;string, ExternalModule&gt;</code>  | User provided external modules that should be treated as first class citizens |
-| sessionType       | <code>string</code>                                 | The type of auth session you wish to use (e.g. auth0WebAuth or machine)       |
+| Param | Type | Description |
+| --- | --- | --- |
+| config | [<code>UserConfig</code>](./Typedefs.md#UserConfig) | The user provided configuration options |
+| [externalModules] | <code>Object.&lt;string, ExternalModule&gt;</code> | User provided external modules that   should be treated as first class citizens |
+| sessionType | <code>string</code> | The type of auth session you wish to use (e.g. auth0WebAuth   or machine) |
 
-**Example**
-
+**Example**  
 ```js
 import ContxtSdk from '@ndustrial/contxt-sdk';
 import ExternalModule1 from './ExternalModule1';
