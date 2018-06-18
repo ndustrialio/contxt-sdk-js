@@ -31,7 +31,7 @@ describe('utils/facilities/formatFacilityOptionsToServer', function() {
     expect(options).to.deep.equal(expectedOptions);
   });
 
-  it('provides an object that includes the `include_cost_centers` that the API service can understand', function() {
+  it('provides an object that includes the `include_cost_centers` key that the API service can understand', function() {
     const expectedIncludeCostCenters = faker.random.boolean();
     const customOptions = times(
       faker.random.number({
