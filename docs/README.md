@@ -9,6 +9,11 @@ elements. <code>logIn</code> would be tied to a UI element to log the user in. <
 UI element to log the user out. <code>handleAuthentication</code> would be tied with your application&#39;s
 router and would be called when visting the route defined by <code>config.authorizationPath</code> (the
 default is <code>/callback</code>).</p>
+<p>This SessionType is set up to refresh auth tokens automatically. To ensure this works, make sure
+your single page application has <a href="https://auth0.com/docs/cross-origin-authentication#configure-your-application-for-cross-origin-authentication">Cross-Origin Authentication</a>
+enabled in Auth0.</p>
+<p><em>NOTE</em>: The web origin added in auth0 should be something like
+&quot;<a href="http://localhost:5000&quot;">http://localhost:5000&quot;</a>, not &quot;<a href="http://localhost:5000/callback&quot;">http://localhost:5000/callback&quot;</a></p>
 </dd>
 <dt><a href="./Config.md">Config</a></dt>
 <dd><p>Module that merges user assigned configurations with default configurations.</p>

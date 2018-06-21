@@ -1,3 +1,9 @@
+## [v0.0.15](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.15) (2018-06-21)
+
+**Changed**
+
+* Auth0WebAuth now automatically handles refreshing Access and API tokens instead of forcing the user to log in again every two hours.
+
 ## [v0.0.14](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.14) (2018-06-18)
 
 **Changed**
@@ -7,13 +13,15 @@
 
 ## [v0.0.13](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.13) (2018-06-16)
 
-* Adds the ability to set up custom axios interceptors to be used on each request and response made to an API. (More information available at at {@link https://github.com/axios/axios#interceptors axios Interceptors})
+**Added**
+
+* The ability to set up custom axios interceptors to be used on each request and response made to an API. (More information available at at {@link https://github.com/axios/axios#interceptors axios Interceptors})
 
 ## [v0.0.12](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.12) (2018-06-14)
 
-**Changed**
+**Added**
 
-* Added methods around the display and manipulation of Cost Centers. They are namespaced under facilities (i.e. `facilities.costCenters.methodName()`) and include:
+* Methods around the display and manipulation of Cost Centers. They are namespaced under facilities (i.e. `facilities.costCenters.methodName()`) and include:
   * CostCenters#addFacility to add a facility to a cost center
   * CostCenters#create for creating a new cost center
   * CostCenters#getAll for getting a list of all cost centers
