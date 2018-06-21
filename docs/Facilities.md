@@ -160,7 +160,6 @@ Method: GET
 | --- | --- | --- |
 | organizationId | <code>string</code> | UUID corresponding with an organization |
 | [options] | <code>object</code> | Object containing parameters to be called with the request |
-| [options.includeCostCenters] | <code>boolean</code> | Boolean flag for including cost centers data with each facility |
 | [options.includeGroupings] | <code>boolean</code> | Boolean flag for including groupings data with each facility |
 
 **Example**  

@@ -9,6 +9,13 @@ UI element to log the user out. `handleAuthentication` would be tied with your a
 router and would be called when visting the route defined by `config.authorizationPath` (the
 default is `/callback`).
 
+This SessionType is set up to refresh auth tokens automatically. To ensure this works, make sure
+your single page application has [Cross-Origin Authentication](https://auth0.com/docs/cross-origin-authentication#configure-your-application-for-cross-origin-authentication)
+enabled in Auth0.
+
+*NOTE*: The web origin added in auth0 should be something like
+"http://localhost:5000", not "http://localhost:5000/callback"
+
 **Kind**: global class  
 
 * [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
@@ -98,6 +105,7 @@ Starts the Auth0 log in process
 <a name="Auth0WebAuth+logOut"></a>
 
 ### contxtSdk.auth.logOut()
-Logs the user out by removing any stored session info and redirecting to the root
+Logs the user out by removing any stored session info, clearing any token renewal, and
+redirecting to the root
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  

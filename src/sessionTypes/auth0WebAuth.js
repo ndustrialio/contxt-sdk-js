@@ -27,6 +27,13 @@ import URL from 'url-parse';
  * router and would be called when visting the route defined by `config.authorizationPath` (the
  * default is `/callback`).
  *
+ * This SessionType is set up to refresh auth tokens automatically. To ensure this works, make sure
+ * your single page application has {@link https://auth0.com/docs/cross-origin-authentication#configure-your-application-for-cross-origin-authentication Cross-Origin Authentication}
+ * enabled in Auth0.
+ *
+ * *NOTE*: The web origin added in auth0 should be something like
+ * "http://localhost:5000", not "http://localhost:5000/callback"
+ *
  * @type SessionType
  *
  * @typicalname contxtSdk.auth
@@ -82,6 +89,10 @@ class Auth0WebAuth {
       responseType: 'token',
       scope: 'profile openid'
     });
+
+    if (this.isAuthenticated()) {
+      this._scheduleTokenRenewal();
+    }
   }
 
   /**
@@ -141,25 +152,7 @@ class Auth0WebAuth {
    */
   handleAuthentication() {
     return this._parseWebAuthHash()
-      .then((hash) => {
-        return Promise.all([
-          {
-            accessToken: hash.accessToken,
-            expiresAt: hash.expiresIn * 1000 + Date.now()
-          },
-          this._getApiToken(hash.accessToken)
-        ]);
-      })
-      .then(([partialSessionInfo, apiToken]) => {
-        const sessionInfo = {
-          ...partialSessionInfo,
-          apiToken
-        };
-
-        this._saveSession(sessionInfo);
-
-        return sessionInfo;
-      })
+      .then((hash) => this._handleNewSessionInfo(hash))
       .then((sessionInfo) => {
         const redirectPathname = this._getRedirectPathname();
 
@@ -189,7 +182,7 @@ class Auth0WebAuth {
       this._sessionInfo.expiresAt
     );
 
-    return hasTokens && this._sessionInfo.expiresAt > Date.now();
+    return hasTokens;
   }
 
   /**
@@ -200,7 +193,8 @@ class Auth0WebAuth {
   }
 
   /**
-   * Logs the user out by removing any stored session info and redirecting to the root
+   * Logs the user out by removing any stored session info, clearing any token renewal, and
+   * redirecting to the root
    */
   logOut() {
     this._sessionInfo = {};
@@ -209,7 +203,32 @@ class Auth0WebAuth {
     localStorage.removeItem('api_token');
     localStorage.removeItem('expires_at');
 
+    clearTimeout(this._tokenRenewalTimeout);
+
     this._onRedirect('/');
+  }
+
+  /**
+   * Wraps Auth0's `checkSession` method. Will check if the current Auth0 session is valid and get
+   * updated information if needed
+   *
+   * @fulfill {Object} sessionResponse Information returned from Auth0
+   * @rejects {Error}
+   *
+   * @private
+   */
+  _checkSession(options = {}) {
+    return new Promise((resolve, reject) => {
+      this._auth0.checkSession(options, (err, response) => {
+        if (err || !response) {
+          return reject(
+            err || new Error('No valid tokens returned from auth0')
+          );
+        }
+
+        return resolve(response);
+      });
+    });
   }
 
   /**
@@ -254,7 +273,8 @@ class Auth0WebAuth {
   }
 
   /**
-   * Returns the type of token requested if it exists.
+   * Returns the type of token requested if it exists. Will get an updated token if the existing
+   * tokens have expired.
    *
    * @param {string} type The type of token requested. Only valid types are `access` and `api`
    *
@@ -265,14 +285,23 @@ class Auth0WebAuth {
    * @private
    */
   _getCurrentTokenByType(type) {
-    return new Promise((resolve, reject) => {
-      const propertyName = `${type}Token`;
+    const propertyName = `${type}Token`;
+    const tokenExpiresAtBufferMs =
+      this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
+    const bufferedExpiresAt =
+      this._sessionInfo.expiresAt - tokenExpiresAtBufferMs;
+    const needsNewToken = Date.now() > bufferedExpiresAt;
 
-      if (!(this._sessionInfo && this._sessionInfo[propertyName])) {
-        reject(new Error(`No ${type} token found`));
+    if (!needsNewToken && this._sessionInfo[propertyName]) {
+      return Promise.resolve(this._sessionInfo[propertyName]);
+    }
+
+    return this._getUpdatedSessionInfo().then((sessionInfo) => {
+      if (!sessionInfo[propertyName]) {
+        throw new Error(`No ${type} token found`);
       }
 
-      resolve(this._sessionInfo[propertyName]);
+      return sessionInfo[propertyName];
     });
   }
 
@@ -290,6 +319,68 @@ class Auth0WebAuth {
   }
 
   /**
+   * Gets up to date session info. Will get an updated session/tokens if the previous session has
+   * already expired.
+   *
+   * @returns {Promise}
+   * @fulfills {Auth0WebAuthSessionInfo} sessionInfo
+   * @rejects {Error}
+   *
+   * @private
+   */
+  _getUpdatedSessionInfo() {
+    if (!this._updatedSessionInfoPromise) {
+      this._updatedSessionInfoPromise = this._checkSession()
+        .then((sessionInfo) => this._handleNewSessionInfo(sessionInfo))
+        .then((sessionInfo) => {
+          this._updatedSessionInfoPromise = null;
+
+          return sessionInfo;
+        })
+        .catch((err) => {
+          if (!(err.response && err.response.status)) {
+            throw new Error(
+              'There was a problem getting new session info. Please check your configuration settings.'
+            );
+          }
+
+          throw err;
+        });
+    }
+
+    return this._updatedSessionInfoPromise;
+  }
+
+  /**
+   * Takes Auth0 Session Info, retrieves a Contxt API token, packages them up together, saves the
+   * tokens, and schedules a renewal.
+   *
+   * @returns {Promise}
+   * @fulfills {Auth0WebAuthSessionInfo} sessionInfo
+   *
+   * @private
+   */
+  _handleNewSessionInfo(sessionResponse) {
+    return Promise.all([
+      {
+        accessToken: sessionResponse.accessToken,
+        expiresAt: sessionResponse.expiresIn * 1000 + Date.now()
+      },
+      this._getApiToken(sessionResponse.accessToken)
+    ]).then(([partialSessionInfo, apiToken]) => {
+      const sessionInfo = {
+        ...partialSessionInfo,
+        apiToken
+      };
+
+      this._saveSession(sessionInfo);
+      this._scheduleTokenRenewal();
+
+      return sessionInfo;
+    });
+  }
+
+  /**
    * Loads a saved session from local storage
    *
    * @returns {Object} session
@@ -303,7 +394,7 @@ class Auth0WebAuth {
     return {
       accessToken: localStorage.getItem('access_token'),
       apiToken: localStorage.getItem('api_token'),
-      expiresAt: localStorage.getItem('expires_at')
+      expiresAt: JSON.parse(localStorage.getItem('expires_at'))
     };
   }
 
@@ -345,7 +436,28 @@ class Auth0WebAuth {
 
     localStorage.setItem('access_token', sessionInfo.accessToken);
     localStorage.setItem('api_token', sessionInfo.apiToken);
-    localStorage.setItem('expires_at', sessionInfo.expiresAt);
+    localStorage.setItem('expires_at', JSON.stringify(sessionInfo.expiresAt));
+  }
+
+  /**
+   * Schedules the Access and API tokens to renew before they expire
+   *
+   * @private
+   */
+  _scheduleTokenRenewal() {
+    const tokenExpiresAtBufferMs =
+      this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
+    const bufferedExpiresAt =
+      this._sessionInfo.expiresAt - tokenExpiresAtBufferMs;
+    const delay = bufferedExpiresAt - Date.now();
+
+    if (this._tokenRenewalTimeout) {
+      clearTimeout(this._tokenRenewalTimeout);
+    }
+
+    this._tokenRenewalTimeout = setTimeout(() => {
+      this._getUpdatedSessionInfo();
+    }, delay);
   }
 }
 
