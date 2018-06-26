@@ -172,6 +172,32 @@ for authenticating and communicating with an individual API and the external mod
 | apiToken | <code>string</code> | 
 | expiresAt | <code>number</code> | 
 
+<a name="OutputField"></a>
+
+## OutputField : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| canAggregate | <code>Boolean</code> |  |
+| divisor | <code>Number</code> |  |
+| feedKey | <code>String</code> |  |
+| fieldDescriptor | <code>String</code> |  |
+| fieldHumanName | <code>String</code> |  |
+| fieldName | <code>String</code> |  |
+| id | <code>Number</code> |  |
+| isDefault | <code>Boolean</code> |  |
+| isHidden | <code>Boolean</code> |  |
+| isTotalizer | <code>Boolean</code> |  |
+| isWindowed | <code>Boolean</code> |  |
+| label | <code>String</code> |  |
+| outputId | <code>Number</code> |  |
+| scalar | <code>Number</code> |  |
+| status | <code>String</code> |  |
+| units | <code>String</code> |  |
+| valueType | <code>String</code> | What type of value can be coming from the feed.   One of `boolean`, `numeric`, and `string` |
+
 <a name="SessionType"></a>
 
 ## SessionType : <code>Object</code>

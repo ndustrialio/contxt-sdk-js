@@ -281,7 +281,7 @@ describe('Facilities', function() {
         promise = facilities.get(expectedFacilityId);
       });
 
-      it('gets a list of facilities from the server', function() {
+      it('gets the facility from the server', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/facilities/${expectedFacilityId}`
         );

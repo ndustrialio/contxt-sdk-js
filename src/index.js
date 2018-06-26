@@ -1,5 +1,6 @@
 import Config from './config';
 import Facilities from './facilities';
+import Iot from './iot';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
@@ -68,6 +69,7 @@ class ContxtSdk {
 
     this.auth = this._createAuthSession(sessionType);
     this.facilities = new Facilities(this, this._createRequest('facilities'));
+    this.iot = new Iot(this, this._createRequest('iot'));
 
     this._decorate(externalModules);
   }
@@ -119,7 +121,10 @@ class ContxtSdk {
    */
   _decorate(modules) {
     Object.keys(modules).forEach((moduleName) => {
-      this[moduleName] = new modules[moduleName].module(this, this._createRequest(moduleName));
+      this[moduleName] = new modules[moduleName].module(
+        this,
+        this._createRequest(moduleName)
+      );
     });
   }
 }
