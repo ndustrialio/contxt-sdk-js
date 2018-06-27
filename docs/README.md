@@ -33,6 +33,9 @@ of, information about different facilities</p>
 <dd><p>Module that provides access to facility groupings, and helps manage
 the relationship between those groupings and facilities</p>
 </dd>
+<dt><a href="./Fields.md">Fields</a></dt>
+<dd><p>Module that provides access to field information</p>
+</dd>
 <dt><a href="./Iot.md">Iot</a></dt>
 <dd><p>Module that provides access to real time IOT feeds and fields.</p>
 </dd>
@@ -40,6 +43,9 @@ the relationship between those groupings and facilities</p>
 <dd><p>A SessionType that allows machine to machine communication between Node.js servers. This would
 only be used in Node.js applications. This SessionType requires a client id and a client secret,
 which are obtained from Auth0.</p>
+</dd>
+<dt><a href="./Outputs.md">Outputs</a></dt>
+<dd><p>Module that provides access to output information</p>
 </dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>
