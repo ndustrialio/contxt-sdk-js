@@ -99,7 +99,68 @@ describe('Iot', function() {
         const promise = iot.getOutputField();
 
         return expect(promise).to.be.rejectedWith(
-          'An output field ID is required for getting information about an output field'
+          'An outputFieldId is required for getting information about an output field'
+        );
+      });
+    });
+  });
+
+  describe('getOutputFieldData', function() {
+    context('when all required information is provided', function() {
+      let expectedFieldHumanName;
+      let expectedOutputData;
+      let expectedOutputId;
+      let promise;
+      let request;
+
+      beforeEach(function() {
+        expectedFieldHumanName = fixture.build('outputField').fieldHumanName;
+        expectedOutputData = [];
+        expectedOutputId = faker.random.number();
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(expectedOutputData)
+        };
+        const iot = new Iot(baseSdk, request);
+        iot._baseUrl = expectedHost;
+
+        promise = iot.getOutputFieldData(
+          expectedOutputId,
+          expectedFieldHumanName
+        );
+      });
+
+      it('gets the output field data from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/outputs/${expectedOutputId}/fields/${expectedFieldHumanName}/data`
+        );
+      });
+
+      it('returns the requested output data', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedOutputData
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when there is no provided output ID', function() {
+        const { humanFieldName } = fixture.build('outputField');
+        const iot = new Iot(baseSdk, baseRequest);
+        const promise = iot.getOutputFieldData(null, humanFieldName);
+
+        return expect(promise).to.be.rejectedWith(
+          'An outputId is required for getting data about a specific output'
+        );
+      });
+
+      it('throws an error when there is no provided output ID', function() {
+        const iot = new Iot(baseSdk, baseRequest);
+        const promise = iot.getOutputFieldData(faker.random.number(), null);
+
+        return expect(promise).to.be.rejectedWith(
+          "A fieldHumanName is required for getting a specific field's output data"
         );
       });
     });

@@ -46,14 +46,14 @@ class Iot {
    * API Endpoint: '/fields/:fieldId'
    * Method: GET
    *
-   * @param {number} outputFieldId The ID of an output field
+   * @param {Number} outputFieldId The ID of an output field
    *
    * @returns {Promise}
    * @fulfill {OutputField} Information about the output field
    * @reject {Error}
    *
    * @example
-   * contxtSdk.iot.getOutputField(25)
+   * contxtSdk.iot.getOutputField(563)
    *   .then((outputField) => console.log(outputField));
    *   .catch((err) => console.log(err));
    */
@@ -61,7 +61,7 @@ class Iot {
     if (!outputFieldId) {
       return Promise.reject(
         new Error(
-          'An output field ID is required for getting information about an output field'
+          'An outputFieldId is required for getting information about an output field'
         )
       );
     }
@@ -69,6 +69,46 @@ class Iot {
     return this._request
       .get(`${this._baseUrl}/fields/${outputFieldId}`)
       .then((outputField) => formatOutputFieldFromServer(outputField));
+  }
+
+  /**
+   * Gets an output's data from a specific field
+   *
+   * API Endpoint: '/outputs/:outputId/fields/:fieldHumanName/data'
+   * Method: GET
+   *
+   * @param {Number} outputId The ID of an output
+   * @param {String} fieldHumanName The human readable name of a field
+   *
+   * @returns {Promise}
+   * @fulfill {Object}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.iot.getOutputFieldData(491, 'temperature')
+   *   .then((outputData) => console.log(outputData));
+   *   .catch((err) => console.log(err));
+   */
+  getOutputFieldData(outputId, fieldHumanName) {
+    if (!outputId) {
+      return Promise.reject(
+        new Error(
+          'An outputId is required for getting data about a specific output'
+        )
+      );
+    }
+
+    if (!fieldHumanName) {
+      return Promise.reject(
+        new Error(
+          "A fieldHumanName is required for getting a specific field's output data"
+        )
+      );
+    }
+
+    return this._request.get(
+      `${this._baseUrl}/outputs/${outputId}/fields/${fieldHumanName}/data`
+    );
   }
 }
 

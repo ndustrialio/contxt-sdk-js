@@ -8,6 +8,7 @@ Module that provides access to real time IOT feeds and fields.
 * [Iot](#Iot)
     * [new Iot(sdk, request)](#new_Iot_new)
     * [.getOutputField(outputFieldId)](#Iot+getOutputField) ⇒ <code>Promise</code>
+    * [.getOutputFieldData(outputId, fieldHumanName)](#Iot+getOutputFieldData) ⇒ <code>Promise</code>
 
 <a name="new_Iot_new"></a>
 
@@ -32,11 +33,34 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| outputFieldId | <code>number</code> | The ID of an output field |
+| outputFieldId | <code>Number</code> | The ID of an output field |
 
 **Example**  
 ```js
-contxtSdk.iot.getOutputField(25)
+contxtSdk.iot.getOutputField(563)
   .then((outputField) => console.log(outputField));
+  .catch((err) => console.log(err));
+```
+<a name="Iot+getOutputFieldData"></a>
+
+### contxtSdk.iot.getOutputFieldData(outputId, fieldHumanName) ⇒ <code>Promise</code>
+Gets an output's data from a specific field
+
+API Endpoint: '/outputs/:outputId/fields/:fieldHumanName/data'
+Method: GET
+
+**Kind**: instance method of [<code>Iot</code>](#Iot)  
+**Fulfill**: <code>Object</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| outputId | <code>Number</code> | The ID of an output |
+| fieldHumanName | <code>String</code> | The human readable name of a field |
+
+**Example**  
+```js
+contxtSdk.iot.getOutputFieldData(491, 'temperature')
+  .then((outputData) => console.log(outputData));
   .catch((err) => console.log(err));
 ```
