@@ -1,3 +1,4 @@
 import formatOutputFieldFromServer from './formatOutputFieldFromServer';
+import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
 
-export { formatOutputFieldFromServer };
+export { formatOutputFieldFromServer, formatOutputFieldDataFromServer };

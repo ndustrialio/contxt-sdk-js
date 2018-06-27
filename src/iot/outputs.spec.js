@@ -1,4 +1,5 @@
 import Outputs from './outputs';
+import * as iotUtils from '../utils/iot';
 
 describe('Iot/Outputs', function() {
   let baseRequest;
@@ -51,19 +52,36 @@ describe('Iot/Outputs', function() {
   describe('getFieldData', function() {
     context('when all required information is provided', function() {
       let expectedFieldHumanName;
-      let expectedOutputData;
+      let expectedOutputFieldData;
       let expectedOutputId;
+      let formatOutputFieldDataFromServer;
       let promise;
+      let rawOutputFieldData;
       let request;
 
       beforeEach(function() {
         expectedFieldHumanName = fixture.build('outputField').fieldHumanName;
-        expectedOutputData = [];
+        expectedOutputFieldData = {
+          meta: { count: faker.random.number() },
+          records: fixture.buildList(
+            'outputFieldData',
+            faker.random.number({ min: 1, max: 10 })
+          )
+        };
         expectedOutputId = faker.random.number();
+        rawOutputFieldData = {
+          meta: expectedOutputFieldData.meta,
+          records: expectedOutputFieldData.records.map((record) =>
+            fixture.build('outputFieldData', record, { fromServer: true })
+          )
+        };
 
+        formatOutputFieldDataFromServer = this.sandbox
+          .stub(iotUtils, 'formatOutputFieldDataFromServer')
+          .returns(expectedOutputFieldData);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(expectedOutputData)
+          get: this.sandbox.stub().resolves(rawOutputFieldData)
         };
         const outputs = new Outputs(baseSdk, request);
         outputs._baseUrl = expectedHost;
@@ -80,9 +98,17 @@ describe('Iot/Outputs', function() {
         );
       });
 
+      it('formats the output field data', function() {
+        return promise.then(() => {
+          expect(formatOutputFieldDataFromServer).to.be.calledWith(
+            rawOutputFieldData
+          );
+        });
+      });
+
       it('returns the requested output data', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedOutputData
+          expectedOutputFieldData
         );
       });
     });

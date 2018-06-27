@@ -15,8 +15,8 @@ Module that provides access to field information
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sdk | <code>Object</code> | An instance of the SDK so the module can communicate        with other modules |
-| request | <code>Object</code> | An instance of the request module tied to this        module's audience |
+| sdk | <code>Object</code> | An instance of the SDK so the module can communicate   with other modules |
+| request | <code>Object</code> | An instance of the request module tied to this   module's audience |
 | baseUrl | <code>string</code> | The base URL provided by the parent module |
 
 <a name="Fields+get"></a>

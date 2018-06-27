@@ -30,9 +30,9 @@ import { formatOutputFieldFromServer } from '../utils/iot';
 class Fields {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate
-       with other modules
+   *   with other modules
    * @param {Object} request An instance of the request module tied to this
-       module's audience
+   *   module's audience
    * @param {string} baseUrl The base URL provided by the parent module
    */
   constructor(sdk, request, baseUrl) {

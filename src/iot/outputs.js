@@ -1,3 +1,5 @@
+import { formatOutputFieldDataFromServer } from '../utils/iot';
+
 /**
  * Module that provides access to output information
  *
@@ -6,9 +8,9 @@
 class Outputs {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate
-       with other modules
+   *   with other modules
    * @param {Object} request An instance of the request module tied to this
-       module's audience
+   *   module's audience
    * @param {string} baseUrl The base URL provided by the parent module
    */
   constructor(sdk, request, baseUrl) {
@@ -52,9 +54,9 @@ class Outputs {
       );
     }
 
-    return this._request.get(
-      `${this._baseUrl}/outputs/${outputId}/fields/${fieldHumanName}/data`
-    );
+    return this._request
+      .get(`${this._baseUrl}/outputs/${outputId}/fields/${fieldHumanName}/data`)
+      .then((fieldData) => formatOutputFieldDataFromServer(fieldData));
   }
 }
 
