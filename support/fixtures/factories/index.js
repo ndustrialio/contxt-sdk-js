@@ -11,6 +11,8 @@ require('./facilityGrouping');
 require('./facilityGroupingFacility');
 require('./facilityInfo');
 require('./facilityTag');
+require('./outputField');
+require('./outputFieldData');
 require('./organization');
 require('./userProfile');
 

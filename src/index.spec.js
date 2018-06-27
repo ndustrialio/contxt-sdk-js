@@ -2,6 +2,7 @@ import times from 'lodash.times';
 import Config from './config';
 import ContxtSdk from './index';
 import Facilities from './facilities';
+import Iot from './iot';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
@@ -71,6 +72,14 @@ describe('ContxtSdk', function() {
 
     it('sets an instance of Facilities', function() {
       expect(contxtSdk.facilities).to.be.an.instanceof(Facilities);
+    });
+
+    it('creates an instance of the request module for IOT', function() {
+      expect(createRequest).to.be.calledWith('iot');
+    });
+
+    it('sets an instance of IOT', function() {
+      expect(contxtSdk.iot).to.be.an.instanceof(Iot);
     });
 
     it('decorates the additional custom modules', function() {
