@@ -15,7 +15,7 @@
  * @returns {string} output.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
  * @returns {string} output.weather_location_id
  * @returns {string} output.zip
- * @returns {string{ outout.asset_id
+ * @returns {string} output.asset_id
  *
  * @private
  */
