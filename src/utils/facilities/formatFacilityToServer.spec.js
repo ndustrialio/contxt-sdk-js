@@ -14,7 +14,8 @@ describe('utils/facilities/formatFacilityToServer', function() {
         geometry_id: facility.geometryId,
         Info: facility.info,
         organization_id: facility.organizationId,
-        weather_location_id: facility.weatherLocationId
+        weather_location_id: facility.weatherLocationId,
+        asset_id: facility.assetId
       },
       [
         'createdAt',
@@ -25,7 +26,8 @@ describe('utils/facilities/formatFacilityToServer', function() {
         'organization',
         'organizationId',
         'tags',
-        'weatherLocationId'
+        'weatherLocationId',
+        'assetId'
       ]
     );
 

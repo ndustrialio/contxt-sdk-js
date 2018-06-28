@@ -11,6 +11,7 @@ import {
  * @typedef {Object} Facility
  * @property {string} [address1]
  * @property {string} [address2]
+ * @property {string} [assetId] UUID corresponding with an asset
  * @property {string} [city]
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} [geometryId] UUID corresponding with a geometry
@@ -73,6 +74,7 @@ class Facilities {
    * @param {string} facility.timezone
    * @param {number} [facility.weatherLocationId]
    * @param {string} [facility.zip]
+   * @param {string} [facility.assetId] UUID corresponding with an asset
    *
    * @returns {Promise}
    * @fulfill {Facility} Information about the new facility
@@ -300,6 +302,7 @@ class Facilities {
    * @param {string} [update.timezone]
    * @param {number} [update.weatherLocationId]
    * @param {string} [update.zip]
+   * @param {string} [update.assetId] UUID corresponding with an asset
    *
    * @returns {Promise}
    * @fulfill {undefined}

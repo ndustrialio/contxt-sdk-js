@@ -46,6 +46,7 @@ import {
  * @param {string} input.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
  * @param {string} input.weather_location_id
  * @param {string} input.zip
+ * @param {string} input.asset_id UUID corresponding with an asset
  *
  * @returns {Facility}
  *
@@ -64,7 +65,8 @@ function formatFacilityFromServer(input = {}) {
     state: input.state,
     timezone: input.timezone,
     weatherLocationId: input.weather_location_id,
-    zip: input.zip
+    zip: input.zip,
+    assetId: input.asset_id
   };
 
   if (input.Info) {

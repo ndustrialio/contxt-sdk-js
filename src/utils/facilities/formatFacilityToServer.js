@@ -15,6 +15,7 @@
  * @returns {string} output.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
  * @returns {string} output.weather_location_id
  * @returns {string} output.zip
+ * @returns {string{ outout.asset_id
  *
  * @private
  */
@@ -30,7 +31,8 @@ function formatFacilityToServer(input = {}) {
     state: input.state,
     timezone: input.timezone,
     weather_location_id: input.weatherLocationId,
-    zip: input.zip
+    zip: input.zip,
+    asset_id: input.assetId
   };
 }
 

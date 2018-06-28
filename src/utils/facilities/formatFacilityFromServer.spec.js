@@ -42,7 +42,8 @@ describe('utils/facilities/formatFacilityFromServer', function() {
           info: facility.Info,
           organization: facility.Organization,
           organizationId: facility.organization_id,
-          weatherLocationId: facility.weather_location_id
+          weatherLocationId: facility.weather_location_id,
+          assetId: facility.asset_id
         },
         [
           'created_at',
@@ -50,7 +51,8 @@ describe('utils/facilities/formatFacilityFromServer', function() {
           'Info',
           'Organization',
           'organization_id',
-          'weather_location_id'
+          'weather_location_id',
+          'asset_id'
         ]
       );
 
