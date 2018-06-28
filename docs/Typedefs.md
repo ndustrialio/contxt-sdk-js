@@ -1,3 +1,29 @@
+<a name="Asset"></a>
+
+## Asset : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| assetTypeId | <code>string</code> | UUID corresponding with the asset type |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| label | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID corresponding with the organization |
+
+<a name="AssetType"></a>
+
+## AssetType : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| label | <code>string</code> |  |
+
 <a name="Audience"></a>
 
 ## Audience : <code>Object</code>
