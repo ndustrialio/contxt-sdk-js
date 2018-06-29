@@ -18,7 +18,7 @@ import * as iotUtils from './index';
  * @returns {Number} output.meta.count Total number of field data records
  * @returns {Boolean} output.meta.hasMore Indicates if there are more records
  *   to retrieve
- * @returns {Number} [output.meta.limit = 5000] Number of records to return
+ * @returns {Number} [output.meta.limit] Number of records to return
  * @returns {Number} [output.nextRecordTime] UNIX timestamp indicating a
  *   `timeStart` that would return new values
  * @returns {Number} [output.meta.timeEnd] UNIX timestamp indicating the end of

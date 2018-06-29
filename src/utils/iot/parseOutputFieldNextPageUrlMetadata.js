@@ -7,7 +7,7 @@ import URL from 'url-parse';
  * @param {String} url
  *
  * @returns {Object} output
- * @returns {Number} [output.limit = 5000] Number of records to return
+ * @returns {Number} [output.limit] Number of records to return
  * @returns {Number} [output.timeEnd] UNIX timestamp indicating the end of the
  *   query window
  * @returns {Number} [output.timeStart] UNIX timestamp indicating the start of

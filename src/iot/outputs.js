@@ -1,4 +1,28 @@
 import { formatOutputFieldDataFromServer } from '../utils/iot';
+/**
+ * @typedef {Object} OutputFieldDataResponse
+ * @property {Object} meta
+ * @property {Number} meta.count Total number of field data records
+ * @property {Boolean} meta.hasMore Indicates if there are more records
+ *   to retrieve
+ * @property {Number} [meta.limit] Number of records to return
+ * @property {Number} [nextRecordTime] UNIX timestamp indicating a
+ *   `timeStart` that would return new values
+ * @property {Number} [meta.timeEnd] UNIX timestamp indicating the end of
+ *   the query window
+ * @property {Number} [meta.timeStart] UNIX timestamp indicating the
+ *   start of the query window
+ * @property {Number} [meta.window] The sampling window for records.
+ *   Required if including a timeEnd or timeStart.
+ *   Valid options include: `0`, `60`, `900`, and `3600`
+ * @property {OutputFieldData[]} records
+ */
+
+/**
+ * @typedef {Object} OutputFieldData
+ * @property {String} eventTime ISO 8601 Extended Format date/time string
+ * @property {String} value
+ */
 
 /**
  * Module that provides access to output information
@@ -38,7 +62,7 @@ class Outputs {
    *   Valid options include: `0`, `60`, `900`, and `3600`
    *
    * @returns {Promise}
-   * @fulfill {Object}
+   * @fulfill {OutputFieldDataResponse}
    * @reject {Error}
    *
    * @example

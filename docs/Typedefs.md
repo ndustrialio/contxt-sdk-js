@@ -198,6 +198,35 @@ for authenticating and communicating with an individual API and the external mod
 | [units] | <code>String</code> |  |
 | valueType | <code>String</code> | What type of value can be coming from the feed.   One of `boolean`, `numeric`, and `string` |
 
+<a name="OutputFieldData"></a>
+
+## OutputFieldData : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| eventTime | <code>String</code> | ISO 8601 Extended Format date/time string |
+| value | <code>String</code> |  |
+
+<a name="OutputFieldDataResponse"></a>
+
+## OutputFieldDataResponse : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| meta | <code>Object</code> |  |
+| meta.count | <code>Number</code> | Total number of field data records |
+| meta.hasMore | <code>Boolean</code> | Indicates if there are more records   to retrieve |
+| [meta.limit] | <code>Number</code> | Number of records to return |
+| [nextRecordTime] | <code>Number</code> | UNIX timestamp indicating a   `timeStart` that would return new values |
+| [meta.timeEnd] | <code>Number</code> | UNIX timestamp indicating the end of   the query window |
+| [meta.timeStart] | <code>Number</code> | UNIX timestamp indicating the   start of the query window |
+| [meta.window] | <code>Number</code> | The sampling window for records.   Required if including a timeEnd or timeStart.   Valid options include: `0`, `60`, `900`, and `3600` |
+| records | [<code>Array.&lt;OutputFieldData&gt;</code>](#OutputFieldData) |  |
+
 <a name="SessionType"></a>
 
 ## SessionType : <code>Object</code>

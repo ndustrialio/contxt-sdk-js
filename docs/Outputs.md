@@ -28,7 +28,7 @@ API Endpoint: '/outputs/:outputId/fields/:fieldHumanName/data'
 Method: GET
 
 **Kind**: instance method of [<code>Outputs</code>](#Outputs)  
-**Fulfill**: <code>Object</code>  
+**Fulfill**: [<code>OutputFieldDataResponse</code>](./Typedefs.md#OutputFieldDataResponse)  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Default | Description |
