@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import URL from 'url-parse';
 import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
+import * as iotUtils from './index';
 
 describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let expectedOutputFieldDataRecords;
@@ -9,8 +10,11 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let formattedOutputFieldData;
   let initialOutputFieldDataRecords;
   let initialOutputFieldMetadata;
+  let parseOutputFieldNextPageUrlMetadata;
 
   beforeEach(function() {
+    this.sandbox = sandbox.create();
+
     expectedOutputFieldMetadata = {
       count: faker.random.number(),
       hasMore: faker.random.boolean(),
@@ -47,22 +51,31 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
         omit({ ...record, event_time: record.eventTime }, ['eventTime'])
     );
 
+    parseOutputFieldNextPageUrlMetadata = this.sandbox
+      .stub(iotUtils, 'parseOutputFieldNextPageUrlMetadata')
+      .returns(expectedOutputFieldParsedMetadata);
+
     formattedOutputFieldData = formatOutputFieldDataFromServer({
       meta: initialOutputFieldMetadata,
       records: initialOutputFieldDataRecords
     });
   });
 
-  it('converts the metadata keys to camelCase', function() {
-    expect(formattedOutputFieldData.meta).to.include(
-      expectedOutputFieldMetadata
-    );
+  afterEach(function() {
+    this.sandbox.restore();
   });
 
   it('parses the `next_page_url` query string to be regular metadata', function() {
-    expect(formattedOutputFieldData.meta).to.include(
-      expectedOutputFieldParsedMetadata
+    expect(parseOutputFieldNextPageUrlMetadata).to.be.calledWith(
+      initialOutputFieldMetadata.next_page_url
     );
+  });
+
+  it('converts the metadata keys to camelCase', function() {
+    expect(formattedOutputFieldData.meta).to.deep.equal({
+      ...expectedOutputFieldParsedMetadata,
+      ...expectedOutputFieldMetadata
+    });
   });
 
   it("converts the records' keys to camelCase", function() {

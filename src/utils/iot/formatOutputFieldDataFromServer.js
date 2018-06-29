@@ -1,17 +1,16 @@
-import URL from 'url-parse';
+import * as iotUtils from './index';
 
 /**
  * Normalizes the output field data and metadata returned from the API server
  *
- *
- * @returns {Object} output
- * @returns {Object} output.meta Metadata about the output field data query
- * @returns {Number} output.meta.count Total number of field data records found
- * @returns {Boolean} output.meta.hasMore Indicates if there are more records
+ * @returns {Object} input
+ * @returns {Object} input.meta Metadata about the output field data query
+ * @returns {Number} input.meta.count Total number of field data records found
+ * @returns {Boolean} input.meta.hasMore Indicates if there are more records
  *   to retrieve
- * @returns {String} [output.meta.nextPageUrl] URL that can be used to request
+ * @returns {String} [input.meta.nextPageUrl] URL that can be used to request
  *   the next page of results
- * @returns {Number} [output.meta.nextRecordTime] UNIX timestamp indicating a
+ * @returns {Number} [input.meta.nextRecordTime] UNIX timestamp indicating a
  *   `timeStart` that would return new values
  *
  * @returns {Object} output
@@ -35,15 +34,8 @@ import URL from 'url-parse';
  */
 function formatOutputFieldDataFromServer(input = {}) {
   const meta = input.meta || {};
-  const query = ['limit', 'timeEnd', 'timeStart', 'window'].reduce(
-    (memo, key) => {
-      if (memo[key]) {
-        memo[key] = parseInt(memo[key], 10);
-      }
-
-      return memo;
-    },
-    new URL(meta.next_page_url, true).query
+  const query = iotUtils.parseOutputFieldNextPageUrlMetadata(
+    meta.next_page_url
   );
   const records = input.records || [];
 
