@@ -45,7 +45,8 @@ Method: POST
 
 **Example**  
 ```js
-contxtSdk.facilities.groupings.addFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+contxtSdk.facilities.groupings
+  .addFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
   .then((grouping) => console.log(grouping))
   .catch((err) => console.log(err));
 ```
@@ -77,7 +78,7 @@ contxtSdk.facilities.groupings
     description: 'US States of CT, MA, ME, NH, RI, VT',
     isPrivate: false,
     name: 'New England, USA',
-    organizationId: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5'
+    organizationId: '61f5fe1d-d202-4ae7-af76-8f37f5bbeec5',
     parentGroupingId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
   })
   .then((grouping) => console.log(grouping))
@@ -101,7 +102,9 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.facilities.groupings.delete('e4fec739-56aa-4b50-8dab-e9d6b9c91a5d')
+contxtSdk.facilities.groupings.delete(
+  'e4fec739-56aa-4b50-8dab-e9d6b9c91a5d'
+);
 ```
 <a name="FacilityGroupings+getAll"></a>
 
@@ -117,7 +120,8 @@ Method: GET
 **Reject**: <code>Error</code>  
 **Example**  
 ```js
-contxtSdk.facilites.groupings.getAll()
+contxtSdk.facilites.groupings
+  .getAll()
   .then((groupings) => console.log(groupings))
   .catch((err) => console.log(err));
 ```
@@ -140,7 +144,8 @@ Method: GET
 
 **Example**  
 ```js
-contxtSdk.facilites.groupings.getAll()
+contxtSdk.facilites.groupings
+  .getAllByOrganizationId('349dbd36-5dca-4a10-b54d-d0f71c3c8709')
   .then((groupings) => console.log(groupings))
   .catch((err) => console.log(err));
 ```
@@ -162,7 +167,8 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.facilities.groupings.removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+contxtSdk.facilities.groupings
+  .removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
   .catch((err) => console.log(err));
 ```
 <a name="FacilityGroupings+update"></a>

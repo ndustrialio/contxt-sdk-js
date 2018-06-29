@@ -106,11 +106,11 @@ for authenticating and communicating with an individual API and the external mod
 
 | Name | Type | Description |
 | --- | --- | --- |
-| address1 | <code>string</code> |  |
-| address2 | <code>string</code> |  |
-| city | <code>string</code> |  |
+| [address1] | <code>string</code> |  |
+| [address2] | <code>string</code> |  |
+| [city] | <code>string</code> |  |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| geometryId | <code>string</code> | UUID corresponding with a geometry |
+| [geometryId] | <code>string</code> | UUID corresponding with a geometry |
 | id | <code>number</code> |  |
 | [Info] | <code>Object</code> | User declared information |
 | name | <code>string</code> |  |
@@ -119,7 +119,7 @@ for authenticating and communicating with an individual API and the external mod
 | [Organization.id] | <code>string</code> | UUID formatted ID |
 | [Organization.name] | <code>string</code> |  |
 | [Organization.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
-| state | <code>string</code> |  |
+| [state] | <code>string</code> |  |
 | [tags] | <code>Array.&lt;Object&gt;</code> |  |
 | [tags[].createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [tags[].id] | <code>number</code> |  |
@@ -127,8 +127,8 @@ for authenticating and communicating with an individual API and the external mod
 | [tags[].name] | <code>string</code> |  |
 | [tags[].updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | timezone | <code>string</code> | An IANA Time Zone Database string, i.e. America/Los_Angeles |
-| weatherLocationId | <code>number</code> |  |
-| zip | <code>string</code> | US Zip Code |
+| [weatherLocationId] | <code>number</code> |  |
+| [zip] | <code>string</code> | US Zip Code |
 
 <a name="FacilityGrouping"></a>
 
@@ -138,14 +138,14 @@ for authenticating and communicating with an individual API and the external mod
 | Param | Type | Description |
 | --- | --- | --- |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| description | <code>string</code> |  |
+| [description] | <code>string</code> |  |
 | [facilities] | [<code>Array.&lt;Facility&gt;</code>](#Facility) |  |
 | id | <code>string</code> | UUID |
 | isPrivate | <code>boolean</code> |  |
 | name | <code>string</code> |  |
 | organizationId | <code>string</code> | UUID |
 | ownerId | <code>string</code> | Auth0 identifer of the user |
-| parentGroupingId | <code>string</code> | UUID |
+| [parentGroupingId] | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="FacilityGroupingFacility"></a>
@@ -180,22 +180,22 @@ for authenticating and communicating with an individual API and the external mod
 
 | Name | Type | Description |
 | --- | --- | --- |
-| canAggregate | <code>Boolean</code> |  |
-| divisor | <code>Number</code> |  |
+| [canAggregate] | <code>Boolean</code> |  |
+| [divisor] | <code>Number</code> |  |
 | feedKey | <code>String</code> |  |
 | fieldDescriptor | <code>String</code> |  |
 | fieldHumanName | <code>String</code> |  |
-| fieldName | <code>String</code> |  |
+| [fieldName] | <code>String</code> |  |
 | id | <code>Number</code> |  |
-| isDefault | <code>Boolean</code> |  |
-| isHidden | <code>Boolean</code> |  |
-| isTotalizer | <code>Boolean</code> |  |
-| isWindowed | <code>Boolean</code> |  |
-| label | <code>String</code> |  |
+| [isDefault] | <code>Boolean</code> |  |
+| [isHidden] | <code>Boolean</code> |  |
+| [isTotalizer] | <code>Boolean</code> |  |
+| [isWindowed] | <code>Boolean</code> |  |
+| [label] | <code>String</code> |  |
 | outputId | <code>Number</code> |  |
-| scalar | <code>Number</code> |  |
-| status | <code>String</code> |  |
-| units | <code>String</code> |  |
+| [scalar] | <code>Number</code> |  |
+| [status] | <code>String</code> |  |
+| [units] | <code>String</code> |  |
 | valueType | <code>String</code> | What type of value can be coming from the feed.   One of `boolean`, `numeric`, and `string` |
 
 <a name="SessionType"></a>

@@ -9,11 +9,11 @@ import {
 
 /**
  * @typedef {Object} Facility
- * @property {string} address1
- * @property {string} address2
- * @property {string} city
+ * @property {string} [address1]
+ * @property {string} [address2]
+ * @property {string} [city]
  * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} geometryId UUID corresponding with a geometry
+ * @property {string} [geometryId] UUID corresponding with a geometry
  * @property {number} id
  * @property {Object} [Info] User declared information
  * @property {string} name
@@ -22,7 +22,7 @@ import {
  * @property {string} [Organization.id] UUID formatted ID
  * @property {string} [Organization.name]
  * @property {string} [Organization.updatedAt] ISO 8601 Extended Format date/time string
- * @property {string} state
+ * @property {string} [state]
  * @property {Object[]} [tags]
  * @property {string} [tags[].createdAt] ISO 8601 Extended Format date/time string
  * @property {number} [tags[].id]
@@ -30,8 +30,8 @@ import {
  * @property {string} [tags[].name]
  * @property {string} [tags[].updatedAt] ISO 8601 Extended Format date/time string
  * @property {string} timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
- * @property {number} weatherLocationId
- * @property {string} zip US Zip Code
+ * @property {number} [weatherLocationId]
+ * @property {string} [zip] US Zip Code
  */
 
 /**
@@ -85,7 +85,7 @@ class Facilities {
    *     name: 'Sherlock Holmes Museum',
    *     organizationId: 25
    *   })
-   *   .then((facilities) => console.log(facilities));
+   *   .then((facilities) => console.log(facilities))
    *   .catch((err) => console.log(err));
    */
   create(facility = {}) {
@@ -173,7 +173,7 @@ class Facilities {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.delete(25)
+   * contxtSdk.facilities.delete(25);
    */
   delete(facilityId) {
     if (!facilityId) {
@@ -198,8 +198,9 @@ class Facilities {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.get(25)
-   *   .then((facility) => console.log(facility));
+   * contxtSdk.facilities
+   *   .get(25)
+   *   .then((facility) => console.log(facility))
    *   .catch((err) => console.log(err));
    */
   get(facilityId) {
@@ -227,8 +228,9 @@ class Facilities {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.getAll()
-   *   .then((facilities) => console.log(facilities));
+   * contxtSdk.facilities
+   *   .getAll()
+   *   .then((facilities) => console.log(facilities))
    *   .catch((err) => console.log(err));
    */
   getAll() {
@@ -254,8 +256,9 @@ class Facilities {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.getAllByOrganizationId(25, {includeGroupings: true})
-   *   .then((facilities) => console.log(facilities));
+   * contxtSdk.facilities
+   *   .getAllByOrganizationId(25, { includeGroupings: true })
+   *   .then((facilities) => console.log(facilities))
    *   .catch((err) => console.log(err));
    */
   getAllByOrganizationId(organizationId, options) {

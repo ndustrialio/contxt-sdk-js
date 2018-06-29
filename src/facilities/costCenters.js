@@ -92,7 +92,7 @@ class CostCenters {
    * Method: POST
    *
    * @param {Object} costCenter
-   * @param {string} costCenter.description
+   * @param {string} [costCenter.description]
    * @param {string} costCenter.name
    * @param {string} costCenter.organizationId UUID
    *
@@ -143,7 +143,9 @@ class CostCenters {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.costCenters.delete('e4fec739-56aa-4b50-8dab-e9d6b9c91a5d')
+   * contxtSdk.facilities.costCenters.delete(
+   *   'e4fec739-56aa-4b50-8dab-e9d6b9c91a5d'
+   * );
    */
   delete(costCenterId) {
     if (!costCenterId) {
@@ -223,7 +225,8 @@ class CostCenters {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.facilities.costCenters.removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+   * contxtSdk.facilities.costCenters
+   *   .removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
    *   .catch((err) => console.log(err));
    */
   removeFacility(costCenterId, facilityId) {

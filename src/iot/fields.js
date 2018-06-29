@@ -2,22 +2,22 @@ import { formatOutputFieldFromServer } from '../utils/iot';
 
 /**
  * @typedef {Object} OutputField
- * @property {Boolean} canAggregate
- * @property {Number} divisor
+ * @property {Boolean} [canAggregate]
+ * @property {Number} [divisor]
  * @property {String} feedKey
  * @property {String} fieldDescriptor
  * @property {String} fieldHumanName
- * @property {String} fieldName
+ * @property {String} [fieldName]
  * @property {Number} id
- * @property {Boolean} isDefault
- * @property {Boolean} isHidden
- * @property {Boolean} isTotalizer
- * @property {Boolean} isWindowed
- * @property {String} label
+ * @property {Boolean} [isDefault]
+ * @property {Boolean} [isHidden]
+ * @property {Boolean} [isTotalizer]
+ * @property {Boolean} [isWindowed]
+ * @property {String} [label]
  * @property {Number} outputId
- * @property {Number} scalar
- * @property {String} status
- * @property {String} units
+ * @property {Number} [scalar]
+ * @property {String} [status]
+ * @property {String} [units]
  * @property {String} valueType What type of value can be coming from the feed.
  *   One of `boolean`, `numeric`, and `string`
  */
@@ -54,8 +54,9 @@ class Fields {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.iot.fields.get(563)
-   *   .then((outputField) => console.log(outputField));
+   * contxtSdk.iot.fields
+   *   .get(563)
+   *   .then((outputField) => console.log(outputField))
    *   .catch((err) => console.log(err));
    */
   get(outputFieldId) {

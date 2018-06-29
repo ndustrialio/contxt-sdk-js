@@ -59,7 +59,7 @@ contxtSdk.facilities
     name: 'Sherlock Holmes Museum',
     organizationId: 25
   })
-  .then((facilities) => console.log(facilities));
+  .then((facilities) => console.log(facilities))
   .catch((err) => console.log(err));
 ```
 <a name="Facilities+createOrUpdateInfo"></a>
@@ -103,7 +103,7 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.facilities.delete(25)
+contxtSdk.facilities.delete(25);
 ```
 <a name="Facilities+get"></a>
 
@@ -123,8 +123,9 @@ Method: GET
 
 **Example**  
 ```js
-contxtSdk.facilities.get(25)
-  .then((facility) => console.log(facility));
+contxtSdk.facilities
+  .get(25)
+  .then((facility) => console.log(facility))
   .catch((err) => console.log(err));
 ```
 <a name="Facilities+getAll"></a>
@@ -140,8 +141,9 @@ Method: GET
 **Reject**: <code>Error</code>  
 **Example**  
 ```js
-contxtSdk.facilities.getAll()
-  .then((facilities) => console.log(facilities));
+contxtSdk.facilities
+  .getAll()
+  .then((facilities) => console.log(facilities))
   .catch((err) => console.log(err));
 ```
 <a name="Facilities+getAllByOrganizationId"></a>
@@ -164,8 +166,9 @@ Method: GET
 
 **Example**  
 ```js
-contxtSdk.facilities.getAllByOrganizationId(25, {includeGroupings: true})
-  .then((facilities) => console.log(facilities));
+contxtSdk.facilities
+  .getAllByOrganizationId(25, { includeGroupings: true })
+  .then((facilities) => console.log(facilities))
   .catch((err) => console.log(err));
 ```
 <a name="Facilities+update"></a>
