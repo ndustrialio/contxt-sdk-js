@@ -27,17 +27,32 @@ class Outputs {
    *
    * @param {Number} outputId The ID of an output
    * @param {String} fieldHumanName The human readable name of a field
+   * @param {Object} [options]
+   * @param {Number} [options.limit = 5000] Number of records to return
+   * @param {Number} [options.timeEnd] UNIX timestamp indicating the end of the
+   *   query window
+   * @param {Number} [options.timeStart] UNIX timestamp indicating the start of
+   *   the query window
+   * @param {Number} [options.window] The sampling window for records.
+   *   Required if including a timeEnd or timeStart.
+   *   Valid options include: `0`, `60`, `900`, and `3600`
    *
    * @returns {Promise}
    * @fulfill {Object}
    * @reject {Error}
    *
    * @example
-   * contxtSdk.iot.outputs.getFieldData(491, 'temperature')
-   *   .then((outputData) => console.log(outputData));
-   *   .catch((err) => console.log(err));
+   * contxtSdk.iot.outputs
+   *   .getFieldData(491, 'temperature', {
+   *     limit: 100,
+   *     timeStart: 1530290218365,
+   *     window: 3600
+   *   })
+   *   .then(outputData => console.log(outputData))
+   *   .catch(err => console.log(err));
+
    */
-  getFieldData(outputId, fieldHumanName) {
+  getFieldData(outputId, fieldHumanName, options) {
     if (!outputId) {
       return Promise.reject(
         new Error(
@@ -55,7 +70,10 @@ class Outputs {
     }
 
     return this._request
-      .get(`${this._baseUrl}/outputs/${outputId}/fields/${fieldHumanName}/data`)
+      .get(
+        `${this._baseUrl}/outputs/${outputId}/fields/${fieldHumanName}/data`,
+        { params: options }
+      )
       .then((fieldData) => formatOutputFieldDataFromServer(fieldData));
   }
 }

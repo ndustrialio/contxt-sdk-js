@@ -52,6 +52,7 @@ describe('Iot/Outputs', function() {
   describe('getFieldData', function() {
     context('when all required information is provided', function() {
       let expectedFieldHumanName;
+      let expectedOptions;
       let expectedOutputFieldData;
       let expectedOutputId;
       let formatOutputFieldDataFromServer;
@@ -61,6 +62,12 @@ describe('Iot/Outputs', function() {
 
       beforeEach(function() {
         expectedFieldHumanName = fixture.build('outputField').fieldHumanName;
+        expectedOptions = {
+          limit: faker.random.number(),
+          timeEnd: Math.floor(faker.date.recent().getTime() / 1000),
+          timeStart: Math.floor(faker.date.past().getTime() / 1000),
+          window: faker.random.arrayElement([0, 60, 900, 3600])
+        };
         expectedOutputFieldData = {
           meta: { count: faker.random.number() },
           records: fixture.buildList(
@@ -88,13 +95,15 @@ describe('Iot/Outputs', function() {
 
         promise = outputs.getFieldData(
           expectedOutputId,
-          expectedFieldHumanName
+          expectedFieldHumanName,
+          expectedOptions
         );
       });
 
       it('gets the output field data from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/outputs/${expectedOutputId}/fields/${expectedFieldHumanName}/data`
+          `${expectedHost}/outputs/${expectedOutputId}/fields/${expectedFieldHumanName}/data`,
+          { params: expectedOptions }
         );
       });
 
