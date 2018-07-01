@@ -101,8 +101,12 @@ class MachineAuth {
       return Promise.reject(new Error('No valid audience found'));
     }
 
-    if (!this._tokenPromise) {
-      this._tokenPromise = axios
+    if (!this.tokenPromises) {
+      this.tokenPromises = {};
+    }
+
+    if (!this.tokenPromises[audienceName]) {
+      this.tokenPromises[audienceName] = axios
         .post(`${this._sdk.config.audiences.contxtAuth.host}/v1/oauth/token`, {
           audience: audience.clientId,
           client_id: this._sdk.config.auth.clientId,
@@ -117,7 +121,7 @@ class MachineAuth {
         })
         .then((sessionInfo) => {
           this._saveSession(audienceName, sessionInfo);
-          this._tokenPromise = null;
+          this.tokenPromises[audienceName] = null;
 
           return sessionInfo;
         })
@@ -132,7 +136,7 @@ class MachineAuth {
         });
     }
 
-    return this._tokenPromise;
+    return this.tokenPromises[audienceName];
   }
 
   /**
