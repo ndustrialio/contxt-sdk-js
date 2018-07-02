@@ -11,6 +11,7 @@ import {
  * @param {Object} input
  * @param {string} input.address1
  * @param {string} input.address2
+ * @param {string} [input.asset_id] UUID corresponding with an asset
  * @param {string} input.city
  * @param {Object[]} [input.cost_centers]
  * @param {string} [input.cost_centers[].created_at] ISO 8601 Extended Format date/time string
@@ -55,6 +56,7 @@ function formatFacilityFromServer(input = {}) {
   const facility = {
     address1: input.address1,
     address2: input.address2,
+    assetId: input.asset_id,
     city: input.city,
     createdAt: input.created_at,
     geometryId: input.geometry_id,

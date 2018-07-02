@@ -11,6 +11,7 @@ import {
  * @typedef {Object} Facility
  * @property {string} [address1]
  * @property {string} [address2]
+ * @property {string} [assetId] UUID corresponding with an asset
  * @property {string} [city]
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} [geometryId] UUID corresponding with a geometry
@@ -65,6 +66,7 @@ class Facilities {
    * @param {Object} facility
    * @param {string} [facility.address1]
    * @param {string} [facility.address2]
+   * @param {string} [facility.assetId] UUID corresponding with an asset
    * @param {string} [facility.city]
    * @param {string} [facility.geometryId] UUID corresponding with a geometry
    * @param {string} facility.name
@@ -291,6 +293,7 @@ class Facilities {
    * @param {Object} update An object containing the updated data for the facility
    * @param {string} [update.address1]
    * @param {string} [update.address2]
+   * @param {string} [update.assetId] UUID corresponding with an asset
    * @param {string} [update.city]
    * @param {string} [update.geometryId] UUID corresponding with a geometry
    * @param {Object} [update.info] User declared information

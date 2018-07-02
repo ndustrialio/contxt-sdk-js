@@ -6,6 +6,7 @@
  * @returns {Object} output
  * @returns {string} output.address1
  * @returns {string} output.address2
+ * @returns {string} output.asset_id
  * @returns {string} output.city
  * @returns {string} output.geometry_id UUID corresponding with a geometry
  * @returns {Object} output.Info User declared information
@@ -22,6 +23,7 @@ function formatFacilityToServer(input = {}) {
   return {
     address1: input.address1,
     address2: input.address2,
+    asset_id: input.assetId,
     city: input.city,
     geometry_id: input.geometryId,
     Info: input.info,
