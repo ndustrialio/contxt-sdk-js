@@ -37,7 +37,8 @@ Method: GET
 
 **Example**  
 ```js
-contxtSdk.iot.fields.get(563)
-  .then((outputField) => console.log(outputField));
+contxtSdk.iot.fields
+  .get(563)
+  .then((outputField) => console.log(outputField))
   .catch((err) => console.log(err));
 ```

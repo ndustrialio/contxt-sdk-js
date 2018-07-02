@@ -90,6 +90,10 @@ for authenticating and communicating with an individual API and the external mod
 <dd></dd>
 <dt><a href="./Typedefs.md#OutputField">OutputField</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#OutputFieldData">OutputFieldData</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#OutputFieldDataResponse">OutputFieldDataResponse</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#SessionType">SessionType</a> : <code>Object</code></dt>
 <dd><p>An adapter that allows the SDK to authenticate with different services and manage various tokens.
 Can authenticate with a service like Auth0 and then with Contxt or can communicate directly

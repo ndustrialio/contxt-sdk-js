@@ -65,7 +65,7 @@ Method: POST
 | Param | Type | Description |
 | --- | --- | --- |
 | costCenter | <code>Object</code> |  |
-| costCenter.description | <code>string</code> |  |
+| [costCenter.description] | <code>string</code> |  |
 | costCenter.name | <code>string</code> |  |
 | costCenter.organizationId | <code>string</code> | UUID |
 
@@ -98,7 +98,9 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.facilities.costCenters.delete('e4fec739-56aa-4b50-8dab-e9d6b9c91a5d')
+contxtSdk.facilities.costCenters.delete(
+  'e4fec739-56aa-4b50-8dab-e9d6b9c91a5d'
+);
 ```
 <a name="CostCenters+getAll"></a>
 
@@ -160,7 +162,8 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.facilities.costCenters.removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
+contxtSdk.facilities.costCenters
+  .removeFacility('b3dbaae3-25dd-475b-80dc-66296630a8d0', 4)
   .catch((err) => console.log(err));
 ```
 <a name="CostCenters+update"></a>

@@ -1,49 +1,81 @@
 import omit from 'lodash.omit';
+import URL from 'url-parse';
 import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
+import * as iotUtils from './index';
 
 describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let expectedOutputFieldDataRecords;
   let expectedOutputFieldMetadata;
+  let expectedOutputFieldParsedMetadata;
   let formattedOutputFieldData;
-  let outputFieldDataRecords;
-  let outputFieldMetadata;
+  let initialOutputFieldDataRecords;
+  let initialOutputFieldMetadata;
+  let parseOutputFieldNextPageUrlMetadata;
 
   beforeEach(function() {
-    outputFieldDataRecords = fixture.buildList(
-      'outputFieldData',
-      faker.random.number({ min: 1, max: 10 }),
-      null,
-      { fromServer: true }
-    );
-    outputFieldMetadata = {
+    this.sandbox = sandbox.create();
+
+    expectedOutputFieldMetadata = {
       count: faker.random.number(),
-      has_more: faker.random.boolean(),
-      next_page_url: faker.internet.url(),
-      next_record_time: faker.date.recent().getTime()
+      hasMore: faker.random.boolean(),
+      nextRecordTime: Math.floor(faker.date.recent().getTime() / 1000)
     };
-    expectedOutputFieldDataRecords = outputFieldDataRecords.map((record) =>
-      omit({ ...record, eventTime: record.event_time }, ['event_time'])
+    expectedOutputFieldParsedMetadata = {
+      limit: faker.random.number(),
+      timeEnd: expectedOutputFieldMetadata.nextRecordTime,
+      timeStart: Math.floor(faker.date.past().getTime() / 1000),
+      window: faker.random.arrayElement([0, 60, 900, 3600])
+    };
+    expectedOutputFieldDataRecords = fixture.buildList(
+      'outputFieldData',
+      faker.random.number({ min: 1, max: 10 })
     );
-    expectedOutputFieldMetadata = omit(
+    initialOutputFieldMetadata = omit(
       {
-        ...outputFieldMetadata,
-        hasMore: outputFieldMetadata.has_more,
-        nextPageUrl: outputFieldMetadata.next_page_url,
-        nextRecordTime: outputFieldMetadata.next_record_time
+        ...expectedOutputFieldMetadata,
+        has_more: expectedOutputFieldMetadata.hasMore,
+        next_page_url:
+          faker.internet.url() +
+          '/outputs/' +
+          faker.random.number() +
+          '/fields/' +
+          faker.hacker.noun() +
+          '/data' +
+          URL.qs.stringify(expectedOutputFieldParsedMetadata, true),
+        next_record_time: expectedOutputFieldMetadata.nextRecordTime
       },
-      ['has_more', 'next_page_url', 'next_record_time']
+      ['hasMore', 'nextRecordTime', 'timeEnd', 'timeStart', 'window']
+    );
+    initialOutputFieldDataRecords = expectedOutputFieldDataRecords.map(
+      (record) =>
+        omit({ ...record, event_time: record.eventTime }, ['eventTime'])
     );
 
+    parseOutputFieldNextPageUrlMetadata = this.sandbox
+      .stub(iotUtils, 'parseOutputFieldNextPageUrlMetadata')
+      .returns(expectedOutputFieldParsedMetadata);
+
     formattedOutputFieldData = formatOutputFieldDataFromServer({
-      meta: outputFieldMetadata,
-      records: outputFieldDataRecords
+      meta: initialOutputFieldMetadata,
+      records: initialOutputFieldDataRecords
     });
   });
 
-  it('converts the metadata keys to camelCase', function() {
-    expect(formattedOutputFieldData.meta).to.deep.equal(
-      expectedOutputFieldMetadata
+  afterEach(function() {
+    this.sandbox.restore();
+  });
+
+  it('parses the `next_page_url` query string to be regular metadata', function() {
+    expect(parseOutputFieldNextPageUrlMetadata).to.be.calledWith(
+      initialOutputFieldMetadata.next_page_url
     );
+  });
+
+  it('converts the metadata keys to camelCase', function() {
+    expect(formattedOutputFieldData.meta).to.deep.equal({
+      ...expectedOutputFieldParsedMetadata,
+      ...expectedOutputFieldMetadata
+    });
   });
 
   it("converts the records' keys to camelCase", function() {
