@@ -37,22 +37,22 @@ describe('utils/facilities/formatFacilityFromServer', function() {
       expectedFacility = omit(
         {
           ...facility,
+          assetId: facility.asset_id,
           createdAt: facility.created_at,
           geometryId: facility.geometry_id,
           info: facility.Info,
           organization: facility.Organization,
           organizationId: facility.organization_id,
-          weatherLocationId: facility.weather_location_id,
-          assetId: facility.asset_id
+          weatherLocationId: facility.weather_location_id
         },
         [
+          'asset_id',
           'created_at',
           'geometry_id',
           'Info',
           'Organization',
           'organization_id',
-          'weather_location_id',
-          'asset_id'
+          'weather_location_id'
         ]
       );
 

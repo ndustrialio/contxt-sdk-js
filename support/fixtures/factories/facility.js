@@ -11,6 +11,7 @@ factory
   .attrs({
     address1: () => faker.address.streetAddress(),
     address2: () => faker.address.secondaryAddress(),
+    assetId: () => faker.random.uuid(),
     city: () => faker.address.city(),
     createdAt: () => faker.date.past().toISOString(),
     geometryId: () => faker.random.uuid(),
