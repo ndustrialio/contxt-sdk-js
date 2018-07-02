@@ -276,7 +276,7 @@ describe('sessionTypes/MachineAuth', function() {
       });
 
       it('saves the axios promise to the instance', function() {
-        expect(machineAuth.tokenPromises[audienceName]).to.equal(promise);
+        expect(machineAuth._tokenPromises[audienceName]).to.equal(promise);
       });
 
       it("saves the new session info the module's instance", function() {
@@ -290,7 +290,7 @@ describe('sessionTypes/MachineAuth', function() {
 
       it('clears out the reference to the axios promise when complete', function() {
         return promise.then(() => {
-          expect(machineAuth.tokenPromises[audienceName]).to.be.null;
+          expect(machineAuth._tokenPromises[audienceName]).to.be.null;
         });
       });
 
@@ -311,7 +311,7 @@ describe('sessionTypes/MachineAuth', function() {
         sdk.config.audiences[audienceName] = fixture.build('audience');
 
         const machineAuth = new MachineAuth(sdk);
-        machineAuth.tokenPromises = {
+        machineAuth._tokenPromises = {
           [audienceName]: expectedPromise
         };
         promise = machineAuth._getNewSessionInfo(audienceName);
@@ -339,7 +339,7 @@ describe('sessionTypes/MachineAuth', function() {
           sdk.config.audiences[audienceNameTwo] = fixture.build('audience');
 
           const machineAuth = new MachineAuth(sdk);
-          machineAuth.tokenPromises = {
+          machineAuth._tokenPromises = {
             [audienceNameOne]: expectedPromiseOne,
             [audienceNameTwo]: expectedPromiseTwo
           };
