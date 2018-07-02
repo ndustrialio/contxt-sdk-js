@@ -35,6 +35,7 @@ class MachineAuth {
   constructor(sdk) {
     this._sdk = sdk;
     this._sessionInfo = {};
+    this._tokenPromises = {};
 
     if (!this._sdk.config.auth.clientId) {
       throw new Error('clientId is required for the MachineAuth config');
@@ -101,8 +102,8 @@ class MachineAuth {
       return Promise.reject(new Error('No valid audience found'));
     }
 
-    if (!this._tokenPromise) {
-      this._tokenPromise = axios
+    if (!this._tokenPromises[audienceName]) {
+      this._tokenPromises[audienceName] = axios
         .post(`${this._sdk.config.audiences.contxtAuth.host}/v1/oauth/token`, {
           audience: audience.clientId,
           client_id: this._sdk.config.auth.clientId,
@@ -117,7 +118,7 @@ class MachineAuth {
         })
         .then((sessionInfo) => {
           this._saveSession(audienceName, sessionInfo);
-          this._tokenPromise = null;
+          this._tokenPromises[audienceName] = null;
 
           return sessionInfo;
         })
@@ -132,7 +133,7 @@ class MachineAuth {
         });
     }
 
-    return this._tokenPromise;
+    return this._tokenPromises[audienceName];
   }
 
   /**

@@ -276,7 +276,7 @@ describe('sessionTypes/MachineAuth', function() {
       });
 
       it('saves the axios promise to the instance', function() {
-        expect(machineAuth._tokenPromise).to.equal(promise);
+        expect(machineAuth._tokenPromises[audienceName]).to.equal(promise);
       });
 
       it("saves the new session info the module's instance", function() {
@@ -290,7 +290,7 @@ describe('sessionTypes/MachineAuth', function() {
 
       it('clears out the reference to the axios promise when complete', function() {
         return promise.then(() => {
-          expect(machineAuth._tokenPromise).to.be.null;
+          expect(machineAuth._tokenPromises[audienceName]).to.be.null;
         });
       });
 
@@ -311,7 +311,9 @@ describe('sessionTypes/MachineAuth', function() {
         sdk.config.audiences[audienceName] = fixture.build('audience');
 
         const machineAuth = new MachineAuth(sdk);
-        machineAuth._tokenPromise = expectedPromise;
+        machineAuth._tokenPromises = {
+          [audienceName]: expectedPromise
+        };
         promise = machineAuth._getNewSessionInfo(audienceName);
       });
 
@@ -319,6 +321,38 @@ describe('sessionTypes/MachineAuth', function() {
         expect(promise).to.equal(expectedPromise);
       });
     });
+
+    context(
+      'when tokens are requested for two different audiences',
+      function() {
+        let expectedPromiseOne;
+        let expectedPromiseTwo;
+        let promiseOne;
+        let promiseTwo;
+
+        beforeEach(function() {
+          const audienceNameOne = faker.hacker.adjective();
+          const audienceNameTwo = faker.hacker.adjective();
+          expectedPromiseOne = Promise.resolve();
+          expectedPromiseTwo = Promise.resolve();
+          sdk.config.audiences[audienceNameOne] = fixture.build('audience');
+          sdk.config.audiences[audienceNameTwo] = fixture.build('audience');
+
+          const machineAuth = new MachineAuth(sdk);
+          machineAuth._tokenPromises = {
+            [audienceNameOne]: expectedPromiseOne,
+            [audienceNameTwo]: expectedPromiseTwo
+          };
+          promiseOne = machineAuth._getNewSessionInfo(audienceNameOne);
+          promiseTwo = machineAuth._getNewSessionInfo(audienceNameTwo);
+        });
+
+        it('should return two different promises', function() {
+          expect(promiseOne).to.equal(expectedPromiseOne);
+          expect(promiseTwo).to.equal(expectedPromiseTwo);
+        });
+      }
+    );
 
     context(
       'when there is not a configuration for chosen audience',
