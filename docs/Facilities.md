@@ -42,6 +42,7 @@ Method: POST
 | facility | <code>Object</code> |  |
 | [facility.address1] | <code>string</code> |  |
 | [facility.address2] | <code>string</code> |  |
+| [facility.assetId] | <code>string</code> | UUID corresponding with an asset |
 | [facility.city] | <code>string</code> |  |
 | [facility.geometryId] | <code>string</code> | UUID corresponding with a geometry |
 | facility.name | <code>string</code> |  |
@@ -189,6 +190,7 @@ Method: PUT
 | update | <code>Object</code> | An object containing the updated data for the facility |
 | [update.address1] | <code>string</code> |  |
 | [update.address2] | <code>string</code> |  |
+| [update.assetId] | <code>string</code> | UUID corresponding with an asset |
 | [update.city] | <code>string</code> |  |
 | [update.geometryId] | <code>string</code> | UUID corresponding with a geometry |
 | [update.info] | <code>Object</code> | User declared information |

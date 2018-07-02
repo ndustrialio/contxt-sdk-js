@@ -1,3 +1,17 @@
+## [v0.0.16](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.15)
+
+**Added**
+
+* Added IOT module, with ability to get field data and field information
+
+**Changed**
+
+* `asset_id` added as an optional field when getting facilities
+
+**Fixed**
+
+* Fixed bug where calls would return with a 401 when making simultanous requests while using the `MachineAuth` session typ.
+
 ## [v0.0.15](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.15) (2018-06-21)
 
 **Changed**

@@ -108,6 +108,7 @@ for authenticating and communicating with an individual API and the external mod
 | --- | --- | --- |
 | [address1] | <code>string</code> |  |
 | [address2] | <code>string</code> |  |
+| [assetId] | <code>string</code> | UUID corresponding with an asset |
 | [city] | <code>string</code> |  |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [geometryId] | <code>string</code> | UUID corresponding with a geometry |
