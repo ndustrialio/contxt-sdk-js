@@ -4,12 +4,12 @@
  * @param {FacilityGrouping} input
  *
  * @returns {Object} output
- * @returns {string} output.description
- * @returns {boolean} output.is_private
+ * @returns {string} [output.description]
+ * @returns {boolean} [output.is_private]
  * @returns {string} output.name
  * @returns {string} output.organization_id UUID
  * @returns {string} output.owner_id Auth0 identifer of the owner
- * @returns {string} output.parent_grouping_id UUID
+ * @returns {string} [output.parent_grouping_id] UUID
  *
  * @private
  */

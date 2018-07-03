@@ -4,18 +4,18 @@
  * @param {Facility} input
  *
  * @returns {Object} output
- * @returns {string} output.address1
- * @returns {string} output.address2
- * @returns {string} output.asset_id
- * @returns {string} output.city
- * @returns {string} output.geometry_id UUID corresponding with a geometry
- * @returns {Object} output.Info User declared information
+ * @returns {string} [output.address1]
+ * @returns {string} [output.address2]
+ * @returns {string} [output.asset_id]
+ * @returns {string} [output.city]
+ * @returns {string} [output.geometry_id] UUID corresponding with a geometry
+ * @returns {Object} [output.Info] User declared information
  * @returns {string} output.name
  * @returns {string} output.organization_id UUID corresponding with an organization
- * @returns {string} output.state
+ * @returns {string} [output.state]
  * @returns {string} output.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
- * @returns {string} output.weather_location_id
- * @returns {string} output.zip
+ * @returns {string} [output.weather_location_id]
+ * @returns {string} [output.zip]
  *
  * @private
  */

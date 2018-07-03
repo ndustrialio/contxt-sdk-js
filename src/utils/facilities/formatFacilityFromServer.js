@@ -27,7 +27,7 @@ import {
  * @param {number} [input.facility_groupings[].id]
  * @param {string} [input.facility_groupings[].name]
  * @param {string} [input.facility_groupings[].updated_at] ISO 8601 Extended Format date/time string
- * @param {string} input.geometry_id UUID corresponding with a geometry
+ * @param {string} [input.geometry_id] UUID corresponding with a geometry
  * @param {number} input.id
  * @param {Object} [input.Info] User declared information
  * @param {string} input.name
@@ -35,9 +35,9 @@ import {
  * @param {string} [input.Organization.created_at] ISO 8601 Extended Format date/time string
  * @param {string} [input.Organization.id] UUID
  * @param {string} [input.Organization.name]
- * @param {string} input.Organization.updated_at
+ * @param {string} [input.Organization.updated_at]
  * @param {string} input.organization_id UUID corresponding with an organization
- * @param {string} input.state
+ * @param {string} [input.state]
  * @param {Object[]} [input.tags]
  * @param {string} [input.tags[].created_at] ISO 8601 Extended Format date/time string
  * @param {number} [input.tags[].facility_id] ID corresponding with the parent facility
@@ -45,8 +45,8 @@ import {
  * @param {string} [input.tags[].name]
  * @param {string} [input.tags[].updated_at] ISO 8601 Extended Format date/time string
  * @param {string} input.timezone An IANA Time Zone Database string, i.e. America/Los_Angeles
- * @param {string} input.weather_location_id
- * @param {string} input.zip
+ * @param {string} [input.weather_location_id]
+ * @param {string} [input.zip]
  *
  * @returns {Facility}
  *

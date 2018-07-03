@@ -4,7 +4,7 @@ import { formatFacilityFromServer } from './index';
  *
  * @param {Object} input
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
- * @param {string} input.description
+ * @param {string} [input.description]
  * @param {Facility[]} [input.facilities]
  * @param {string} input.id UUID
  * @param {string} input.name
