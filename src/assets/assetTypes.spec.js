@@ -185,7 +185,7 @@ describe('Assets/Types', function() {
         });
         assetTypeFromServerBeforeFormat = fixture.build(
           'assetType',
-          { id: expectedAssetTypeId },
+          assetTypeFromServerAfterFormat,
           { fromServer: true }
         );
 
@@ -240,19 +240,20 @@ describe('Assets/Types', function() {
     let assetTypesFromServerAfterFormat;
     let assetTypesFromServerBeforeFormat;
     let formatAssetTypeFromServer;
-    let numberofAssetTypes;
+    let numberOfAssetTypes;
     let promise;
     let request;
 
     beforeEach(function() {
-      numberofAssetTypes = faker.random.number({ min: 1, max: 10 });
+      numberOfAssetTypes = faker.random.number({ min: 1, max: 10 });
       assetTypesFromServerAfterFormat = fixture.buildList(
         'assetType',
-        numberofAssetTypes
+        numberOfAssetTypes
       );
       assetTypesFromServerBeforeFormat = fixture.buildList(
         'assetType',
-        numberofAssetTypes,
+        numberOfAssetTypes,
+        null,
         { fromServer: true }
       );
 
@@ -272,7 +273,7 @@ describe('Assets/Types', function() {
         ...baseRequest,
         get: this.sandbox.stub().resolves({
           records: assetTypesFromServerBeforeFormat,
-          _metadata: { offset: 0, totalRecords: numberofAssetTypes }
+          _metadata: { offset: 0, totalRecords: numberOfAssetTypes }
         })
       };
 
@@ -302,7 +303,7 @@ describe('Assets/Types', function() {
         records: assetTypesFromServerAfterFormat,
         _metadata: {
           offset: 0,
-          totalRecords: numberofAssetTypes
+          totalRecords: numberOfAssetTypes
         }
       });
     });
@@ -314,21 +315,21 @@ describe('Assets/Types', function() {
       let assetTypesFromServerBeforeFormat;
       let expectedOrganizationId;
       let formatAssetTypeFromServer;
-      let numberofAssetTypes;
+      let numberOfAssetTypes;
       let promise;
       let request;
 
       beforeEach(function() {
         expectedOrganizationId = fixture.build('organization').id;
-        numberofAssetTypes = faker.random.number({ min: 1, max: 10 });
+        numberOfAssetTypes = faker.random.number({ min: 1, max: 10 });
 
         assetTypesFromServerAfterFormat = fixture.buildList(
           'assetType',
-          numberofAssetTypes
+          numberOfAssetTypes
         );
         assetTypesFromServerBeforeFormat = fixture.buildList(
           'assetType',
-          numberofAssetTypes,
+          numberOfAssetTypes,
           null,
           { fromServer: true }
         );
@@ -349,7 +350,7 @@ describe('Assets/Types', function() {
           ...baseRequest,
           get: this.sandbox.stub().resolves({
             records: assetTypesFromServerBeforeFormat,
-            _metadata: { offset: 0, totalRecords: numberofAssetTypes }
+            _metadata: { offset: 0, totalRecords: numberOfAssetTypes }
           })
         };
 
@@ -381,7 +382,7 @@ describe('Assets/Types', function() {
           records: assetTypesFromServerAfterFormat,
           _metadata: {
             offset: 0,
-            totalRecords: numberofAssetTypes
+            totalRecords: numberOfAssetTypes
           }
         });
       });
