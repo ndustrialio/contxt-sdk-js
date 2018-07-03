@@ -6,12 +6,15 @@ import * as iotUtils from './index';
  * @returns {Object} input
  * @returns {Object} input.meta Metadata about the output field data query
  * @returns {Number} input.meta.count Total number of field data records found
- * @returns {Boolean} input.meta.hasMore Indicates if there are more records
+ * @returns {Boolean} input.meta.has_more Indicates if there are more records
  *   to retrieve
- * @returns {String} [input.meta.nextPageUrl] URL that can be used to request
+ * @returns {String} [input.meta.next_page_url] URL that can be used to request
  *   the next page of results
- * @returns {Number} [input.meta.nextRecordTime] UNIX timestamp indicating a
+ * @returns {Number} [input.meta.next_record_time] UNIX timestamp indicating a
  *   `timeStart` that would return new values
+ * @param {Object[]} input.records
+ * @param {String} input.records[].event_time
+ * @param {String} input.records[].value
  *
  * @returns {Object} output
  * @returns {Object} output.meta Metadata about the request

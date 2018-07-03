@@ -4,7 +4,7 @@
  * @param {CostCenter} input
  *
  * @returns {Object} output
- * @returns {string} output.description
+ * @returns {string} [output.description]
  * @returns {string} output.name
  * @returns {string} output.organization_id UUID
  *

@@ -7,17 +7,17 @@
  * @param {String} input.feed_key
  * @param {String} input.field_descriptor
  * @param {String} input.field_human_name
- * @param {String} input.field_name
+ * @param {String} [input.field_name]
  * @param {Number} input.id
  * @param {Boolean} input.is_default
  * @param {Boolean} input.is_hidden
  * @param {Boolean} input.is_totalizer
  * @param {Boolean} input.is_windowed
- * @param {String} input.label
+ * @param {String} [input.label]
  * @param {Number} input.output_id
  * @param {Number} input.scalar
- * @param {String} input.status
- * @param {String} input.units
+ * @param {String} [input.status]
+ * @param {String} [input.units]
  * @param {String} input.value_type
  *
  * @returns {OutputField}

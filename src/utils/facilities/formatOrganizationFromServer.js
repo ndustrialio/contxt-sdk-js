@@ -6,7 +6,6 @@
  * @param {string} input.id UUID
  * @param {string} input.name
  * @param {string} input.updated_at
- * @param {string} input.organization_id UUID corresponding with an organization
  *
  * @returns {Object} output
  * @returns {string} output.createdAt ISO 8601 Extended Format date/time string
