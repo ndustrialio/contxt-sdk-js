@@ -17,7 +17,7 @@
   * AssetTypes#getAllByOrganizationId to get a list of all asset types for a specific organization
   * AssetTypes#update to update an asset type
 
-## [v0.0.16](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.15)
+## [v0.0.16](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.16) (2018-07-02)
 
 **Added**
 
