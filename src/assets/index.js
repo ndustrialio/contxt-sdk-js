@@ -9,10 +9,12 @@ import {
 /**
  * @typedef {Object} Asset
  * @property {string} assetTypeId UUID corresponding with the asset type
- * @property {string} description
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} [description]
  * @property {string} id UUID
  * @property {string} label
  * @property {string} organizationId UUID corresponding with the organization
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
 /**
@@ -43,7 +45,7 @@ class Assets {
    *
    * @param {Object} asset
    * @param {string} asset.assetTypeId UUID
-   * @param {string} asset.description
+   * @param {string} [asset.description]
    * @param {string} asset.label
    * @param {string} asset.organizationId UUID
    *
@@ -95,7 +97,7 @@ class Assets {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.assets.delete('0b51429f-91a0-48ba-b144-fd2db697000e')
+   * contxtSdk.assets.delete('0b51429f-91a0-48ba-b144-fd2db697000e');
    */
   delete(assetId) {
     if (!assetId) {
@@ -171,8 +173,8 @@ class Assets {
    * Method: GET
    *
    * @param {string} organizationId UUID corresponding with an organization
-   * @param {Object} options Object containing parameters to be called with the request
-   * @param {string} options.assetTypeId ID of the asset type to use for filtering
+   * @param {Object} [options] Object containing parameters to be called with the request
+   * @param {string} [options.assetTypeId] ID of the asset type to use for filtering
    *
    * @returns {Promise}
    * @fulfill {Asset[]} Information about all assets
@@ -180,7 +182,9 @@ class Assets {
    *
    * @example
    * contxtSdk.assets
-   *   .getAllByOrganizationId('53fba880-70b7-47a2-b4e3-ad9ecfb67d5c', { assetTypeId: '4f0e51c6-728b-4892-9863-6d002e61204d'  })
+   *   .getAllByOrganizationId('53fba880-70b7-47a2-b4e3-ad9ecfb67d5c', {
+   *     assetTypeId: '4f0e51c6-728b-4892-9863-6d002e61204d'
+   *   })
    *   .then((assets) => console.log(assets))
    *   .catch((err) => console.log(err));
    */

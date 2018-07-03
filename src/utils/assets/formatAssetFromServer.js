@@ -4,7 +4,7 @@
  * @param {Object} input
  * @param {string} input.asset_type_id UUID
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
- * @param {string} input.description
+ * @param {string} [input.description]
  * @param {string} input.id UUID
  * @param {string} input.label
  * @param {string} input.organization_id UUID

@@ -11,7 +11,7 @@ Module that provides access to, and the manipulation of, information about diffe
     * [.delete(assetId)](#Assets+delete) ⇒ <code>Promise</code>
     * [.get(assetId)](#Assets+get) ⇒ <code>Promise</code>
     * [.getAll()](#Assets+getAll) ⇒ <code>Promise</code>
-    * [.getAllByOrganizationId(organizationId, options)](#Assets+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId, [options])](#Assets+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.update(assetId, update)](#Assets+update)
 
 <a name="new_Assets_new"></a>
@@ -39,7 +39,7 @@ Method: POST
 | --- | --- | --- |
 | asset | <code>Object</code> |  |
 | asset.assetTypeId | <code>string</code> | UUID |
-| asset.description | <code>string</code> |  |
+| [asset.description] | <code>string</code> |  |
 | asset.label | <code>string</code> |  |
 | asset.organizationId | <code>string</code> | UUID |
 
@@ -73,7 +73,7 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.assets.delete('0b51429f-91a0-48ba-b144-fd2db697000e')
+contxtSdk.assets.delete('0b51429f-91a0-48ba-b144-fd2db697000e');
 ```
 <a name="Assets+get"></a>
 
@@ -118,7 +118,7 @@ contxtSdk.assets
 ```
 <a name="Assets+getAllByOrganizationId"></a>
 
-### contxtSdk.assets.getAllByOrganizationId(organizationId, options) ⇒ <code>Promise</code>
+### contxtSdk.assets.getAllByOrganizationId(organizationId, [options]) ⇒ <code>Promise</code>
 Get a list of all assets that belong to a particular organization
 
 API Endpoint: '/organizations/:organizationId/assets'
@@ -131,13 +131,15 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | organizationId | <code>string</code> | UUID corresponding with an organization |
-| options | <code>Object</code> | Object containing parameters to be called with the request |
-| options.assetTypeId | <code>string</code> | ID of the asset type to use for filtering |
+| [options] | <code>Object</code> | Object containing parameters to be called with the request |
+| [options.assetTypeId] | <code>string</code> | ID of the asset type to use for filtering |
 
 **Example**  
 ```js
 contxtSdk.assets
-  .getAllByOrganizationId('53fba880-70b7-47a2-b4e3-ad9ecfb67d5c', { assetTypeId: '4f0e51c6-728b-4892-9863-6d002e61204d'  })
+  .getAllByOrganizationId('53fba880-70b7-47a2-b4e3-ad9ecfb67d5c', {
+    assetTypeId: '4f0e51c6-728b-4892-9863-6d002e61204d'
+  })
   .then((assets) => console.log(assets))
   .catch((err) => console.log(err));
 ```

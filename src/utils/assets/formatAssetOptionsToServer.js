@@ -2,10 +2,10 @@
  * Normalizes the options provided when retrieving assets
  *
  * @param {Object} options
- * @param {string} options.assetTypeId ID of the asset type to use for filtering
+ * @param {string} [options.assetTypeId] ID of the asset type to use for filtering
  *
  * @returns {Object} output
- * @returns {string} output.asset_type_id
+ * @returns {string} [output.asset_type_id]
  *
  * @private
  */

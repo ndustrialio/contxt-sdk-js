@@ -6,9 +6,12 @@ import {
 
 /**
  * @typedef {Object} AssetType
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} description
  * @property {string} id UUID
  * @property {string} label
+ * @property {string} organizationId UUID corresponding with the organization
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
 /**
