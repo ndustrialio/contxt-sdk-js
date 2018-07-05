@@ -1,4 +1,5 @@
 import isPlainObject from 'lodash.isplainobject';
+import AssetAttributes from './assetAttributes';
 import AssetTypes from './assetTypes';
 import {
   formatAssetFromServer,
@@ -43,6 +44,7 @@ class Assets {
     this._request = request;
     this._sdk = sdk;
 
+    this.attributes = new AssetAttributes(sdk, request, baseUrl);
     this.types = new AssetTypes(sdk, request, baseUrl);
   }
 
