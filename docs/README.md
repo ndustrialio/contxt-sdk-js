@@ -64,6 +64,10 @@ which are obtained from Auth0.</p>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#AssetTypesFromServer">AssetTypesFromServer</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetsFromServer">AssetsFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#Audience">Audience</a> : <code>Object</code></dt>
 <dd><p>A single audience used for authenticating and communicating with an individual API.</p>
 </dd>

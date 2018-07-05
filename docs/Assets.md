@@ -107,7 +107,7 @@ API Endpoint: '/assets'
 Method: GET
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Fulfill**: <code>Asset[]</code> Information about all assets  
+**Fulfill**: [<code>AssetsFromServer</code>](./Typedefs.md#AssetsFromServer)  
 **Reject**: <code>Error</code>  
 **Example**  
 ```js
@@ -125,7 +125,7 @@ API Endpoint: '/organizations/:organizationId/assets'
 Method: GET
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Fulfill**: <code>Asset[]</code> Information about all assets  
+**Fulfill**: [<code>AssetsFromServer</code>](./Typedefs.md#AssetsFromServer)  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |

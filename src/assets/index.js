@@ -3,6 +3,7 @@ import AssetTypes from './assetTypes';
 import {
   formatAssetFromServer,
   formatAssetOptionsToServer,
+  formatAssetsDataFromServer,
   formatAssetToServer
 } from '../utils/assets';
 
@@ -15,6 +16,14 @@ import {
  * @property {string} label
  * @property {string} organizationId UUID corresponding with the organization
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} AssetsFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {Asset[]} records
  */
 
 /**
@@ -148,7 +157,7 @@ class Assets {
    * Method: GET
    *
    * @returns {Promise}
-   * @fulfill {Asset[]} Information about all assets
+   * @fulfill {AssetsFromServer}
    * @reject {Error}
    *
    * @example
@@ -158,12 +167,9 @@ class Assets {
    *   .catch(err) => console.log(err);
    */
   getAll() {
-    return this._request.get(`${this._baseUrl}/assets`).then((response) => {
-      return {
-        ...response,
-        records: response.records.map((asset) => formatAssetFromServer(asset))
-      };
-    });
+    return this._request
+      .get(`${this._baseUrl}/assets`)
+      .then((response) => formatAssetsDataFromServer(response));
   }
 
   /**
@@ -177,7 +183,7 @@ class Assets {
    * @param {string} [options.assetTypeId] ID of the asset type to use for filtering
    *
    * @returns {Promise}
-   * @fulfill {Asset[]} Information about all assets
+   * @fulfill {AssetsFromServer}
    * @reject {Error}
    *
    * @example
@@ -203,12 +209,7 @@ class Assets {
       .get(`${this._baseUrl}/organizations/${organizationId}/assets`, {
         params
       })
-      .then((response) => {
-        return {
-          ...response,
-          records: response.records.map((asset) => formatAssetFromServer(asset))
-        };
-      });
+      .then((response) => formatAssetsDataFromServer(response));
   }
 
   /**

@@ -250,12 +250,14 @@ describe('Assets', function() {
   describe('getAll', function() {
     let assetsFromServerAfterFormat;
     let assetsFromServerBeforeFormat;
-    let formatAssetFromServer;
+    let formatAssetsDataFromServer;
     let numberOfAssets;
+    let offset;
     let promise;
     let request;
 
     beforeEach(function() {
+      offset = faker.random.number({ min: 0, max: 100 });
       numberOfAssets = faker.random.number({ min: 1, max: 10 });
       assetsFromServerAfterFormat = fixture.buildList('asset', numberOfAssets);
       assetsFromServerBeforeFormat = fixture.buildList(
@@ -265,16 +267,14 @@ describe('Assets', function() {
         { fromServer: true }
       );
 
-      formatAssetFromServer = this.sandbox
-        .stub(assetsUtils, 'formatAssetFromServer')
-        .callsFake((asset) => {
-          const index = assetsFromServerBeforeFormat.findIndex(
-            (assetBeforeFormat) => {
-              return assetBeforeFormat.id === asset.id;
-            }
-          );
-
-          return assetsFromServerAfterFormat[index];
+      formatAssetsDataFromServer = this.sandbox
+        .stub(assetsUtils, 'formatAssetsDataFromServer')
+        .returns({
+          _metadata: {
+            offset,
+            totalRecords: assetsFromServerBeforeFormat.length
+          },
+          records: assetsFromServerAfterFormat
         });
 
       request = {
@@ -295,15 +295,9 @@ describe('Assets', function() {
       expect(request.get).to.be.calledWith(`${expectedHost}/assets`);
     });
 
-    it('formats the asset object', function() {
+    it('formats the asset data', function() {
       return promise.then(() => {
-        expect(formatAssetFromServer).to.have.callCount(
-          assetsFromServerBeforeFormat.length
-        );
-
-        assetsFromServerBeforeFormat.forEach((asset) => {
-          expect(formatAssetFromServer).to.be.deep.calledWith(asset);
-        });
+        expect(formatAssetsDataFromServer).to.be.calledOnce;
       });
     });
 
@@ -311,7 +305,7 @@ describe('Assets', function() {
       return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal({
         records: assetsFromServerAfterFormat,
         _metadata: {
-          offset: 0,
+          offset,
           totalRecords: numberOfAssets
         }
       });
@@ -324,14 +318,16 @@ describe('Assets', function() {
       let assetsFromServerBeforeFormat;
       let expectedOptions;
       let expectedOrganizationId;
-      let formatAssetFromServer;
+      let formatAssetsDataFromServer;
       let formatAssetOptionsToServer;
       let initialOptions;
       let numberOfAssets;
+      let offset;
       let promise;
       let request;
 
       beforeEach(function() {
+        offset = faker.random.number({ min: 0, max: 100 });
         expectedOrganizationId = fixture.build('organization').id;
         numberOfAssets = faker.random.number({ min: 1, max: 10 });
 
@@ -365,16 +361,15 @@ describe('Assets', function() {
         formatAssetOptionsToServer = this.sandbox
           .stub(assetsUtils, 'formatAssetOptionsToServer')
           .returns(expectedOptions);
-        formatAssetFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetFromServer')
-          .callsFake((asset) => {
-            const index = assetsFromServerBeforeFormat.findIndex(
-              (assetBeforeFormat) => {
-                return assetBeforeFormat.id === asset.id;
-              }
-            );
 
-            return assetsFromServerAfterFormat[index];
+        formatAssetsDataFromServer = this.sandbox
+          .stub(assetsUtils, 'formatAssetsDataFromServer')
+          .returns({
+            _metadata: {
+              offset,
+              totalRecords: assetsFromServerBeforeFormat.length
+            },
+            records: assetsFromServerAfterFormat
           });
 
         request = {
@@ -405,15 +400,9 @@ describe('Assets', function() {
         );
       });
 
-      it('formats the asset object', function() {
+      it('formats the asset data', function() {
         return promise.then(() => {
-          expect(formatAssetFromServer).to.have.callCount(
-            assetsFromServerBeforeFormat.length
-          );
-
-          assetsFromServerBeforeFormat.forEach((asset) => {
-            expect(formatAssetFromServer).to.be.deep.calledWith(asset);
-          });
+          expect(formatAssetsDataFromServer).to.be.calledOnce;
         });
       });
 
@@ -421,7 +410,7 @@ describe('Assets', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal({
           records: assetsFromServerAfterFormat,
           _metadata: {
-            offset: 0,
+            offset,
             totalRecords: numberOfAssets
           }
         });

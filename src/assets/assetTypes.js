@@ -1,6 +1,7 @@
 import isPlainObject from 'lodash.isplainobject';
 import {
   formatAssetTypeFromServer,
+  formatAssetTypesDataFromServer,
   formatAssetTypeToServer
 } from '../utils/assets';
 
@@ -12,6 +13,14 @@ import {
  * @property {string} label
  * @property {string} organizationId UUID corresponding with the organization
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} AssetTypesFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {AssetType[]} records
  */
 
 /**
@@ -140,7 +149,7 @@ class AssetTypes {
    * Method: GET
    *
    * @returns {Promise}
-   * @fulfill {AssetType[]} Information about all asset types
+   * @fulfill {AssetTypesFromServer}
    * @reject {Error}
    *
    * @example
@@ -152,14 +161,7 @@ class AssetTypes {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/assets/types`)
-      .then((response) => {
-        return {
-          ...response,
-          records: response.records.map((asset) =>
-            formatAssetTypeFromServer(asset)
-          )
-        };
-      });
+      .then((response) => formatAssetTypesDataFromServer(response));
   }
 
   /**
@@ -171,7 +173,7 @@ class AssetTypes {
    * @param {string} organizationId UUID corresponding with an organization
    *
    * @returns {Promise}
-   * @fulfill {AssetType[]} Information about all asset types
+   * @fulfill {AssetTypesFromServer}
    * @reject {Error}
    *
    * @example
@@ -191,14 +193,7 @@ class AssetTypes {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/assets/types`)
-      .then((response) => {
-        return {
-          ...response,
-          records: response.records.map((assetType) =>
-            formatAssetTypeFromServer(assetType)
-          )
-        };
-      });
+      .then((response) => formatAssetTypesDataFromServer(response));
   }
 
   /**
