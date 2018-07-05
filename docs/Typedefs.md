@@ -14,6 +14,41 @@
 | organizationId | <code>string</code> | UUID corresponding with the organization |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="AssetAttribute"></a>
+
+## AssetAttribute : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| assetTypeId | <code>string</code> | UUID corresponding with the asset type |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| isRequired | <code>boolean</code> |  |
+| label | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID corresponding with the organization |
+| [units] | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="AssetAttributeValue"></a>
+
+## AssetAttributeValue : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| assetId | <code>string</code> | UUID corresponding to the asset |
+| assetAttributeId | <code>string</code> | UUID corresponding to the asset attribute |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| effectiveDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> | UUID |
+| [notes] | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| value | <code>string</code> |  |
+
 <a name="AssetType"></a>
 
 ## AssetType : <code>Object</code>
