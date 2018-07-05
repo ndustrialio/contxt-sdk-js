@@ -1,4 +1,23 @@
-## [v0.0.16](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.15)
+## [v0.0.17](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.17) (2018-07-03)
+
+**Added**
+
+* Methods around the display and manipulation of Assets. They are namespaced under assets (i.e. `assets.methodName()`) and include:
+  * Assets#create to add an asset
+  * Assets#delete to delete an asset
+  * Assets#get to get an asset
+  * Assets#getAll to get a list of all assets
+  * Assets#getAllByOrganizationId to get a list of all assets for a specific organization
+  * Assets#update to update an asset
+* Methods around the display and manipulation of Asset Types. They are namespaced under assets (i.e. `assets.types.methodName()`) and include:
+  * AssetTypes#create to add an asset type
+  * AssetTypes#delete to delete an asset type
+  * AssetTypes#get to get an asset type
+  * AssetTypes#getAll to get a list of all asset types
+  * AssetTypes#getAllByOrganizationId to get a list of all asset types for a specific organization
+  * AssetTypes#update to update an asset type
+
+## [v0.0.16](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.16) (2018-07-02)
 
 **Added**
 

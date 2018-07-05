@@ -1,6 +1,12 @@
 ## Classes
 
 <dl>
+<dt><a href="./AssetTypes.md">AssetTypes</a></dt>
+<dd><p>Module that provides access to, and the manipulation of, information about different asset types</p>
+</dd>
+<dt><a href="./Assets.md">Assets</a></dt>
+<dd><p>Module that provides access to, and the manipulation of, information about different assets</p>
+</dd>
 <dt><a href="./Auth0WebAuth.md">Auth0WebAuth</a> : <code><a href="./Typedefs.md#SessionType">SessionType</a></code></dt>
 <dd><p>A SessionType that allows the user to initially authenticate with Auth0 and then gain a valid JWT
 from the Contxt Auth service. This would only be used in web applications. You will need to
@@ -54,6 +60,14 @@ which are obtained from Auth0.</p>
 ## Typedefs
 
 <dl>
+<dt><a href="./Typedefs.md#Asset">Asset</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetTypesFromServer">AssetTypesFromServer</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetsFromServer">AssetsFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#Audience">Audience</a> : <code>Object</code></dt>
 <dd><p>A single audience used for authenticating and communicating with an individual API.</p>
 </dd>

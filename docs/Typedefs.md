@@ -1,3 +1,60 @@
+<a name="Asset"></a>
+
+## Asset : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| assetTypeId | <code>string</code> | UUID corresponding with the asset type |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [description] | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| label | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID corresponding with the organization |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="AssetType"></a>
+
+## AssetType : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| label | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID corresponding with the organization |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="AssetTypesFromServer"></a>
+
+## AssetTypesFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;AssetType&gt;</code>](#AssetType) |  |
+
+<a name="AssetsFromServer"></a>
+
+## AssetsFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;Asset&gt;</code>](#Asset) |  |
+
 <a name="Audience"></a>
 
 ## Audience : <code>Object</code>

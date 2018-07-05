@@ -1,3 +1,4 @@
+import Assets from './assets';
 import Config from './config';
 import Facilities from './facilities';
 import Iot from './iot';
@@ -67,6 +68,7 @@ class ContxtSdk {
   constructor({ config = {}, externalModules = {}, sessionType }) {
     this.config = new Config(config, externalModules);
 
+    this.assets = new Assets(this, this._createRequest('facilities'));
     this.auth = this._createAuthSession(sessionType);
     this.facilities = new Facilities(this, this._createRequest('facilities'));
     this.iot = new Iot(this, this._createRequest('iot'));
