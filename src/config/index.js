@@ -35,8 +35,11 @@ import defaultConfigs from './defaults';
  *
  * @typedef {Object} ExternalModule
  * @param {string} config.clientId Client Id provided by Auth0 for the environment you are
- *   trying to communicate with
- * @param {string} config.host Hostname for the API that corresponds with the clientId provided
+ *   trying to communicate with. Can be a `null` value if the value is not needed. Some SessionType
+ *   adapters (currently, just the MachineAuth adapter) require a value other than `null` if the
+ *   built-in `request` module is used since they acquire contxt tokens based on a single clientId.
+ * @param {string} config.host Hostname for the API that corresponds with the clientId provided.
+ *   Can be a `null` value if the value is not needed.
  * @param {function} config.module The module that will be decorated into the SDK
  */
 
@@ -178,15 +181,20 @@ class Config {
    */
   _getExternalAudiences({ externalModules }) {
     return Object.keys(externalModules).reduce((memo, key) => {
-      if (!(externalModules[key].clientId && externalModules[key].host)) {
+      const clientId = externalModules[key].clientId;
+      const host = externalModules[key].host;
+      const hasClientId = !!clientId || clientId === null;
+      const hasHost = !!host || host === null;
+
+      if (!(hasClientId && hasHost)) {
         throw new Error(
           'External modules must contain `clientId` and `host` properties'
         );
       }
 
       memo[key] = {
-        clientId: externalModules[key].clientId,
-        host: externalModules[key].host
+        clientId,
+        host
       };
 
       return memo;

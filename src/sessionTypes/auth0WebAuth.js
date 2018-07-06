@@ -261,6 +261,7 @@ class Auth0WebAuth {
             )
             .filter(
               (clientId) =>
+                clientId &&
                 clientId !== this._sdk.config.audiences.contxtAuth.clientId
             ),
           nonce: 'nonce'

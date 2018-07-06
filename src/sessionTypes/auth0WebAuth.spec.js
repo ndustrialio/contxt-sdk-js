@@ -598,39 +598,73 @@ describe('sessionTypes/Auth0WebAuth', function() {
   });
 
   describe('_getApiToken', function() {
-    let accessToken;
-    let expectedApiToken;
-    let post;
-    let promise;
+    context('when handing audiences with a client id', function() {
+      let accessToken;
+      let expectedApiToken;
+      let post;
+      let promise;
 
-    beforeEach(function() {
-      accessToken = faker.internet.password();
-      expectedApiToken = faker.internet.password();
+      beforeEach(function() {
+        accessToken = faker.internet.password();
+        expectedApiToken = faker.internet.password();
 
-      post = this.sandbox.stub(axios, 'post').callsFake(() => {
-        return Promise.resolve({ data: { access_token: expectedApiToken } });
+        post = this.sandbox.stub(axios, 'post').callsFake(() => {
+          return Promise.resolve({ data: { access_token: expectedApiToken } });
+        });
+        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        promise = auth0WebAuth._getApiToken(accessToken);
       });
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
 
-      const auth0WebAuth = new Auth0WebAuth(sdk);
-      promise = auth0WebAuth._getApiToken(accessToken);
+      it('POSTs to the contxt api to get a token', function() {
+        expect(post).to.be.calledWith(
+          `${sdk.config.audiences.contxtAuth.host}/v1/token`,
+          {
+            audiences: [sdk.config.audiences.facilities.clientId],
+            nonce: 'nonce'
+          },
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+      });
+
+      it('returns a promise that fulfills with the api access token', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedApiToken
+        );
+      });
     });
 
-    it('POSTs to the contxt api to get a token', function() {
-      expect(post).to.be.calledWith(
-        `${sdk.config.audiences.contxtAuth.host}/v1/token`,
-        {
-          audiences: [sdk.config.audiences.facilities.clientId],
-          nonce: 'nonce'
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-    });
+    context('when handing a null audience', function() {
+      let accessToken;
+      let post;
 
-    it('returns a promise that fulfills with the api access token', function() {
-      return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-        expectedApiToken
-      );
+      beforeEach(function() {
+        accessToken = faker.internet.password();
+        post = this.sandbox.stub(axios, 'post').resolves({ data: {} });
+        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
+
+        const auth0WebAuth = new Auth0WebAuth({
+          ...sdk,
+          config: {
+            ...sdk.config,
+            audiences: {
+              ...sdk.config.audiences,
+              [faker.hacker.noun()]: {
+                clientId: null,
+                host: faker.internet.url(),
+                module: function() {}
+              }
+            }
+          }
+        });
+        auth0WebAuth._getApiToken(accessToken);
+      });
+
+      it('does not include null values when getting a token from the contxt api', function() {
+        const { audiences } = post.firstCall.args[1];
+        expect(audiences).to.not.include(null);
+      });
     });
   });
 

@@ -337,6 +337,41 @@ describe('Config', function() {
     );
 
     context(
+      'when external modules are provided with a null clientId and host',
+      function() {
+        let audiences;
+        let expectedAudiences;
+
+        beforeEach(function() {
+          const externalModules = {};
+          expectedAudiences = {};
+
+          times(faker.random.number({ min: 1, max: 10 }))
+            .map(() => faker.hacker.adjective())
+            .forEach((moduleName) => {
+              const audience = fixture.build('audience', {
+                clientId: null,
+                host: null
+              });
+              expectedAudiences[moduleName] = audience;
+              externalModules[moduleName] = {
+                ...audience,
+                module: function() {}
+              };
+            });
+
+          audiences = Config.prototype._getExternalAudiences({
+            externalModules
+          });
+        });
+
+        it('provides an object with the null hosts and clientIds of the external modules', function() {
+          expect(audiences).to.deep.equal(expectedAudiences);
+        });
+      }
+    );
+
+    context(
       'when external modules are provided by are missing a clientId or host',
       function() {
         it('throws an error when the clientId is not provided', function() {
