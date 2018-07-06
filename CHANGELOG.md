@@ -1,3 +1,9 @@
+## [v0.0.18](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.18) (2018-07-06)
+
+**Changed**
+
+* External Modules can now have a `clientId` or `host` set to `null` if the values are not needed for the module. (_NOTE:_ Some SessionType adapters, like the MachineAuth adapter, require a `clientId` if the built-in `request` module is used since contxt auth tokens for those adapters are generated on a per-clientId basis).
+
 ## [v0.0.17](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.17) (2018-07-03)
 
 **Added**
