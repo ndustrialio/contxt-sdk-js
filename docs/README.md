@@ -1,6 +1,10 @@
 ## Classes
 
 <dl>
+<dt><a href="./AssetAttributes.md">AssetAttributes</a></dt>
+<dd><p>Module that provides access to, and the manipulation of, information about
+different asset attributes and their values</p>
+</dd>
 <dt><a href="./AssetTypes.md">AssetTypes</a></dt>
 <dd><p>Module that provides access to, and the manipulation of, information about different asset types</p>
 </dd>
@@ -61,6 +65,12 @@ which are obtained from Auth0.</p>
 
 <dl>
 <dt><a href="./Typedefs.md#Asset">Asset</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetAttribute">AssetAttribute</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetAttributeData">AssetAttributeData</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetAttributeValue">AssetAttributeValue</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
 <dd></dd>
