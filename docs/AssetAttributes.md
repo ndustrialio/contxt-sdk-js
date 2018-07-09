@@ -13,7 +13,7 @@ different asset attributes and their values
     * [.get(assetAttributeId)](#AssetAttributes+get) ⇒ <code>Promise</code>
     * [.getAll(assetTypeId)](#AssetAttributes+getAll) ⇒ <code>Promise</code>
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
-    * [.createValue()](#AssetAttributes+createValue)
+    * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue()](#AssetAttributes+deleteValue)
     * [.getValue()](#AssetAttributes+getValue)
     * [.getAllValues()](#AssetAttributes+getAllValues)
@@ -163,10 +163,38 @@ contxtSdk.assets.attributes
 ```
 <a name="AssetAttributes+createValue"></a>
 
-### contxtSdk.assets.attributes.createValue()
+### contxtSdk.assets.attributes.createValue(assetId, assetAttributeValue) ⇒ <code>Promise</code>
 Creates a new asset attribute value
 
+API Endpoint: '/assets/:assetId/values'
+Method: POST
+
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
+**Fulfill**: [<code>AssetAttributeValue</code>](./Typedefs.md#AssetAttributeValue)  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assetId | <code>string</code> | The ID of the asset type (formatted as a UUID) |
+| assetAttributeValue | <code>Object</code> |  |
+| assetAttributeValue.assetAttributeId | <code>string</code> | UUID corresponding to the asset attribute |
+| assetAttributeValue.assetId | <code>string</code> | UUID corresponding to the asset |
+| assetAttributeValue.effectiveDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+| assetAttributeValue.notes | <code>string</code> |  |
+| assetAttributeValue.value | <code>string</code> |  |
+
+**Example**  
+```js
+contxtSdk.assets.attributes
+  .createValue('2140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+    assetAttributeId: 'cca11baa-cf7d-44c0-9d0a-6ad73d5f30cb',
+    effectiveDate: '2018-07-09T14:36:36.004Z',
+    notes: 'Iure delectus non sunt a voluptates pariatur fuga.',
+    value: '2206'
+  })
+  .then((assetAttributeValue) => console.log(assetAttributeValue))
+  .catch((err) => console.log(err));
+```
 <a name="AssetAttributes+deleteValue"></a>
 
 ### contxtSdk.assets.attributes.deleteValue()

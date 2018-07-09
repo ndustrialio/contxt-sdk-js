@@ -486,7 +486,90 @@ describe('Assets/Attributes', function() {
     );
   });
 
-  describe('createValue', function() {});
+  describe('createValue', function() {
+    let assetAttributeValueFromServerAfterFormat;
+    let assetAttributeValueFromServerBeforeFormat;
+    let assetAttributeValueToServerAfterFormat;
+    let assetAttributeValueToServerBeforeFormat;
+    let assetId;
+    let formatAssetAttributeValueFromServer;
+    let formatAssetAttributeValueToServer;
+    let promise;
+    let request;
+
+    beforeEach(function() {
+      assetAttributeValueToServerBeforeFormat = fixture.build(
+        'assetAttributeValue'
+      );
+      assetAttributeValueToServerAfterFormat = fixture.build(
+        'assetAttributeValue',
+        assetAttributeValueToServerBeforeFormat,
+        {
+          fromServer: true
+        }
+      );
+      assetAttributeValueFromServerAfterFormat = fixture.build(
+        'assetAttributeValue'
+      );
+      assetAttributeValueFromServerBeforeFormat = fixture.build(
+        'assetAttributeValue',
+        assetAttributeValueFromServerAfterFormat,
+        { fromServer: true }
+      );
+      assetId = fixture.build('asset').id;
+
+      formatAssetAttributeValueFromServer = this.sandbox
+        .stub(assetsUtils, 'formatAssetAttributeValueFromServer')
+        .returns(assetAttributeValueFromServerAfterFormat);
+      formatAssetAttributeValueToServer = this.sandbox
+        .stub(assetsUtils, 'formatAssetAttributeValueToServer')
+        .returns(assetAttributeValueToServerAfterFormat);
+      request = {
+        ...baseRequest,
+        post: this.sandbox
+          .stub()
+          .resolves(assetAttributeValueFromServerBeforeFormat)
+      };
+
+      const assetAttributes = new AssetAttributes(
+        baseSdk,
+        request,
+        expectedHost
+      );
+
+      promise = assetAttributes.createValue(
+        assetId,
+        assetAttributeValueToServerBeforeFormat
+      );
+    });
+
+    it('formats the submitted asset attribute value object to send to the server ', function() {
+      expect(formatAssetAttributeValueToServer).to.be.calledWith(
+        assetAttributeValueToServerBeforeFormat
+      );
+    });
+
+    it('creates a new asset attribute value', function() {
+      expect(request.post).to.be.calledWith(
+        `${expectedHost}/assets/${assetId}/values`,
+        assetAttributeValueToServerAfterFormat
+      );
+    });
+
+    it('formats the returned asset attribute object', function() {
+      return promise.then(() => {
+        expect(formatAssetAttributeValueFromServer).to.be.calledWith(
+          assetAttributeValueFromServerBeforeFormat
+        );
+      });
+    });
+
+    it('returns a fulfilled promise with the new asset attribute value information', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        assetAttributeValueFromServerAfterFormat
+      );
+    });
+  });
 
   describe('deleteValue', function() {});
 

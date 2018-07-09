@@ -2,7 +2,9 @@ import isPlainObject from 'lodash.isplainobject';
 import {
   formatAssetAttributeDataFromServer,
   formatAssetAttributeFromServer,
-  formatAssetAttributeToServer
+  formatAssetAttributeToServer,
+  formatAssetAttributeValueFromServer,
+  formatAssetAttributeValueToServer
 } from '../utils/assets';
 
 /**
@@ -63,7 +65,6 @@ class AssetAttributes {
    * Method: POST
    *
    * @param {string} assetTypeId The ID of the asset type (formatted as a UUID)
-   *
    * @param {Object} assetAttribute
    * @param {string} assetAttribute.description
    * @param {boolean} [assetAttribute.isRequired]
@@ -269,8 +270,42 @@ class AssetAttributes {
 
   /**
    * Creates a new asset attribute value
+   *
+   * API Endpoint: '/assets/:assetId/values'
+   * Method: POST
+   *
+   * @param {string} assetId The ID of the asset type (formatted as a UUID)
+   * @param {Object} assetAttributeValue
+   * @param {string} assetAttributeValue.assetAttributeId UUID corresponding to the asset attribute
+   * @param {string} assetAttributeValue.assetId UUID corresponding to the asset
+   * @param {string} assetAttributeValue.effectiveDate ISO 8601 Extended Format date/time string
+   * @param {string} assetAttributeValue.notes
+   * @param {string} assetAttributeValue.value
+   *
+   * @returns {Promise}
+   * @fulfill {AssetAttributeValue}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .createValue('2140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+   *     assetAttributeId: 'cca11baa-cf7d-44c0-9d0a-6ad73d5f30cb',
+   *     effectiveDate: '2018-07-09T14:36:36.004Z',
+   *     notes: 'Iure delectus non sunt a voluptates pariatur fuga.',
+   *     value: '2206'
+   *   })
+   *   .then((assetAttributeValue) => console.log(assetAttributeValue))
+   *   .catch((err) => console.log(err));
    */
-  createValue() {}
+  createValue(assetId, assetAttributeValue = {}) {
+    const data = formatAssetAttributeValueToServer(assetAttributeValue);
+
+    return this._request
+      .post(`${this._baseUrl}/assets/${assetId}/values`, data)
+      .then((assetAttributeValue) =>
+        formatAssetAttributeValueFromServer(assetAttributeValue)
+      );
+  }
 
   /**
    * Deletes an asset attribute value
