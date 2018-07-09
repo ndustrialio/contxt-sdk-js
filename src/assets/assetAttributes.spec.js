@@ -188,7 +188,7 @@ describe('Assets/Attributes', function() {
         promise = assetAttributes.delete(expectedAssetAttributeId);
       });
 
-      it('requres to delete the asset attribute', function() {
+      it('requests to delete the asset attribute', function() {
         expect(baseRequest.delete).to.be.calledWith(
           `${expectedHost}/assets/attributes/${expectedAssetAttributeId}`
         );
@@ -382,6 +382,7 @@ describe('Assets/Attributes', function() {
 
         promise = assetAttributes.getAll();
       });
+
       it('throws an error when the asset type ID is missing', function() {
         expect(promise).to.be.rejectedWith(
           'An asset type ID is required to get a list of all asset attributes.'
