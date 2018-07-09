@@ -177,10 +177,12 @@ class AssetAttributes {
   }
 
   /**
-   * Gets a list of asset attributes
+   * Gets a list of asset attributes for a specific asset type
    *
    * API Endpoint: '/assets/types/:assetTypeId/attributes'
    * Method: GET
+   *
+   * @param {string} assetTypeId The ID of the asset type (formatted as a UUID)
    *
    * @returns {Promise}
    * @fulfill {AssetAttributeData}

@@ -11,14 +11,12 @@ different asset attributes and their values
     * [.create(assetTypeId, assetAttribute)](#AssetAttributes+create) ⇒ <code>Promise</code>
     * [.delete(assetAttributeId)](#AssetAttributes+delete) ⇒ <code>Promise</code>
     * [.get(assetAttributeId)](#AssetAttributes+get) ⇒ <code>Promise</code>
-    * [.getAll()](#AssetAttributes+getAll)
-    * [.getAllByOrganizationId()](#AssetAttributes+getAllByOrganizationId)
-    * [.update()](#AssetAttributes+update)
+    * [.getAll(assetTypeId)](#AssetAttributes+getAll) ⇒ <code>Promise</code>
+    * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue()](#AssetAttributes+createValue)
     * [.deleteValue()](#AssetAttributes+deleteValue)
     * [.getValue()](#AssetAttributes+getValue)
     * [.getAllValues()](#AssetAttributes+getAllValues)
-    * [.getAllValuesByOrganizationId()](#AssetAttributes+getAllValuesByOrganizationId)
     * [.updateValue()](#AssetAttributes+updateValue)
 
 <a name="new_AssetAttributes_new"></a>
@@ -111,22 +109,58 @@ contxtSdk.assets.attributes
 ```
 <a name="AssetAttributes+getAll"></a>
 
-### contxtSdk.assets.attributes.getAll()
-Gets a list of asset attributes
+### contxtSdk.assets.attributes.getAll(assetTypeId) ⇒ <code>Promise</code>
+Gets a list of asset attributes for a specific asset type
+
+API Endpoint: '/assets/types/:assetTypeId/attributes'
+Method: GET
 
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
-<a name="AssetAttributes+getAllByOrganizationId"></a>
+**Fulfill**: [<code>AssetAttributeData</code>](./Typedefs.md#AssetAttributeData)  
+**Reject**: <code>Error</code>  
 
-### contxtSdk.assets.attributes.getAllByOrganizationId()
-Gets a list of all asset attributes that belong to a particular organization
+| Param | Type | Description |
+| --- | --- | --- |
+| assetTypeId | <code>string</code> | The ID of the asset type (formatted as a UUID) |
 
-**Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
+**Example**  
+```js
+contxtSdk.assets.attributes
+  .getAll('4f0e51c6-728b-4892-9863-6d002e61204d')
+  .then((assetAttributesData) => console.log(assetAttributesData))
+  .catch((err) => console.log(err));
+```
 <a name="AssetAttributes+update"></a>
 
-### contxtSdk.assets.attributes.update()
+### contxtSdk.assets.attributes.update(assetAttributeId, update) ⇒ <code>Promise</code>
 Updates an asset attribute
 
+API Endpoint: '/assets/attributes/:assetAttributeId'
+Method: PUT
+
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assetAttributeId | <code>string</code> | The ID of the asset attribute to update (formatted as a UUID) |
+| update | <code>Object</code> | An object containing the updated data for the asset attribute |
+| [update.description] | <code>string</code> |  |
+| [update.isRequired] | <code>boolean</code> |  |
+| [update.label] | <code>string</code> |  |
+| [update.units] | <code>string</code> |  |
+
+**Example**  
+```js
+contxtSdk.assets.attributes
+  .update('c7f927c3-11a7-4024-9269-e1231baeb765', {
+    description: 'Temperature of a facility',
+    isRequired: false,
+    label: 'Temperature',
+    units: 'Celsius'
+  });
+```
 <a name="AssetAttributes+createValue"></a>
 
 ### contxtSdk.assets.attributes.createValue()
@@ -149,12 +183,6 @@ Gets an asset attribute value
 
 ### contxtSdk.assets.attributes.getAllValues()
 Gets a list of all asset attribute values
-
-**Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
-<a name="AssetAttributes+getAllValuesByOrganizationId"></a>
-
-### contxtSdk.assets.attributes.getAllValuesByOrganizationId()
-Gets a list of all asset attribute values that belong to a particular organization
 
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
 <a name="AssetAttributes+updateValue"></a>

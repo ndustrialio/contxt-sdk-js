@@ -68,6 +68,8 @@ which are obtained from Auth0.</p>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetAttribute">AssetAttribute</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#AssetAttributeData">AssetAttributeData</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#AssetAttributeValue">AssetAttributeValue</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
