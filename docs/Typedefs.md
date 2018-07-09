@@ -32,6 +32,19 @@
 | [units] | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="AssetAttributeData"></a>
+
+## AssetAttributeData : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset attributes found |
+| records | [<code>Array.&lt;AssetAttribute&gt;</code>](#AssetAttribute) |  |
+
 <a name="AssetAttributeValue"></a>
 
 ## AssetAttributeValue : <code>Object</code>
