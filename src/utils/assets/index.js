@@ -1,6 +1,8 @@
 import formatAssetAttributeDataFromServer from './formatAssetAttributeDataFromServer';
 import formatAssetAttributeFromServer from './formatAssetAttributeFromServer';
 import formatAssetAttributeToServer from './formatAssetAttributeToServer';
+import formatAssetAttributeValueFromServer from './formatAssetAttributeValueFromServer';
+import formatAssetAttributeValueToServer from './formatAssetAttributeValueToServer';
 import formatAssetFromServer from './formatAssetFromServer';
 import formatAssetOptionsToServer from './formatAssetOptionsToServer';
 import formatAssetsDataFromServer from './formatAssetsDataFromServer';
@@ -13,6 +15,8 @@ export {
   formatAssetAttributeDataFromServer,
   formatAssetAttributeFromServer,
   formatAssetAttributeToServer,
+  formatAssetAttributeValueFromServer,
+  formatAssetAttributeValueToServer,
   formatAssetFromServer,
   formatAssetOptionsToServer,
   formatAssetsDataFromServer,
