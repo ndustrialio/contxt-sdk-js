@@ -15,7 +15,6 @@ different asset attributes and their values
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
-    * [.getValue()](#AssetAttributes+getValue)
     * [.getAllValues()](#AssetAttributes+getAllValues)
     * [.updateValue()](#AssetAttributes+updateValue)
 
@@ -216,12 +215,6 @@ contxtSdk.assets.attributes.deleteValue(
   'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
 );
 ```
-<a name="AssetAttributes+getValue"></a>
-
-### contxtSdk.assets.attributes.getValue()
-Gets an asset attribute value
-
-**Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
 <a name="AssetAttributes+getAllValues"></a>
 
 ### contxtSdk.assets.attributes.getAllValues()

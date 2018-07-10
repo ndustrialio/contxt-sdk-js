@@ -360,11 +360,6 @@ class AssetAttributes {
   }
 
   /**
-   * Gets an asset attribute value
-   */
-  getValue() {}
-
-  /**
    * Gets a list of all asset attribute values
    */
   getAllValues() {}

@@ -655,8 +655,6 @@ describe('Assets/Attributes', function() {
     });
   });
 
-  describe('getValue', function() {});
-
   describe('getAllValues', function() {});
 
   describe('updateValue', function() {});
