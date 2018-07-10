@@ -657,5 +657,113 @@ describe('Assets/Attributes', function() {
 
   describe('getAllValues', function() {});
 
-  describe('updateValue', function() {});
+  describe('updateValue', function() {
+    context('when all required information is supplied', function() {
+      let assetAttributeValueToServerAfterFormat;
+      let assetAttributeValueToServerBeforeFormat;
+      let formatAssetAttributeValueToServer;
+      let promise;
+
+      beforeEach(function() {
+        assetAttributeValueToServerBeforeFormat = fixture.build(
+          'assetAttributeValue'
+        );
+        assetAttributeValueToServerAfterFormat = fixture.build(
+          'assetAttributeValue',
+          assetAttributeValueToServerBeforeFormat,
+          { fromServer: true }
+        );
+
+        formatAssetAttributeValueToServer = this.sandbox
+          .stub(assetsUtils, 'formatAssetAttributeValueToServer')
+          .returns(assetAttributeValueToServerAfterFormat);
+
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        promise = assetAttributes.updateValue(
+          assetAttributeValueToServerBeforeFormat.id,
+          assetAttributeValueToServerBeforeFormat
+        );
+      });
+
+      it('formats the data into the right format', function() {
+        expect(formatAssetAttributeValueToServer).to.calledWith(
+          assetAttributeValueToServerBeforeFormat
+        );
+      });
+
+      it('updates the asset attribute value', function() {
+        expect(baseRequest.put).to.be.calledWith(
+          `${expectedHost}/assets/attributes/values/${
+            assetAttributeValueToServerAfterFormat.id
+          }`,
+          assetAttributeValueToServerAfterFormat
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context(
+      'when there is missing or malformed required information',
+      function() {
+        let assetAttributes;
+
+        beforeEach(function() {
+          assetAttributes = new AssetAttributes(
+            baseSdk,
+            baseRequest,
+            expectedHost
+          );
+        });
+
+        it('throws an error when there is not provided asset attribute value ID', function() {
+          const assetAttributeValueUpdate = fixture.build(
+            'assetAttributeValue'
+          );
+          const promise = assetAttributes.updateValue(
+            null,
+            assetAttributeValueUpdate
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            'An asset attribute value ID is required to update an asset attribute value.'
+          );
+        });
+
+        it('throws an error when there is no update provided', function() {
+          const assetAttributeValueUpdate = fixture.build(
+            'assetAttributeValue'
+          );
+          const promise = assetAttributes.updateValue(
+            assetAttributeValueUpdate.id
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            'An update is required to update an asset attribute value.'
+          );
+        });
+
+        it('throws an error when the update is not a well-formed object', function() {
+          const assetAttributeValueUpdate = fixture.build(
+            'assetAttributeValue'
+          );
+          const promise = assetAttributes.updateValue(
+            assetAttributeValueUpdate.id,
+            [assetAttributeValueUpdate]
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            'The asset attribute value update must be a well-formed object with the data you wish to update.'
+          );
+        });
+      }
+    );
+  });
 });

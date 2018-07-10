@@ -366,8 +366,59 @@ class AssetAttributes {
 
   /**
    * Updates an asset attribute value
+   *
+   * API Endpoint: '/assets/attributes/values/:assetAttributeValueId'
+   * Method: PUT
+   *
+   * @param {string} assetAttributeId The ID of the asset attribute to update (formatted as a UUID)
+   * @param {Object} update An object containing the updated data for the asset attribute value
+   * @param {string} [update.effectiveDate] ISO 8601 Extended Format date/time string
+   * @param {string} [update.notes]
+   * @param {string} [update.value]
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .updateValue('2140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+   *     effectiveDate: '2018-07-10T11:04:24.631Z',
+   *     notes: 'Dolores et sapiente sunt doloribus aut in.',
+   *     value: '61456'
+   *   })
+   *   .catch((err) => console.log(err));
    */
-  updateValue() {}
+  updateValue(assetAttributeValueId, update) {
+    if (!assetAttributeValueId) {
+      return Promise.reject(
+        new Error(
+          'An asset attribute value ID is required to update an asset attribute value.'
+        )
+      );
+    }
+
+    if (!update) {
+      return Promise.reject(
+        new Error('An update is required to update an asset attribute value.')
+      );
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error(
+          'The asset attribute value update must be a well-formed object with the data you wish to update.'
+        )
+      );
+    }
+
+    const formattedUpdate = formatAssetAttributeValueToServer(update);
+
+    return this._request.put(
+      `${this._baseUrl}/assets/attributes/values/${assetAttributeValueId}`,
+      formattedUpdate
+    );
+  }
 }
 
 export default AssetAttributes;

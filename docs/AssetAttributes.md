@@ -16,7 +16,7 @@ different asset attributes and their values
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
     * [.getAllValues()](#AssetAttributes+getAllValues)
-    * [.updateValue()](#AssetAttributes+updateValue)
+    * [.updateValue(assetAttributeId, update)](#AssetAttributes+updateValue) ⇒ <code>Promise</code>
 
 <a name="new_AssetAttributes_new"></a>
 
@@ -223,7 +223,31 @@ Gets a list of all asset attribute values
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
 <a name="AssetAttributes+updateValue"></a>
 
-### contxtSdk.assets.attributes.updateValue()
+### contxtSdk.assets.attributes.updateValue(assetAttributeId, update) ⇒ <code>Promise</code>
 Updates an asset attribute value
 
+API Endpoint: '/assets/attributes/values/:assetAttributeValueId'
+Method: PUT
+
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assetAttributeId | <code>string</code> | The ID of the asset attribute to update (formatted as a UUID) |
+| update | <code>Object</code> | An object containing the updated data for the asset attribute value |
+| [update.effectiveDate] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [update.notes] | <code>string</code> |  |
+| [update.value] | <code>string</code> |  |
+
+**Example**  
+```js
+contxtSdk.assets.attributes
+  .updateValue('2140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+    effectiveDate: '2018-07-10T11:04:24.631Z',
+    notes: 'Dolores et sapiente sunt doloribus aut in.',
+    value: '61456'
+  })
+  .catch((err) => console.log(err));
+```
