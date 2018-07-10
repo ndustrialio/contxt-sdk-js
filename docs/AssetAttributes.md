@@ -14,7 +14,7 @@ different asset attributes and their values
     * [.getAll(assetTypeId)](#AssetAttributes+getAll) ⇒ <code>Promise</code>
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
-    * [.deleteValue()](#AssetAttributes+deleteValue)
+    * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
     * [.getValue()](#AssetAttributes+getValue)
     * [.getAllValues()](#AssetAttributes+getAllValues)
     * [.updateValue()](#AssetAttributes+updateValue)
@@ -196,10 +196,26 @@ contxtSdk.assets.attributes
 ```
 <a name="AssetAttributes+deleteValue"></a>
 
-### contxtSdk.assets.attributes.deleteValue()
+### contxtSdk.assets.attributes.deleteValue(assetAttributeValueId) ⇒ <code>Promise</code>
 Deletes an asset attribute value
 
+API Endpoint: '/assets/attributes/values/:assetAttributeValueId'
+Method: DELETE
+
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assetAttributeValueId | <code>string</code> | The ID of the asset attribute value (formatted as a UUID) |
+
+**Example**  
+```js
+contxtSdk.assets.attributes.deleteValue(
+  'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
+);
+```
 <a name="AssetAttributes+getValue"></a>
 
 ### contxtSdk.assets.attributes.getValue()

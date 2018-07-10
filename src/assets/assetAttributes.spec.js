@@ -610,7 +610,50 @@ describe('Assets/Attributes', function() {
     });
   });
 
-  describe('deleteValue', function() {});
+  describe('deleteValue', function() {
+    context('when all required information is supplied', function() {
+      let expectedAssetAttributeValueId;
+      let promise;
+
+      beforeEach(function() {
+        expectedAssetAttributeValueId = fixture.build('assetAttributeValue').id;
+
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        promise = assetAttributes.deleteValue(expectedAssetAttributeValueId);
+      });
+
+      it('requests to delete the asset attribute value', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/assets/attributes/values/${expectedAssetAttributeValueId}`
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when the asset attribute value ID is missing', function() {
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        const promise = assetAttributes.deleteValue();
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset attribute value ID is required for deleting an asset attribute value.'
+        );
+      });
+    });
+  });
 
   describe('getValue', function() {});
 

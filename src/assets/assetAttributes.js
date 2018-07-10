@@ -330,8 +330,34 @@ class AssetAttributes {
 
   /**
    * Deletes an asset attribute value
+   *
+   * API Endpoint: '/assets/attributes/values/:assetAttributeValueId'
+   * Method: DELETE
+   *
+   * @param {string} assetAttributeValueId The ID of the asset attribute value (formatted as a UUID)
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes.deleteValue(
+   *   'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
+   * );
    */
-  deleteValue() {}
+  deleteValue(assetAttributeValueId) {
+    if (!assetAttributeValueId) {
+      return Promise.reject(
+        new Error(
+          'An asset attribute value ID is required for deleting an asset attribute value.'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/assets/attributes/values/${assetAttributeValueId}`
+    );
+  }
 
   /**
    * Gets an asset attribute value
