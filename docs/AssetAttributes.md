@@ -178,7 +178,6 @@ Method: POST
 | assetId | <code>string</code> | The ID of the asset type (formatted as a UUID) |
 | assetAttributeValue | <code>Object</code> |  |
 | assetAttributeValue.assetAttributeId | <code>string</code> | UUID corresponding to the asset attribute |
-| assetAttributeValue.assetId | <code>string</code> | UUID corresponding to the asset |
 | assetAttributeValue.effectiveDate | <code>string</code> | ISO 8601 Extended Format date/time string |
 | assetAttributeValue.notes | <code>string</code> |  |
 | assetAttributeValue.value | <code>string</code> |  |

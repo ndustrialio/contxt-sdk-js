@@ -487,87 +487,126 @@ describe('Assets/Attributes', function() {
   });
 
   describe('createValue', function() {
-    let assetAttributeValueFromServerAfterFormat;
-    let assetAttributeValueFromServerBeforeFormat;
-    let assetAttributeValueToServerAfterFormat;
-    let assetAttributeValueToServerBeforeFormat;
-    let assetId;
-    let formatAssetAttributeValueFromServer;
-    let formatAssetAttributeValueToServer;
-    let promise;
-    let request;
+    context('when all required information is supplied', function() {
+      let assetAttributeValueFromServerAfterFormat;
+      let assetAttributeValueFromServerBeforeFormat;
+      let assetAttributeValueToServerAfterFormat;
+      let assetAttributeValueToServerBeforeFormat;
+      let assetId;
+      let formatAssetAttributeValueFromServer;
+      let formatAssetAttributeValueToServer;
+      let promise;
+      let request;
 
-    beforeEach(function() {
-      assetAttributeValueToServerBeforeFormat = fixture.build(
-        'assetAttributeValue'
-      );
-      assetAttributeValueToServerAfterFormat = fixture.build(
-        'assetAttributeValue',
-        assetAttributeValueToServerBeforeFormat,
-        {
-          fromServer: true
-        }
-      );
-      assetAttributeValueFromServerAfterFormat = fixture.build(
-        'assetAttributeValue'
-      );
-      assetAttributeValueFromServerBeforeFormat = fixture.build(
-        'assetAttributeValue',
-        assetAttributeValueFromServerAfterFormat,
-        { fromServer: true }
-      );
-      assetId = fixture.build('asset').id;
+      beforeEach(function() {
+        assetAttributeValueToServerBeforeFormat = fixture.build(
+          'assetAttributeValue'
+        );
+        assetAttributeValueToServerAfterFormat = fixture.build(
+          'assetAttributeValue',
+          assetAttributeValueToServerBeforeFormat,
+          {
+            fromServer: true
+          }
+        );
+        assetAttributeValueFromServerAfterFormat = fixture.build(
+          'assetAttributeValue'
+        );
+        assetAttributeValueFromServerBeforeFormat = fixture.build(
+          'assetAttributeValue',
+          assetAttributeValueFromServerAfterFormat,
+          { fromServer: true }
+        );
+        assetId = fixture.build('asset').id;
 
-      formatAssetAttributeValueFromServer = this.sandbox
-        .stub(assetsUtils, 'formatAssetAttributeValueFromServer')
-        .returns(assetAttributeValueFromServerAfterFormat);
-      formatAssetAttributeValueToServer = this.sandbox
-        .stub(assetsUtils, 'formatAssetAttributeValueToServer')
-        .returns(assetAttributeValueToServerAfterFormat);
-      request = {
-        ...baseRequest,
-        post: this.sandbox
-          .stub()
-          .resolves(assetAttributeValueFromServerBeforeFormat)
-      };
+        formatAssetAttributeValueFromServer = this.sandbox
+          .stub(assetsUtils, 'formatAssetAttributeValueFromServer')
+          .returns(assetAttributeValueFromServerAfterFormat);
+        formatAssetAttributeValueToServer = this.sandbox
+          .stub(assetsUtils, 'formatAssetAttributeValueToServer')
+          .returns(assetAttributeValueToServerAfterFormat);
+        request = {
+          ...baseRequest,
+          post: this.sandbox
+            .stub()
+            .resolves(assetAttributeValueFromServerBeforeFormat)
+        };
 
-      const assetAttributes = new AssetAttributes(
-        baseSdk,
-        request,
-        expectedHost
-      );
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          request,
+          expectedHost
+        );
 
-      promise = assetAttributes.createValue(
-        assetId,
-        assetAttributeValueToServerBeforeFormat
-      );
-    });
+        promise = assetAttributes.createValue(
+          assetId,
+          assetAttributeValueToServerBeforeFormat
+        );
+      });
 
-    it('formats the submitted asset attribute value object to send to the server ', function() {
-      expect(formatAssetAttributeValueToServer).to.be.calledWith(
-        assetAttributeValueToServerBeforeFormat
-      );
-    });
+      it('formats the submitted asset attribute value object to send to the server ', function() {
+        expect(formatAssetAttributeValueToServer).to.be.calledWith(
+          assetAttributeValueToServerBeforeFormat
+        );
+      });
 
-    it('creates a new asset attribute value', function() {
-      expect(request.post).to.be.calledWith(
-        `${expectedHost}/assets/${assetId}/values`,
-        assetAttributeValueToServerAfterFormat
-      );
-    });
+      it('creates a new asset attribute value', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/assets/${assetId}/values`,
+          assetAttributeValueToServerAfterFormat
+        );
+      });
 
-    it('formats the returned asset attribute object', function() {
-      return promise.then(() => {
-        expect(formatAssetAttributeValueFromServer).to.be.calledWith(
-          assetAttributeValueFromServerBeforeFormat
+      it('formats the returned asset attribute object', function() {
+        return promise.then(() => {
+          expect(formatAssetAttributeValueFromServer).to.be.calledWith(
+            assetAttributeValueFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('returns a fulfilled promise with the new asset attribute value information', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          assetAttributeValueFromServerAfterFormat
         );
       });
     });
 
-    it('returns a fulfilled promise with the new asset attribute value information', function() {
-      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-        assetAttributeValueFromServerAfterFormat
-      );
+    context('when there is missing required information', function() {
+      let assetAttributeValue;
+      let assetAttributes;
+      // let assetTypeId;
+
+      beforeEach(function() {
+        assetAttributeValue = fixture.build('assetAttributeValue');
+
+        assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+      });
+
+      it('throws an error if there is no asset type ID provided', function() {
+        const promise = assetAttributes.createValue(null, assetAttributeValue);
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to create a new asset attribute value.'
+        );
+      });
+
+      ['assetAttributeId', 'effectiveDate', 'value'].forEach(function(field) {
+        it(`throws an error when ${field} is missing`, function() {
+          const promise = assetAttributes.createValue(
+            assetAttributeValue.id,
+            omit(assetAttributeValue, [field])
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            `A ${field} is required to create a new asset attribute value.`
+          );
+        });
+      });
     });
   });
 

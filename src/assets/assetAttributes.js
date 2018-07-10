@@ -277,7 +277,6 @@ class AssetAttributes {
    * @param {string} assetId The ID of the asset type (formatted as a UUID)
    * @param {Object} assetAttributeValue
    * @param {string} assetAttributeValue.assetAttributeId UUID corresponding to the asset attribute
-   * @param {string} assetAttributeValue.assetId UUID corresponding to the asset
    * @param {string} assetAttributeValue.effectiveDate ISO 8601 Extended Format date/time string
    * @param {string} assetAttributeValue.notes
    * @param {string} assetAttributeValue.value
@@ -298,6 +297,28 @@ class AssetAttributes {
    *   .catch((err) => console.log(err));
    */
   createValue(assetId, assetAttributeValue = {}) {
+    const requiredFields = ['assetAttributeId', 'effectiveDate', 'value'];
+
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to create a new asset attribute value.'
+        )
+      );
+    }
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      const field = requiredFields[i];
+
+      if (!assetAttributeValue[field]) {
+        return Promise.reject(
+          new Error(
+            `A ${field} is required to create a new asset attribute value.`
+          )
+        );
+      }
+    }
+
     const data = formatAssetAttributeValueToServer(assetAttributeValue);
 
     return this._request
