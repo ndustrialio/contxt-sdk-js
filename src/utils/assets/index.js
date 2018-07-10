@@ -10,6 +10,7 @@ import formatAssetToServer from './formatAssetToServer';
 import formatAssetTypeFromServer from './formatAssetTypeFromServer';
 import formatAssetTypesDataFromServer from './formatAssetTypesDataFromServer';
 import formatAssetTypeToServer from './formatAssetTypeToServer';
+import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
 
 export {
   formatAssetAttributeDataFromServer,
@@ -23,5 +24,6 @@ export {
   formatAssetToServer,
   formatAssetTypeFromServer,
   formatAssetTypesDataFromServer,
-  formatAssetTypeToServer
+  formatAssetTypeToServer,
+  formatPaginatedDataFromServer
 };

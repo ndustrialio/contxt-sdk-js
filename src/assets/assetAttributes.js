@@ -4,8 +4,22 @@ import {
   formatAssetAttributeFromServer,
   formatAssetAttributeToServer,
   formatAssetAttributeValueFromServer,
-  formatAssetAttributeValueToServer
+  formatAssetAttributeValueToServer,
+  formatPaginatedDataFromServer
 } from '../utils/assets';
+
+/**
+ * @typedef {Object} PaginationMetadata
+ * @property {number} offset Offset of records in subsequent queries
+ * @property {number} totalRecords Total number of asset attributes found
+ */
+
+/**
+ * @typedef {Object} PaginationOptions
+ * @property {Number} limit Maximum number of records to return per query
+ * @property {Number} offset How many records from the first record to start
+ *   the query
+ */
 
 /**
  * @typedef {Object} AssetAttribute
@@ -22,9 +36,7 @@ import {
 
 /**
  * @typedef {Object} AssetAttributeData
- * @property {Object} _metadata Metadata about the pagination settings
- * @property {number} _metadata.offset Offset of records in subsequent queries
- * @property {number} _metadata.totalRecords Total number of asset attributes found
+ * @property {PaginationMetadata} _metadata Metadata about the pagination settings
  * @property {AssetAttribute[]} records
  */
 
@@ -38,6 +50,12 @@ import {
  * @property {string} [notes]
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  * @property {string} value
+ */
+
+/**
+ * @typedef {Object} AssetAttributeValueData
+ * @property {PaginationMetadata} _metadata Metadata about the pagination settings
+ * @property {AssetAttributeValue[]} records
  */
 
 /**
@@ -360,9 +378,66 @@ class AssetAttributes {
   }
 
   /**
-   * Gets a list of all asset attribute values
+   * Gets the requested page of asset attribute values
+   *
+   * API Endpoint: '/assets/:assetId/attributes/:attributeId/values'
+   * Method: GET
+   *
+   * @param {String} assetId The ID of the asset for which you are looking up
+   *   attribute values  (formatted as a UUID)
+   * @param {String} attributeId The ID of the asset attribute for which you are
+   *   looking up attribute values (formatted as a UUID)
+   * @param {PaginationOptions}
+   *
+   * @returns {Promise}
+   * @fulfill {AssetAttributeValueData}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .getValuesByAttributeId(
+   *     'a4d80a97-cbf6-453b-bab5-0477e1ede04f',
+   *     'c2779610-44d7-4313-aea2-96cce58d6efd'
+   *   )
+   *   .then((assetAttributeValuesData) => {
+   *     console.log(assetAttributeValuesData);
+   *   })
+   *   .catch((err) => console.log(err));
    */
-  getAllValues() {}
+  getValuesByAttributeId(assetId, attributeId, paginationOptions) {
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to get a list of asset attribute values.'
+        )
+      );
+    }
+
+    if (!attributeId) {
+      return Promise.reject(
+        new Error(
+          'An asset attribute ID is required to get a list of asset attribute values.'
+        )
+      );
+    }
+
+    const params = {
+      limit: paginationOptions.limit,
+      offset: paginationOptions.offset
+    };
+
+    return this._request
+      .get(
+        `${this._baseUrl}/assets/${assetId}/attributes/${attributeId}/values`,
+        { params }
+      )
+      .then((assetAttributeValueData) =>
+        formatPaginatedDataFromServer(
+          assetAttributeValueData,
+          formatAssetAttributeValueFromServer
+        )
+      );
+  }
 
   /**
    * Updates an asset attribute value

@@ -72,6 +72,8 @@ which are obtained from Auth0.</p>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetAttributeValue">AssetAttributeValue</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#AssetAttributeValueData">AssetAttributeValueData</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetTypesFromServer">AssetTypesFromServer</a> : <code>Object</code></dt>
@@ -117,6 +119,10 @@ for authenticating and communicating with an individual API and the external mod
 <dt><a href="./Typedefs.md#OutputFieldData">OutputFieldData</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#OutputFieldDataResponse">OutputFieldDataResponse</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#PaginationMetadata">PaginationMetadata</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#PaginationOptions">PaginationOptions</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#SessionType">SessionType</a> : <code>Object</code></dt>
 <dd><p>An adapter that allows the SDK to authenticate with different services and manage various tokens.

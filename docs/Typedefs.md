@@ -40,9 +40,7 @@
 
 | Name | Type | Description |
 | --- | --- | --- |
-| _metadata | <code>Object</code> | Metadata about the pagination settings |
-| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
-| _metadata.totalRecords | <code>number</code> | Total number of asset attributes found |
+| _metadata | [<code>PaginationMetadata</code>](./Typedefs.md#PaginationMetadata) | Metadata about the pagination settings |
 | records | [<code>Array.&lt;AssetAttribute&gt;</code>](#AssetAttribute) |  |
 
 <a name="AssetAttributeValue"></a>
@@ -61,6 +59,17 @@
 | [notes] | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | value | <code>string</code> |  |
+
+<a name="AssetAttributeValueData"></a>
+
+## AssetAttributeValueData : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | [<code>PaginationMetadata</code>](./Typedefs.md#PaginationMetadata) | Metadata about the pagination settings |
+| records | [<code>Array.&lt;AssetAttributeValue&gt;</code>](#AssetAttributeValue) |  |
 
 <a name="AssetType"></a>
 
@@ -332,6 +341,28 @@ for authenticating and communicating with an individual API and the external mod
 | [meta.timeStart] | <code>Number</code> | UNIX timestamp indicating the   start of the query window |
 | [meta.window] | <code>Number</code> | The sampling window for records.   Required if including a timeEnd or timeStart.   Valid options include: `0`, `60`, `900`, and `3600` |
 | records | [<code>Array.&lt;OutputFieldData&gt;</code>](#OutputFieldData) |  |
+
+<a name="PaginationMetadata"></a>
+
+## PaginationMetadata : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| offset | <code>number</code> | Offset of records in subsequent queries |
+| totalRecords | <code>number</code> | Total number of asset attributes found |
+
+<a name="PaginationOptions"></a>
+
+## PaginationOptions : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| limit | <code>Number</code> | Maximum number of records to return per query |
+| offset | <code>Number</code> | How many records from the first record to start   the query |
 
 <a name="SessionType"></a>
 

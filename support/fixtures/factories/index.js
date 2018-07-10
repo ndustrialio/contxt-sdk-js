@@ -18,6 +18,7 @@ require('./facilityTag');
 require('./outputField');
 require('./outputFieldData');
 require('./organization');
+require('./paginationMetadata');
 require('./userProfile');
 
 module.exports = factory;

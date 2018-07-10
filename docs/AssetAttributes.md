@@ -15,7 +15,7 @@ different asset attributes and their values
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
-    * [.getAllValues()](#AssetAttributes+getAllValues)
+    * [.getValuesByAttributeId(assetId, attributeId, paginationOptions)](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
     * [.updateValue(assetAttributeId, update)](#AssetAttributes+updateValue) ⇒ <code>Promise</code>
 
 <a name="new_AssetAttributes_new"></a>
@@ -215,12 +215,36 @@ contxtSdk.assets.attributes.deleteValue(
   'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
 );
 ```
-<a name="AssetAttributes+getAllValues"></a>
+<a name="AssetAttributes+getValuesByAttributeId"></a>
 
-### contxtSdk.assets.attributes.getAllValues()
-Gets a list of all asset attribute values
+### contxtSdk.assets.attributes.getValuesByAttributeId(assetId, attributeId, paginationOptions) ⇒ <code>Promise</code>
+Gets the requested page of asset attribute values
+
+API Endpoint: '/assets/:assetId/attributes/:attributeId/values'
+Method: GET
 
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
+**Fulfill**: [<code>AssetAttributeValueData</code>](./Typedefs.md#AssetAttributeValueData)  
+**Rejects**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assetId | <code>String</code> | The ID of the asset for which you are looking up   attribute values  (formatted as a UUID) |
+| attributeId | <code>String</code> | The ID of the asset attribute for which you are   looking up attribute values (formatted as a UUID) |
+| paginationOptions | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
+
+**Example**  
+```js
+contxtSdk.assets.attributes
+  .getValuesByAttributeId(
+    'a4d80a97-cbf6-453b-bab5-0477e1ede04f',
+    'c2779610-44d7-4313-aea2-96cce58d6efd'
+  )
+  .then((assetAttributeValuesData) => {
+    console.log(assetAttributeValuesData);
+  })
+  .catch((err) => console.log(err));
+```
 <a name="AssetAttributes+updateValue"></a>
 
 ### contxtSdk.assets.attributes.updateValue(assetAttributeId, update) ⇒ <code>Promise</code>

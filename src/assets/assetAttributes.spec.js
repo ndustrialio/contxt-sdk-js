@@ -383,7 +383,7 @@ describe('Assets/Attributes', function() {
         promise = assetAttributes.getAll();
       });
       it('throws an error when the asset type ID is missing', function() {
-        expect(promise).to.be.rejectedWith(
+        return expect(promise).to.be.rejectedWith(
           'An asset type ID is required to get a list of all asset attributes.'
         );
       });
@@ -575,7 +575,6 @@ describe('Assets/Attributes', function() {
     context('when there is missing required information', function() {
       let assetAttributeValue;
       let assetAttributes;
-      // let assetTypeId;
 
       beforeEach(function() {
         assetAttributeValue = fixture.build('assetAttributeValue');
@@ -655,7 +654,116 @@ describe('Assets/Attributes', function() {
     });
   });
 
-  describe('getAllValues', function() {});
+  describe('getValuesByAttributeId', function() {
+    context('when all required information is supplied', function() {
+      let assetId;
+      let attributeId;
+      let formatPaginatedDataFromServer;
+      let expectedPaginationOptions;
+      let promise;
+      let request;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
+
+      beforeEach(function() {
+        assetId = fixture.build('asset').id;
+        attributeId = fixture.build('assetAttribute').id;
+        expectedPaginationOptions = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        valuesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList(
+            'assetAttributeValue',
+            faker.random.number({ min: 1, max: 20 }),
+            {
+              assetId,
+              assetAttributeId: attributeId
+            }
+          )
+        };
+        valuesFromServerBeforeFormat = {
+          ...valuesFromServerAfterFormat,
+          records: valuesFromServerAfterFormat.records.map((values) =>
+            fixture.build('assetAttributeValue', values)
+          )
+        };
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(assetsUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+        };
+
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          request,
+          expectedHost
+        );
+        promise = assetAttributes.getValuesByAttributeId(
+          assetId,
+          attributeId,
+          expectedPaginationOptions
+        );
+      });
+
+      it('gets a list of asset attribute values from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/assets/${assetId}/attributes/${attributeId}/values`,
+          { params: { ...expectedPaginationOptions } }
+        );
+      });
+
+      it('formats the asset attribute value data', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('resolves with a list of asset attribute values', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when the asset ID is missing', function() {
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+        const promise = assetAttributes.getValuesByAttributeId(
+          null,
+          fixture.build('assetAttribute').id
+        );
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to get a list of asset attribute values.'
+        );
+      });
+
+      it('throws an error when the asset attribute ID is missing', function() {
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+        const promise = assetAttributes.getValuesByAttributeId(
+          fixture.build('asset').id,
+          null
+        );
+        return expect(promise).to.be.rejectedWith(
+          'An asset attribute ID is required to get a list of asset attribute values.'
+        );
+      });
+    });
+  });
 
   describe('updateValue', function() {
     context('when all required information is supplied', function() {
