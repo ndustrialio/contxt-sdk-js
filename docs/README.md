@@ -136,4 +136,3 @@ the optional methods are documented below.</p>
 <dt><a href="./Typedefs.md#UserProfile">UserProfile</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
-

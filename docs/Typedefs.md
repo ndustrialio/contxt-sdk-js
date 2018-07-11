@@ -132,9 +132,9 @@ A single audience used for authenticating and communicating with an individual A
 
 | Name | Type |
 | --- | --- |
-| accessToken | <code>string</code> | 
-| apiToken | <code>string</code> | 
-| expiresAt | <code>number</code> | 
+| accessToken | <code>string</code> |
+| apiToken | <code>string</code> |
+| expiresAt | <code>number</code> |
 
 <a name="AxiosInterceptor"></a>
 
@@ -208,8 +208,8 @@ for authenticating and communicating with an individual API and the external mod
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with |
-| config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
+| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with. Can be a `null` value if the value is not needed. Some SessionType   adapters (currently, just the MachineAuth adapter) require a value other than `null` if the   built-in `request` module is used since they acquire contxt tokens based on a single clientId. |
+| config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided.   Can be a `null` value if the value is not needed. |
 | config.module | <code>function</code> | The module that will be decorated into the SDK |
 
 <a name="Facility"></a>
@@ -284,8 +284,8 @@ for authenticating and communicating with an individual API and the external mod
 
 | Name | Type |
 | --- | --- |
-| apiToken | <code>string</code> | 
-| expiresAt | <code>number</code> | 
+| apiToken | <code>string</code> |
+| expiresAt | <code>number</code> |
 
 <a name="OutputField"></a>
 
@@ -420,4 +420,3 @@ User provided configuration options
 | picture | <code>string</code> | URL to an avatar |
 | sub | <code>string</code> | The Subject Claim of the user's JWT |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-

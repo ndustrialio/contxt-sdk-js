@@ -188,7 +188,7 @@ describe('Assets/Attributes', function() {
         promise = assetAttributes.delete(expectedAssetAttributeId);
       });
 
-      it('requres to delete the asset attribute', function() {
+      it('requests to delete the asset attribute', function() {
         expect(baseRequest.delete).to.be.calledWith(
           `${expectedHost}/assets/attributes/${expectedAssetAttributeId}`
         );

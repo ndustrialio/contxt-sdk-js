@@ -5,6 +5,7 @@ const faker = require('faker');
 
 factory
   .define('assetAttribute')
+  .option('fromServer', false)
   .attrs({
     assetTypeId: () => factory.build('assetType').id,
     createdAt: () => faker.date.past().toISOString(),

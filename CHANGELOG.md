@@ -1,3 +1,20 @@
+## [v0.0.19](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.19) (2018-07-09)
+
+**Added**
+
+* Methods around the display and manipulation of Asset Attributes. They are namespaced under assets (i.e. `assets.attributes.methodName()`) and include:
+  * AssetAttributes#create to add an asset attribute
+  * AssetAttributes#delete to delete an asset attribute
+  * AssetAttributes#get to get an asset attribute
+  * AssetAttributes#getAll to get a list of all asset attributes
+  * AssetAttributes#update to update an asset attribute
+
+## [v0.0.18](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.18) (2018-07-06)
+
+**Changed**
+
+* External Modules can now have a `clientId` or `host` set to `null` if the values are not needed for the module. (_NOTE:_ Some SessionType adapters, like the MachineAuth adapter, require a `clientId` if the built-in `request` module is used since contxt auth tokens for those adapters are generated on a per-clientId basis).
+
 ## [v0.0.17](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.17) (2018-07-03)
 
 **Added**
