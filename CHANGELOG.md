@@ -1,3 +1,14 @@
+## [v0.0.19](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.19) (2018-07-09)
+
+**Added**
+
+* Methods around the display and manipulation of Asset Attributes. They are namespaced under assets (i.e. `assets.attributes.methodName()`) and include:
+  * AssetAttributes#create to add an asset attribute
+  * AssetAttributes#delete to delete an asset attribute
+  * AssetAttributes#get to get an asset attribute
+  * AssetAttributes#getAll to get a list of all asset attributes
+  * AssetAttributes#update to update an asset attribute
+
 ## [v0.0.18](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.18) (2018-07-06)
 
 **Changed**
