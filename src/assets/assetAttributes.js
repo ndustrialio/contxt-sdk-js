@@ -3,6 +3,7 @@ import {
   formatAssetAttributeDataFromServer,
   formatAssetAttributeFromServer,
   formatAssetAttributeToServer,
+  formatAssetAttributeValueFiltersToServer,
   formatAssetAttributeValueFromServer,
   formatAssetAttributeValueToServer,
   formatPaginatedDataFromServer
@@ -375,6 +376,54 @@ class AssetAttributes {
     return this._request.delete(
       `${this._baseUrl}/assets/attributes/values/${assetAttributeValueId}`
     );
+  }
+
+  /**
+   * Gets the requested page of asset attribute values
+   *
+   * API Endpoint: '/assets/:assetId/attributes/values'
+   * Method: GET
+   *
+   * @param {String} assetId The ID of the asset for which you are looking up
+   *   attribute values  (formatted as a UUID)
+   * @param {Object} filters Specific information that is used to filter the
+   *   list of asset attribute values
+   * @param {String} filters.attributeLabel Label of the parent asset attribute
+   * @param {String} filters.effectiveDate Effective date of the asset attribute
+   *   values
+   *
+   * @returns {Promise}
+   * @fulfill {AssetAttributeValue[]}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .getValuesByAssetId(
+   *     'd7329ef3-ca63-4ad5-bb3e-632b702584f8'
+   *   )
+   *   .then((assetAttributeValues) => {
+   *     console.log(assetAttributeValues);
+   *   })
+   *   .catch((err) => console.log(err));
+   */
+  getValuesByAssetId(assetId, filters) {
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to get a list of asset attribute values.'
+        )
+      );
+    }
+
+    const formattedFilters = formatAssetAttributeValueFiltersToServer(filters);
+
+    return this._request
+      .get(`${this._baseUrl}/assets/${assetId}/attributes/values`, {
+        param: formattedFilters
+      })
+      .then((assetAttributeValues) =>
+        assetAttributeValues.map(formatAssetAttributeValueFromServer)
+      );
   }
 
   /**

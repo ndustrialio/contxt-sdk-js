@@ -654,6 +654,103 @@ describe('Assets/Attributes', function() {
     });
   });
 
+  describe('getValuesByAssetId', function() {
+    context('when all required information is supplied', function() {
+      let assetId;
+      let formatAssetAttributeValueFiltersToServer;
+      let formatAssetAttributeValueFromServer;
+      let promise;
+      let request;
+      let valueFiltersToServerAfterFormat;
+      let valueFiltersToServerBeforeFormat;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
+
+      beforeEach(function() {
+        assetId = fixture.build('asset').id;
+        valuesFromServerAfterFormat = {
+          attributeLabel: faker.hacker.phrase(),
+          effectiveDate: faker.date.recent().toISOString()
+        };
+        valuesFromServerBeforeFormat = {
+          attributeLabel: faker.hacker.phrase(),
+          effectiveDate: faker.date.recent().toISOString()
+        };
+        valuesFromServerAfterFormat = fixture.buildList(
+          'assetAttributeValue',
+          faker.random.number({ min: 1, max: 20 }),
+          { assetId }
+        );
+        valuesFromServerBeforeFormat = valuesFromServerAfterFormat.map(
+          (values) =>
+            fixture.build('assetAttributeValue', values, { fromServer: true })
+        );
+
+        formatAssetAttributeValueFiltersToServer = this.sandbox
+          .stub(assetsUtils, 'formatAssetAttributeValueFiltersToServer')
+          .returns(valueFiltersToServerAfterFormat);
+        formatAssetAttributeValueFromServer = this.sandbox
+          .stub(assetsUtils, 'formatAssetAttributeValueFromServer')
+          .callsFake((value, index) => valuesFromServerAfterFormat[index]);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+        };
+
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          request,
+          expectedHost
+        );
+        promise = assetAttributes.getValuesByAssetId(
+          assetId,
+          valueFiltersToServerBeforeFormat
+        );
+      });
+
+      it('formats the filters sent to the server', function() {
+        expect(formatAssetAttributeValueFiltersToServer).to.be.calledWith(
+          valueFiltersToServerBeforeFormat
+        );
+      });
+
+      it('gets a list of asset attributes from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/assets/${assetId}/attributes/values`
+        );
+      });
+
+      it('formats the asset attribute values', function() {
+        return promise.then(() => {
+          valuesFromServerBeforeFormat.forEach((value) => {
+            expect(formatAssetAttributeValueFromServer).to.be.calledWith(value);
+          });
+        });
+      });
+
+      it('resolves with a list of asset attribute values', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when the asset ID is missing', function() {
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+        const promise = assetAttributes.getValuesByAssetId(null);
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to get a list of asset attribute values.'
+        );
+      });
+    });
+  });
+
   describe('getValuesByAttributeId', function() {
     context('when all required information is supplied', function() {
       let assetId;
@@ -686,7 +783,7 @@ describe('Assets/Attributes', function() {
         valuesFromServerBeforeFormat = {
           ...valuesFromServerAfterFormat,
           records: valuesFromServerAfterFormat.records.map((values) =>
-            fixture.build('assetAttributeValue', values)
+            fixture.build('assetAttributeValue', values, { fromServer: true })
           )
         };
 
@@ -743,6 +840,7 @@ describe('Assets/Attributes', function() {
           null,
           fixture.build('assetAttribute').id
         );
+
         return expect(promise).to.be.rejectedWith(
           'An asset ID is required to get a list of asset attribute values.'
         );
@@ -758,6 +856,7 @@ describe('Assets/Attributes', function() {
           fixture.build('asset').id,
           null
         );
+
         return expect(promise).to.be.rejectedWith(
           'An asset attribute ID is required to get a list of asset attribute values.'
         );
