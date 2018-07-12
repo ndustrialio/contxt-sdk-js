@@ -1,3 +1,9 @@
+## [v0.0.21](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.21) (2018-07-13)
+
+**Changed**
+
+* Now supporting the `data_type` field for `AssetAttributes`
+
 ## [v0.0.20](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.20) (2018-07-12)
 
 **Added**
