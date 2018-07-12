@@ -2,13 +2,13 @@
  * Normalizes the asset attribute value object returned from the API server
  *
  * @param {Object} input
- * @param {string} input.assetAttributeId UUID corresponding to the asset attribute
- * @param {string} input.assetId UUID corresponding to the asset
- * @param {string} input.createdAt ISO 8601 Extended Format date/time string
- * @param {string} input.effectiveDate ISO 8601 Extended Format date/time string
+ * @param {string} input.asset_attribute_id UUID corresponding to the asset attribute
+ * @param {string} input.asset_id UUID corresponding to the asset
+ * @param {string} input.created_at ISO 8601 Extended Format date/time string
+ * @param {string} input.effective_date ISO 8601 Extended Format date/time string
  * @param {string} input.id UUID
- * @param {string} input.notes
- * @param {string} input.updatedAt ISO 8601 Extended Format date/time string
+ * @param {string} [input.notes]
+ * @param {string} input.updated_at ISO 8601 Extended Format date/time string
  * @param {string} input.value
  *
  * @returns {AssetAttributeValue}

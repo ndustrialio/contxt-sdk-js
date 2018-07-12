@@ -3,13 +3,13 @@
  *)
  * @param {Object} input Specific information that is used to filter the
  *   list of asset attribute values
- * @param {String} input.attributeLabel Label of the parent asset attribute
- * @param {String} input.effectiveDate Effective date of the asset attribute
+ * @param {String} [input.attributeLabel] Label of the parent asset attribute
+ * @param {String} [input.effectiveDate] Effective date of the asset attribute
  *
  * @returns {Object} output Specific information that is used to filter the
  *   list of asset attribute values
- * @returns {String} output.attribute_label Label of the parent asset attribute
- * @returns {String} output.effective_date Effective date of the asset attribute
+ * @returns {String} [output.attribute_label] Label of the parent asset attribute
+ * @returns {String} [output.effective_date] Effective date of the asset attribute
  *
  * @private
  */

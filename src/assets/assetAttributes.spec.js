@@ -663,8 +663,8 @@ describe('Assets/Attributes', function() {
       beforeEach(function() {
         assetId = fixture.build('asset').id;
         valueFiltersToServerAfterFormat = {
-          attributeLabel: faker.hacker.phrase(),
-          effectiveDate: faker.date.recent().toISOString()
+          attribute_label: faker.hacker.phrase(),
+          effective_date: faker.date.recent().toISOString()
         };
         valueFiltersToServerBeforeFormat = {
           attributeLabel: faker.hacker.phrase(),

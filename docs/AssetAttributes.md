@@ -15,7 +15,7 @@ different asset attributes and their values
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
-    * [.getValuesByAssetId(assetId, assetAttributeFilters)](#AssetAttributes+getValuesByAssetId) ⇒ <code>Promise</code>
+    * [.getValuesByAssetId(assetId, [assetAttributeFilters])](#AssetAttributes+getValuesByAssetId) ⇒ <code>Promise</code>
     * [.getValuesByAttributeId(assetId, assetAttributeId, paginationOptions)](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
     * [.updateValue(assetAttributeId, update)](#AssetAttributes+updateValue) ⇒ <code>Promise</code>
 
@@ -179,7 +179,7 @@ Method: POST
 | assetAttributeValue | <code>Object</code> |  |
 | assetAttributeValue.assetAttributeId | <code>string</code> | UUID corresponding to the asset attribute |
 | assetAttributeValue.effectiveDate | <code>string</code> | ISO 8601 Extended Format date/time string |
-| assetAttributeValue.notes | <code>string</code> |  |
+| [assetAttributeValue.notes] | <code>string</code> |  |
 | assetAttributeValue.value | <code>string</code> |  |
 
 **Example**  
@@ -218,8 +218,8 @@ contxtSdk.assets.attributes.deleteValue(
 ```
 <a name="AssetAttributes+getValuesByAssetId"></a>
 
-### contxtSdk.assets.attributes.getValuesByAssetId(assetId, assetAttributeFilters) ⇒ <code>Promise</code>
-Gets the requested page of asset attribute values
+### contxtSdk.assets.attributes.getValuesByAssetId(assetId, [assetAttributeFilters]) ⇒ <code>Promise</code>
+Gets asset attribute values for a particular asset
 
 API Endpoint: '/assets/:assetId/attributes/values'
 Method: GET
@@ -231,16 +231,17 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | assetId | <code>String</code> | The ID of the asset for which you are looking up   attribute values  (formatted as a UUID) |
-| assetAttributeFilters | <code>Object</code> | Specific information that is used to   filter the list of asset attribute values |
-| assetAttributeFilters.attributeLabel | <code>String</code> | Label of the parent   asset attribute |
-| assetAttributeFilters.effectiveDate | <code>String</code> | Effective date of the   asset attribute values |
+| [assetAttributeFilters] | <code>Object</code> | Specific information that is used to   filter the list of asset attribute values |
+| [assetAttributeFilters.attributeLabel] | <code>String</code> | Label of the parent   asset attribute |
+| [assetAttributeFilters.effectiveDate] | <code>String</code> | Effective date of the   asset attribute values |
 
 **Example**  
 ```js
 contxtSdk.assets.attributes
-  .getValuesByAssetId(
-    'd7329ef3-ca63-4ad5-bb3e-632b702584f8'
-  )
+  .getValuesByAssetId('d7329ef3-ca63-4ad5-bb3e-632b702584f8', {
+    attributeLabel: 'Square Footage',
+    effectiveDate: '2018-07-11T19:14:49.715Z'
+  })
   .then((assetAttributeValues) => {
     console.log(assetAttributeValues);
   })
@@ -249,7 +250,8 @@ contxtSdk.assets.attributes
 <a name="AssetAttributes+getValuesByAttributeId"></a>
 
 ### contxtSdk.assets.attributes.getValuesByAttributeId(assetId, assetAttributeId, paginationOptions) ⇒ <code>Promise</code>
-Gets the requested page of asset attribute values
+Gets a paginated list of asset attribute values for a particular attribute
+of a particular asset
 
 API Endpoint: '/assets/:assetId/attributes/:attributeId/values'
 Method: GET
@@ -269,7 +271,11 @@ Method: GET
 contxtSdk.assets.attributes
   .getValuesByAttributeId(
     'a4d80a97-cbf6-453b-bab5-0477e1ede04f',
-    'c2779610-44d7-4313-aea2-96cce58d6efd'
+    'c2779610-44d7-4313-aea2-96cce58d6efd',
+    {
+      limit: 100,
+      offset: 0
+    }
   )
   .then((assetAttributeValuesData) => {
     console.log(assetAttributeValuesData);

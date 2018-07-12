@@ -4,10 +4,10 @@
  * @param {AssetAttributeValue} input
  *
  * @returns {Object} output
- * @returns {string} output.assetAttributeId UUID corresponding to the asset attribute
- * @returns {string} output.assetId UUID corresponding to the asset
- * @returns {string} output.effectiveDate ISO 8601 Extended Format date/time string
- * @returns {string} output.notes
+ * @returns {string} output.asset_attribute_id UUID corresponding to the asset attribute
+ * @returns {string} output.asset_id UUID corresponding to the asset
+ * @returns {string} output.effective_date ISO 8601 Extended Format date/time string
+ * @returns {string} [output.notes]
  * @returns {string} output.value
  *
  * @private

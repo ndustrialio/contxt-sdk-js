@@ -298,7 +298,7 @@ class AssetAttributes {
    * @param {Object} assetAttributeValue
    * @param {string} assetAttributeValue.assetAttributeId UUID corresponding to the asset attribute
    * @param {string} assetAttributeValue.effectiveDate ISO 8601 Extended Format date/time string
-   * @param {string} assetAttributeValue.notes
+   * @param {string} [assetAttributeValue.notes]
    * @param {string} assetAttributeValue.value
    *
    * @returns {Promise}
@@ -380,18 +380,18 @@ class AssetAttributes {
   }
 
   /**
-   * Gets the requested page of asset attribute values
+   * Gets asset attribute values for a particular asset
    *
    * API Endpoint: '/assets/:assetId/attributes/values'
    * Method: GET
    *
    * @param {String} assetId The ID of the asset for which you are looking up
    *   attribute values  (formatted as a UUID)
-   * @param {Object} assetAttributeFilters Specific information that is used to
+   * @param {Object} [assetAttributeFilters] Specific information that is used to
    *   filter the list of asset attribute values
-   * @param {String} assetAttributeFilters.attributeLabel Label of the parent
+   * @param {String} [assetAttributeFilters.attributeLabel] Label of the parent
    *   asset attribute
-   * @param {String} assetAttributeFilters.effectiveDate Effective date of the
+   * @param {String} [assetAttributeFilters.effectiveDate] Effective date of the
    *   asset attribute values
    *
    * @returns {Promise}
@@ -400,9 +400,10 @@ class AssetAttributes {
    *
    * @example
    * contxtSdk.assets.attributes
-   *   .getValuesByAssetId(
-   *     'd7329ef3-ca63-4ad5-bb3e-632b702584f8'
-   *   )
+   *   .getValuesByAssetId('d7329ef3-ca63-4ad5-bb3e-632b702584f8', {
+   *     attributeLabel: 'Square Footage',
+   *     effectiveDate: '2018-07-11T19:14:49.715Z'
+   *   })
    *   .then((assetAttributeValues) => {
    *     console.log(assetAttributeValues);
    *   })
@@ -431,7 +432,8 @@ class AssetAttributes {
   }
 
   /**
-   * Gets the requested page of asset attribute values
+   * Gets a paginated list of asset attribute values for a particular attribute
+   * of a particular asset
    *
    * API Endpoint: '/assets/:assetId/attributes/:attributeId/values'
    * Method: GET
@@ -450,7 +452,11 @@ class AssetAttributes {
    * contxtSdk.assets.attributes
    *   .getValuesByAttributeId(
    *     'a4d80a97-cbf6-453b-bab5-0477e1ede04f',
-   *     'c2779610-44d7-4313-aea2-96cce58d6efd'
+   *     'c2779610-44d7-4313-aea2-96cce58d6efd',
+   *     {
+   *       limit: 100,
+   *       offset: 0
+   *     }
    *   )
    *   .then((assetAttributeValuesData) => {
    *     console.log(assetAttributeValuesData);
