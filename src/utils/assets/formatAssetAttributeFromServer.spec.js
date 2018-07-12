@@ -15,6 +15,7 @@ describe('utils/assets/formatAssetAttributeFromServer', function() {
         ...assetAttribute,
         assetTypeId: assetAttribute.asset_type_id,
         createdAt: assetAttribute.created_at,
+        dataType: assetAttribute.data_type,
         isRequired: assetAttribute.is_required,
         organizationId: assetAttribute.organization_id,
         updatedAt: assetAttribute.updated_at
@@ -22,6 +23,7 @@ describe('utils/assets/formatAssetAttributeFromServer', function() {
       [
         'asset_type_id',
         'created_at',
+        'data_type',
         'is_required',
         'organization_id',
         'updated_at'

@@ -4,6 +4,7 @@
  * @param {AssetAttribute} input
  *
  * @returns {Object} output
+ * @returns {string} output.data_type
  * @returns {string} output.description
  * @returns {boolean} [output.is_required]
  * @returns {string} output.label
@@ -14,6 +15,7 @@
  */
 function formatAssetAttributeToServer(input = {}) {
   return {
+    data_type: input.dataType,
     description: input.description,
     is_required: input.isRequired,
     label: input.label,

@@ -27,6 +27,7 @@ import {
  * @typedef {Object} AssetAttribute
  * @property {string} assetTypeId UUID corresponding with the asset type
  * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} dataType Data Type of attribute with options "boolean", "date", "number", "string"
  * @property {string} description
  * @property {string} id UUID
  * @property {boolean} isRequired
@@ -86,6 +87,7 @@ class AssetAttributes {
    *
    * @param {string} assetTypeId The ID of the asset type (formatted as a UUID)
    * @param {Object} assetAttribute
+   * @param {string} assetAttribute.dataType
    * @param {string} assetAttribute.description
    * @param {boolean} [assetAttribute.isRequired]
    * @param {string} assetAttribute.label
@@ -99,6 +101,7 @@ class AssetAttributes {
    * @example
    * contxtSdk.assets.attributes
    *   .create('4f0e51c6-728b-4892-9863-6d002e61204d', {
+   *     dataType: 'boolean',
    *     description: 'Square footage of a facility',
    *     isRequired: true,
    *     label: 'Square Footage',
@@ -239,6 +242,7 @@ class AssetAttributes {
    *
    * @param {string} assetAttributeId The ID of the asset attribute to update (formatted as a UUID)
    * @param {Object} update An object containing the updated data for the asset attribute
+   * @param {string} [update.dataType]
    * @param {string} [update.description]
    * @param {boolean} [update.isRequired]
    * @param {string} [update.label]
@@ -251,6 +255,7 @@ class AssetAttributes {
    * @example
    * contxtSdk.assets.attributes
    *   .update('c7f927c3-11a7-4024-9269-e1231baeb765', {
+   *     dataType: 'boolean',
    *     description: 'Temperature of a facility',
    *     isRequired: false,
    *     label: 'Temperature',
