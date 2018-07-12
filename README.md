@@ -4,13 +4,13 @@
 
 The `contxt-sdk` can be installed with NPM:
 
-```
+```bash
 npm install --save @ndustrial/contxt-sdk
 ```
 
 There are two peer dependencies for `contxt-sdk`, `auth0-js` and `axios`. If you don't already have a compatible version installed, run:
 
-```
+```bash
 npm install --save auth0-js@^9.0.0 axios@~0.17.0
 ```
 
@@ -18,7 +18,7 @@ npm install --save auth0-js@^9.0.0 axios@~0.17.0
 
 Once installed, the minimum configuration you need to get going is to include the `clientId` of your application (from Auth0) and a string with the type of authentication you want to use (`auth0WebAuth` or `machineAuth`).
 
-```
+```javascript
 import ContxtSdk from '@ndustrial/contxt-sdk';
 
 const contxtSdk = new ContxtSdk({
@@ -43,7 +43,7 @@ At times when building your application, there might be a Contxt API that you ne
 
 To do this, just include information about the module when creating your `contxt-sdk` instance:
 
-```
+```javascript
 import ContxtSdk from 'contxt-sdk';
 import NewModule from './NewModule';
 
@@ -68,7 +68,7 @@ contxtSdk.newModule.doWork();
 
 When we decorate your external module into your SDK instance, it is treated just like one of the native, internal modules and is provided with the SDK instance (so you can use other parts of the SDK from your new module) and its own request module, which will handle API tokens if you are working with a Contxt API.
 
-```
+```javascript
 class NewModule {
   constructor(sdk, request) {
     this._baseUrl = `${sdk.config.audiences.newModule.host}/v1`;
@@ -118,3 +118,24 @@ Additionally, some globals have been added to the testing environment to streaml
 * `expect` - Corresponds with `require('chai').expect`. [Info](http://chaijs.com/api/bdd/)
 * `faker` - Corresponds with `require('faker')`. [Info](https://github.com/marak/Faker.js/)
 * `sandbox` - Corresponds with `require('sinon').sandbox`. Should be used anytime when wanting to create a `sinon.spy` or `sinon.stub` as it can be easily used to reset/restore multiple spys and stubs. [Info](http://sinonjs.org/releases/v4.1.6/sandbox/)
+
+## Contributing/Publishing
+
+There are certain steps that should be taken when contributing and publishing a new release of the `contxt-sdk`.
+
+### Contributing
+
+Be sure to run `npm run build` before putting your pull request up for code review. While this is command is run in
+preparation of publishing to NPM, it autogenerates the documentation and should be committed into GitHub as well.
+
+### Publishing
+
+There are certain steps that should be taken when publishing a release to NPM to avoid any issues or problems. After
+your pull request is approved and merged into `master` follow the steps below.
+
+1.  Checkout `master` locally and perform a `git pull origin master` so your local repo is up to date with your merged changes.
+1.  Run `npm version x.x.x` in your terminal on `master` where the `x`'s are the new version numbers.
+    * This sets the new version in `package.json` and `package-lock.json` and also creates a new `git tag`.
+    * Example `npm version 0.30.1`
+1.  Perform a `git push --tags origin master` while on your local copy of `master`.
+1.  Perform an `npm publish` to publish the updated package to NPM.
