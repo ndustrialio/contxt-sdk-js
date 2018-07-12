@@ -488,48 +488,42 @@ describe('Assets/Attributes', function() {
 
   describe('createValue', function() {
     context('when all required information is supplied', function() {
-      let assetAttributeValueFromServerAfterFormat;
-      let assetAttributeValueFromServerBeforeFormat;
-      let assetAttributeValueToServerAfterFormat;
-      let assetAttributeValueToServerBeforeFormat;
       let assetId;
       let formatAssetAttributeValueFromServer;
       let formatAssetAttributeValueToServer;
       let promise;
       let request;
+      let valueFromServerAfterFormat;
+      let valueFromServerBeforeFormat;
+      let valueToServerAfterFormat;
+      let valueToServerBeforeFormat;
 
       beforeEach(function() {
-        assetAttributeValueToServerBeforeFormat = fixture.build(
-          'assetAttributeValue'
-        );
-        assetAttributeValueToServerAfterFormat = fixture.build(
+        valueToServerBeforeFormat = fixture.build('assetAttributeValue');
+        valueToServerAfterFormat = fixture.build(
           'assetAttributeValue',
-          assetAttributeValueToServerBeforeFormat,
+          valueToServerBeforeFormat,
           {
             fromServer: true
           }
         );
-        assetAttributeValueFromServerAfterFormat = fixture.build(
-          'assetAttributeValue'
-        );
-        assetAttributeValueFromServerBeforeFormat = fixture.build(
+        valueFromServerAfterFormat = fixture.build('assetAttributeValue');
+        valueFromServerBeforeFormat = fixture.build(
           'assetAttributeValue',
-          assetAttributeValueFromServerAfterFormat,
+          valueFromServerAfterFormat,
           { fromServer: true }
         );
         assetId = fixture.build('asset').id;
 
         formatAssetAttributeValueFromServer = this.sandbox
           .stub(assetsUtils, 'formatAssetAttributeValueFromServer')
-          .returns(assetAttributeValueFromServerAfterFormat);
+          .returns(valueFromServerAfterFormat);
         formatAssetAttributeValueToServer = this.sandbox
           .stub(assetsUtils, 'formatAssetAttributeValueToServer')
-          .returns(assetAttributeValueToServerAfterFormat);
+          .returns(valueToServerAfterFormat);
         request = {
           ...baseRequest,
-          post: this.sandbox
-            .stub()
-            .resolves(assetAttributeValueFromServerBeforeFormat)
+          post: this.sandbox.stub().resolves(valueFromServerBeforeFormat)
         };
 
         const assetAttributes = new AssetAttributes(
@@ -540,44 +534,44 @@ describe('Assets/Attributes', function() {
 
         promise = assetAttributes.createValue(
           assetId,
-          assetAttributeValueToServerBeforeFormat
+          valueToServerBeforeFormat
         );
       });
 
       it('formats the submitted asset attribute value object to send to the server ', function() {
         expect(formatAssetAttributeValueToServer).to.be.calledWith(
-          assetAttributeValueToServerBeforeFormat
+          valueToServerBeforeFormat
         );
       });
 
       it('creates a new asset attribute value', function() {
         expect(request.post).to.be.calledWith(
           `${expectedHost}/assets/${assetId}/values`,
-          assetAttributeValueToServerAfterFormat
+          valueToServerAfterFormat
         );
       });
 
       it('formats the returned asset attribute object', function() {
         return promise.then(() => {
           expect(formatAssetAttributeValueFromServer).to.be.calledWith(
-            assetAttributeValueFromServerBeforeFormat
+            valueFromServerBeforeFormat
           );
         });
       });
 
       it('returns a fulfilled promise with the new asset attribute value information', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          assetAttributeValueFromServerAfterFormat
+          valueFromServerAfterFormat
         );
       });
     });
 
     context('when there is missing required information', function() {
-      let assetAttributeValue;
+      let value;
       let assetAttributes;
 
       beforeEach(function() {
-        assetAttributeValue = fixture.build('assetAttributeValue');
+        value = fixture.build('assetAttributeValue');
 
         assetAttributes = new AssetAttributes(
           baseSdk,
@@ -587,7 +581,7 @@ describe('Assets/Attributes', function() {
       });
 
       it('throws an error if there is no asset type ID provided', function() {
-        const promise = assetAttributes.createValue(null, assetAttributeValue);
+        const promise = assetAttributes.createValue(null, value);
 
         return expect(promise).to.be.rejectedWith(
           'An asset ID is required to create a new asset attribute value.'
@@ -597,8 +591,8 @@ describe('Assets/Attributes', function() {
       ['assetAttributeId', 'effectiveDate', 'value'].forEach(function(field) {
         it(`throws an error when ${field} is missing`, function() {
           const promise = assetAttributes.createValue(
-            assetAttributeValue.id,
-            omit(assetAttributeValue, [field])
+            value.id,
+            omit(value, [field])
           );
 
           return expect(promise).to.be.rejectedWith(
@@ -611,11 +605,11 @@ describe('Assets/Attributes', function() {
 
   describe('deleteValue', function() {
     context('when all required information is supplied', function() {
-      let expectedAssetAttributeValueId;
+      let valueId;
       let promise;
 
       beforeEach(function() {
-        expectedAssetAttributeValueId = fixture.build('assetAttributeValue').id;
+        valueId = fixture.build('assetAttributeValue').id;
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -623,12 +617,12 @@ describe('Assets/Attributes', function() {
           expectedHost
         );
 
-        promise = assetAttributes.deleteValue(expectedAssetAttributeValueId);
+        promise = assetAttributes.deleteValue(valueId);
       });
 
       it('requests to delete the asset attribute value', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/assets/attributes/values/${expectedAssetAttributeValueId}`
+          `${expectedHost}/assets/attributes/values/${valueId}`
         );
       });
 
@@ -882,24 +876,22 @@ describe('Assets/Attributes', function() {
 
   describe('updateValue', function() {
     context('when all required information is supplied', function() {
-      let assetAttributeValueToServerAfterFormat;
-      let assetAttributeValueToServerBeforeFormat;
+      let valueToServerAfterFormat;
+      let valueToServerBeforeFormat;
       let formatAssetAttributeValueToServer;
       let promise;
 
       beforeEach(function() {
-        assetAttributeValueToServerBeforeFormat = fixture.build(
-          'assetAttributeValue'
-        );
-        assetAttributeValueToServerAfterFormat = fixture.build(
+        valueToServerBeforeFormat = fixture.build('assetAttributeValue');
+        valueToServerAfterFormat = fixture.build(
           'assetAttributeValue',
-          assetAttributeValueToServerBeforeFormat,
+          valueToServerBeforeFormat,
           { fromServer: true }
         );
 
         formatAssetAttributeValueToServer = this.sandbox
           .stub(assetsUtils, 'formatAssetAttributeValueToServer')
-          .returns(assetAttributeValueToServerAfterFormat);
+          .returns(valueToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -908,23 +900,23 @@ describe('Assets/Attributes', function() {
         );
 
         promise = assetAttributes.updateValue(
-          assetAttributeValueToServerBeforeFormat.id,
-          assetAttributeValueToServerBeforeFormat
+          valueToServerBeforeFormat.id,
+          valueToServerBeforeFormat
         );
       });
 
       it('formats the data into the right format', function() {
         expect(formatAssetAttributeValueToServer).to.calledWith(
-          assetAttributeValueToServerBeforeFormat
+          valueToServerBeforeFormat
         );
       });
 
       it('updates the asset attribute value', function() {
         expect(baseRequest.put).to.be.calledWith(
           `${expectedHost}/assets/attributes/values/${
-            assetAttributeValueToServerAfterFormat.id
+            valueToServerAfterFormat.id
           }`,
-          assetAttributeValueToServerAfterFormat
+          valueToServerAfterFormat
         );
       });
 
@@ -947,13 +939,8 @@ describe('Assets/Attributes', function() {
         });
 
         it('throws an error when there is not provided asset attribute value ID', function() {
-          const assetAttributeValueUpdate = fixture.build(
-            'assetAttributeValue'
-          );
-          const promise = assetAttributes.updateValue(
-            null,
-            assetAttributeValueUpdate
-          );
+          const valueUpdate = fixture.build('assetAttributeValue');
+          const promise = assetAttributes.updateValue(null, valueUpdate);
 
           return expect(promise).to.be.rejectedWith(
             'An asset attribute value ID is required to update an asset attribute value.'
@@ -961,12 +948,8 @@ describe('Assets/Attributes', function() {
         });
 
         it('throws an error when there is no update provided', function() {
-          const assetAttributeValueUpdate = fixture.build(
-            'assetAttributeValue'
-          );
-          const promise = assetAttributes.updateValue(
-            assetAttributeValueUpdate.id
-          );
+          const valueUpdate = fixture.build('assetAttributeValue');
+          const promise = assetAttributes.updateValue(valueUpdate.id);
 
           return expect(promise).to.be.rejectedWith(
             'An update is required to update an asset attribute value.'
@@ -974,13 +957,10 @@ describe('Assets/Attributes', function() {
         });
 
         it('throws an error when the update is not a well-formed object', function() {
-          const assetAttributeValueUpdate = fixture.build(
-            'assetAttributeValue'
-          );
-          const promise = assetAttributes.updateValue(
-            assetAttributeValueUpdate.id,
-            [assetAttributeValueUpdate]
-          );
+          const valueUpdate = fixture.build('assetAttributeValue');
+          const promise = assetAttributes.updateValue(valueUpdate.id, [
+            valueUpdate
+          ]);
 
           return expect(promise).to.be.rejectedWith(
             'The asset attribute value update must be a well-formed object with the data you wish to update.'

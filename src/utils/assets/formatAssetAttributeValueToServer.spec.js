@@ -2,18 +2,17 @@ import omit from 'lodash.omit';
 import formatAssetAttributeValueToServer from './formatAssetAttributeValueToServer';
 
 describe('utils/assets/formatAssetAttributeValueToServer', function() {
-  let assetAttributeValue;
-  let expectedAssetAttributeValue;
-  let formattedAssetAttributeValue;
+  let expectedValue;
+  let formattedValue;
 
   beforeEach(function() {
-    assetAttributeValue = fixture.build('assetAttributeValue');
-    expectedAssetAttributeValue = omit(
+    const initialValue = fixture.build('assetAttributeValue');
+    expectedValue = omit(
       {
-        ...assetAttributeValue,
-        asset_attribute_id: assetAttributeValue.assetAttributeId,
-        asset_id: assetAttributeValue.assetId,
-        effective_date: assetAttributeValue.effectiveDate
+        ...initialValue,
+        asset_attribute_id: initialValue.assetAttributeId,
+        asset_id: initialValue.assetId,
+        effective_date: initialValue.effectiveDate
       },
       [
         'assetAttributeId',
@@ -25,14 +24,10 @@ describe('utils/assets/formatAssetAttributeValueToServer', function() {
       ]
     );
 
-    formattedAssetAttributeValue = formatAssetAttributeValueToServer(
-      assetAttributeValue
-    );
+    formattedValue = formatAssetAttributeValueToServer(initialValue);
   });
 
   it('converts the object keys to snake case', function() {
-    expect(formattedAssetAttributeValue).to.deep.equal(
-      expectedAssetAttributeValue
-    );
+    expect(formattedValue).to.deep.equal(expectedValue);
   });
 });

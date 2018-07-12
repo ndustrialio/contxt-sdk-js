@@ -387,11 +387,12 @@ class AssetAttributes {
    *
    * @param {String} assetId The ID of the asset for which you are looking up
    *   attribute values  (formatted as a UUID)
-   * @param {Object} filters Specific information that is used to filter the
-   *   list of asset attribute values
-   * @param {String} filters.attributeLabel Label of the parent asset attribute
-   * @param {String} filters.effectiveDate Effective date of the asset attribute
-   *   values
+   * @param {Object} assetAttributeFilters Specific information that is used to
+   *   filter the list of asset attribute values
+   * @param {String} assetAttributeFilters.attributeLabel Label of the parent
+   *   asset attribute
+   * @param {String} assetAttributeFilters.effectiveDate Effective date of the
+   *   asset attribute values
    *
    * @returns {Promise}
    * @fulfill {AssetAttributeValue[]}
@@ -407,7 +408,7 @@ class AssetAttributes {
    *   })
    *   .catch((err) => console.log(err));
    */
-  getValuesByAssetId(assetId, filters) {
+  getValuesByAssetId(assetId, assetAttributeFilters) {
     if (!assetId) {
       return Promise.reject(
         new Error(
@@ -416,11 +417,13 @@ class AssetAttributes {
       );
     }
 
-    const formattedFilters = formatAssetAttributeValueFiltersToServer(filters);
+    const formattedAssetAttributeFilters = formatAssetAttributeValueFiltersToServer(
+      assetAttributeFilters
+    );
 
     return this._request
       .get(`${this._baseUrl}/assets/${assetId}/attributes/values`, {
-        params: formattedFilters
+        params: formattedAssetAttributeFilters
       })
       .then((assetAttributeValues) =>
         assetAttributeValues.map(formatAssetAttributeValueFromServer)
@@ -435,7 +438,7 @@ class AssetAttributes {
    *
    * @param {String} assetId The ID of the asset for which you are looking up
    *   attribute values  (formatted as a UUID)
-   * @param {String} attributeId The ID of the asset attribute for which you are
+   * @param {String} assetAttributeId The ID of the asset attribute for which you are
    *   looking up attribute values (formatted as a UUID)
    * @param {PaginationOptions}
    *
@@ -454,7 +457,7 @@ class AssetAttributes {
    *   })
    *   .catch((err) => console.log(err));
    */
-  getValuesByAttributeId(assetId, attributeId, paginationOptions) {
+  getValuesByAttributeId(assetId, assetAttributeId, paginationOptions) {
     if (!assetId) {
       return Promise.reject(
         new Error(
@@ -463,7 +466,7 @@ class AssetAttributes {
       );
     }
 
-    if (!attributeId) {
+    if (!assetAttributeId) {
       return Promise.reject(
         new Error(
           'An asset attribute ID is required to get a list of asset attribute values.'
@@ -477,7 +480,9 @@ class AssetAttributes {
 
     return this._request
       .get(
-        `${this._baseUrl}/assets/${assetId}/attributes/${attributeId}/values`,
+        `${
+          this._baseUrl
+        }/assets/${assetId}/attributes/${assetAttributeId}/values`,
         { params: formattedPaginationOptions }
       )
       .then((assetAttributeValueData) =>

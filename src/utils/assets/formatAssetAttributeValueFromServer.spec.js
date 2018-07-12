@@ -2,22 +2,21 @@ import omit from 'lodash.omit';
 import formatAssetAttributeValueFromServer from './formatAssetAttributeValueFromServer';
 
 describe('utils/assets/formatAssetAttributeValueFromServer', function() {
-  let assetAttributeValue;
-  let expectedAssetAttributeValue;
-  let formattedAssetAttributeValue;
+  let expectedValue;
+  let formattedValue;
 
   beforeEach(function() {
-    assetAttributeValue = fixture.build('assetAttributeValue', null, {
+    const initialValue = fixture.build('assetAttributeValue', null, {
       fromServer: true
     });
-    expectedAssetAttributeValue = omit(
+    expectedValue = omit(
       {
-        ...assetAttributeValue,
-        assetAttributeId: assetAttributeValue.asset_attribute_id,
-        assetId: assetAttributeValue.asset_id,
-        createdAt: assetAttributeValue.created_at,
-        effectiveDate: assetAttributeValue.effective_date,
-        updatedAt: assetAttributeValue.updated_at
+        ...initialValue,
+        assetAttributeId: initialValue.asset_attribute_id,
+        assetId: initialValue.asset_id,
+        createdAt: initialValue.created_at,
+        effectiveDate: initialValue.effective_date,
+        updatedAt: initialValue.updated_at
       },
       [
         'asset_attribute_id',
@@ -28,14 +27,10 @@ describe('utils/assets/formatAssetAttributeValueFromServer', function() {
       ]
     );
 
-    formattedAssetAttributeValue = formatAssetAttributeValueFromServer(
-      assetAttributeValue
-    );
+    formattedValue = formatAssetAttributeValueFromServer(initialValue);
   });
 
   it('converts the object keys to camel case', function() {
-    expect(formattedAssetAttributeValue).to.deep.equal(
-      expectedAssetAttributeValue
-    );
+    expect(formattedValue).to.deep.equal(expectedValue);
   });
 });

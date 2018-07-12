@@ -12,7 +12,7 @@
  *
  * @private
  */
-function formatAssetAttributeValueToServer(input) {
+function formatAssetAttributeValueToServer(input = {}) {
   return {
     asset_attribute_id: input.assetAttributeId,
     asset_id: input.assetId,

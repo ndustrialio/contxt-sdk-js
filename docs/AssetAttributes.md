@@ -15,8 +15,8 @@ different asset attributes and their values
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
-    * [.getValuesByAssetId(assetId, filters)](#AssetAttributes+getValuesByAssetId) ⇒ <code>Promise</code>
-    * [.getValuesByAttributeId(assetId, attributeId, paginationOptions)](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
+    * [.getValuesByAssetId(assetId, assetAttributeFilters)](#AssetAttributes+getValuesByAssetId) ⇒ <code>Promise</code>
+    * [.getValuesByAttributeId(assetId, assetAttributeId, paginationOptions)](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
     * [.updateValue(assetAttributeId, update)](#AssetAttributes+updateValue) ⇒ <code>Promise</code>
 
 <a name="new_AssetAttributes_new"></a>
@@ -218,7 +218,7 @@ contxtSdk.assets.attributes.deleteValue(
 ```
 <a name="AssetAttributes+getValuesByAssetId"></a>
 
-### contxtSdk.assets.attributes.getValuesByAssetId(assetId, filters) ⇒ <code>Promise</code>
+### contxtSdk.assets.attributes.getValuesByAssetId(assetId, assetAttributeFilters) ⇒ <code>Promise</code>
 Gets the requested page of asset attribute values
 
 API Endpoint: '/assets/:assetId/attributes/values'
@@ -231,9 +231,9 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | assetId | <code>String</code> | The ID of the asset for which you are looking up   attribute values  (formatted as a UUID) |
-| filters | <code>Object</code> | Specific information that is used to filter the   list of asset attribute values |
-| filters.attributeLabel | <code>String</code> | Label of the parent asset attribute |
-| filters.effectiveDate | <code>String</code> | Effective date of the asset attribute   values |
+| assetAttributeFilters | <code>Object</code> | Specific information that is used to   filter the list of asset attribute values |
+| assetAttributeFilters.attributeLabel | <code>String</code> | Label of the parent   asset attribute |
+| assetAttributeFilters.effectiveDate | <code>String</code> | Effective date of the   asset attribute values |
 
 **Example**  
 ```js
@@ -248,7 +248,7 @@ contxtSdk.assets.attributes
 ```
 <a name="AssetAttributes+getValuesByAttributeId"></a>
 
-### contxtSdk.assets.attributes.getValuesByAttributeId(assetId, attributeId, paginationOptions) ⇒ <code>Promise</code>
+### contxtSdk.assets.attributes.getValuesByAttributeId(assetId, assetAttributeId, paginationOptions) ⇒ <code>Promise</code>
 Gets the requested page of asset attribute values
 
 API Endpoint: '/assets/:assetId/attributes/:attributeId/values'
@@ -261,7 +261,7 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | assetId | <code>String</code> | The ID of the asset for which you are looking up   attribute values  (formatted as a UUID) |
-| attributeId | <code>String</code> | The ID of the asset attribute for which you are   looking up attribute values (formatted as a UUID) |
+| assetAttributeId | <code>String</code> | The ID of the asset attribute for which you are   looking up attribute values (formatted as a UUID) |
 | paginationOptions | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
 
 **Example**  
