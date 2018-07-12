@@ -12,7 +12,7 @@
  * @param {string} [input.units]
  * @param {string} input.updated_at ISO 8601 Extended Format date/time string
  *
- * @returns {Asset}
+ * @returns {AssetAttribute}
  *
  * @private
  */

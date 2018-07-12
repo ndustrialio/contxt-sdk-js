@@ -2,8 +2,26 @@ import isPlainObject from 'lodash.isplainobject';
 import {
   formatAssetAttributeDataFromServer,
   formatAssetAttributeFromServer,
-  formatAssetAttributeToServer
+  formatAssetAttributeToServer,
+  formatAssetAttributeValueFiltersToServer,
+  formatAssetAttributeValueFromServer,
+  formatAssetAttributeValueToServer,
+  formatPaginatedDataFromServer,
+  formatPaginationOptionsToServer
 } from '../utils/assets';
+
+/**
+ * @typedef {Object} PaginationMetadata
+ * @property {number} offset Offset of records in subsequent queries
+ * @property {number} totalRecords Total number of asset attributes found
+ */
+
+/**
+ * @typedef {Object} PaginationOptions
+ * @property {Number} limit Maximum number of records to return per query
+ * @property {Number} offset How many records from the first record to start
+ *   the query
+ */
 
 /**
  * @typedef {Object} AssetAttribute
@@ -20,9 +38,7 @@ import {
 
 /**
  * @typedef {Object} AssetAttributeData
- * @property {Object} _metadata Metadata about the pagination settings
- * @property {number} _metadata.offset Offset of records in subsequent queries
- * @property {number} _metadata.totalRecords Total number of asset attributes found
+ * @property {PaginationMetadata} _metadata Metadata about the pagination settings
  * @property {AssetAttribute[]} records
  */
 
@@ -36,6 +52,12 @@ import {
  * @property {string} [notes]
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  * @property {string} value
+ */
+
+/**
+ * @typedef {Object} AssetAttributeValueData
+ * @property {PaginationMetadata} _metadata Metadata about the pagination settings
+ * @property {AssetAttributeValue[]} records
  */
 
 /**
@@ -63,7 +85,6 @@ class AssetAttributes {
    * Method: POST
    *
    * @param {string} assetTypeId The ID of the asset type (formatted as a UUID)
-   *
    * @param {Object} assetAttribute
    * @param {string} assetAttribute.description
    * @param {boolean} [assetAttribute.isRequired]
@@ -269,28 +290,270 @@ class AssetAttributes {
 
   /**
    * Creates a new asset attribute value
+   *
+   * API Endpoint: '/assets/:assetId/values'
+   * Method: POST
+   *
+   * @param {string} assetId The ID of the asset type (formatted as a UUID)
+   * @param {Object} assetAttributeValue
+   * @param {string} assetAttributeValue.assetAttributeId UUID corresponding to the asset attribute
+   * @param {string} assetAttributeValue.effectiveDate ISO 8601 Extended Format date/time string
+   * @param {string} [assetAttributeValue.notes]
+   * @param {string} assetAttributeValue.value
+   *
+   * @returns {Promise}
+   * @fulfill {AssetAttributeValue}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .createValue('2140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+   *     assetAttributeId: 'cca11baa-cf7d-44c0-9d0a-6ad73d5f30cb',
+   *     effectiveDate: '2018-07-09T14:36:36.004Z',
+   *     notes: 'Iure delectus non sunt a voluptates pariatur fuga.',
+   *     value: '2206'
+   *   })
+   *   .then((assetAttributeValue) => console.log(assetAttributeValue))
+   *   .catch((err) => console.log(err));
    */
-  createValue() {}
+  createValue(assetId, assetAttributeValue = {}) {
+    const requiredFields = ['assetAttributeId', 'effectiveDate', 'value'];
+
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to create a new asset attribute value.'
+        )
+      );
+    }
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      const field = requiredFields[i];
+
+      if (!assetAttributeValue[field]) {
+        return Promise.reject(
+          new Error(
+            `A ${field} is required to create a new asset attribute value.`
+          )
+        );
+      }
+    }
+
+    const data = formatAssetAttributeValueToServer(assetAttributeValue);
+
+    return this._request
+      .post(`${this._baseUrl}/assets/${assetId}/values`, data)
+      .then((assetAttributeValue) =>
+        formatAssetAttributeValueFromServer(assetAttributeValue)
+      );
+  }
 
   /**
    * Deletes an asset attribute value
+   *
+   * API Endpoint: '/assets/attributes/values/:assetAttributeValueId'
+   * Method: DELETE
+   *
+   * @param {string} assetAttributeValueId The ID of the asset attribute value (formatted as a UUID)
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes.deleteValue(
+   *   'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
+   * );
    */
-  deleteValue() {}
+  deleteValue(assetAttributeValueId) {
+    if (!assetAttributeValueId) {
+      return Promise.reject(
+        new Error(
+          'An asset attribute value ID is required for deleting an asset attribute value.'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/assets/attributes/values/${assetAttributeValueId}`
+    );
+  }
 
   /**
-   * Gets an asset attribute value
+   * Gets asset attribute values for a particular asset
+   *
+   * API Endpoint: '/assets/:assetId/attributes/values'
+   * Method: GET
+   *
+   * @param {String} assetId The ID of the asset for which you are looking up
+   *   attribute values  (formatted as a UUID)
+   * @param {Object} [assetAttributeFilters] Specific information that is used to
+   *   filter the list of asset attribute values
+   * @param {String} [assetAttributeFilters.attributeLabel] Label of the parent
+   *   asset attribute
+   * @param {String} [assetAttributeFilters.effectiveDate] Effective date of the
+   *   asset attribute values
+   *
+   * @returns {Promise}
+   * @fulfill {AssetAttributeValue[]}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .getValuesByAssetId('d7329ef3-ca63-4ad5-bb3e-632b702584f8', {
+   *     attributeLabel: 'Square Footage',
+   *     effectiveDate: '2018-07-11T19:14:49.715Z'
+   *   })
+   *   .then((assetAttributeValues) => {
+   *     console.log(assetAttributeValues);
+   *   })
+   *   .catch((err) => console.log(err));
    */
-  getValue() {}
+  getValuesByAssetId(assetId, assetAttributeFilters) {
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to get a list of asset attribute values.'
+        )
+      );
+    }
+
+    const formattedAssetAttributeFilters = formatAssetAttributeValueFiltersToServer(
+      assetAttributeFilters
+    );
+
+    return this._request
+      .get(`${this._baseUrl}/assets/${assetId}/attributes/values`, {
+        params: formattedAssetAttributeFilters
+      })
+      .then((assetAttributeValues) =>
+        assetAttributeValues.map(formatAssetAttributeValueFromServer)
+      );
+  }
 
   /**
-   * Gets a list of all asset attribute values
+   * Gets a paginated list of asset attribute values for a particular attribute
+   * of a particular asset
+   *
+   * API Endpoint: '/assets/:assetId/attributes/:attributeId/values'
+   * Method: GET
+   *
+   * @param {String} assetId The ID of the asset for which you are looking up
+   *   attribute values  (formatted as a UUID)
+   * @param {String} assetAttributeId The ID of the asset attribute for which you are
+   *   looking up attribute values (formatted as a UUID)
+   * @param {PaginationOptions}
+   *
+   * @returns {Promise}
+   * @fulfill {AssetAttributeValueData}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .getValuesByAttributeId(
+   *     'a4d80a97-cbf6-453b-bab5-0477e1ede04f',
+   *     'c2779610-44d7-4313-aea2-96cce58d6efd',
+   *     {
+   *       limit: 100,
+   *       offset: 0
+   *     }
+   *   )
+   *   .then((assetAttributeValuesData) => {
+   *     console.log(assetAttributeValuesData);
+   *   })
+   *   .catch((err) => console.log(err));
    */
-  getAllValues() {}
+  getValuesByAttributeId(assetId, assetAttributeId, paginationOptions) {
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to get a list of asset attribute values.'
+        )
+      );
+    }
+
+    if (!assetAttributeId) {
+      return Promise.reject(
+        new Error(
+          'An asset attribute ID is required to get a list of asset attribute values.'
+        )
+      );
+    }
+
+    const formattedPaginationOptions = formatPaginationOptionsToServer(
+      paginationOptions
+    );
+
+    return this._request
+      .get(
+        `${
+          this._baseUrl
+        }/assets/${assetId}/attributes/${assetAttributeId}/values`,
+        { params: formattedPaginationOptions }
+      )
+      .then((assetAttributeValueData) =>
+        formatPaginatedDataFromServer(
+          assetAttributeValueData,
+          formatAssetAttributeValueFromServer
+        )
+      );
+  }
 
   /**
    * Updates an asset attribute value
+   *
+   * API Endpoint: '/assets/attributes/values/:assetAttributeValueId'
+   * Method: PUT
+   *
+   * @param {string} assetAttributeId The ID of the asset attribute to update (formatted as a UUID)
+   * @param {Object} update An object containing the updated data for the asset attribute value
+   * @param {string} [update.effectiveDate] ISO 8601 Extended Format date/time string
+   * @param {string} [update.notes]
+   * @param {string} [update.value]
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .updateValue('2140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+   *     effectiveDate: '2018-07-10T11:04:24.631Z',
+   *     notes: 'Dolores et sapiente sunt doloribus aut in.',
+   *     value: '61456'
+   *   })
+   *   .catch((err) => console.log(err));
    */
-  updateValue() {}
+  updateValue(assetAttributeValueId, update) {
+    if (!assetAttributeValueId) {
+      return Promise.reject(
+        new Error(
+          'An asset attribute value ID is required to update an asset attribute value.'
+        )
+      );
+    }
+
+    if (!update) {
+      return Promise.reject(
+        new Error('An update is required to update an asset attribute value.')
+      );
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error(
+          'The asset attribute value update must be a well-formed object with the data you wish to update.'
+        )
+      );
+    }
+
+    const formattedUpdate = formatAssetAttributeValueToServer(update);
+
+    return this._request.put(
+      `${this._baseUrl}/assets/attributes/values/${assetAttributeValueId}`,
+      formattedUpdate
+    );
+  }
 }
 
 export default AssetAttributes;
