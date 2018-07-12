@@ -9,6 +9,8 @@ factory
   .attrs({
     assetTypeId: () => factory.build('assetType').id,
     createdAt: () => faker.date.past().toISOString(),
+    dataType: () =>
+      faker.random.arrayElement(['boolean', 'date', 'number', 'string']),
     description: () => faker.lorem.sentence(),
     id: () => faker.random.uuid(),
     isRequired: () => faker.random.boolean(),
@@ -26,6 +28,9 @@ factory
 
       assetAttribute.created_at = assetAttribute.createdAt;
       delete assetAttribute.createdAt;
+
+      assetAttribute.data_type = assetAttribute.dataType;
+      delete assetAttribute.dataType;
 
       assetAttribute.is_required = assetAttribute.isRequired;
       delete assetAttribute.isRequired;
