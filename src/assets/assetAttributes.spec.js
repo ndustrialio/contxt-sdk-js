@@ -668,11 +668,11 @@ describe('Assets/Attributes', function() {
 
       beforeEach(function() {
         assetId = fixture.build('asset').id;
-        valuesFromServerAfterFormat = {
+        valueFiltersToServerAfterFormat = {
           attributeLabel: faker.hacker.phrase(),
           effectiveDate: faker.date.recent().toISOString()
         };
-        valuesFromServerBeforeFormat = {
+        valueFiltersToServerBeforeFormat = {
           attributeLabel: faker.hacker.phrase(),
           effectiveDate: faker.date.recent().toISOString()
         };
@@ -716,7 +716,8 @@ describe('Assets/Attributes', function() {
 
       it('gets a list of asset attributes from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/assets/${assetId}/attributes/values`
+          `${expectedHost}/assets/${assetId}/attributes/values`,
+          { params: valueFiltersToServerAfterFormat }
         );
       });
 
@@ -756,7 +757,9 @@ describe('Assets/Attributes', function() {
       let assetId;
       let attributeId;
       let formatPaginatedDataFromServer;
-      let expectedPaginationOptions;
+      let formatPaginationOptionsToServer;
+      let paginationOptionsBeforeFormat;
+      let paginationOptionsAfterFormat;
       let promise;
       let request;
       let valuesFromServerAfterFormat;
@@ -765,7 +768,11 @@ describe('Assets/Attributes', function() {
       beforeEach(function() {
         assetId = fixture.build('asset').id;
         attributeId = fixture.build('assetAttribute').id;
-        expectedPaginationOptions = {
+        paginationOptionsBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        paginationOptionsAfterFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
@@ -790,6 +797,9 @@ describe('Assets/Attributes', function() {
         formatPaginatedDataFromServer = this.sandbox
           .stub(assetsUtils, 'formatPaginatedDataFromServer')
           .returns(valuesFromServerAfterFormat);
+        formatPaginationOptionsToServer = this.sandbox
+          .stub(assetsUtils, 'formatPaginationOptionsToServer')
+          .returns(paginationOptionsAfterFormat);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
@@ -803,14 +813,20 @@ describe('Assets/Attributes', function() {
         promise = assetAttributes.getValuesByAttributeId(
           assetId,
           attributeId,
-          expectedPaginationOptions
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options sent to the server', function() {
+        expect(formatPaginationOptionsToServer).to.be.calledWith(
+          paginationOptionsBeforeFormat
         );
       });
 
       it('gets a list of asset attribute values from the server', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/assets/${assetId}/attributes/${attributeId}/values`,
-          { params: { ...expectedPaginationOptions } }
+          { params: paginationOptionsAfterFormat }
         );
       });
 

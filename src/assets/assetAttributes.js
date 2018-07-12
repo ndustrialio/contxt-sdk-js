@@ -6,7 +6,8 @@ import {
   formatAssetAttributeValueFiltersToServer,
   formatAssetAttributeValueFromServer,
   formatAssetAttributeValueToServer,
-  formatPaginatedDataFromServer
+  formatPaginatedDataFromServer,
+  formatPaginationOptionsToServer
 } from '../utils/assets';
 
 /**
@@ -419,7 +420,7 @@ class AssetAttributes {
 
     return this._request
       .get(`${this._baseUrl}/assets/${assetId}/attributes/values`, {
-        param: formattedFilters
+        params: formattedFilters
       })
       .then((assetAttributeValues) =>
         assetAttributeValues.map(formatAssetAttributeValueFromServer)
@@ -470,15 +471,14 @@ class AssetAttributes {
       );
     }
 
-    const params = {
-      limit: paginationOptions.limit,
-      offset: paginationOptions.offset
-    };
+    const formattedPaginationOptions = formatPaginationOptionsToServer(
+      paginationOptions
+    );
 
     return this._request
       .get(
         `${this._baseUrl}/assets/${assetId}/attributes/${attributeId}/values`,
-        { params }
+        { params: formattedPaginationOptions }
       )
       .then((assetAttributeValueData) =>
         formatPaginatedDataFromServer(

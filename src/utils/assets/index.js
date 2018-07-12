@@ -12,6 +12,7 @@ import formatAssetTypeFromServer from './formatAssetTypeFromServer';
 import formatAssetTypesDataFromServer from './formatAssetTypesDataFromServer';
 import formatAssetTypeToServer from './formatAssetTypeToServer';
 import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
+import formatPaginationOptionsToServer from './formatPaginationOptionsToServer';
 
 export {
   formatAssetAttributeDataFromServer,
@@ -27,5 +28,6 @@ export {
   formatAssetTypeFromServer,
   formatAssetTypesDataFromServer,
   formatAssetTypeToServer,
-  formatPaginatedDataFromServer
+  formatPaginatedDataFromServer,
+  formatPaginationOptionsToServer
 };

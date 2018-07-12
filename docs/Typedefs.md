@@ -132,9 +132,9 @@ A single audience used for authenticating and communicating with an individual A
 
 | Name | Type |
 | --- | --- |
-| accessToken | <code>string</code> |
-| apiToken | <code>string</code> |
-| expiresAt | <code>number</code> |
+| accessToken | <code>string</code> | 
+| apiToken | <code>string</code> | 
+| expiresAt | <code>number</code> | 
 
 <a name="AxiosInterceptor"></a>
 
@@ -284,8 +284,8 @@ for authenticating and communicating with an individual API and the external mod
 
 | Name | Type |
 | --- | --- |
-| apiToken | <code>string</code> |
-| expiresAt | <code>number</code> |
+| apiToken | <code>string</code> | 
+| expiresAt | <code>number</code> | 
 
 <a name="OutputField"></a>
 
@@ -420,3 +420,4 @@ User provided configuration options
 | picture | <code>string</code> | URL to an avatar |
 | sub | <code>string</code> | The Subject Claim of the user's JWT |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
