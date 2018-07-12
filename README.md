@@ -139,3 +139,5 @@ your pull request is approved and merged into `master` follow the steps below.
     * Example `npm version 0.30.1`
 1.  Perform a `git push --tags origin master` while on your local copy of `master`.
 1.  Perform an `npm publish` to publish the updated package to NPM.
+
+Now you've successfully updated and published the package.
