@@ -11,12 +11,14 @@ describe('utils/assets/formatAssetAttributeToServer', function() {
     expectedAssetAttribute = omit(
       {
         ...assetAttribute,
+        data_type: assetAttribute.dataType,
         is_required: assetAttribute.isRequired,
         organization_id: assetAttribute.organizationId
       },
       [
         'assetTypeId',
         'createdAt',
+        'dataType',
         'id',
         'isRequired',
         'organizationId',
