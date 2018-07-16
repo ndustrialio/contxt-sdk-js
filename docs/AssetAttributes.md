@@ -45,6 +45,7 @@ Method: POST
 | --- | --- | --- |
 | assetTypeId | <code>string</code> | The ID of the asset type (formatted as a UUID) |
 | assetAttribute | <code>Object</code> |  |
+| assetAttribute.dataType | <code>string</code> |  |
 | assetAttribute.description | <code>string</code> |  |
 | [assetAttribute.isRequired] | <code>boolean</code> |  |
 | assetAttribute.label | <code>string</code> |  |
@@ -55,6 +56,7 @@ Method: POST
 ```js
 contxtSdk.assets.attributes
   .create('4f0e51c6-728b-4892-9863-6d002e61204d', {
+    dataType: 'boolean',
     description: 'Square footage of a facility',
     isRequired: true,
     label: 'Square Footage',
@@ -146,6 +148,7 @@ Method: PUT
 | --- | --- | --- |
 | assetAttributeId | <code>string</code> | The ID of the asset attribute to update (formatted as a UUID) |
 | update | <code>Object</code> | An object containing the updated data for the asset attribute |
+| [update.dataType] | <code>string</code> |  |
 | [update.description] | <code>string</code> |  |
 | [update.isRequired] | <code>boolean</code> |  |
 | [update.label] | <code>string</code> |  |
@@ -155,6 +158,7 @@ Method: PUT
 ```js
 contxtSdk.assets.attributes
   .update('c7f927c3-11a7-4024-9269-e1231baeb765', {
+    dataType: 'boolean',
     description: 'Temperature of a facility',
     isRequired: false,
     label: 'Temperature',

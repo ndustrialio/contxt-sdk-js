@@ -24,6 +24,7 @@
 | --- | --- | --- |
 | assetTypeId | <code>string</code> | UUID corresponding with the asset type |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| dataType | <code>string</code> | Data Type of attribute with options "boolean", "date", "number", "string" |
 | description | <code>string</code> |  |
 | id | <code>string</code> | UUID |
 | isRequired | <code>boolean</code> |  |

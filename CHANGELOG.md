@@ -1,19 +1,18 @@
-## [v0.0.21](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.21) (2018-07-13)
-
-**Changed**
-
-* Now supporting the `data_type` field for `AssetAttributes`
-
-## [v0.0.20](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.20) (2018-07-12)
+## [v0.0.20](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.20) (2018-07-16)
 
 **Added**
 
 * Methods around the display and manipulation of Asset Attributes Values. They are namespaced under assets (i.e. `assets.attributes.methodName()`) and include:
+
   * AssetAttributes#createValue to add an asset attribute value
   * AssetAttributes#deleteValue to delete an asset attribute value
   * AssetAttributes#getValuesByAssetId to get asset attribute values for a particular asset
   * AssetAttributes#getValuesByAttributeId to get a paginated list of asset attribute values for a particular attribute of a particular asset
   * AssetAttributes#updateValue to update an asset attribute value
+
+**Changed**
+
+* Now supporting the `data_type` field for `AssetAttributes`
 
 ## [v0.0.19](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.19) (2018-07-09)
 
