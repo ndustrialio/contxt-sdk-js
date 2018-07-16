@@ -385,7 +385,7 @@ class AssetAttributes {
   }
 
   /**
-   * Gets asset attribute values for a particular asset
+   * Gets the effective attribute values for a particular asset
    *
    * API Endpoint: '/assets/:assetId/attributes/values'
    * Method: GET
@@ -396,8 +396,8 @@ class AssetAttributes {
    *   filter the list of asset attribute values
    * @param {String} [assetAttributeFilters.attributeLabel] Label of the parent
    *   asset attribute
-   * @param {String} [assetAttributeFilters.effectiveDate] Effective date of the
-   *   asset attribute values
+   * @param {String} [assetAttributeFilters.effectiveDate = (new Date()).toISOString()] Effective
+   *   date of the asset attribute values
    *
    * @returns {Promise}
    * @fulfill {AssetAttributeValue[]}
@@ -405,7 +405,7 @@ class AssetAttributes {
    *
    * @example
    * contxtSdk.assets.attributes
-   *   .getValuesByAssetId('d7329ef3-ca63-4ad5-bb3e-632b702584f8', {
+   *   .getEffectiveValuesByAssetId('d7329ef3-ca63-4ad5-bb3e-632b702584f8', {
    *     attributeLabel: 'Square Footage',
    *     effectiveDate: '2018-07-11T19:14:49.715Z'
    *   })
@@ -414,7 +414,7 @@ class AssetAttributes {
    *   })
    *   .catch((err) => console.log(err));
    */
-  getValuesByAssetId(assetId, assetAttributeFilters) {
+  getEffectiveValuesByAssetId(assetId, assetAttributeFilters) {
     if (!assetId) {
       return Promise.reject(
         new Error(

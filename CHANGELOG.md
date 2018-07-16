@@ -6,7 +6,7 @@
 
   * AssetAttributes#createValue to add an asset attribute value
   * AssetAttributes#deleteValue to delete an asset attribute value
-  * AssetAttributes#getValuesByAssetId to get asset attribute values for a particular asset
+  * AssetAttributes#getEffectiveValuesByAssetId to get the effective asset attribute values for a particular asset
   * AssetAttributes#getValuesByAttributeId to get a paginated list of asset attribute values for a particular attribute of a particular asset
   * AssetAttributes#updateValue to update an asset attribute value
 
