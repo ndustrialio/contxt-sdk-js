@@ -648,7 +648,7 @@ describe('Assets/Attributes', function() {
     });
   });
 
-  describe('getValuesByAssetId', function() {
+  describe('getEffectiveValuesByAssetId', function() {
     context('when all required information is supplied', function() {
       let assetId;
       let formatAssetAttributeValueFiltersToServer;
@@ -696,7 +696,7 @@ describe('Assets/Attributes', function() {
           request,
           expectedHost
         );
-        promise = assetAttributes.getValuesByAssetId(
+        promise = assetAttributes.getEffectiveValuesByAssetId(
           assetId,
           valueFiltersToServerBeforeFormat
         );
@@ -737,7 +737,7 @@ describe('Assets/Attributes', function() {
           baseRequest,
           expectedHost
         );
-        const promise = assetAttributes.getValuesByAssetId(null);
+        const promise = assetAttributes.getEffectiveValuesByAssetId(null);
 
         return expect(promise).to.be.rejectedWith(
           'An asset ID is required to get a list of asset attribute values.'

@@ -15,7 +15,7 @@ different asset attributes and their values
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
-    * [.getValuesByAssetId(assetId, [assetAttributeFilters])](#AssetAttributes+getValuesByAssetId) ⇒ <code>Promise</code>
+    * [.getEffectiveValuesByAssetId(assetId, [assetAttributeFilters])](#AssetAttributes+getEffectiveValuesByAssetId) ⇒ <code>Promise</code>
     * [.getValuesByAttributeId(assetId, assetAttributeId, paginationOptions)](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
     * [.updateValue(assetAttributeId, update)](#AssetAttributes+updateValue) ⇒ <code>Promise</code>
 
@@ -220,10 +220,10 @@ contxtSdk.assets.attributes.deleteValue(
   'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
 );
 ```
-<a name="AssetAttributes+getValuesByAssetId"></a>
+<a name="AssetAttributes+getEffectiveValuesByAssetId"></a>
 
-### contxtSdk.assets.attributes.getValuesByAssetId(assetId, [assetAttributeFilters]) ⇒ <code>Promise</code>
-Gets asset attribute values for a particular asset
+### contxtSdk.assets.attributes.getEffectiveValuesByAssetId(assetId, [assetAttributeFilters]) ⇒ <code>Promise</code>
+Gets the effective attribute values for a particular asset
 
 API Endpoint: '/assets/:assetId/attributes/values'
 Method: GET
@@ -232,17 +232,17 @@ Method: GET
 **Fulfill**: <code>AssetAttributeValue[]</code>  
 **Rejects**: <code>Error</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| assetId | <code>String</code> | The ID of the asset for which you are looking up   attribute values  (formatted as a UUID) |
-| [assetAttributeFilters] | <code>Object</code> | Specific information that is used to   filter the list of asset attribute values |
-| [assetAttributeFilters.attributeLabel] | <code>String</code> | Label of the parent   asset attribute |
-| [assetAttributeFilters.effectiveDate] | <code>String</code> | Effective date of the   asset attribute values |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| assetId | <code>String</code> |  | The ID of the asset for which you are looking up   attribute values  (formatted as a UUID) |
+| [assetAttributeFilters] | <code>Object</code> |  | Specific information that is used to   filter the list of asset attribute values |
+| [assetAttributeFilters.attributeLabel] | <code>String</code> |  | Label of the parent   asset attribute |
+| [assetAttributeFilters.effectiveDate] | <code>String</code> | <code>(new Date()).toISOString()</code> | Effective   date of the asset attribute values |
 
 **Example**  
 ```js
 contxtSdk.assets.attributes
-  .getValuesByAssetId('d7329ef3-ca63-4ad5-bb3e-632b702584f8', {
+  .getEffectiveValuesByAssetId('d7329ef3-ca63-4ad5-bb3e-632b702584f8', {
     attributeLabel: 'Square Footage',
     effectiveDate: '2018-07-11T19:14:49.715Z'
   })
