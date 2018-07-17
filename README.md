@@ -125,13 +125,14 @@ There are certain steps that should be taken when contributing and publishing a 
 
 ### Contributing
 
-Be sure to run `npm run build` before putting your pull request up for code review. While this is command is run in
-preparation of publishing to NPM, it autogenerates the documentation and should be committed into GitHub as well.
+Before submitting a pull request for code review, be sure to run `npm run build:docs`. This command will autogenerate
+the documentation, utilizing [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown), which should be
+committed to source control.
 
 ### Publishing
 
 There are certain steps that should be taken when publishing a release to NPM to avoid any issues or problems. After
-your pull request is approved and merged into `master` follow the steps below.
+your pull request is approved and merged into `master`, follow the steps below.
 
 1.  Checkout `master` locally and perform a `git pull origin master` so your local repo is up to date with your merged changes.
 1.  Run `npm version x.x.x` in your terminal on `master` where the `x`'s are the new version numbers.
@@ -140,4 +141,4 @@ your pull request is approved and merged into `master` follow the steps below.
 1.  Perform a `git push --tags origin master` while on your local copy of `master`.
 1.  Perform an `npm publish` to publish the updated package to NPM.
 
-Now you've successfully updated and published the package.
+You've now successfully updated and published the package.
