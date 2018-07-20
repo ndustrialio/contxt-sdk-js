@@ -1,3 +1,4 @@
+import has from 'lodash.has';
 import isPlainObject from 'lodash.isplainobject';
 import {
   formatAssetTypeFromServer,
@@ -49,7 +50,8 @@ class AssetTypes {
    * @param {Object} assetType
    * @param {string} assetType.description
    * @param {string} assetType.label
-   * @param {string} assetType.organizationId
+   * @param {string} assetType.organizationId The ID of the asset type's parent organization. Can be
+   *   explicitly set to `null` to create a global asset type
    *
    * @returns {Promise}
    * @fulfill {AssetType} Information about the new asset type
@@ -66,12 +68,17 @@ class AssetTypes {
    *   .catch((err) => console.log(err));
    */
   create(assetType = {}) {
+    const hasFieldFns = {
+      default: (object, key) => !!object[key],
+      organizationId: (object, key) => has(object, key)
+    };
     const requiredFields = ['description', 'label', 'organizationId'];
 
     for (let i = 0; i < requiredFields.length; i++) {
       const field = requiredFields[i];
+      const hasField = hasFieldFns[field] || hasFieldFns.default;
 
-      if (!assetType[field]) {
+      if (!hasField(assetType, field)) {
         return Promise.reject(
           new Error(`A ${field} is required to create a new asset type.`)
         );

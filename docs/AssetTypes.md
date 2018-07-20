@@ -36,12 +36,12 @@ Method: POST
 **Fulfill**: [<code>AssetType</code>](./Typedefs.md#AssetType) Information about the new asset type  
 **Reject**: <code>Error</code>  
 
-| Param | Type |
-| --- | --- |
-| assetType | <code>Object</code> | 
-| assetType.description | <code>string</code> | 
-| assetType.label | <code>string</code> | 
-| assetType.organizationId | <code>string</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| assetType | <code>Object</code> |  |
+| assetType.description | <code>string</code> |  |
+| assetType.label | <code>string</code> |  |
+| assetType.organizationId | <code>string</code> | The ID of the asset type's parent organization. Can be   explicitly set to `null` to create a global asset type |
 
 **Example**  
 ```js
