@@ -51,7 +51,75 @@ describe('Assets/Types', function() {
   });
 
   describe('create', function() {
-    context('when all required information is supplied', function() {
+    context(
+      'when creating an asset type tied to a specific organization',
+      function() {
+        let assetTypeFromServerAfterFormat;
+        let assetTypeFromServerBeforeFormat;
+        let assetTypeToServerAfterFormat;
+        let assetTypeToServerBeforeFormat;
+        let formatAssetTypeFromServer;
+        let formatAssetTypeToServer;
+        let promise;
+        let request;
+
+        beforeEach(function() {
+          assetTypeFromServerAfterFormat = fixture.build('assetType');
+          assetTypeFromServerBeforeFormat = fixture.build('assetType', null, {
+            fromServer: true
+          });
+          assetTypeToServerAfterFormat = fixture.build('assetType', null, {
+            fromServer: true
+          });
+          assetTypeToServerBeforeFormat = fixture.build('assetType');
+
+          formatAssetTypeFromServer = this.sandbox
+            .stub(assetsUtils, 'formatAssetTypeFromServer')
+            .returns(assetTypeFromServerAfterFormat);
+          formatAssetTypeToServer = this.sandbox
+            .stub(assetsUtils, 'formatAssetTypeToServer')
+            .returns(assetTypeToServerAfterFormat);
+
+          request = {
+            ...baseRequest,
+            post: this.sandbox.stub().resolves(assetTypeFromServerBeforeFormat)
+          };
+
+          const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
+
+          promise = assetTypes.create(assetTypeToServerBeforeFormat);
+        });
+
+        it('formats the submitted asset type object to send to the server', function() {
+          expect(formatAssetTypeToServer).to.be.deep.calledWith(
+            assetTypeToServerBeforeFormat
+          );
+        });
+
+        it('creates a new asset type', function() {
+          expect(request.post).to.be.deep.calledWith(
+            `${expectedHost}/assets/types`,
+            assetTypeToServerAfterFormat
+          );
+        });
+
+        it('formats the returned asset type object', function() {
+          return promise.then(() => {
+            expect(formatAssetTypeFromServer).to.be.deep.calledWith(
+              assetTypeFromServerBeforeFormat
+            );
+          });
+        });
+
+        it('returns a fulfilled promise with the new asset type information', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            assetTypeFromServerAfterFormat
+          );
+        });
+      }
+    );
+
+    context('when creating a global asset type', function() {
       let assetTypeFromServerAfterFormat;
       let assetTypeFromServerBeforeFormat;
       let assetTypeToServerAfterFormat;
@@ -62,14 +130,22 @@ describe('Assets/Types', function() {
       let request;
 
       beforeEach(function() {
-        assetTypeFromServerAfterFormat = fixture.build('assetType');
-        assetTypeFromServerBeforeFormat = fixture.build('assetType', null, {
-          fromServer: true
+        assetTypeFromServerBeforeFormat = fixture.build('assetType', {
+          organizationId: null
         });
-        assetTypeToServerAfterFormat = fixture.build('assetType', null, {
-          fromServer: true
+        assetTypeFromServerAfterFormat = fixture.build(
+          'assetType',
+          assetTypeToServerBeforeFormat,
+          { fromServer: true }
+        );
+        assetTypeToServerBeforeFormat = fixture.build('assetType', {
+          organizationId: null
         });
-        assetTypeToServerBeforeFormat = fixture.build('assetType');
+        assetTypeToServerAfterFormat = fixture.build(
+          'assetType',
+          assetTypeToServerBeforeFormat,
+          { fromServer: true }
+        );
 
         formatAssetTypeFromServer = this.sandbox
           .stub(assetsUtils, 'formatAssetTypeFromServer')
