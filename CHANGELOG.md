@@ -4,10 +4,6 @@
 
 * Updated AssetTypes#create to allow for the creation of global asset types
 
-**Changed**
-
-* Now supporting the `data_type` field for `AssetAttributes`
-
 ## [v0.0.20](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.20) (2018-07-16)
 
 **Added**
