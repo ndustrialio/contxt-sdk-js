@@ -559,7 +559,9 @@ describe('Assets/Attributes', function() {
 
       it('creates a new asset attribute value', function() {
         expect(request.post).to.be.calledWith(
-          `${expectedHost}/assets/${assetId}/values`,
+          `${expectedHost}/assets/${assetId}/attributes/${
+            valueToServerBeforeFormat.assetAttributeId
+          }/values`,
           valueToServerAfterFormat
         );
       });
