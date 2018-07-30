@@ -295,47 +295,52 @@ describe('Assets/Attributes', function() {
 
   describe('getAll', function() {
     context('when all required information is supplied', function() {
-      let assetAttributesFromServerAfterFormat;
-      let assetAttributesFromServerBeforeFormat;
       let assetTypeId;
-      let formatAssetAttributeDataFromServer;
+      let formatPaginatedDataFromServer;
+      let formatPaginationOptionsToServer;
       let numberOfAssetAttributes;
-      let offset;
+      let paginationOptionsAfterFormat;
+      let paginationOptionsBeforeFormat;
       let promise;
       let request;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
 
       beforeEach(function() {
-        offset = faker.random.number({ min: 0, max: 100 });
         numberOfAssetAttributes = faker.random.number({ min: 1, max: 10 });
         assetTypeId = fixture.build('assetType').id;
-        assetAttributesFromServerAfterFormat = fixture.buildList(
-          'assetAttribute',
-          numberOfAssetAttributes,
-          { assetTypeId }
-        );
-        assetAttributesFromServerBeforeFormat = fixture.buildList(
-          'assetAttribute',
-          numberOfAssetAttributes,
-          { assetTypeId },
-          { fromServer: true }
-        );
+        paginationOptionsBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        paginationOptionsAfterFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        valuesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList(
+            'assetAttribute',
+            numberOfAssetAttributes,
+            { assetTypeId }
+          )
+        };
+        valuesFromServerBeforeFormat = {
+          ...valuesFromServerAfterFormat,
+          records: valuesFromServerAfterFormat.records.map((values) =>
+            fixture.build('assetAttribute', values, { fromServer: true })
+          )
+        };
 
-        formatAssetAttributeDataFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeDataFromServer')
-          .returns({
-            _metadata: {
-              offset,
-              totalRecords: numberOfAssetAttributes
-            },
-            records: assetAttributesFromServerAfterFormat
-          });
-
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(assetsUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
+        formatPaginationOptionsToServer = this.sandbox
+          .stub(assetsUtils, 'formatPaginationOptionsToServer')
+          .returns(paginationOptionsAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves({
-            _metadata: { offset, totalRecords: numberOfAssetAttributes },
-            records: assetAttributesFromServerBeforeFormat
-          })
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
         };
 
         const assetAttributes = new AssetAttributes(
@@ -343,30 +348,38 @@ describe('Assets/Attributes', function() {
           request,
           expectedHost
         );
+        promise = assetAttributes.getAll(
+          assetTypeId,
+          paginationOptionsBeforeFormat
+        );
+      });
 
-        promise = assetAttributes.getAll(assetTypeId);
+      it('formats the pagination options sent to the server', function() {
+        expect(formatPaginationOptionsToServer).to.be.calledWith(
+          paginationOptionsBeforeFormat
+        );
       });
 
       it('gets a list of the asset attributes from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/assets/types/${assetTypeId}/attributes`
+          `${expectedHost}/assets/types/${assetTypeId}/attributes`,
+          { params: paginationOptionsAfterFormat }
         );
       });
 
       it('formats the asset attribute data', function() {
         return promise.then(() => {
-          expect(formatAssetAttributeDataFromServer).to.be.calledOnce;
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat,
+            assetsUtils.formatAssetAttributeDataFromServer
+          );
         });
       });
 
-      it('returns a list of asset attributes', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal({
-          _metadata: {
-            offset,
-            totalRecords: numberOfAssetAttributes
-          },
-          records: assetAttributesFromServerAfterFormat
-        });
+      it('resolves with a list of asset attributes', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
       });
     });
 
@@ -827,7 +840,8 @@ describe('Assets/Attributes', function() {
       it('formats the asset attribute value data', function() {
         return promise.then(() => {
           expect(formatPaginatedDataFromServer).to.be.calledWith(
-            valuesFromServerBeforeFormat
+            valuesFromServerBeforeFormat,
+            assetsUtils.formatAssetAttributeValueFromServer
           );
         });
       });

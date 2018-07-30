@@ -11,12 +11,12 @@ different asset attributes and their values
     * [.create(assetTypeId, assetAttribute)](#AssetAttributes+create) ⇒ <code>Promise</code>
     * [.delete(assetAttributeId)](#AssetAttributes+delete) ⇒ <code>Promise</code>
     * [.get(assetAttributeId)](#AssetAttributes+get) ⇒ <code>Promise</code>
-    * [.getAll(assetTypeId)](#AssetAttributes+getAll) ⇒ <code>Promise</code>
+    * [.getAll(assetTypeId, [paginationOptions])](#AssetAttributes+getAll) ⇒ <code>Promise</code>
     * [.update(assetAttributeId, update)](#AssetAttributes+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
     * [.getEffectiveValuesByAssetId(assetId, [assetAttributeFilters])](#AssetAttributes+getEffectiveValuesByAssetId) ⇒ <code>Promise</code>
-    * [.getValuesByAttributeId(assetId, assetAttributeId, paginationOptions)](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
+    * [.getValuesByAttributeId(assetId, assetAttributeId, [paginationOptions])](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
     * [.updateValue(assetAttributeId, update)](#AssetAttributes+updateValue) ⇒ <code>Promise</code>
 
 <a name="new_AssetAttributes_new"></a>
@@ -111,7 +111,7 @@ contxtSdk.assets.attributes
 ```
 <a name="AssetAttributes+getAll"></a>
 
-### contxtSdk.assets.attributes.getAll(assetTypeId) ⇒ <code>Promise</code>
+### contxtSdk.assets.attributes.getAll(assetTypeId, [paginationOptions]) ⇒ <code>Promise</code>
 Gets a list of asset attributes for a specific asset type
 
 API Endpoint: '/assets/types/:assetTypeId/attributes'
@@ -124,6 +124,7 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | assetTypeId | <code>string</code> | The ID of the asset type (formatted as a UUID) |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
 
 **Example**  
 ```js
@@ -253,7 +254,7 @@ contxtSdk.assets.attributes
 ```
 <a name="AssetAttributes+getValuesByAttributeId"></a>
 
-### contxtSdk.assets.attributes.getValuesByAttributeId(assetId, assetAttributeId, paginationOptions) ⇒ <code>Promise</code>
+### contxtSdk.assets.attributes.getValuesByAttributeId(assetId, assetAttributeId, [paginationOptions]) ⇒ <code>Promise</code>
 Gets a paginated list of asset attribute values for a particular attribute
 of a particular asset
 
@@ -268,7 +269,7 @@ Method: GET
 | --- | --- | --- |
 | assetId | <code>String</code> | The ID of the asset for which you are looking up   attribute values  (formatted as a UUID) |
 | assetAttributeId | <code>String</code> | The ID of the asset attribute for which you are   looking up attribute values (formatted as a UUID) |
-| paginationOptions | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
 
 **Example**  
 ```js

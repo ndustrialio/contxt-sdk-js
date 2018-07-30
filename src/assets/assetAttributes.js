@@ -207,6 +207,7 @@ class AssetAttributes {
    * Method: GET
    *
    * @param {string} assetTypeId The ID of the asset type (formatted as a UUID)
+   * @param {PaginationOptions} [paginationOptions]
    *
    * @returns {Promise}
    * @fulfill {AssetAttributeData}
@@ -218,7 +219,7 @@ class AssetAttributes {
    *   .then((assetAttributesData) => console.log(assetAttributesData))
    *   .catch((err) => console.log(err));
    */
-  getAll(assetTypeId) {
+  getAll(assetTypeId, paginationOptions) {
     if (!assetTypeId) {
       return Promise.reject(
         new Error(
@@ -227,10 +228,19 @@ class AssetAttributes {
       );
     }
 
+    const formattedPaginationOptions = formatPaginationOptionsToServer(
+      paginationOptions
+    );
+
     return this._request
-      .get(`${this._baseUrl}/assets/types/${assetTypeId}/attributes`)
-      .then((assetAttributeData) =>
-        formatAssetAttributeDataFromServer(assetAttributeData)
+      .get(`${this._baseUrl}/assets/types/${assetTypeId}/attributes`, {
+        params: formattedPaginationOptions
+      })
+      .then((assetAttributeValueData) =>
+        formatPaginatedDataFromServer(
+          assetAttributeValueData,
+          formatAssetAttributeDataFromServer
+        )
       );
   }
 
@@ -447,7 +457,7 @@ class AssetAttributes {
    *   attribute values  (formatted as a UUID)
    * @param {String} assetAttributeId The ID of the asset attribute for which you are
    *   looking up attribute values (formatted as a UUID)
-   * @param {PaginationOptions}
+   * @param {PaginationOptions} [paginationOptions]
    *
    * @returns {Promise}
    * @fulfill {AssetAttributeValueData}
