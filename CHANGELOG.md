@@ -1,4 +1,10 @@
-## [v0.0.22](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.22) (2018-07-31)
+## [v0.0.23](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.22) (2018-08-01)
+
+**Fixed**
+
+* Fixed how results were returned from AssetAttributes#getAll
+
+## [v0.0.22](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.22) (2018-07-30)
 
 **Changed**
 

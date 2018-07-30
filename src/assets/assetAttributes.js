@@ -1,6 +1,5 @@
 import isPlainObject from 'lodash.isplainobject';
 import {
-  formatAssetAttributeDataFromServer,
   formatAssetAttributeFromServer,
   formatAssetAttributeToServer,
   formatAssetAttributeValueFiltersToServer,
@@ -239,7 +238,7 @@ class AssetAttributes {
       .then((assetAttributeValueData) =>
         formatPaginatedDataFromServer(
           assetAttributeValueData,
-          formatAssetAttributeDataFromServer
+          formatAssetAttributeFromServer
         )
       );
   }
