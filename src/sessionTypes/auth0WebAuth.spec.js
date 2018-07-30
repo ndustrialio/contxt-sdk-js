@@ -908,19 +908,28 @@ describe('sessionTypes/Auth0WebAuth', function() {
         });
 
         it('throws a human readable error when unable to reach the server', function() {
+          const originalError = new Error(faker.hacker.phrase());
+          const expectedError = new Error(
+            'There was a problem getting new session info. Please check your configuration settings.'
+          );
+          expectedError.fromSdk = true;
+          expectedError.originalError = originalError;
+
           this.sandbox
             .stub(Auth0WebAuth.prototype, '_checkSession')
-            .rejects(new Error());
+            .rejects(originalError);
 
           const auth0WebAuth = new Auth0WebAuth(sdk);
           const promise = auth0WebAuth._getUpdatedSessionInfo();
 
-          return expect(promise).to.be.rejectedWith(
-            'There was a problem getting new session info. Please check your configuration settings.'
-          );
+          return promise.then(expect.fail).catch((err) => {
+            expect(err.message).to.equal(expectedError.message);
+            expect(err.fromSdk).to.equal(expectedError.fromSdk);
+            expect(err.originalError).to.equal(expectedError.originalError);
+          });
         });
 
-        it('throws a human readable error when unable to reach one of the servers', function() {
+        it('throws the original error if it includes a status code', function() {
           const expectedError = new Error();
           expectedError.response = { status: faker.random.number() };
 

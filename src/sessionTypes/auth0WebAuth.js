@@ -340,9 +340,13 @@ class Auth0WebAuth {
         })
         .catch((err) => {
           if (!(err.response && err.response.status)) {
-            throw new Error(
+            const wrapperError = new Error(
               'There was a problem getting new session info. Please check your configuration settings.'
             );
+            wrapperError.fromSdk = true;
+            wrapperError.originalError = err;
+
+            throw wrapperError;
           }
 
           throw err;
