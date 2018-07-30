@@ -1,3 +1,10 @@
+## [v0.0.22](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.22) (2018-07-31)
+
+**Changed**
+
+* Started to pass a more robust error when there is a problem renewing tokens with the Auth0WebAuth session adapter
+* Updated AssetAttributes#getAll to pass pagination information along with the request
+
 ## [v0.0.21](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.21) (2018-07-23)
 
 **Fixed**
