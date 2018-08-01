@@ -1,4 +1,3 @@
-import formatAssetAttributeDataFromServer from './formatAssetAttributeDataFromServer';
 import formatAssetAttributeFromServer from './formatAssetAttributeFromServer';
 import formatAssetAttributeToServer from './formatAssetAttributeToServer';
 import formatAssetAttributeValueFiltersToServer from './formatAssetAttributeValueFiltersToServer';
@@ -15,7 +14,6 @@ import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
 import formatPaginationOptionsToServer from './formatPaginationOptionsToServer';
 
 export {
-  formatAssetAttributeDataFromServer,
   formatAssetAttributeFromServer,
   formatAssetAttributeToServer,
   formatAssetAttributeValueFiltersToServer,

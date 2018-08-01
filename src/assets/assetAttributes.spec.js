@@ -371,7 +371,7 @@ describe('Assets/Attributes', function() {
         return promise.then(() => {
           expect(formatPaginatedDataFromServer).to.be.calledWith(
             valuesFromServerBeforeFormat,
-            assetsUtils.formatAssetAttributeDataFromServer
+            assetsUtils.formatAssetAttributeFromServer
           );
         });
       });
