@@ -19,9 +19,11 @@ function formatAssetAttributeValueFromServer(input = {}) {
   return {
     assetAttributeId: input.asset_attribute_id,
     assetId: input.asset_id,
+    assetLabel: input.asset_label,
     createdAt: input.created_at,
     effectiveDate: input.effective_date,
     id: input.id,
+    label: input.label,
     notes: input.notes,
     updatedAt: input.updated_at,
     value: input.value
