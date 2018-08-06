@@ -348,8 +348,8 @@ describe('sessionTypes/MachineAuth', function() {
         });
 
         it('should return two different promises', function() {
-          expect(promiseOne).to.equal(expectedPromiseOne);
-          expect(promiseTwo).to.equal(expectedPromiseTwo);
+          expect(promiseOne).to.deep.equal(expectedPromiseOne);
+          expect(promiseTwo).to.deep.equal(expectedPromiseTwo);
         });
       }
     );
