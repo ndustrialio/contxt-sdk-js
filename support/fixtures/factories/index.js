@@ -10,6 +10,8 @@ require('./audience');
 require('./costCenter');
 require('./costCenterFacility');
 require('./defaultAudiences');
+require('./event');
+require('./eventType');
 require('./facility');
 require('./facilityGrouping');
 require('./facilityGroupingFacility');
@@ -18,6 +20,7 @@ require('./facilityTag');
 require('./outputField');
 require('./outputFieldData');
 require('./organization');
+require('./owner');
 require('./paginationMetadata');
 require('./userProfile');
 
