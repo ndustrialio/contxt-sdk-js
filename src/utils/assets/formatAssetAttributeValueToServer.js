@@ -6,7 +6,9 @@
  * @returns {Object} output
  * @returns {string} output.asset_attribute_id UUID corresponding to the asset attribute
  * @returns {string} output.asset_id UUID corresponding to the asset
+ * @returns {string} [output.asset_label] String label from the associated asset
  * @returns {string} output.effective_date ISO 8601 Extended Format date/time string
+ * @returns {string} [output.label] Label from the associated asset attribute
  * @returns {string} [output.notes]
  * @returns {string} output.value
  *
