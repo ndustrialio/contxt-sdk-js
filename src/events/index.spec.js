@@ -1,4 +1,3 @@
-import times from 'lodash.times';
 import omit from 'lodash.omit';
 import Events from './index';
 import * as eventsUtils from '../utils/events';
@@ -249,17 +248,14 @@ describe('Events', function() {
 
   describe('update', function() {
     context('when all required information is available', function() {
-      let eventFromServerAfterFormat;
       let eventFromServerBeforeFormat;
       let eventToServerAfterFormat;
       let eventToServerBeforeFormat;
-      let formatEventFromServer;
       let formatEventToServer;
       let request;
       let promise;
 
       beforeEach(function() {
-        eventFromServerAfterFormat = fixture.build('event');
         eventFromServerBeforeFormat = fixture.build('event', null, {
           fromServer: true
         });
@@ -268,9 +264,6 @@ describe('Events', function() {
         });
         eventToServerBeforeFormat = fixture.build('event');
 
-        formatEventFromServer = this.sandbox
-          .stub(eventsUtils, 'formatEventFromServer')
-          .returns(eventFromServerAfterFormat);
         formatEventToServer = this.sandbox
           .stub(eventsUtils, 'formatEventToServer')
           .returns(eventToServerAfterFormat);
@@ -300,6 +293,10 @@ describe('Events', function() {
           `${expectedHost}/events/${eventToServerBeforeFormat.id}`,
           eventToServerAfterFormat
         );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
       });
     });
 
