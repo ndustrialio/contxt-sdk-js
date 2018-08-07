@@ -6,7 +6,7 @@
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
  * @param {string} input.description A description of the event type
  * @param {string} input.id UUID corresponding with the event type
- * @param {string} input.is_realtime_enabled
+ * @param {boolean} input.is_realtime_enabled
  * @param {number} input.level The level of the event type
  * @param {string} input.name The name of the event type
  * @param {string} input.slug The slug of the event type
@@ -17,7 +17,7 @@
  * @returns {string} output.createdAt
  * @returns {string} output.description
  * @returns {string} output.id
- * @returns {string} output.isRealtimeEnabled
+ * @returns {boolean} output.isRealtimeEnabled
  * @returns {number} output.level
  * @returns {string} output.name
  * @returns {string} output.slug

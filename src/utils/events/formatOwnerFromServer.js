@@ -6,7 +6,7 @@
  * @param {string} input.email The email address of the owner
  * @param {string} input.first_name The first name of the owner
  * @param {string} input.id The ID of the user who owns the event
- * @param {string} input.is_machine_user
+ * @param {boolean} input.is_machine_user
  * @param {string} input.last_name The last name of the owner
  * @param {string} input.updated_at ISO 8601 Extended Format date/time string
  *
@@ -15,7 +15,7 @@
  * @returns {string} output.email
  * @returns {string} output.firstName
  * @returns {string} output.id
- * @returns {string} output.isMachineUser
+ * @returns {boolean} output.isMachineUser
  * @returns {number} output.lastName
  * @returns {string} output.updatedAt
  *
