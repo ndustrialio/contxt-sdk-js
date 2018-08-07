@@ -332,7 +332,7 @@ describe('sessionTypes/MachineAuth', function() {
 
         beforeEach(function() {
           const audienceNameOne = faker.hacker.adjective();
-          const audienceNameTwo = faker.hacker.adjective();
+          const audienceNameTwo = faker.lorem.word();
           expectedPromiseOne = Promise.resolve();
           expectedPromiseTwo = Promise.resolve();
           sdk.config.audiences[audienceNameOne] = fixture.build('audience');
