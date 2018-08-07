@@ -4,10 +4,10 @@
  * @param {Event} input
  *
  * @returns {Object} output
- * @returns {string} [output.allow_others_to_trigger]
+ * @returns {boolean} [output.allow_others_to_trigger]
  * @returns {string} output.event_type_id
  * @returns {string} [output.facility_id]
- * @returns {string} [output.is_public]
+ * @returns {boolean} [output.is_public]
  * @returns {string} output.name
  * @returns {string} output.organization_id UUID
  *
