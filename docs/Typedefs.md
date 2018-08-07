@@ -199,6 +199,45 @@ An object of audiences that corresponds to all the different environments availa
 single module.
 
 **Kind**: global typedef  
+<a name="Event"></a>
+
+## Event : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| allowOthersToTrigger | <code>boolean</code> | Whether or not to allow non-owners to trigger the Event |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [deletedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [EventType] | <code>Object</code> |  |
+| [EventType.clientId] | <code>string</code> | The ID of the client to which the event type belongs |
+| [EventType.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [EventType.description] | <code>string</code> |  |
+| [EventType.id] | <code>string</code> | UUID formatted ID |
+| [EventType.isRealtimeEnabled] | <code>boolean</code> |  |
+| [EventType.level] | <code>number</code> |  |
+| [EventType.name] | <code>string</code> |  |
+| [EventType.slug] | <code>string</code> |  |
+| [EventType.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [eventTypeId] | <code>string</code> | UUID corresponding with an event type |
+| [facilityId] | <code>number</code> | The facility associated with the event |
+| id | <code>number</code> |  |
+| [isPublic] | <code>boolean</code> |  |
+| name | <code>string</code> |  |
+| [organizationId] | <code>string</code> | UUID of the organization to which the event belongs |
+| [Owner] | <code>Object</code> |  |
+| [Owner.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [Owner.email] | <code>string</code> |  |
+| [Owner.firstName] | <code>string</code> |  |
+| [Owner.id] | <code>string</code> |  |
+| [Owner.isMachineUser] | <code>boolean</code> |  |
+| [Owner.lastName] | <code>string</code> |  |
+| [Owner.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [ownerId] | <code>string</code> | The ID of the user who owns the event |
+| [topicArn] | <code>number</code> | The Amazon Resource Name (ARN) associated with the event |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ExternalModule"></a>
 
 ## ExternalModule : <code>Object</code>
