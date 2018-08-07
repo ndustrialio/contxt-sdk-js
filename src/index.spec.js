@@ -1,6 +1,7 @@
 import times from 'lodash.times';
 import Config from './config';
 import ContxtSdk from './index';
+import Events from './events';
 import Facilities from './facilities';
 import Iot from './iot';
 import Request from './request';
@@ -64,6 +65,14 @@ describe('ContxtSdk', function() {
     it('sets an instance of Auth', function() {
       expect(createAuthSession).to.be.calledWith(expectedAuthSessionType);
       expect(contxtSdk.auth).to.equal(expectedAuthSession);
+    });
+
+    it('creates an instance of the request module for Events', function() {
+      expect(createRequest).to.be.calledWith('events');
+    });
+
+    it('sets an instance of Events', function() {
+      expect(contxtSdk.events).to.be.an.instanceof(Events);
     });
 
     it('creates an instance of the request module for Facilities', function() {
