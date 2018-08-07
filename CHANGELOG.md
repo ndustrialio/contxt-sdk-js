@@ -1,4 +1,10 @@
-## [v0.0.23](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.22) (2018-08-01)
+## [v0.0.24](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.24) (2018-08-07)
+
+**Added**
+
+* Added `assetLabel` and `label` as fields associated with `AssetAttributeValues`
+
+## [v0.0.23](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.23) (2018-08-01)
 
 **Fixed**
 
