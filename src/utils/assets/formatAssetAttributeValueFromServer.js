@@ -4,7 +4,7 @@
  * @param {Object} input
  * @param {string} input.asset_attribute_id UUID corresponding to the asset attribute
  * @param {string} input.asset_id UUID corresponding to the asset
- * @param {string} [input.asset_label] String label from the associated asset
+ * @param {string} [input.asset_label] Label from the associated asset
  * @param {string} input.created_at ISO 8601 Extended Format date/time string
  * @param {string} input.effective_date ISO 8601 Extended Format date/time string
  * @param {string} input.id UUID
