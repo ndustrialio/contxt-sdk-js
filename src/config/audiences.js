@@ -9,6 +9,16 @@ export default {
       host: 'https://contxt-auth-staging.api.ndustrial.io'
     }
   },
+  coordinator: {
+    production: {
+      clientId: '8qY2xJob1JAxhmVhIDLCNnGriTM9bct8',
+      host: 'https://contxt.api.ndustrial.io'
+    },
+    staging: {
+      clientId: '8qY2xJob1JAxhmVhIDLCNnGriTM9bct8',
+      host: 'https://contxt-staging.api.ndustrial.io'
+    }
+  },
   events: {
     staging: {
       clientId: 'dn4MaocJFdKtsBy9sFFaTeuJWL1nt5xu',

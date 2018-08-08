@@ -152,6 +152,38 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | interceptor.fulfilled | <code>function</code> | A function that is run on every successful request or   response |
 | interceptor.rejected | <code>function</code> | A function that is run on every failed request or response |
 
+<a name="ContxtOrganization"></a>
+
+## ContxtOrganization : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> | UUID formatted ID |
+| legacyOrganizationId | <code>number</code> |  |
+| name | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="ContxtUser"></a>
+
+## ContxtUser : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| email | <code>string</code> |  |
+| firstName | <code>string</code> |  |
+| id | <code>string</code> |  |
+| isActivated | <code>boolean</code> |  |
+| isSuperuser | <code>boolean</code> |  |
+| lastName | <code>string</code> |  |
+| [phoneNumber] | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="CostCenter"></a>
 
 ## CostCenter : <code>Object</code>
