@@ -7,6 +7,8 @@ require('./assetAttribute');
 require('./assetAttributeValue');
 require('./assetType');
 require('./audience');
+require('./contxtOrganization');
+require('./contxtUser');
 require('./costCenter');
 require('./costCenterFacility');
 require('./defaultAudiences');
