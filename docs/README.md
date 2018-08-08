@@ -35,6 +35,10 @@ enabled in Auth0.</p>
 <dd><p>Module that provides access to cost centers, and helps manage
 the relationship between those cost centers and facilities</p>
 </dd>
+<dt><a href="./Events.md">Events</a></dt>
+<dd><p>Module that provides access to, and the manipulation
+of, information about different events</p>
+</dd>
 <dt><a href="./Facilities.md">Facilities</a></dt>
 <dd><p>Module that provides access to, and the manipulation
 of, information about different facilities</p>
@@ -102,6 +106,8 @@ custom environment.</p>
 <dd><p>An object of audiences that corresponds to all the different environments available for a
 single module.</p>
 </dd>
+<dt><a href="./Typedefs.md#Event">Event</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#ExternalModule">ExternalModule</a> : <code>Object</code></dt>
 <dd><p>An external module to be integrated into the SDK as a first class citizen. Includes information
 for authenticating and communicating with an individual API and the external module itself.</p>
