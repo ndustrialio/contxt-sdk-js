@@ -65,13 +65,17 @@ describe('Events', function() {
 
       beforeEach(function() {
         eventFromServerAfterFormat = fixture.build('event');
-        eventFromServerBeforeFormat = fixture.build('event', null, {
-          fromServer: true
-        });
-        eventToServerAfterFormat = fixture.build('event', null, {
-          fromServer: true
-        });
+        eventFromServerBeforeFormat = fixture.build(
+          'event',
+          eventFromServerAfterFormat,
+          { fromServer: true }
+        );
         eventToServerBeforeFormat = fixture.build('event');
+        eventToServerAfterFormat = fixture.build(
+          'event',
+          eventToServerBeforeFormat,
+          { fromServer: true }
+        );
 
         formatEventFromServer = this.sandbox
           .stub(eventsUtils, 'formatEventFromServer')
@@ -183,19 +187,13 @@ describe('Events', function() {
 
       beforeEach(function() {
         expectedEventId = faker.random.uuid();
-        eventFromServerAfterFormat = fixture.build(
-          'event',
-          { id: expectedEventId },
-          {
-            fromServer: false
-          }
-        );
+        eventFromServerAfterFormat = fixture.build('event', {
+          id: expectedEventId
+        });
         eventFromServerBeforeFormat = fixture.build(
           'event',
           { id: expectedEventId },
-          {
-            fromServer: true
-          }
+          { fromServer: true }
         );
 
         formatEventFromServer = this.sandbox
@@ -259,9 +257,11 @@ describe('Events', function() {
         eventFromServerBeforeFormat = fixture.build('event', null, {
           fromServer: true
         });
-        eventToServerAfterFormat = fixture.build('event', null, {
-          fromServer: true
-        });
+        eventToServerAfterFormat = fixture.build(
+          'event',
+          eventFromServerBeforeFormat,
+          { fromServer: true }
+        );
         eventToServerBeforeFormat = fixture.build('event');
 
         formatEventToServer = this.sandbox
@@ -270,7 +270,7 @@ describe('Events', function() {
 
         request = {
           ...baseRequest,
-          put: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
+          put: this.sandbox.stub().resolves()
         };
 
         const events = new Events(baseSdk, request);

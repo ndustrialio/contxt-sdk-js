@@ -210,30 +210,30 @@ single module.
 | allowOthersToTrigger | <code>boolean</code> | Whether or not to allow non-owners to trigger the Event |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [deletedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
-| [EventType] | <code>Object</code> |  |
-| [EventType.clientId] | <code>string</code> | The ID of the client to which the event type belongs |
-| [EventType.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
-| [EventType.description] | <code>string</code> |  |
-| [EventType.id] | <code>string</code> | UUID formatted ID |
-| [EventType.isRealtimeEnabled] | <code>boolean</code> |  |
-| [EventType.level] | <code>number</code> |  |
-| [EventType.name] | <code>string</code> |  |
-| [EventType.slug] | <code>string</code> |  |
-| [EventType.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [eventType] | <code>Object</code> |  |
+| [eventType.clientId] | <code>string</code> | The ID of the client to which the event type belongs |
+| [eventType.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [eventType.description] | <code>string</code> |  |
+| [eventType.id] | <code>string</code> | UUID formatted ID |
+| [eventType.isRealtimeEnabled] | <code>boolean</code> |  |
+| [eventType.level] | <code>number</code> |  |
+| [eventType.name] | <code>string</code> |  |
+| [eventType.slug] | <code>string</code> |  |
+| [eventType.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [eventTypeId] | <code>string</code> | UUID corresponding with an event type |
 | [facilityId] | <code>number</code> | The facility associated with the event |
-| id | <code>number</code> |  |
+| id | <code>string</code> | UUID formatted ID |
 | [isPublic] | <code>boolean</code> |  |
 | name | <code>string</code> |  |
 | [organizationId] | <code>string</code> | UUID of the organization to which the event belongs |
-| [Owner] | <code>Object</code> |  |
-| [Owner.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
-| [Owner.email] | <code>string</code> |  |
-| [Owner.firstName] | <code>string</code> |  |
-| [Owner.id] | <code>string</code> |  |
-| [Owner.isMachineUser] | <code>boolean</code> |  |
-| [Owner.lastName] | <code>string</code> |  |
-| [Owner.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [owner] | <code>Object</code> |  |
+| [owner.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [owner.email] | <code>string</code> |  |
+| [owner.firstName] | <code>string</code> |  |
+| [owner.id] | <code>string</code> |  |
+| [owner.isMachineUser] | <code>boolean</code> |  |
+| [owner.lastName] | <code>string</code> |  |
+| [owner.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [ownerId] | <code>string</code> | The ID of the user who owns the event |
 | [topicArn] | <code>number</code> | The Amazon Resource Name (ARN) associated with the event |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |

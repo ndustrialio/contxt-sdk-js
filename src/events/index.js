@@ -6,30 +6,30 @@ import { formatEventFromServer, formatEventToServer } from '../utils/events';
  * @property {boolean} allowOthersToTrigger Whether or not to allow non-owners to trigger the Event
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} [deletedAt] ISO 8601 Extended Format date/time string
- * @property {Object} [EventType]
- * @property {string} [EventType.clientId] The ID of the client to which the event type belongs
- * @property {string} [EventType.createdAt] ISO 8601 Extended Format date/time string
- * @property {string} [EventType.description]
- * @property {string} [EventType.id] UUID formatted ID
- * @property {boolean} [EventType.isRealtimeEnabled]
- * @property {number} [EventType.level]
- * @property {string} [EventType.name]
- * @property {string} [EventType.slug]
- * @property {string} [EventType.updatedAt] ISO 8601 Extended Format date/time string
+ * @property {Object} [eventType]
+ * @property {string} [eventType.clientId] The ID of the client to which the event type belongs
+ * @property {string} [eventType.createdAt] ISO 8601 Extended Format date/time string
+ * @property {string} [eventType.description]
+ * @property {string} [eventType.id] UUID formatted ID
+ * @property {boolean} [eventType.isRealtimeEnabled]
+ * @property {number} [eventType.level]
+ * @property {string} [eventType.name]
+ * @property {string} [eventType.slug]
+ * @property {string} [eventType.updatedAt] ISO 8601 Extended Format date/time string
  * @property {string} [eventTypeId] UUID corresponding with an event type
  * @property {number} [facilityId] The facility associated with the event
- * @property {number} id
+ * @property {string} id UUID formatted ID
  * @property {boolean} [isPublic]
  * @property {string} name
  * @property {string} [organizationId] UUID of the organization to which the event belongs
- * @property {Object} [Owner]
- * @property {string} [Owner.createdAt]  ISO 8601 Extended Format date/time string
- * @property {string} [Owner.email]
- * @property {string} [Owner.firstName]
- * @property {string} [Owner.id]
- * @property {boolean} [Owner.isMachineUser]
- * @property {string} [Owner.lastName]
- * @property {string} [Owner.updatedAt]  ISO 8601 Extended Format date/time string
+ * @property {Object} [owner]
+ * @property {string} [owner.createdAt]  ISO 8601 Extended Format date/time string
+ * @property {string} [owner.email]
+ * @property {string} [owner.firstName]
+ * @property {string} [owner.id]
+ * @property {boolean} [owner.isMachineUser]
+ * @property {string} [owner.lastName]
+ * @property {string} [owner.updatedAt]  ISO 8601 Extended Format date/time string
  * @property {string} [ownerId] The ID of the user who owns the event
  * @property {number} [topicArn] The Amazon Resource Name (ARN) associated with the event
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
@@ -175,6 +175,7 @@ class Events {
    * @param {boolean} [update.isPublic]
    * @param {string} [update.name]
    * @param {string} [update.organizationId] UUID corresponding with an organization
+   *
    * @returns {Promise}
    * @fulfill {undefined}
    * @reject {Error}
