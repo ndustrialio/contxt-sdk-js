@@ -44,6 +44,28 @@ class Coordinator {
   }
 
   /**
+   * Gets information about all contxt organizations
+   *
+   * API Endpoint: '/organizations'
+   * Method: GET
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtOrganization[]} Information about all contxt organizations
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getAllOrganizations()
+   *   .then((orgs) => console.log(orgs))
+   *   .catch((err) => console.log(err));
+   */
+  getAllOrganizations() {
+    return this._request
+      .get(`${this._baseUrl}/organizations`)
+      .then((orgs) => orgs.map(formatOrganizationFromServer));
+  }
+
+  /**
    * Gets information about a contxt organization
    *
    * API Endpoint: '/organizations/:organizationId'
@@ -57,11 +79,11 @@ class Coordinator {
    *
    * @example
    * contxtSdk.coordinator
-   *   .getOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .getOrganizationById('36b8421a-cc4a-4204-b839-1397374fb16b')
    *   .then((org) => console.log(org))
    *   .catch((err) => console.log(err));
    */
-  getOrganization(organizationId) {
+  getOrganizationById(organizationId) {
     if (!organizationId) {
       return Promise.reject(
         new Error(
