@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
 import formatUserFromServer from './formatUserFromServer';
 
-describe('utils/events/formatUserFromServer', function() {
+describe('utils/coordinator/formatUserFromServer', function() {
   let expectedUser;
   let formattedUser;
   let user;

@@ -1,5 +1,6 @@
 import Assets from './assets';
 import Config from './config';
+import Coordinator from './coordinator';
 import Events from './events';
 import Facilities from './facilities';
 import Iot from './iot';
@@ -71,6 +72,10 @@ class ContxtSdk {
 
     this.assets = new Assets(this, this._createRequest('facilities'));
     this.auth = this._createAuthSession(sessionType);
+    this.coordinator = new Coordinator(
+      this,
+      this._createRequest('coordinator')
+    );
     this.events = new Events(this, this._createRequest('events'));
     this.facilities = new Facilities(this, this._createRequest('facilities'));
     this.iot = new Iot(this, this._createRequest('iot'));

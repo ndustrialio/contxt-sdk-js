@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
 import formatOrganizationFromServer from './formatOrganizationFromServer';
 
-describe('utils/events/formatOrganizationFromServer', function() {
+describe('utils/coordinator/formatOrganizationFromServer', function() {
   let expectedOrg;
   let formattedOrg;
   let org;

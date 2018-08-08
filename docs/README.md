@@ -31,6 +31,9 @@ enabled in Auth0.</p>
 <dt><a href="./ContxtSdk.md">ContxtSdk</a></dt>
 <dd><p>ContxtSdk constructor</p>
 </dd>
+<dt><a href="./Coordinator.md">Coordinator</a></dt>
+<dd><p>Module that provides access to information about Contxt</p>
+</dd>
 <dt><a href="./CostCenters.md">CostCenters</a></dt>
 <dd><p>Module that provides access to cost centers, and helps manage
 the relationship between those cost centers and facilities</p>
@@ -93,6 +96,10 @@ which are obtained from Auth0.</p>
 <dd><p>An object of interceptors that get called on every request or response.
 More information at <a href="https://github.com/axios/axios#interceptors">axios Interceptors</a></p>
 </dd>
+<dt><a href="./Typedefs.md#ContxtOrganization">ContxtOrganization</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#CostCenter">CostCenter</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#CostCenterFacility">CostCenterFacility</a> : <code>Object</code></dt>
