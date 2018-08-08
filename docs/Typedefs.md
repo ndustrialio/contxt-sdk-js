@@ -54,9 +54,11 @@
 | --- | --- | --- |
 | assetId | <code>string</code> | UUID corresponding to the asset |
 | assetAttributeId | <code>string</code> | UUID corresponding to the asset attribute |
+| [assetLabel] | <code>string</code> | Label from the associated asset |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | effectiveDate | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>string</code> | UUID |
+| [label] | <code>string</code> | Label from the associated asset attribute |
 | [notes] | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | value | <code>string</code> |  |

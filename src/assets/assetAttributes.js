@@ -46,9 +46,11 @@ import {
  * @typedef {Object} AssetAttributeValue
  * @property {string} assetId UUID corresponding to the asset
  * @property {string} assetAttributeId UUID corresponding to the asset attribute
+ * @property {string} [assetLabel] Label from the associated asset
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} effectiveDate ISO 8601 Extended Format date/time string
  * @property {string} id UUID
+ * @property {string} [label] Label from the associated asset attribute
  * @property {string} [notes]
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  * @property {string} value

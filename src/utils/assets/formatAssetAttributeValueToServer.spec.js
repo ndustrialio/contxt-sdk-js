@@ -12,11 +12,13 @@ describe('utils/assets/formatAssetAttributeValueToServer', function() {
         ...initialValue,
         asset_attribute_id: initialValue.assetAttributeId,
         asset_id: initialValue.assetId,
+        asset_label: initialValue.assetLabel,
         effective_date: initialValue.effectiveDate
       },
       [
         'assetAttributeId',
         'assetId',
+        'assetLabel',
         'createdAt',
         'effectiveDate',
         'id',
