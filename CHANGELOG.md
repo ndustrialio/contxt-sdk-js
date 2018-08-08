@@ -3,6 +3,7 @@
 **Added**
 
 * Added `assetLabel` and `label` as fields associated with `AssetAttributeValues`
+* Added Events module with ability to create, read, update, and delete events
 
 ## [v0.0.23](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.23) (2018-08-01)
 
