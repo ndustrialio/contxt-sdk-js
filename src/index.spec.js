@@ -1,6 +1,7 @@
 import times from 'lodash.times';
 import Config from './config';
 import ContxtSdk from './index';
+import Coordinator from './coordinator';
 import Events from './events';
 import Facilities from './facilities';
 import Iot from './iot';
@@ -60,6 +61,14 @@ describe('ContxtSdk', function() {
 
     it('sets an instance of Config', function() {
       expect(contxtSdk.config).to.be.an.instanceof(Config);
+    });
+
+    it('creates an instance of the request module for Coordinator', function() {
+      expect(createRequest).to.be.calledWith('coordinator');
+    });
+
+    it('sets an instance of Coordinator', function() {
+      expect(contxtSdk.coordinator).to.be.an.instanceof(Coordinator);
     });
 
     it('sets an instance of Auth', function() {
