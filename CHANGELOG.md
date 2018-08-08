@@ -1,3 +1,9 @@
+## [v0.0.25](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.25) (2018-08-08)
+
+**Added**
+
+* Added Coordinator module with ability to get info about organizations and users from Contxt Coordinator
+
 ## [v0.0.24](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.24) (2018-08-07)
 
 **Added**
