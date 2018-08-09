@@ -21,6 +21,11 @@
   },
   "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
   "license": "ISC",
+  "repository": "github:ndustrialio/contxt-sdk-js",
+  "engines": {
+    "npm": "^5.10.0 ^6.0.0",
+    "node": ">=6"
+  },
   "dependencies": {
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
