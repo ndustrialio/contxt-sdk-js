@@ -1,3 +1,16 @@
+## [v0.0.26](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.26) (2018-xx-xx)
+
+### TO BE RELEASED
+
+**Changed**
+
+* Set specific engine versions for Node and NPM
+* Audited and updated dependencies
+
+**Fixed**
+
+* Fixed documentation building process to support Node 6
+
 ## [v0.0.25](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.25) (2018-08-08)
 
 **Added**
@@ -8,8 +21,11 @@
 
 **Added**
 
-* Added `assetLabel` and `label` as fields associated with `AssetAttributeValues`
 * Added Events module with ability to create, read, update, and delete events
+
+**Changed**
+
+* Added `assetLabel` and `label` as fields associated with `AssetAttributeValues`
 
 ## [v0.0.23](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.23) (2018-08-01)
 
