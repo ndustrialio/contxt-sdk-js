@@ -9,10 +9,9 @@ const {
 const sortBy = require('lodash.sortby');
 
 function link(longname, options) {
-  const linkedInfo = identifiers({
-    ...options,
-    hash: { id: longname }
-  })[0];
+  const linkedInfo = identifiers(
+    Object.assign({}, options, { hash: { id: longname } })
+  )[0];
 
   if (linkedInfo && linkedInfo.kind === 'typedef') {
     return options.fn({

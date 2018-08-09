@@ -21,10 +21,15 @@
   },
   "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
   "license": "ISC",
+  "repository": "github:ndustrialio/contxt-sdk-js",
+  "engines": {
+    "npm": "^5.10.0 ^6.0.0",
+    "node": ">=6"
+  },
   "dependencies": {
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
-    "url-parse": "^1.2.0"
+    "url-parse": "^1.4.3"
   },
   "devDependencies": {
     "auth0-js": "^9.3.0",
@@ -50,7 +55,7 @@
     "lodash.sortby": "^4.7.0",
     "lodash.times": "^4.3.2",
     "mocha": "^4.1.0",
-    "nyc": "^11.4.1",
+    "nyc": "^13.0.1",
     "prettier": "^1.12.1",
     "pretty-quick": "^1.4.1",
     "rollup": "^0.54.1",
