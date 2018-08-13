@@ -1,12 +1,7 @@
 import isPlainObject from 'lodash.isplainobject';
 import AssetAttributes from './assetAttributes';
 import AssetTypes from './assetTypes';
-import {
-  formatAssetFromServer,
-  formatAssetOptionsToServer,
-  formatAssetsDataFromServer,
-  formatAssetToServer
-} from '../utils/assets';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} Asset
@@ -88,11 +83,9 @@ class Assets {
       }
     }
 
-    const data = formatAssetToServer(asset);
-
     return this._request
-      .post(`${this._baseUrl}/assets`, data)
-      .then((asset) => formatAssetFromServer(asset));
+      .post(`${this._baseUrl}/assets`, toSnakeCase(asset))
+      .then((asset) => toCamelCase(asset));
   }
 
   /**
@@ -149,7 +142,7 @@ class Assets {
 
     return this._request
       .get(`${this._baseUrl}/assets/${assetId}`)
-      .then((asset) => formatAssetFromServer(asset));
+      .then((asset) => toCamelCase(asset));
   }
 
   /**
@@ -166,12 +159,12 @@ class Assets {
    * contxtSdk.assets
    *   .getAll()
    *   .then((assets) => console.log(assets))
-   *   .catch(err) => console.log(err);
+   *   .catch((err) => console.log(err));
    */
   getAll() {
     return this._request
       .get(`${this._baseUrl}/assets`)
-      .then((response) => formatAssetsDataFromServer(response));
+      .then((assetAttributeValueData) => toCamelCase(assetAttributeValueData));
   }
 
   /**
@@ -205,13 +198,13 @@ class Assets {
       );
     }
 
-    const params = formatAssetOptionsToServer(options);
+    const params = toSnakeCase(options);
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/assets`, {
         params
       })
-      .then((response) => formatAssetsDataFromServer(response));
+      .then((assetAttributeValueData) => toCamelCase(assetAttributeValueData));
   }
 
   /**
@@ -253,11 +246,13 @@ class Assets {
       );
     }
 
-    const formattedUpdate = formatAssetToServer(update);
+    const formattedUpdate = toSnakeCase(update, {
+      excludeKeys: ['assetTypeId', 'id', 'label', 'organizationId']
+    });
 
     return this._request
       .put(`${this._baseUrl}/assets/${assetId}`, formattedUpdate)
-      .then((asset) => formatAssetFromServer(asset));
+      .then((asset) => toCamelCase(asset));
   }
 }
 

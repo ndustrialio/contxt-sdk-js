@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
 import AssetAttributes from './assetAttributes';
-import * as assetsUtils from '../utils/assets';
+import * as objectsUtils from '../utils/objects';
 
 describe('Assets/Attributes', function() {
   let baseRequest;
@@ -57,10 +57,10 @@ describe('Assets/Attributes', function() {
       let assetAttributeToServerAfterFormat;
       let assetAttributeToServerBeforeFormat;
       let assetTypeId;
-      let formatAssetAttributeFromServer;
-      let formatAssetAttributeToServer;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         assetAttributeFromServerAfterFormat = fixture.build('assetAttribute');
@@ -78,19 +78,18 @@ describe('Assets/Attributes', function() {
 
         assetTypeId = fixture.build('assetType').id;
 
-        formatAssetAttributeFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeFromServer')
-          .returns(assetAttributeFromServerAfterFormat);
-        formatAssetAttributeToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeToServer')
-          .returns(assetAttributeToServerAfterFormat);
-
         request = {
           ...baseRequest,
           post: this.sandbox
             .stub()
             .resolves(assetAttributeFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(assetAttributeFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
+          .returns(assetAttributeToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -105,7 +104,7 @@ describe('Assets/Attributes', function() {
       });
 
       it('formats the submitted asset attribute object to send to the server', function() {
-        expect(formatAssetAttributeToServer).to.be.deep.calledWith(
+        expect(toSnakeCase).to.be.deep.calledWith(
           assetAttributeToServerBeforeFormat
         );
       });
@@ -119,7 +118,7 @@ describe('Assets/Attributes', function() {
 
       it('formats the returned asset attribute object', function() {
         return promise.then(() => {
-          expect(formatAssetAttributeFromServer).to.be.deep.calledWith(
+          expect(toCamelCase).to.be.deep.calledWith(
             assetAttributeFromServerBeforeFormat
           );
         });
@@ -221,9 +220,9 @@ describe('Assets/Attributes', function() {
       let assetAttributeFromServerAfterFormat;
       let assetAttributeFromServerBeforeFormat;
       let expectedAssetAttributeId;
-      let formatAssetAttributeFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedAssetAttributeId = fixture.build('assetAttribute').id;
@@ -236,16 +235,15 @@ describe('Assets/Attributes', function() {
           { fromServer: true }
         );
 
-        formatAssetAttributeFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeFromServer')
-          .returns(assetAttributeFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox
             .stub()
             .resolves(assetAttributeFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(assetAttributeFromServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -264,7 +262,7 @@ describe('Assets/Attributes', function() {
 
       it('formats the asset attribute object', function() {
         return promise.then(() => {
-          expect(formatAssetAttributeFromServer).to.be.deep.calledWith(
+          expect(toCamelCase).to.be.deep.calledWith(
             assetAttributeFromServerBeforeFormat
           );
         });
@@ -296,13 +294,13 @@ describe('Assets/Attributes', function() {
   describe('getAll', function() {
     context('when all required information is supplied', function() {
       let assetTypeId;
-      let formatPaginatedDataFromServer;
-      let formatPaginationOptionsToServer;
       let numberOfAssetAttributes;
       let paginationOptionsAfterFormat;
       let paginationOptionsBeforeFormat;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
       let valuesFromServerAfterFormat;
       let valuesFromServerBeforeFormat;
 
@@ -332,16 +330,16 @@ describe('Assets/Attributes', function() {
           )
         };
 
-        formatPaginatedDataFromServer = this.sandbox
-          .stub(assetsUtils, 'formatPaginatedDataFromServer')
-          .returns(valuesFromServerAfterFormat);
-        formatPaginationOptionsToServer = this.sandbox
-          .stub(assetsUtils, 'formatPaginationOptionsToServer')
-          .returns(paginationOptionsAfterFormat);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(valuesFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
+          .returns(paginationOptionsAfterFormat);
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -355,9 +353,7 @@ describe('Assets/Attributes', function() {
       });
 
       it('formats the pagination options sent to the server', function() {
-        expect(formatPaginationOptionsToServer).to.be.calledWith(
-          paginationOptionsBeforeFormat
-        );
+        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
       });
 
       it('gets a list of the asset attributes from the server', function() {
@@ -369,10 +365,7 @@ describe('Assets/Attributes', function() {
 
       it('formats the asset attribute data', function() {
         return promise.then(() => {
-          expect(formatPaginatedDataFromServer).to.be.calledWith(
-            valuesFromServerBeforeFormat,
-            assetsUtils.formatAssetAttributeFromServer
-          );
+          expect(toCamelCase).to.be.calledWith(valuesFromServerBeforeFormat);
         });
       });
 
@@ -407,7 +400,7 @@ describe('Assets/Attributes', function() {
     context('when all required information is supplied', function() {
       let assetAttributeToServerAfterFormat;
       let assetAttributeToServerBeforeFormat;
-      let formatAssetAttributeToServer;
+      let toSnakeCase;
       let promise;
 
       beforeEach(function() {
@@ -418,8 +411,8 @@ describe('Assets/Attributes', function() {
         );
         assetAttributeToServerBeforeFormat = fixture.build('assetAttribute');
 
-        formatAssetAttributeToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeToServer')
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
           .returns(assetAttributeToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -435,8 +428,9 @@ describe('Assets/Attributes', function() {
       });
 
       it('formats the data into the right format', function() {
-        expect(formatAssetAttributeToServer).to.be.deep.calledWith(
-          assetAttributeToServerBeforeFormat
+        expect(toSnakeCase).to.be.deep.calledWith(
+          assetAttributeToServerBeforeFormat,
+          { excludeKeys: ['assetTypeId', 'id', 'organizationId'] }
         );
       });
 
@@ -502,10 +496,10 @@ describe('Assets/Attributes', function() {
   describe('createValue', function() {
     context('when all required information is supplied', function() {
       let assetId;
-      let formatAssetAttributeValueFromServer;
-      let formatAssetAttributeValueToServer;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
       let valueFromServerAfterFormat;
       let valueFromServerBeforeFormat;
       let valueToServerAfterFormat;
@@ -528,16 +522,16 @@ describe('Assets/Attributes', function() {
         );
         assetId = fixture.build('asset').id;
 
-        formatAssetAttributeValueFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeValueFromServer')
-          .returns(valueFromServerAfterFormat);
-        formatAssetAttributeValueToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeValueToServer')
-          .returns(valueToServerAfterFormat);
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(valueFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(valueFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
+          .returns(valueToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -552,9 +546,7 @@ describe('Assets/Attributes', function() {
       });
 
       it('formats the submitted asset attribute value object to send to the server ', function() {
-        expect(formatAssetAttributeValueToServer).to.be.calledWith(
-          valueToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.calledWith(valueToServerBeforeFormat);
       });
 
       it('creates a new asset attribute value', function() {
@@ -568,9 +560,7 @@ describe('Assets/Attributes', function() {
 
       it('formats the returned asset attribute object', function() {
         return promise.then(() => {
-          expect(formatAssetAttributeValueFromServer).to.be.calledWith(
-            valueFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(valueFromServerBeforeFormat);
         });
       });
 
@@ -666,10 +656,10 @@ describe('Assets/Attributes', function() {
   describe('getEffectiveValuesByAssetId', function() {
     context('when all required information is supplied', function() {
       let assetId;
-      let formatAssetAttributeValueFiltersToServer;
-      let formatAssetAttributeValueFromServer;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
       let valueFiltersToServerAfterFormat;
       let valueFiltersToServerBeforeFormat;
       let valuesFromServerAfterFormat;
@@ -695,16 +685,16 @@ describe('Assets/Attributes', function() {
             fixture.build('assetAttributeValue', values, { fromServer: true })
         );
 
-        formatAssetAttributeValueFiltersToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeValueFiltersToServer')
-          .returns(valueFiltersToServerAfterFormat);
-        formatAssetAttributeValueFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeValueFromServer')
-          .callsFake((value, index) => valuesFromServerAfterFormat[index]);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(valuesFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
+          .returns(valueFiltersToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -718,9 +708,7 @@ describe('Assets/Attributes', function() {
       });
 
       it('formats the filters sent to the server', function() {
-        expect(formatAssetAttributeValueFiltersToServer).to.be.calledWith(
-          valueFiltersToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.calledWith(valueFiltersToServerBeforeFormat);
       });
 
       it('gets a list of asset attributes from the server', function() {
@@ -732,9 +720,7 @@ describe('Assets/Attributes', function() {
 
       it('formats the asset attribute values', function() {
         return promise.then(() => {
-          valuesFromServerBeforeFormat.forEach((value) => {
-            expect(formatAssetAttributeValueFromServer).to.be.calledWith(value);
-          });
+          expect(toCamelCase).to.be.calledWith(valuesFromServerBeforeFormat);
         });
       });
 
@@ -765,12 +751,12 @@ describe('Assets/Attributes', function() {
     context('when all required information is supplied', function() {
       let assetId;
       let attributeId;
-      let formatPaginatedDataFromServer;
-      let formatPaginationOptionsToServer;
       let paginationOptionsBeforeFormat;
       let paginationOptionsAfterFormat;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
       let valuesFromServerAfterFormat;
       let valuesFromServerBeforeFormat;
 
@@ -803,16 +789,16 @@ describe('Assets/Attributes', function() {
           )
         };
 
-        formatPaginatedDataFromServer = this.sandbox
-          .stub(assetsUtils, 'formatPaginatedDataFromServer')
-          .returns(valuesFromServerAfterFormat);
-        formatPaginationOptionsToServer = this.sandbox
-          .stub(assetsUtils, 'formatPaginationOptionsToServer')
-          .returns(paginationOptionsAfterFormat);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(valuesFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
+          .returns(paginationOptionsAfterFormat);
 
         const assetAttributes = new AssetAttributes(
           baseSdk,
@@ -827,9 +813,7 @@ describe('Assets/Attributes', function() {
       });
 
       it('formats the pagination options sent to the server', function() {
-        expect(formatPaginationOptionsToServer).to.be.calledWith(
-          paginationOptionsBeforeFormat
-        );
+        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
       });
 
       it('gets a list of asset attribute values from the server', function() {
@@ -841,10 +825,7 @@ describe('Assets/Attributes', function() {
 
       it('formats the asset attribute value data', function() {
         return promise.then(() => {
-          expect(formatPaginatedDataFromServer).to.be.calledWith(
-            valuesFromServerBeforeFormat,
-            assetsUtils.formatAssetAttributeValueFromServer
-          );
+          expect(toCamelCase).to.be.calledWith(valuesFromServerBeforeFormat);
         });
       });
 
@@ -892,10 +873,10 @@ describe('Assets/Attributes', function() {
 
   describe('updateValue', function() {
     context('when all required information is supplied', function() {
+      let promise;
+      let toSnakeCase;
       let valueToServerAfterFormat;
       let valueToServerBeforeFormat;
-      let formatAssetAttributeValueToServer;
-      let promise;
 
       beforeEach(function() {
         valueToServerBeforeFormat = fixture.build('assetAttributeValue');
@@ -905,8 +886,8 @@ describe('Assets/Attributes', function() {
           { fromServer: true }
         );
 
-        formatAssetAttributeValueToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetAttributeValueToServer')
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
           .returns(valueToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -922,9 +903,9 @@ describe('Assets/Attributes', function() {
       });
 
       it('formats the data into the right format', function() {
-        expect(formatAssetAttributeValueToServer).to.calledWith(
-          valueToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.calledWith(valueToServerBeforeFormat, {
+          excludeKeys: ['assetAttributeId', 'assetId', 'id']
+        });
       });
 
       it('updates the asset attribute value', function() {

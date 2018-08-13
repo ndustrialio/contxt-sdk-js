@@ -1,13 +1,5 @@
 import isPlainObject from 'lodash.isplainobject';
-import {
-  formatAssetAttributeFromServer,
-  formatAssetAttributeToServer,
-  formatAssetAttributeValueFiltersToServer,
-  formatAssetAttributeValueFromServer,
-  formatAssetAttributeValueToServer,
-  formatPaginatedDataFromServer,
-  formatPaginationOptionsToServer
-} from '../utils/assets';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} PaginationMetadata
@@ -133,11 +125,12 @@ class AssetAttributes {
       }
     }
 
-    const data = formatAssetAttributeToServer(assetAttribute);
-
     return this._request
-      .post(`${this._baseUrl}/assets/types/${assetTypeId}/attributes`, data)
-      .then((assetAttribute) => formatAssetAttributeFromServer(assetAttribute));
+      .post(
+        `${this._baseUrl}/assets/types/${assetTypeId}/attributes`,
+        toSnakeCase(assetAttribute)
+      )
+      .then((assetAttribute) => toCamelCase(assetAttribute));
   }
 
   /**
@@ -198,7 +191,7 @@ class AssetAttributes {
 
     return this._request
       .get(`${this._baseUrl}/assets/attributes/${assetAttributeId}`)
-      .then((assetAttribute) => formatAssetAttributeFromServer(assetAttribute));
+      .then((assetAttribute) => toCamelCase(assetAttribute));
   }
 
   /**
@@ -229,20 +222,11 @@ class AssetAttributes {
       );
     }
 
-    const formattedPaginationOptions = formatPaginationOptionsToServer(
-      paginationOptions
-    );
-
     return this._request
       .get(`${this._baseUrl}/assets/types/${assetTypeId}/attributes`, {
-        params: formattedPaginationOptions
+        params: toSnakeCase(paginationOptions)
       })
-      .then((assetAttributeValueData) =>
-        formatPaginatedDataFromServer(
-          assetAttributeValueData,
-          formatAssetAttributeFromServer
-        )
-      );
+      .then((assetAttributeValueData) => toCamelCase(assetAttributeValueData));
   }
 
   /**
@@ -296,7 +280,9 @@ class AssetAttributes {
       );
     }
 
-    const formattedUpdate = formatAssetAttributeToServer(update);
+    const formattedUpdate = toSnakeCase(update, {
+      excludeKeys: ['assetTypeId', 'id', 'organizationId']
+    });
 
     return this._request.put(
       `${this._baseUrl}/assets/attributes/${assetAttributeId}`,
@@ -355,18 +341,14 @@ class AssetAttributes {
       }
     }
 
-    const data = formatAssetAttributeValueToServer(assetAttributeValue);
-
     return this._request
       .post(
         `${this._baseUrl}/assets/${assetId}/attributes/${
           assetAttributeValue.assetAttributeId
         }/values`,
-        data
+        toSnakeCase(assetAttributeValue)
       )
-      .then((assetAttributeValue) =>
-        formatAssetAttributeValueFromServer(assetAttributeValue)
-      );
+      .then((assetAttributeValue) => toCamelCase(assetAttributeValue));
   }
 
   /**
@@ -439,17 +421,11 @@ class AssetAttributes {
       );
     }
 
-    const formattedAssetAttributeFilters = formatAssetAttributeValueFiltersToServer(
-      assetAttributeFilters
-    );
-
     return this._request
       .get(`${this._baseUrl}/assets/${assetId}/attributes/values`, {
-        params: formattedAssetAttributeFilters
+        params: toSnakeCase(assetAttributeFilters)
       })
-      .then((assetAttributeValues) =>
-        assetAttributeValues.map(formatAssetAttributeValueFromServer)
-      );
+      .then((assetAttributeValues) => toCamelCase(assetAttributeValues));
   }
 
   /**
@@ -501,23 +477,14 @@ class AssetAttributes {
       );
     }
 
-    const formattedPaginationOptions = formatPaginationOptionsToServer(
-      paginationOptions
-    );
-
     return this._request
       .get(
         `${
           this._baseUrl
         }/assets/${assetId}/attributes/${assetAttributeId}/values`,
-        { params: formattedPaginationOptions }
+        { params: toSnakeCase(paginationOptions) }
       )
-      .then((assetAttributeValueData) =>
-        formatPaginatedDataFromServer(
-          assetAttributeValueData,
-          formatAssetAttributeValueFromServer
-        )
-      );
+      .then((assetAttributeValueData) => toCamelCase(assetAttributeValueData));
   }
 
   /**
@@ -568,7 +535,9 @@ class AssetAttributes {
       );
     }
 
-    const formattedUpdate = formatAssetAttributeValueToServer(update);
+    const formattedUpdate = toSnakeCase(update, {
+      excludeKeys: ['assetAttributeId', 'assetId', 'id']
+    });
 
     return this._request.put(
       `${this._baseUrl}/assets/attributes/values/${assetAttributeValueId}`,

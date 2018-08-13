@@ -114,7 +114,7 @@ Method: GET
 contxtSdk.assets
   .getAll()
   .then((assets) => console.log(assets))
-  .catch(err) => console.log(err);
+  .catch((err) => console.log(err));
 ```
 <a name="Assets+getAllByOrganizationId"></a>
 

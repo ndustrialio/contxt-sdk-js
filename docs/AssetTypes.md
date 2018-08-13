@@ -159,7 +159,7 @@ Method: PUT
 **Example**  
 ```js
 contxtSdk.assets.types
-  .update({
+  .update('5f310899-d8f9-4dac-ae82-cedb2048a8ef', {
     description: 'A physical facility building'
   });
 ```
