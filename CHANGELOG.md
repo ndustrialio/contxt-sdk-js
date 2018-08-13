@@ -1,9 +1,3 @@
-## [v0.0.27](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.27) (2018-xx-xx)
-
-**Changed**
-
-* Updated AssetAttributes#createValue to use an updated API endpoint
-
 ## [v0.0.26](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.26) (2018-xx-xx)
 
 ### TO BE RELEASED
@@ -12,6 +6,7 @@
 
 * Set specific engine versions for Node and NPM
 * Audited and updated dependencies
+* Updated AssetAttributes#createValue to use an updated API endpoint
 
 **Fixed**
 
