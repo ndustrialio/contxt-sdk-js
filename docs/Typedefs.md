@@ -361,6 +361,19 @@ for authenticating and communicating with an individual API and the external mod
 | apiToken | <code>string</code> | 
 | expiresAt | <code>number</code> | 
 
+<a name="MessageBusChannel"></a>
+
+## MessageBusChannel : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | UUID formatted ID |
+| name | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID of the organization to which the channel belongs |
+| serviceId | <code>string</code> |  |
+
 <a name="OutputField"></a>
 
 ## OutputField : <code>Object</code>

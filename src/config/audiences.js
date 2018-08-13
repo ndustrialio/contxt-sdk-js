@@ -1,4 +1,14 @@
 export default {
+  bus: {
+    production: {
+      clientId: 'bmoJ2jhfyIP5s4IZx5Ss6xQ9lmkoDixO',
+      host: 'https://bus.ndustrial.io'
+    },
+    staging: {
+      clientId: '8qY2xJob1JAxhmVhIDLCNnGriTM9bct8',
+      host: 'https://bus-staging.ndustrial.io'
+    }
+  },
   contxtAuth: {
     production: {
       clientId: '75wT048QcpE7ujwBJPPjr263eTHl4gEX',
