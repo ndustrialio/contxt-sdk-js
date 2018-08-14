@@ -1,9 +1,5 @@
 import isPlainObject from 'lodash.isplainobject';
-import {
-  formatGroupingFacilityFromServer,
-  formatGroupingFromServer,
-  formatGroupingToServer
-} from '../utils/facilities';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} FacilityGrouping
@@ -86,9 +82,7 @@ class FacilityGroupings {
           this._baseUrl
         }/groupings/${facilityGroupingId}/facility/${facilityId}`
       )
-      .then((groupingFacility) =>
-        formatGroupingFacilityFromServer(groupingFacility)
-      );
+      .then((groupingFacility) => toCamelCase(groupingFacility));
   }
 
   /**
@@ -133,11 +127,9 @@ class FacilityGroupings {
       }
     }
 
-    const data = formatGroupingToServer(grouping);
-
     return this._request
-      .post(`${this._baseUrl}/groupings`, data)
-      .then((grouping) => formatGroupingFromServer(grouping));
+      .post(`${this._baseUrl}/groupings`, toSnakeCase(grouping))
+      .then((grouping) => toCamelCase(grouping));
   }
 
   /**
@@ -191,7 +183,7 @@ class FacilityGroupings {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/groupings`)
-      .then((groupings) => groupings.map(formatGroupingFromServer));
+      .then((groupings) => toCamelCase(groupings));
   }
 
   /**
@@ -224,7 +216,7 @@ class FacilityGroupings {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/groupings`)
-      .then((groupings) => groupings.map(formatGroupingFromServer));
+      .then((groupings) => toCamelCase(groupings));
   }
 
   /**
@@ -315,11 +307,13 @@ class FacilityGroupings {
       );
     }
 
-    const formattedUpdate = formatGroupingToServer(update);
+    const formattedUpdate = toSnakeCase(update, {
+      excludeKeys: ['id', 'organizationId', 'ownerId']
+    });
 
     return this._request
       .put(`${this._baseUrl}/groupings/${facilityGroupingId}`, formattedUpdate)
-      .then((grouping) => formatGroupingFromServer(grouping));
+      .then((grouping) => toCamelCase(grouping));
   }
 }
 

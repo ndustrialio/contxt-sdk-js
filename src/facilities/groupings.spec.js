@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
 import FacilityGroupings from './groupings';
-import * as facilitiesUtils from '../utils/facilities';
+import * as objectsUtils from '../utils/objects';
 
 describe('Facilities/Groupings', function() {
   let baseRequest;
@@ -59,10 +59,10 @@ describe('Facilities/Groupings', function() {
       let expectedFacilityId;
       let expectedGroupingFacility;
       let expectedGroupingId;
-      let formatGroupingFacilityFromServer;
       let promise;
       let rawGroupingFacility;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedGroupingFacility = fixture.build('facilityGroupingFacility');
@@ -72,13 +72,13 @@ describe('Facilities/Groupings', function() {
           fromServer: true
         });
 
-        formatGroupingFacilityFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatGroupingFacilityFromServer')
-          .returns(expectedGroupingFacility);
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(rawGroupingFacility)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(expectedGroupingFacility);
 
         const facilityGroupings = new FacilityGroupings(
           baseSdk,
@@ -100,9 +100,7 @@ describe('Facilities/Groupings', function() {
 
       it('formats the returning facility grouping facility object', function() {
         return promise.then(() => {
-          expect(formatGroupingFacilityFromServer).to.be.calledWith(
-            rawGroupingFacility
-          );
+          expect(toCamelCase).to.be.calledWith(rawGroupingFacility);
         });
       });
 
@@ -140,13 +138,13 @@ describe('Facilities/Groupings', function() {
   describe('create', function() {
     context('when all required information is supplied', function() {
       let expectedGrouping;
-      let formatGroupingFromServer;
-      let formatGroupingToServer;
       let formattedGroupingFromServer;
       let formattedGroupingToServer;
       let initialGrouping;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         initialGrouping = fixture.build('facilityGrouping');
@@ -160,16 +158,16 @@ describe('Facilities/Groupings', function() {
           fromServer: true
         });
 
-        formatGroupingFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatGroupingFromServer')
-          .returns(expectedGrouping);
-        formatGroupingToServer = this.sandbox
-          .stub(facilitiesUtils, 'formatGroupingToServer')
-          .returns(formattedGroupingToServer);
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(formattedGroupingFromServer)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(expectedGrouping);
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
+          .returns(formattedGroupingToServer);
 
         const facilityGroupings = new FacilityGroupings(
           baseSdk,
@@ -181,7 +179,7 @@ describe('Facilities/Groupings', function() {
       });
 
       it('formats the submitted facility grouping object to send to the server', function() {
-        expect(formatGroupingToServer).to.be.calledWith(initialGrouping);
+        expect(toSnakeCase).to.be.calledWith(initialGrouping);
       });
 
       it('creates a new facility grouping', function() {
@@ -193,9 +191,7 @@ describe('Facilities/Groupings', function() {
 
       it('formats the returned facility grouping object', function() {
         return promise.then(() => {
-          expect(formatGroupingFromServer).to.be.calledWith(
-            formattedGroupingFromServer
-          );
+          expect(toCamelCase).to.be.calledWith(formattedGroupingFromServer);
         });
       });
 
@@ -272,7 +268,7 @@ describe('Facilities/Groupings', function() {
 
   describe('getAll', function() {
     let expectedGrouping;
-    let formatGroupingFromServer;
+    let toCamelCase;
     let groupingsFromServer;
     let promise;
     let request;
@@ -288,13 +284,13 @@ describe('Facilities/Groupings', function() {
         numberOfGroupings
       );
 
-      formatGroupingFromServer = this.sandbox
-        .stub(facilitiesUtils, 'formatGroupingFromServer')
-        .callsFake((grouping, index) => expectedGrouping[index]);
       request = {
         ...baseRequest,
         get: this.sandbox.stub().resolves(groupingsFromServer)
       };
+      toCamelCase = this.sandbox
+        .stub(objectsUtils, 'toCamelCase')
+        .returns(expectedGrouping);
 
       const facilityGroupings = new FacilityGroupings(
         baseSdk,
@@ -310,12 +306,7 @@ describe('Facilities/Groupings', function() {
 
     it('formats the list of facility groupings', function() {
       return promise.then(() => {
-        expect(formatGroupingFromServer).to.have.callCount(
-          groupingsFromServer.length
-        );
-        groupingsFromServer.forEach((grouping) => {
-          expect(formatGroupingFromServer).to.be.calledWith(grouping);
-        });
+        expect(toCamelCase).to.be.calledWith(groupingsFromServer);
       });
     });
 
@@ -330,7 +321,7 @@ describe('Facilities/Groupings', function() {
     context('when all required information is provided', function() {
       let expectedGrouping;
       let expectedOrganizationId;
-      let formatGroupingFromServer;
+      let toCamelCase;
       let groupingsFromServer;
       let promise;
       let request;
@@ -347,13 +338,13 @@ describe('Facilities/Groupings', function() {
         );
         expectedOrganizationId = fixture.build('organization').id;
 
-        formatGroupingFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatGroupingFromServer')
-          .callsFake((grouping, index) => expectedGrouping[index]);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(groupingsFromServer)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(expectedGrouping);
 
         const facilityGroupings = new FacilityGroupings(
           baseSdk,
@@ -373,12 +364,7 @@ describe('Facilities/Groupings', function() {
 
       it('formats the list of facility groupings', function() {
         return promise.then(() => {
-          expect(formatGroupingFromServer).to.have.callCount(
-            groupingsFromServer.length
-          );
-          groupingsFromServer.forEach((grouping) => {
-            expect(formatGroupingFromServer).to.be.calledWith(grouping);
-          });
+          expect(toCamelCase).to.be.calledWith(groupingsFromServer);
         });
       });
 
@@ -463,13 +449,13 @@ describe('Facilities/Groupings', function() {
 
   describe('update', function() {
     context('when all required information is available', function() {
-      let formatGroupingFromServer;
-      let formatGroupingToServer;
+      let toSnakeCase;
       let formattedGroupingFromServer;
       let formattedUpdateToServer;
       let groupingFromServer;
       let promise;
       let request;
+      let toCamelCase;
       let update;
 
       beforeEach(function() {
@@ -492,16 +478,16 @@ describe('Facilities/Groupings', function() {
           fromServer: true
         });
 
-        formatGroupingFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatGroupingFromServer')
-          .returns(formattedGroupingFromServer);
-        formatGroupingToServer = this.sandbox
-          .stub(facilitiesUtils, 'formatGroupingToServer')
-          .returns(formattedUpdateToServer);
         request = {
           ...baseRequest,
           put: this.sandbox.stub().resolves(groupingFromServer)
         };
+        toCamelCase = this.sandbox
+          .stub(objectsUtils, 'toCamelCase')
+          .returns(formattedGroupingFromServer);
+        toSnakeCase = this.sandbox
+          .stub(objectsUtils, 'toSnakeCase')
+          .returns(formattedUpdateToServer);
 
         const facilityGroupings = new FacilityGroupings(
           baseSdk,
@@ -515,7 +501,9 @@ describe('Facilities/Groupings', function() {
       });
 
       it('formats the facility grouping update for the server', function() {
-        expect(formatGroupingToServer).to.be.calledWith(update);
+        expect(toSnakeCase).to.be.calledWith(update, {
+          excludeKeys: ['id', 'organizationId', 'ownerId']
+        });
       });
 
       it('updates the facility groupings', function() {
@@ -527,7 +515,7 @@ describe('Facilities/Groupings', function() {
 
       it('formats the returned facility grouping', function() {
         return promise.then(() => {
-          expect(formatGroupingFromServer).to.be.calledWith(groupingFromServer);
+          expect(toCamelCase).to.be.calledWith(groupingFromServer);
         });
       });
 
@@ -537,45 +525,45 @@ describe('Facilities/Groupings', function() {
         );
       });
     });
+
+    context(
+      'when there is missing or malformed required information',
+      function() {
+        let facilityGroupings;
+
+        beforeEach(function() {
+          facilityGroupings = new FacilityGroupings(baseSdk, baseRequest);
+        });
+
+        it('throws an error when there is no provided facility grouping id', function() {
+          const groupingUpdate = fixture.build('facilityGrouping');
+          const promise = facilityGroupings.update(null, groupingUpdate);
+
+          return expect(promise).to.be.rejectedWith(
+            'A facility grouping id is required to update a facility grouping.'
+          );
+        });
+
+        it('throws an error when there is no update provided', function() {
+          const groupingUpdate = fixture.build('facilityGrouping');
+          const promise = facilityGroupings.update(groupingUpdate.id);
+
+          return expect(promise).to.be.rejectedWith(
+            'An update is required to update a facility grouping'
+          );
+        });
+
+        it('throws an error when the update is not an object', function() {
+          const groupingUpdate = fixture.build('facilityGrouping');
+          const promise = facilityGroupings.update(groupingUpdate.id, [
+            groupingUpdate
+          ]);
+
+          return expect(promise).to.be.rejectedWith(
+            'The facility grouping update must be a well-formed object with the data you wish to update.'
+          );
+        });
+      }
+    );
   });
-
-  context(
-    'when there is missing or malformed required information',
-    function() {
-      let facilityGroupings;
-
-      beforeEach(function() {
-        facilityGroupings = new FacilityGroupings(baseSdk, baseRequest);
-      });
-
-      it('throws an error when there is no provided facility grouping id', function() {
-        const groupingUpdate = fixture.build('facilityGrouping');
-        const promise = facilityGroupings.update(null, groupingUpdate);
-
-        return expect(promise).to.be.rejectedWith(
-          'A facility grouping id is required to update a facility grouping.'
-        );
-      });
-
-      it('throws an error when there is no update provided', function() {
-        const groupingUpdate = fixture.build('facilityGrouping');
-        const promise = facilityGroupings.update(groupingUpdate.id);
-
-        return expect(promise).to.be.rejectedWith(
-          'An update is required to update a facility grouping'
-        );
-      });
-
-      it('throws an error when the update is not an object', function() {
-        const groupingUpdate = fixture.build('facilityGrouping');
-        const promise = facilityGroupings.update(groupingUpdate.id, [
-          groupingUpdate
-        ]);
-
-        return expect(promise).to.be.rejectedWith(
-          'The facility grouping update must be a well-formed object with the data you wish to update.'
-        );
-      });
-    }
-  );
 });

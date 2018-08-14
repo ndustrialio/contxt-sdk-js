@@ -1,9 +1,4 @@
-import {
-  formatCostCenterFromServer,
-  formatGroupingFromServer,
-  formatOrganizationFromServer,
-  formatTagsFromServer
-} from './index';
+import { toCamelCase } from '../objects';
 
 /**
  * Normalizes the facility object returned from the API server
@@ -52,46 +47,16 @@ import {
  *
  * @private
  */
-function formatFacilityFromServer(input = {}) {
-  const facility = {
-    address1: input.address1,
-    address2: input.address2,
-    assetId: input.asset_id,
-    city: input.city,
-    createdAt: input.created_at,
-    geometryId: input.geometry_id,
-    id: input.id,
-    name: input.name,
-    organizationId: input.organization_id,
-    state: input.state,
-    timezone: input.timezone,
-    weatherLocationId: input.weather_location_id,
-    zip: input.zip
-  };
+function formatFacilityWithInfoFromServer(input = {}) {
+  const formattedFacility = toCamelCase(input, {
+    excludeKeys: ['Info']
+  });
 
   if (input.Info) {
-    facility.info = input.Info;
+    formattedFacility.info = input.Info;
   }
 
-  if (input.Organization) {
-    facility.organization = formatOrganizationFromServer(input.Organization);
-  }
-
-  if (input.tags) {
-    facility.tags = formatTagsFromServer(input.tags);
-  }
-
-  if (input.facility_groupings) {
-    facility.facility_groupings = input.facility_groupings.map(
-      formatGroupingFromServer
-    );
-  }
-
-  if (input.cost_centers) {
-    facility.costCenters = input.cost_centers.map(formatCostCenterFromServer);
-  }
-
-  return facility;
+  return formattedFacility;
 }
 
-export default formatFacilityFromServer;
+export default formatFacilityWithInfoFromServer;

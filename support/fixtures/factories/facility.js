@@ -28,7 +28,7 @@ factory
     weatherLocationId: () => null,
     zip: () => faker.address.zipCode()
   })
-  .attr('facility_groupings', ['id', 'fromServer'], (id, fromServer) => {
+  .attr('facilityGroupings', ['id', 'fromServer'], (id, fromServer) => {
     return times(
       faker.random.number({
         min: 0,
@@ -79,6 +79,9 @@ factory
     if (options.fromServer) {
       facility.created_at = facility.createdAt;
       delete facility.createdAt;
+
+      facility.facility_groupings = facility.facilityGroupings;
+      delete facility.facilityGroupings;
 
       facility.geometry_id = facility.geometryId;
       delete facility.geometryId;
