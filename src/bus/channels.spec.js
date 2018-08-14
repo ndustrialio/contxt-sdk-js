@@ -216,15 +216,13 @@ describe('Channels', function() {
       let request;
 
       beforeEach(function() {
-        expectedChannelId = faker.random.uuid();
-        channelFromServerAfterFormat = fixture.build('channel', {
-          id: expectedChannelId
-        });
+        channelFromServerAfterFormat = fixture.build('channel');
+        expectedChannelId = channelFromServerAfterFormat.id;
         expectedOrganizationId = channelFromServerAfterFormat.organizationId;
         expectedServiceId = channelFromServerAfterFormat.serviceId;
         channelFromServerBeforeFormat = fixture.build(
           'channel',
-          { id: expectedChannelId },
+          channelFromServerAfterFormat,
           { fromServer: true }
         );
 
@@ -304,7 +302,6 @@ describe('Channels', function() {
 
   describe('update', function() {
     context('when all required information is available', function() {
-      let channelFromServerBeforeFormat;
       let channelToServerAfterFormat;
       let channelToServerBeforeFormat;
       let formatChannelToServer;
@@ -312,16 +309,12 @@ describe('Channels', function() {
       let promise;
 
       beforeEach(function() {
-        channelFromServerBeforeFormat = fixture.build('channel', null, {
-          fromServer: true
-        });
+        channelToServerBeforeFormat = fixture.build('channel');
         channelToServerAfterFormat = fixture.build(
           'channel',
-          channelFromServerBeforeFormat,
+          channelToServerBeforeFormat,
           { fromServer: true }
         );
-        channelToServerBeforeFormat = fixture.build('channel');
-
         formatChannelToServer = this.sandbox
           .stub(busUtils, 'formatChannelToServer')
           .returns(channelToServerAfterFormat);
