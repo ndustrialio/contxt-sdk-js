@@ -1,6 +1,5 @@
 import isPlainObject from 'lodash.isplainobject';
-
-import { formatChannelFromServer, formatChannelToServer } from '../utils/bus';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} MessageBusChannel
@@ -67,16 +66,14 @@ class Channels {
       }
     }
 
-    const data = formatChannelToServer(channel);
-
     return this._request
       .post(
         `${this._baseUrl}/organizations/${channel.organizationId}/services/${
           channel.serviceId
         }/channels`,
-        data
+        toSnakeCase(channel)
       )
-      .then((response) => formatChannelFromServer(response));
+      .then((response) => toCamelCase(response));
   }
 
   /**
@@ -169,7 +166,7 @@ class Channels {
           this._baseUrl
         }/organizations/${organizationId}/services/${serviceId}/channels/${channelId}`
       )
-      .then((response) => formatChannelFromServer(response));
+      .then((response) => toCamelCase(response));
   }
 
   /**
@@ -227,13 +224,11 @@ class Channels {
       );
     }
 
-    const formattedUpdate = formatChannelToServer(update);
-
     return this._request.put(
       `${
         this._baseUrl
       }/organizations/${organizationId}/services/${serviceId}/channels/${channelId}`,
-      formattedUpdate
+      toSnakeCase(update)
     );
   }
 }
