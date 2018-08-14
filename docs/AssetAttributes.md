@@ -171,7 +171,7 @@ contxtSdk.assets.attributes
 ### contxtSdk.assets.attributes.createValue(assetId, assetAttributeValue) ⇒ <code>Promise</code>
 Creates a new asset attribute value
 
-API Endpoint: '/assets/:assetId/values'
+API Endpoint: '/assets/:assetId/attributes/:assetAttributeId/values'
 Method: POST
 
 **Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  

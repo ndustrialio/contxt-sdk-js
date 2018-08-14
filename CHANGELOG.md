@@ -1,11 +1,10 @@
 ## [v0.0.26](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.26) (2018-xx-xx)
 
-### TO BE RELEASED
-
 **Changed**
 
 * Set specific engine versions for Node and NPM
 * Audited and updated dependencies
+* Updated AssetAttributes#createValue to use an updated API endpoint
 
 **Fixed**
 

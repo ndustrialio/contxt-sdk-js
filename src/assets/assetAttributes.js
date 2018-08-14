@@ -307,7 +307,7 @@ class AssetAttributes {
   /**
    * Creates a new asset attribute value
    *
-   * API Endpoint: '/assets/:assetId/values'
+   * API Endpoint: '/assets/:assetId/attributes/:assetAttributeId/values'
    * Method: POST
    *
    * @param {string} assetId The ID of the asset type (formatted as a UUID)
@@ -358,7 +358,12 @@ class AssetAttributes {
     const data = formatAssetAttributeValueToServer(assetAttributeValue);
 
     return this._request
-      .post(`${this._baseUrl}/assets/${assetId}/values`, data)
+      .post(
+        `${this._baseUrl}/assets/${assetId}/attributes/${
+          assetAttributeValue.assetAttributeId
+        }/values`,
+        data
+      )
       .then((assetAttributeValue) =>
         formatAssetAttributeValueFromServer(assetAttributeValue)
       );
