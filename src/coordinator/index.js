@@ -1,3 +1,5 @@
+import EdgeNodes from './edgeNodes';
+
 import {
   formatOrganizationFromServer,
   formatUserFromServer
@@ -41,6 +43,8 @@ class Coordinator {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+
+    this.edgeNodes = new EdgeNodes(sdk, request, baseUrl);
   }
 
   /**
