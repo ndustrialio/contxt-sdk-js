@@ -25,6 +25,12 @@ enabled in Auth0.</p>
 <p><em>NOTE</em>: The web origin added in auth0 should be something like
 &quot;<a href="http://localhost:5000&quot;">http://localhost:5000&quot;</a>, not &quot;<a href="http://localhost:5000/callback&quot;">http://localhost:5000/callback&quot;</a></p>
 </dd>
+<dt><a href="./Bus.md">Bus</a></dt>
+<dd><p>Module that provides access to the message bus</p>
+</dd>
+<dt><a href="./Channels.md">Channels</a></dt>
+<dd><p>Module that provides access to message bus channels</p>
+</dd>
 <dt><a href="./Config.md">Config</a></dt>
 <dd><p>Module that merges user assigned configurations with default configurations.</p>
 </dd>
@@ -126,6 +132,8 @@ for authenticating and communicating with an individual API and the external mod
 <dt><a href="./Typedefs.md#FacilityGroupingFacility">FacilityGroupingFacility</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#MessageBusChannel">MessageBusChannel</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#OutputField">OutputField</a> : <code>Object</code></dt>
 <dd></dd>

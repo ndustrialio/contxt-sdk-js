@@ -1,4 +1,5 @@
 import times from 'lodash.times';
+import Bus from './bus';
 import Config from './config';
 import ContxtSdk from './index';
 import Coordinator from './coordinator';
@@ -57,6 +58,14 @@ describe('ContxtSdk', function() {
         externalModules: expectedExternalModules,
         sessionType: expectedAuthSessionType
       });
+    });
+
+    it('creates an instance of the request module for Bus', function() {
+      expect(createRequest).to.be.calledWith('bus');
+    });
+
+    it('sets an instance of Bus', function() {
+      expect(contxtSdk.bus).to.be.an.instanceof(Bus);
     });
 
     it('sets an instance of Config', function() {

@@ -1,4 +1,5 @@
 import Assets from './assets';
+import Bus from './bus';
 import Config from './config';
 import Coordinator from './coordinator';
 import Events from './events';
@@ -72,6 +73,7 @@ class ContxtSdk {
 
     this.assets = new Assets(this, this._createRequest('facilities'));
     this.auth = this._createAuthSession(sessionType);
+    this.bus = new Bus(this, this._createRequest('bus'));
     this.coordinator = new Coordinator(
       this,
       this._createRequest('coordinator')
