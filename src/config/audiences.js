@@ -5,7 +5,7 @@ export default {
       host: 'https://bus.ndustrial.io'
     },
     staging: {
-      clientId: '8qY2xJob1JAxhmVhIDLCNnGriTM9bct8',
+      clientId: '1HD1NG1VTBtkqRt2HRRj3E3hdmqmwzoz',
       host: 'https://bus-staging.ndustrial.io'
     }
   },
