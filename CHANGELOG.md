@@ -1,4 +1,10 @@
-## [v0.0.26](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.26) (2018-xx-xx)
+## [v0.0.27](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.27) (2018-08-14)
+
+**Added**
+
+* Added Bus, Channel module with the ability to perform create, read, update and delete on Message Bus Channels
+
+## [v0.0.26](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.26) (2018-08-13)
 
 **Changed**
 
