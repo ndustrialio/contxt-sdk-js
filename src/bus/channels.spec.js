@@ -89,10 +89,6 @@ describe('Channels', function() {
 
         const channels = new Channels(baseSdk, request);
         channels._baseUrl = expectedHost;
-        console.log('channels is');
-        console.log(channels);
-        console.log(channels.create);
-
         promise = channels.create(channelToServerBeforeFormat);
       });
 
