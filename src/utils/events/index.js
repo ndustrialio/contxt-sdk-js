@@ -1,11 +1,3 @@
-import formatEventFromServer from './formatEventFromServer';
-import formatEventToServer from './formatEventToServer';
-import formatEventTypeFromServer from './formatEventTypeFromServer';
-import formatOwnerFromServer from './formatOwnerFromServer';
+import formatEventUpdateToServer from './formatEventUpdateToServer';
 
-export {
-  formatEventFromServer,
-  formatEventToServer,
-  formatEventTypeFromServer,
-  formatOwnerFromServer
-};
+export { formatEventUpdateToServer };

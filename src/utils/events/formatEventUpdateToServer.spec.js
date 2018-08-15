@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
-import formatEventToServer from './formatEventToServer';
+import formatEventUpdateToServer from './formatEventUpdateToServer';
 
-describe('utils/events/formatEventToServer', function() {
+describe('utils/events/formatEventUpdateToServer', function() {
   let expectedEvent;
   let event;
   let formattedEvent;
@@ -11,11 +11,8 @@ describe('utils/events/formatEventToServer', function() {
     expectedEvent = omit(
       {
         ...event,
-        allow_others_to_trigger: event.allowOthersToTrigger,
-        event_type_id: event.eventTypeId,
         facility_id: event.facilityId,
-        is_public: event.isPublic,
-        organization_id: event.organizationId
+        is_public: event.isPublic
       },
       [
         'allowOthersToTrigger',
@@ -34,7 +31,7 @@ describe('utils/events/formatEventToServer', function() {
       ]
     );
 
-    formattedEvent = formatEventToServer(event);
+    formattedEvent = formatEventUpdateToServer(event);
   });
 
   it('converts the object keys to snake case and capitalizes certain keys', function() {
