@@ -1,5 +1,4 @@
-import changeCase from 'change-case';
-import createCaseChangeFn from './createCaseChangeFn';
+import toCamelCase from './toCamelCase';
+import toSnakeCase from './toSnakeCase';
 
-export const toCamelCase = createCaseChangeFn(changeCase.camelCase);
-export const toSnakeCase = createCaseChangeFn(changeCase.snakeCase);
+export { toCamelCase, toSnakeCase };

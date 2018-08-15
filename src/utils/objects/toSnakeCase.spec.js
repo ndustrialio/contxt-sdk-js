@@ -1,6 +1,6 @@
-import { toSnakeCase } from './index';
+import toSnakeCase from './toSnakeCase';
 
-describe.skip('utils/objects/toSnakeCase', function() {
+describe('utils/objects/toSnakeCase', function() {
   context('objects', function() {
     it('transforms first-level keys', function() {
       const transformedObject = toSnakeCase({ firstKey: 'first value' });
@@ -8,19 +8,14 @@ describe.skip('utils/objects/toSnakeCase', function() {
       expect(transformedObject).to.deep.equal({ first_key: 'first value' });
     });
 
-    it('transforms nested keys', function() {
-      const transformedObject = toSnakeCase(
-        {
-          firstLevelFirstKey: {
-            secondLevelFirstKey: {
-              thirdLevelFirstKey: 'third level first value'
-            }
+    it('transforms nested keys by default', function() {
+      const transformedObject = toSnakeCase({
+        firstLevelFirstKey: {
+          secondLevelFirstKey: {
+            thirdLevelFirstKey: 'third level first value'
           }
-        },
-        {
-          deep: true
         }
-      );
+      });
 
       expect(transformedObject).to.deep.equal({
         first_level_first_key: {
@@ -31,14 +26,17 @@ describe.skip('utils/objects/toSnakeCase', function() {
       });
     });
 
-    it('does not transform nested keys by default', function() {
-      const transformedObject = toSnakeCase({
-        firstLevelFirstKey: {
-          secondLevelFirstKey: {
-            thirdLevelFirstKey: 'third level first value'
+    it('does not transform nested keys when `deep` is set to `false`', function() {
+      const transformedObject = toSnakeCase(
+        {
+          firstLevelFirstKey: {
+            secondLevelFirstKey: {
+              thirdLevelFirstKey: 'third level first value'
+            }
           }
-        }
-      });
+        },
+        { deep: false }
+      );
 
       expect(transformedObject).to.deep.equal({
         first_level_first_key: {
@@ -102,7 +100,7 @@ describe.skip('utils/objects/toSnakeCase', function() {
       });
     });
 
-    it('removes nested keys marked for removal', function() {
+    it('removes nested keys marked for removal by default', function() {
       const transformedObject = toSnakeCase(
         {
           firstLevelFirstKey: {
@@ -110,15 +108,31 @@ describe.skip('utils/objects/toSnakeCase', function() {
             secondLevelSecondKey: 'second level second value'
           }
         },
-        {
-          deep: true,
-          excludeKeys: ['secondLevelFirstKey']
-        }
+        { excludeKeys: ['secondLevelFirstKey'] }
       );
 
       expect(transformedObject).to.deep.equal({
         first_level_first_key: {
           second_level_second_key: 'second level second value'
+        }
+      });
+    });
+
+    it('does not remove nested keys when `deep` is set to `false`', function() {
+      const transformedObject = toSnakeCase(
+        {
+          firstLevelFirstKey: {
+            secondLevelFirstKey: 'second level first value',
+            secondLevelSecondKey: 'second level second value'
+          }
+        },
+        { deep: false }
+      );
+
+      expect(transformedObject).to.deep.equal({
+        first_level_first_key: {
+          secondLevelFirstKey: 'second level first value',
+          secondLevelSecondKey: 'second level second value'
         }
       });
     });
@@ -137,23 +151,20 @@ describe.skip('utils/objects/toSnakeCase', function() {
       ]);
     });
 
-    it('transforms keys in nested arrays of objects', function() {
-      const transformedObject = toSnakeCase(
-        {
-          firstLevelFirstKey: {
-            secondLevelFirstKey: [
-              { thirdLevelFirstKey: 'third level first value' },
-              { thirdLevelSecondKey: 'third level second value' },
-              {
-                thirdLevelThirdKey: [
-                  { fourthLevelFirstKey: 'fourth level first value' }
-                ]
-              }
-            ]
-          }
-        },
-        { deep: true }
-      );
+    it('transforms keys in nested arrays of objects by default', function() {
+      const transformedObject = toSnakeCase({
+        firstLevelFirstKey: {
+          secondLevelFirstKey: [
+            { thirdLevelFirstKey: 'third level first value' },
+            { thirdLevelSecondKey: 'third level second value' },
+            {
+              thirdLevelThirdKey: [
+                { fourthLevelFirstKey: 'fourth level first value' }
+              ]
+            }
+          ]
+        }
+      });
 
       expect(transformedObject).to.deep.equal({
         first_level_first_key: {
@@ -170,13 +181,16 @@ describe.skip('utils/objects/toSnakeCase', function() {
       });
     });
 
-    it('does not transform keys in nested arrays by default', function() {
-      const transformedObject = toSnakeCase({
-        firstLevelFirstKey: 'first level first value',
-        firstLevelSecondKey: [
-          { secondLevelFirstKey: 'second level first value' }
-        ]
-      });
+    it('does not transform keys in nested arrays when `deep` is set to `false`', function() {
+      const transformedObject = toSnakeCase(
+        {
+          firstLevelFirstKey: 'first level first value',
+          firstLevelSecondKey: [
+            { secondLevelFirstKey: 'second level first value' }
+          ]
+        },
+        { deep: false }
+      );
 
       expect(transformedObject).to.deep.equal({
         first_level_first_key: 'first level first value',
