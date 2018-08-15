@@ -1,5 +1,5 @@
 import Fields from './fields';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
 
 describe('Iot/Fields', function() {
   let baseRequest;
@@ -68,7 +68,7 @@ describe('Iot/Fields', function() {
           get: this.sandbox.stub().resolves(rawOutputField)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(expectedOutputField);
 
         const fields = new Fields(baseSdk, request);

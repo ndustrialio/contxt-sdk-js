@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
 import FacilityGroupings from './groupings';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
 
 describe('Facilities/Groupings', function() {
   let baseRequest;
@@ -77,7 +77,7 @@ describe('Facilities/Groupings', function() {
           post: this.sandbox.stub().resolves(rawGroupingFacility)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(expectedGroupingFacility);
 
         const facilityGroupings = new FacilityGroupings(
@@ -163,10 +163,10 @@ describe('Facilities/Groupings', function() {
           post: this.sandbox.stub().resolves(formattedGroupingFromServer)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(expectedGrouping);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(formattedGroupingToServer);
 
         const facilityGroupings = new FacilityGroupings(
@@ -289,7 +289,7 @@ describe('Facilities/Groupings', function() {
         get: this.sandbox.stub().resolves(groupingsFromServer)
       };
       toCamelCase = this.sandbox
-        .stub(objectsUtils, 'toCamelCase')
+        .stub(objectUtils, 'toCamelCase')
         .returns(expectedGrouping);
 
       const facilityGroupings = new FacilityGroupings(
@@ -343,7 +343,7 @@ describe('Facilities/Groupings', function() {
           get: this.sandbox.stub().resolves(groupingsFromServer)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(expectedGrouping);
 
         const facilityGroupings = new FacilityGroupings(
@@ -483,10 +483,10 @@ describe('Facilities/Groupings', function() {
           put: this.sandbox.stub().resolves(groupingFromServer)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(formattedGroupingFromServer);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(formattedUpdateToServer);
 
         const facilityGroupings = new FacilityGroupings(

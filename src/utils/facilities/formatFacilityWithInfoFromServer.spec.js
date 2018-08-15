@@ -1,7 +1,7 @@
 import formatFacilityWithInfoFromServer from './formatFacilityWithInfoFromServer';
-import * as objectsUtils from '../objects';
+import * as objectUtils from '../objects';
 
-describe('formatFacilityWithInfoFromServer', function() {
+describe('utils/facilities/formatFacilityWithInfoFromServer', function() {
   beforeEach(function() {
     this.sandbox = sandbox.create();
   });
@@ -23,7 +23,7 @@ describe('formatFacilityWithInfoFromServer', function() {
       });
 
       toCamelCase = this.sandbox
-        .stub(objectsUtils, 'toCamelCase')
+        .stub(objectUtils, 'toCamelCase')
         .returns(facilityAfterFormat);
 
       facility = formatFacilityWithInfoFromServer(facilityBeforeFormat);
@@ -56,7 +56,7 @@ describe('formatFacilityWithInfoFromServer', function() {
       });
 
       toCamelCase = this.sandbox
-        .stub(objectsUtils, 'toCamelCase')
+        .stub(objectUtils, 'toCamelCase')
         .returns(facilityAfterFormat);
 
       facility = formatFacilityWithInfoFromServer(facilityBeforeFormat);

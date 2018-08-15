@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} PaginationMetadata
@@ -226,7 +227,9 @@ class AssetAttributes {
       .get(`${this._baseUrl}/assets/types/${assetTypeId}/attributes`, {
         params: toSnakeCase(paginationOptions)
       })
-      .then((assetAttributeValueData) => toCamelCase(assetAttributeValueData));
+      .then((assetAttributeData) =>
+        formatPaginatedDataFromServer(assetAttributeData)
+      );
   }
 
   /**
@@ -484,7 +487,9 @@ class AssetAttributes {
         }/assets/${assetId}/attributes/${assetAttributeId}/values`,
         { params: toSnakeCase(paginationOptions) }
       )
-      .then((assetAttributeValueData) => toCamelCase(assetAttributeValueData));
+      .then((assetAttributeValueData) =>
+        formatPaginatedDataFromServer(assetAttributeValueData)
+      );
   }
 
   /**

@@ -1,6 +1,7 @@
 import has from 'lodash.has';
 import isPlainObject from 'lodash.isplainobject';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} AssetType
@@ -162,7 +163,7 @@ class AssetTypes {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/assets/types`)
-      .then((response) => toCamelCase(response));
+      .then((assetTypesData) => formatPaginatedDataFromServer(assetTypesData));
   }
 
   /**
@@ -194,7 +195,7 @@ class AssetTypes {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/assets/types`)
-      .then((response) => toCamelCase(response));
+      .then((assetTypesData) => formatPaginatedDataFromServer(assetTypesData));
   }
 
   /**

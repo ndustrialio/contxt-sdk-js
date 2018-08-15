@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
 import Channels from './channels';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
 
 describe('Channels', function() {
   let baseRequest;
@@ -80,10 +80,10 @@ describe('Channels', function() {
           post: this.sandbox.stub().resolves(channelFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(channelFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(channelToServerAfterFormat);
 
         const channels = new Channels(baseSdk, request);
@@ -226,7 +226,7 @@ describe('Channels', function() {
           get: this.sandbox.stub().resolves(channelFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(channelFromServerAfterFormat);
 
         const channels = new Channels(baseSdk, request);
@@ -313,7 +313,7 @@ describe('Channels', function() {
           put: this.sandbox.stub().resolves()
         };
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(channelToServerAfterFormat);
 
         const channels = new Channels(baseSdk, request);

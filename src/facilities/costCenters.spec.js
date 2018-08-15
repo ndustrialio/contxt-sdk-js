@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
 import CostCenters from './costCenters';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
 
 describe('Facilities/CostCenters', function() {
   let baseRequest;
@@ -73,7 +73,7 @@ describe('Facilities/CostCenters', function() {
           post: this.sandbox.stub().resolves(rawCostCenterFacility)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(expectedCostCenterFacility);
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
 
@@ -148,10 +148,10 @@ describe('Facilities/CostCenters', function() {
           post: this.sandbox.stub().resolves(formattedCostCenterFromServer)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(formattedCostCenterFromServer);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(formattedCostCenterToServer);
 
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
@@ -268,7 +268,7 @@ describe('Facilities/CostCenters', function() {
         get: this.sandbox.stub().resolves(costCentersFromServer)
       };
       toCamelCase = this.sandbox
-        .stub(objectsUtils, 'toCamelCase')
+        .stub(objectUtils, 'toCamelCase')
         .returns(expectedCostCenters);
 
       const costCenters = new CostCenters(baseSdk, request, expectedHost);
@@ -329,7 +329,7 @@ describe('Facilities/CostCenters', function() {
           get: this.sandbox.stub().resolves(costCentersFromServer)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(expectedCostCenters);
 
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
@@ -454,10 +454,10 @@ describe('Facilities/CostCenters', function() {
           put: this.sandbox.stub().resolves(costCenterFromServer)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(formattedCostCenterFromServer);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(formattedUpdateToServer);
 
         const costCenters = new CostCenters(baseSdk, request, expectedHost);

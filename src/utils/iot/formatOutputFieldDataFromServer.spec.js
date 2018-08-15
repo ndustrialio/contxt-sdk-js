@@ -2,7 +2,7 @@ import omit from 'lodash.omit';
 import URL from 'url-parse';
 import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
 import * as iotUtils from './index';
-import * as objectsUtils from '../objects';
+import * as objectUtils from '../objects';
 
 describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let expectedOutputFieldDataRecords;
@@ -57,7 +57,7 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
       .stub(iotUtils, 'parseOutputFieldNextPageUrlMetadata')
       .returns(expectedOutputFieldParsedMetadata);
     toCamelCase = this.sandbox
-      .stub(objectsUtils, 'toCamelCase')
+      .stub(objectUtils, 'toCamelCase')
       .callsFake((input) => {
         switch (input) {
           case initialOutputFieldMetadata:

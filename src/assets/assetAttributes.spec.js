@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import AssetAttributes from './assetAttributes';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
+import * as paginationUtils from '../utils/pagination';
 
 describe('Assets/Attributes', function() {
   let baseRequest;
@@ -85,10 +86,10 @@ describe('Assets/Attributes', function() {
             .resolves(assetAttributeFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(assetAttributeFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(assetAttributeToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -242,7 +243,7 @@ describe('Assets/Attributes', function() {
             .resolves(assetAttributeFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(assetAttributeFromServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -294,12 +295,12 @@ describe('Assets/Attributes', function() {
   describe('getAll', function() {
     context('when all required information is supplied', function() {
       let assetTypeId;
+      let formatPaginatedDataFromServer;
       let numberOfAssetAttributes;
       let paginationOptionsAfterFormat;
       let paginationOptionsBeforeFormat;
       let promise;
       let request;
-      let toCamelCase;
       let toSnakeCase;
       let valuesFromServerAfterFormat;
       let valuesFromServerBeforeFormat;
@@ -330,15 +331,15 @@ describe('Assets/Attributes', function() {
           )
         };
 
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
-          .returns(valuesFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(paginationOptionsAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -365,7 +366,9 @@ describe('Assets/Attributes', function() {
 
       it('formats the asset attribute data', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(valuesFromServerBeforeFormat);
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
         });
       });
 
@@ -412,7 +415,7 @@ describe('Assets/Attributes', function() {
         assetAttributeToServerBeforeFormat = fixture.build('assetAttribute');
 
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(assetAttributeToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -527,10 +530,10 @@ describe('Assets/Attributes', function() {
           post: this.sandbox.stub().resolves(valueFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(valueFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(valueToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -690,10 +693,10 @@ describe('Assets/Attributes', function() {
           get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(valuesFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(valueFiltersToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -751,11 +754,11 @@ describe('Assets/Attributes', function() {
     context('when all required information is supplied', function() {
       let assetId;
       let attributeId;
+      let formatPaginatedDataFromServer;
       let paginationOptionsBeforeFormat;
       let paginationOptionsAfterFormat;
       let promise;
       let request;
-      let toCamelCase;
       let toSnakeCase;
       let valuesFromServerAfterFormat;
       let valuesFromServerBeforeFormat;
@@ -789,15 +792,15 @@ describe('Assets/Attributes', function() {
           )
         };
 
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
-          .returns(valuesFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(paginationOptionsAfterFormat);
 
         const assetAttributes = new AssetAttributes(
@@ -825,7 +828,9 @@ describe('Assets/Attributes', function() {
 
       it('formats the asset attribute value data', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(valuesFromServerBeforeFormat);
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
         });
       });
 
@@ -887,7 +892,7 @@ describe('Assets/Attributes', function() {
         );
 
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(valueToServerAfterFormat);
 
         const assetAttributes = new AssetAttributes(

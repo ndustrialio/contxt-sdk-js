@@ -1,5 +1,5 @@
 import Coordinator from './index';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
 
 describe('Coordinator', function() {
   let baseRequest;
@@ -76,7 +76,7 @@ describe('Coordinator', function() {
         get: this.sandbox.stub().resolves(organizationsFromServer)
       };
       toCamelCase = this.sandbox
-        .stub(objectsUtils, 'toCamelCase')
+        .stub(objectUtils, 'toCamelCase')
         .callsFake(
           (org) => expectedOrganizations.filter(({ id }) => id === org.id)[0]
         );
@@ -134,7 +134,7 @@ describe('Coordinator', function() {
           get: this.sandbox.stub().resolves(organizationFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(organizationFromServerAfterFormat);
 
         const coordinator = new Coordinator(baseSdk, request);
@@ -201,7 +201,7 @@ describe('Coordinator', function() {
           get: this.sandbox.stub().resolves(userFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(userFromServerAfterFormat);
 
         const coordinator = new Coordinator(baseSdk, request);

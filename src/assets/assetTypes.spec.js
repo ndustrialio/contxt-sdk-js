@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import AssetTypes from './assetTypes';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
+import * as paginationUtils from '../utils/pagination';
 
 describe('Assets/Types', function() {
   let baseRequest;
@@ -78,10 +79,10 @@ describe('Assets/Types', function() {
             post: this.sandbox.stub().resolves(assetTypeFromServerBeforeFormat)
           };
           toCamelCase = this.sandbox
-            .stub(objectsUtils, 'toCamelCase')
+            .stub(objectUtils, 'toCamelCase')
             .returns(assetTypeFromServerAfterFormat);
           toSnakeCase = this.sandbox
-            .stub(objectsUtils, 'toSnakeCase')
+            .stub(objectUtils, 'toSnakeCase')
             .returns(assetTypeToServerAfterFormat);
 
           const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
@@ -151,10 +152,10 @@ describe('Assets/Types', function() {
           post: this.sandbox.stub().resolves(assetTypeFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(assetTypeFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(assetTypeToServerAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
@@ -268,7 +269,7 @@ describe('Assets/Types', function() {
           get: this.sandbox.stub().resolves(assetTypeFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(assetTypeFromServerAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
@@ -312,10 +313,10 @@ describe('Assets/Types', function() {
   describe('getAll', function() {
     let assetTypesFromServerAfterFormat;
     let assetTypesFromServerBeforeFormat;
+    let formatPaginatedDataFromServer;
     let numberOfAssetTypes;
     let promise;
     let request;
-    let toCamelCase;
 
     beforeEach(function() {
       numberOfAssetTypes = faker.random.number({ min: 1, max: 10 });
@@ -330,13 +331,13 @@ describe('Assets/Types', function() {
         )
       };
 
+      formatPaginatedDataFromServer = this.sandbox
+        .stub(paginationUtils, 'formatPaginatedDataFromServer')
+        .returns(assetTypesFromServerAfterFormat);
       request = {
         ...baseRequest,
         get: this.sandbox.stub().resolves(assetTypesFromServerBeforeFormat)
       };
-      toCamelCase = this.sandbox
-        .stub(objectsUtils, 'toCamelCase')
-        .returns(assetTypesFromServerAfterFormat);
 
       const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
 
@@ -349,7 +350,9 @@ describe('Assets/Types', function() {
 
     it('formats the asset type object', function() {
       return promise.then(() => {
-        expect(toCamelCase).to.be.calledWith(assetTypesFromServerBeforeFormat);
+        expect(formatPaginatedDataFromServer).to.be.calledWith(
+          assetTypesFromServerBeforeFormat
+        );
       });
     });
 
@@ -365,10 +368,10 @@ describe('Assets/Types', function() {
       let assetTypesFromServerAfterFormat;
       let assetTypesFromServerBeforeFormat;
       let expectedOrganizationId;
+      let formatPaginatedDataFromServer;
       let numberOfAssetTypes;
       let promise;
       let request;
-      let toCamelCase;
 
       beforeEach(function() {
         expectedOrganizationId = fixture.build('organization').id;
@@ -384,13 +387,13 @@ describe('Assets/Types', function() {
           )
         };
 
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(assetTypesFromServerAfterFormat);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(assetTypesFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
-          .returns(assetTypesFromServerAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
 
@@ -405,7 +408,7 @@ describe('Assets/Types', function() {
 
       it('formats the asset type object', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
             assetTypesFromServerBeforeFormat
           );
         });
@@ -444,7 +447,7 @@ describe('Assets/Types', function() {
         assetTypeToServerBeforeFormat = fixture.build('assetType');
 
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(assetTypeToServerAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, baseRequest, expectedHost);

@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
 import Facilities from './index';
 import * as facilitiesUtils from '../utils/facilities';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
 
 describe('Facilities', function() {
   let baseRequest;
@@ -81,10 +81,10 @@ describe('Facilities', function() {
           post: this.sandbox.stub().resolves(rawFacility)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(expectedFacility);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(formattedFacility);
 
         const facilities = new Facilities(baseSdk, request);
@@ -413,7 +413,7 @@ describe('Facilities', function() {
           get: this.sandbox.stub().resolves(rawFacilities)
         };
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(rawFacilityOptions);
 
         const facilities = new Facilities(baseSdk, request);
@@ -483,7 +483,7 @@ describe('Facilities', function() {
         });
 
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(formattedFacility);
 
         const facilities = new Facilities(baseSdk, baseRequest);

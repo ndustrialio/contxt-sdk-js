@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
 import Events from './index';
 import * as eventsUtils from '../utils/events';
-import * as objectsUtils from '../utils/objects';
+import * as objectUtils from '../utils/objects';
 
 describe('Events', function() {
   let baseRequest;
@@ -83,10 +83,10 @@ describe('Events', function() {
           post: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(eventFromServerAfterFormat);
         toSnakeCase = this.sandbox
-          .stub(objectsUtils, 'toSnakeCase')
+          .stub(objectUtils, 'toSnakeCase')
           .returns(eventToServerAfterFormat);
 
         const events = new Events(baseSdk, request);
@@ -199,7 +199,7 @@ describe('Events', function() {
           get: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
         };
         toCamelCase = this.sandbox
-          .stub(objectsUtils, 'toCamelCase')
+          .stub(objectUtils, 'toCamelCase')
           .returns(eventFromServerAfterFormat);
 
         const events = new Events(baseSdk, request);
