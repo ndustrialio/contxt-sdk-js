@@ -13,6 +13,7 @@ require('./contxtUser');
 require('./costCenter');
 require('./costCenterFacility');
 require('./defaultAudiences');
+require('./edgeNode');
 require('./event');
 require('./eventType');
 require('./facility');

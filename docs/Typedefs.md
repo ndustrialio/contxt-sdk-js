@@ -226,6 +226,21 @@ custom environment.
 | [config.env] | <code>string</code> | The SDK provided environment name you are trying to reach |
 | [config.host] | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
 
+<a name="EdgeNode"></a>
+
+## EdgeNode : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| clientId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [description] | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| name | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="Environments"></a>
 
 ## Environments : <code>Object.&lt;string, Audience&gt;</code>

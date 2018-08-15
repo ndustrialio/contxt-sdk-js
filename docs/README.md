@@ -44,6 +44,9 @@ enabled in Auth0.</p>
 <dd><p>Module that provides access to cost centers, and helps manage
 the relationship between those cost centers and facilities</p>
 </dd>
+<dt><a href="./EdgeNodes.md">EdgeNodes</a></dt>
+<dd><p>Module that provides access to contxt edge nodes</p>
+</dd>
 <dt><a href="./Events.md">Events</a></dt>
 <dd><p>Module that provides access to, and the manipulation
 of, information about different events</p>
@@ -115,6 +118,8 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 either a reference to an environment that already exists or a clientId and host for a
 custom environment.</p>
 </dd>
+<dt><a href="./Typedefs.md#EdgeNode">EdgeNode</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#Environments">Environments</a> : <code>Object.&lt;string, Audience&gt;</code></dt>
 <dd><p>An object of audiences that corresponds to all the different environments available for a
 single module.</p>
