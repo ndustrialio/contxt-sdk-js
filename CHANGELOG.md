@@ -1,3 +1,10 @@
+## [v0.0.28](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.28) (2018-08-15)
+
+**Added**
+
+* Methods around Edge Nodes. They are namespaced under coordinator (i.e. `coordinator.edgeNodes()`) and include:
+  * EdgeNodes#get for getting info about a specific Edge Node
+
 ## [v0.0.27](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.27) (2018-08-14)
 
 **Added**
