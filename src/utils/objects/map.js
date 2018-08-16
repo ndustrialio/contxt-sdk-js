@@ -1,5 +1,19 @@
 import isPlainObject from 'lodash.isplainobject';
 
+/*
+ * Maps over an object (which can include nested objects and arrays).
+ *
+ * @param {Object} input The object to map over
+ * @param {Function} callback The function invoked per iteration
+ * @param {Object} [userOptions]
+ * @param {Boolean} [userOptions.deep = true] Boolean indicating if only the first
+ *   level should be mapped or if it should recursively map over nested
+ *   objects/arrays
+ *
+ * @returns {Object}
+ *
+ * @private
+ */
 function map(input, callback, options) {
   options = {
     deep: false,
