@@ -14,10 +14,10 @@ import isPlainObject from 'lodash.isplainobject';
  *
  * @private
  */
-function map(input, callback, options) {
-  options = {
+function map(input, callback, userOptions) {
+  const options = {
     deep: false,
-    ...options
+    ...userOptions
   };
 
   return Object.keys(input).reduce((memo, key) => {

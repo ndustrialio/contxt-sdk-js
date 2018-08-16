@@ -67,20 +67,20 @@ describe('utils/objects/toCamelCase', function() {
         {
           first_level_first_key: {
             second_level_first_key: {
-              third_levl_first_key: 'third level first value'
+              third_level_first_key: 'third level first value'
             }
           }
         },
         {
           deep: true,
-          excludeTransform: ['third_levl_first_key']
+          excludeTransform: ['third_level_first_key']
         }
       );
 
       expect(transformedObject).to.deep.equal({
         firstLevelFirstKey: {
           secondLevelFirstKey: {
-            third_levl_first_key: 'third level first value'
+            third_level_first_key: 'third level first value'
           }
         }
       });
@@ -181,7 +181,7 @@ describe('utils/objects/toCamelCase', function() {
       });
     });
 
-    it('does not transform keys in nested arrays when `deep` is set to `false`', function() {
+    it('does not transform keys in arrays nested in objects when `deep` is set to `false`', function() {
       const transformedObject = toCamelCase(
         {
           first_level_first_key: 'first level first value',

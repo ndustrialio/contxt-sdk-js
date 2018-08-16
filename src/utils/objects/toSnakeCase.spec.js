@@ -181,7 +181,7 @@ describe('utils/objects/toSnakeCase', function() {
       });
     });
 
-    it('does not transform keys in nested arrays when `deep` is set to `false`', function() {
+    it('does not transform keys in arrays nested in objects when `deep` is set to `false`', function() {
       const transformedObject = toSnakeCase(
         {
           firstLevelFirstKey: 'first level first value',

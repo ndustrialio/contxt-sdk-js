@@ -30,12 +30,12 @@ function createCaseChangeFn(caseChangeFn) {
    *
    * @private
    */
-  function changeCase(input = {}, options) {
-    options = {
+  function changeCase(input = {}, userOptions) {
+    const options = {
       deep: true,
       excludeKeys: [],
       excludeTransform: [],
-      ...options
+      ...userOptions
     };
 
     return mapObj(

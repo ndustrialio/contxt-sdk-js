@@ -11,7 +11,6 @@ import { toCamelCase } from '../objects';
  * @private
  */
 function defaultFormatter(value) {
-  // debugger;
   return toCamelCase(value);
 }
 
