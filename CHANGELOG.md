@@ -1,3 +1,10 @@
+## [v0.0.29](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.29) (2018-08-16)
+
+**Changed**
+
+* Added generic methods to normalize data moving between the API and the SDK consumer.
+  * Removed most formatters that were "brute forcing" the same task. Only remaining formatters are for specific edge cases.
+
 ## [v0.0.28](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.28) (2018-08-15)
 
 **Added**
