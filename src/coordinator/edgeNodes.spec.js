@@ -1,6 +1,5 @@
 import EdgeNodes from './edgeNodes';
-
-import * as coordinatorUtils from '../utils/coordinator';
+import * as objectUtils from '../utils/objects';
 
 describe('edgeNodes', function() {
   let baseRequest;
@@ -56,9 +55,9 @@ describe('edgeNodes', function() {
       let edgeNodeFromServerBeforeFormat;
       let expectedEdgeNodeId;
       let expectedOrganizationId;
-      let formatEdgeNodeFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         edgeNodeFromServerAfterFormat = fixture.build('edgeNode');
@@ -70,14 +69,13 @@ describe('edgeNodes', function() {
           { fromServer: true }
         );
 
-        formatEdgeNodeFromServer = this.sandbox
-          .stub(coordinatorUtils, 'formatEdgeNodeFromServer')
-          .returns(edgeNodeFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(edgeNodeFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(edgeNodeFromServerAfterFormat);
 
         const edgeNodes = new EdgeNodes(baseSdk, request);
         edgeNodes._baseUrl = expectedHost;
@@ -92,9 +90,7 @@ describe('edgeNodes', function() {
 
       it('formats the edge node object', function() {
         return promise.then(() => {
-          expect(formatEdgeNodeFromServer).to.be.calledWith(
-            edgeNodeFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(edgeNodeFromServerBeforeFormat);
         });
       });
 

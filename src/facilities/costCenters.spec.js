@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
 import CostCenters from './costCenters';
-import * as facilitiesUtils from '../utils/facilities';
+import * as objectUtils from '../utils/objects';
 
 describe('Facilities/CostCenters', function() {
   let baseRequest;
@@ -55,10 +55,10 @@ describe('Facilities/CostCenters', function() {
       let expectedFacilityId;
       let expectedCostCenterFacility;
       let expectedCostCenterId;
-      let formatCostCenterFacilityFromServer;
       let promise;
       let rawCostCenterFacility;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedCostCenterFacility = fixture.build('costCenterFacility');
@@ -68,14 +68,13 @@ describe('Facilities/CostCenters', function() {
           fromServer: true
         });
 
-        formatCostCenterFacilityFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatCostCenterFacilityFromServer')
-          .returns(expectedCostCenterFacility);
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(rawCostCenterFacility)
         };
-
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedCostCenterFacility);
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
 
         promise = costCenters.addFacility(
@@ -92,9 +91,7 @@ describe('Facilities/CostCenters', function() {
 
       it('formats the returning cost center facility object', function() {
         return promise.then(() => {
-          expect(formatCostCenterFacilityFromServer).to.be.calledWith(
-            rawCostCenterFacility
-          );
+          expect(toCamelCase).to.be.calledWith(rawCostCenterFacility);
         });
       });
 
@@ -131,13 +128,13 @@ describe('Facilities/CostCenters', function() {
 
   describe('create', function() {
     context('when all required information is supplied', function() {
-      let formatCostCenterFromServer;
-      let formatCostCenterToServer;
       let formattedCostCenterFromServer;
       let formattedCostCenterToServer;
       let initialCostCenter;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         initialCostCenter = fixture.build('costCenter');
@@ -146,16 +143,16 @@ describe('Facilities/CostCenters', function() {
           fromServer: true
         });
 
-        formatCostCenterFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatCostCenterFromServer')
-          .returns(formattedCostCenterFromServer);
-        formatCostCenterToServer = this.sandbox
-          .stub(facilitiesUtils, 'formatCostCenterToServer')
-          .returns(formattedCostCenterToServer);
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(formattedCostCenterFromServer)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(formattedCostCenterFromServer);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(formattedCostCenterToServer);
 
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
 
@@ -163,7 +160,7 @@ describe('Facilities/CostCenters', function() {
       });
 
       it('formats the submitted cost center object to send to the server', function() {
-        expect(formatCostCenterToServer).to.be.calledWith(initialCostCenter);
+        expect(toSnakeCase).to.be.calledWith(initialCostCenter);
       });
 
       it('creates a new cost center', function() {
@@ -175,9 +172,7 @@ describe('Facilities/CostCenters', function() {
 
       it('formats the returned cost center object', function() {
         return promise.then(() => {
-          expect(formatCostCenterFromServer).to.be.calledWith(
-            formattedCostCenterFromServer
-          );
+          expect(toCamelCase).to.be.calledWith(formattedCostCenterFromServer);
         });
       });
 
@@ -245,10 +240,10 @@ describe('Facilities/CostCenters', function() {
 
   describe('getAll', function() {
     let expectedCostCenters;
-    let formatCostCenterFromServer;
     let costCentersFromServer;
     let promise;
     let request;
+    let toCamelCase;
 
     beforeEach(function() {
       const numberOfCostCenters = faker.random.number({
@@ -268,13 +263,13 @@ describe('Facilities/CostCenters', function() {
         }
       );
 
-      formatCostCenterFromServer = this.sandbox
-        .stub(facilitiesUtils, 'formatCostCenterFromServer')
-        .callsFake((costCenter, index) => expectedCostCenters[index]);
       request = {
         ...baseRequest,
         get: this.sandbox.stub().resolves(costCentersFromServer)
       };
+      toCamelCase = this.sandbox
+        .stub(objectUtils, 'toCamelCase')
+        .returns(expectedCostCenters);
 
       const costCenters = new CostCenters(baseSdk, request, expectedHost);
       promise = costCenters.getAll();
@@ -286,12 +281,7 @@ describe('Facilities/CostCenters', function() {
 
     it('formats the list of cost centers', function() {
       return promise.then(() => {
-        expect(formatCostCenterFromServer).to.have.callCount(
-          costCentersFromServer.length
-        );
-        costCentersFromServer.forEach((costCenter) => {
-          expect(formatCostCenterFromServer).to.be.calledWith(costCenter);
-        });
+        expect(toCamelCase).to.be.calledWith(costCentersFromServer);
       });
     });
 
@@ -306,10 +296,10 @@ describe('Facilities/CostCenters', function() {
     context('when all required information is provided', function() {
       let expectedCostCenters;
       let expectedOrganizationId;
-      let formatCostCenterFromServer;
       let costCentersFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         const numberOfCostCenters = faker.random.number({
@@ -334,13 +324,13 @@ describe('Facilities/CostCenters', function() {
           }
         );
 
-        formatCostCenterFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatCostCenterFromServer')
-          .callsFake((costCenter, index) => expectedCostCenters[index]);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(costCentersFromServer)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedCostCenters);
 
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
         promise = costCenters.getAllByOrganizationId(expectedOrganizationId);
@@ -354,12 +344,7 @@ describe('Facilities/CostCenters', function() {
 
       it('formats the list of cost centers', function() {
         return promise.then(() => {
-          expect(formatCostCenterFromServer).to.have.callCount(
-            costCentersFromServer.length
-          );
-          costCentersFromServer.forEach((costCenter) => {
-            expect(formatCostCenterFromServer).to.be.calledWith(costCenter);
-          });
+          expect(toCamelCase).to.be.calledWith(costCentersFromServer);
         });
       });
 
@@ -436,14 +421,14 @@ describe('Facilities/CostCenters', function() {
 
   describe('update', function() {
     context('when all required information is available', function() {
-      let formatCostCenterFromServer;
-      let formatCostCenterToServer;
       let formattedCostCenterFromServer;
       let formattedUpdateToServer;
       let costCenterFromServer;
       let promise;
       let request;
       let update;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         formattedCostCenterFromServer = fixture.build('costCenter');
@@ -464,23 +449,23 @@ describe('Facilities/CostCenters', function() {
           fromServer: true
         });
 
-        formatCostCenterFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatCostCenterFromServer')
-          .returns(formattedCostCenterFromServer);
-        formatCostCenterToServer = this.sandbox
-          .stub(facilitiesUtils, 'formatCostCenterToServer')
-          .returns(formattedUpdateToServer);
         request = {
           ...baseRequest,
           put: this.sandbox.stub().resolves(costCenterFromServer)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(formattedCostCenterFromServer);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(formattedUpdateToServer);
 
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
         promise = costCenters.update(formattedCostCenterFromServer.id, update);
       });
 
       it('formats the cost center update for the server', function() {
-        expect(formatCostCenterToServer).to.be.calledWith(update);
+        expect(toSnakeCase).to.be.calledWith(update);
       });
 
       it('updates the cost center', function() {
@@ -492,9 +477,7 @@ describe('Facilities/CostCenters', function() {
 
       it('formats the returned cost center', function() {
         return promise.then(() => {
-          expect(formatCostCenterFromServer).to.be.calledWith(
-            costCenterFromServer
-          );
+          expect(toCamelCase).to.be.calledWith(costCenterFromServer);
         });
       });
 
@@ -504,45 +487,45 @@ describe('Facilities/CostCenters', function() {
         );
       });
     });
+
+    context(
+      'when there is missing or malformed required information',
+      function() {
+        let costCenters;
+
+        beforeEach(function() {
+          costCenters = new CostCenters(baseSdk, baseRequest);
+        });
+
+        it('throws an error when there is no provided cost center id', function() {
+          const costCenterUpdate = fixture.build('costCenter');
+          const promise = costCenters.update(null, costCenterUpdate);
+
+          return expect(promise).to.be.rejectedWith(
+            'A cost center id is required to update a cost center.'
+          );
+        });
+
+        it('throws an error when there is no update provided', function() {
+          const costCenterUpdate = fixture.build('costCenter');
+          const promise = costCenters.update(costCenterUpdate.id, null);
+
+          return expect(promise).to.be.rejectedWith(
+            'An update is required to update a cost center'
+          );
+        });
+
+        it('throws an error when the update is not an object', function() {
+          const costCenterUpdate = fixture.build('costCenter');
+          const promise = costCenters.update(costCenterUpdate.id, [
+            costCenterUpdate
+          ]);
+
+          return expect(promise).to.be.rejectedWith(
+            'The cost center update must be a well-formed object with the data you wish to update.'
+          );
+        });
+      }
+    );
   });
-
-  context(
-    'when there is missing or malformed required information',
-    function() {
-      let costCenters;
-
-      beforeEach(function() {
-        costCenters = new CostCenters(baseSdk, baseRequest);
-      });
-
-      it('throws an error when there is no provided cost center id', function() {
-        const costCenterUpdate = fixture.build('costCenter');
-        const promise = costCenters.update(null, costCenterUpdate);
-
-        return expect(promise).to.be.rejectedWith(
-          'A cost center id is required to update a cost center.'
-        );
-      });
-
-      it('throws an error when there is no update provided', function() {
-        const costCenterUpdate = fixture.build('costCenter');
-        const promise = costCenters.update(costCenterUpdate.id, null);
-
-        return expect(promise).to.be.rejectedWith(
-          'An update is required to update a cost center'
-        );
-      });
-
-      it('throws an error when the update is not an object', function() {
-        const costCenterUpdate = fixture.build('costCenter');
-        const promise = costCenters.update(costCenterUpdate.id, [
-          costCenterUpdate
-        ]);
-
-        return expect(promise).to.be.rejectedWith(
-          'The cost center update must be a well-formed object with the data you wish to update.'
-        );
-      });
-    }
-  );
 });

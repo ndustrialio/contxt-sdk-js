@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import AssetTypes from './assetTypes';
-import * as assetsUtils from '../utils/assets';
+import * as objectUtils from '../utils/objects';
+import * as paginationUtils from '../utils/pagination';
 
 describe('Assets/Types', function() {
   let baseRequest;
@@ -58,10 +59,10 @@ describe('Assets/Types', function() {
         let assetTypeFromServerBeforeFormat;
         let assetTypeToServerAfterFormat;
         let assetTypeToServerBeforeFormat;
-        let formatAssetTypeFromServer;
-        let formatAssetTypeToServer;
         let promise;
         let request;
+        let toCamelCase;
+        let toSnakeCase;
 
         beforeEach(function() {
           assetTypeFromServerAfterFormat = fixture.build('assetType');
@@ -73,17 +74,16 @@ describe('Assets/Types', function() {
           });
           assetTypeToServerBeforeFormat = fixture.build('assetType');
 
-          formatAssetTypeFromServer = this.sandbox
-            .stub(assetsUtils, 'formatAssetTypeFromServer')
-            .returns(assetTypeFromServerAfterFormat);
-          formatAssetTypeToServer = this.sandbox
-            .stub(assetsUtils, 'formatAssetTypeToServer')
-            .returns(assetTypeToServerAfterFormat);
-
           request = {
             ...baseRequest,
             post: this.sandbox.stub().resolves(assetTypeFromServerBeforeFormat)
           };
+          toCamelCase = this.sandbox
+            .stub(objectUtils, 'toCamelCase')
+            .returns(assetTypeFromServerAfterFormat);
+          toSnakeCase = this.sandbox
+            .stub(objectUtils, 'toSnakeCase')
+            .returns(assetTypeToServerAfterFormat);
 
           const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
 
@@ -91,7 +91,7 @@ describe('Assets/Types', function() {
         });
 
         it('formats the submitted asset type object to send to the server', function() {
-          expect(formatAssetTypeToServer).to.be.deep.calledWith(
+          expect(toSnakeCase).to.be.deep.calledWith(
             assetTypeToServerBeforeFormat
           );
         });
@@ -105,7 +105,7 @@ describe('Assets/Types', function() {
 
         it('formats the returned asset type object', function() {
           return promise.then(() => {
-            expect(formatAssetTypeFromServer).to.be.deep.calledWith(
+            expect(toCamelCase).to.be.deep.calledWith(
               assetTypeFromServerBeforeFormat
             );
           });
@@ -124,10 +124,10 @@ describe('Assets/Types', function() {
       let assetTypeFromServerBeforeFormat;
       let assetTypeToServerAfterFormat;
       let assetTypeToServerBeforeFormat;
-      let formatAssetTypeFromServer;
-      let formatAssetTypeToServer;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         assetTypeFromServerBeforeFormat = fixture.build('assetType', {
@@ -147,17 +147,16 @@ describe('Assets/Types', function() {
           { fromServer: true }
         );
 
-        formatAssetTypeFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetTypeFromServer')
-          .returns(assetTypeFromServerAfterFormat);
-        formatAssetTypeToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetTypeToServer')
-          .returns(assetTypeToServerAfterFormat);
-
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(assetTypeFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(assetTypeFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(assetTypeToServerAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
 
@@ -165,7 +164,7 @@ describe('Assets/Types', function() {
       });
 
       it('formats the submitted asset type object to send to the server', function() {
-        expect(formatAssetTypeToServer).to.be.deep.calledWith(
+        expect(toSnakeCase).to.be.deep.calledWith(
           assetTypeToServerBeforeFormat
         );
       });
@@ -179,7 +178,7 @@ describe('Assets/Types', function() {
 
       it('formats the returned asset type object', function() {
         return promise.then(() => {
-          expect(formatAssetTypeFromServer).to.be.deep.calledWith(
+          expect(toCamelCase).to.be.deep.calledWith(
             assetTypeFromServerBeforeFormat
           );
         });
@@ -250,9 +249,9 @@ describe('Assets/Types', function() {
       let assetTypeFromServerAfterFormat;
       let assetTypeFromServerBeforeFormat;
       let expectedAssetTypeId;
-      let formatAssetTypeFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedAssetTypeId = fixture.build('assetType').id;
@@ -265,14 +264,13 @@ describe('Assets/Types', function() {
           { fromServer: true }
         );
 
-        formatAssetTypeFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetTypeFromServer')
-          .returns(assetTypeFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(assetTypeFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(assetTypeFromServerAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
 
@@ -287,7 +285,7 @@ describe('Assets/Types', function() {
 
       it('formats the asset type object', function() {
         return promise.then(() => {
-          expect(formatAssetTypeFromServer).to.be.deep.calledWith(
+          expect(toCamelCase).to.be.deep.calledWith(
             assetTypeFromServerBeforeFormat
           );
         });
@@ -315,42 +313,30 @@ describe('Assets/Types', function() {
   describe('getAll', function() {
     let assetTypesFromServerAfterFormat;
     let assetTypesFromServerBeforeFormat;
-    let formatAssetTypesDataFromServer;
+    let formatPaginatedDataFromServer;
     let numberOfAssetTypes;
-    let offset;
     let promise;
     let request;
 
     beforeEach(function() {
-      offset = faker.random.number({ min: 0, max: 100 });
       numberOfAssetTypes = faker.random.number({ min: 1, max: 10 });
-      assetTypesFromServerAfterFormat = fixture.buildList(
-        'assetType',
-        numberOfAssetTypes
-      );
-      assetTypesFromServerBeforeFormat = fixture.buildList(
-        'assetType',
-        numberOfAssetTypes,
-        null,
-        { fromServer: true }
-      );
+      assetTypesFromServerAfterFormat = {
+        _metadata: fixture.build('paginationMetadata'),
+        records: fixture.buildList('assetType', numberOfAssetTypes)
+      };
+      assetTypesFromServerBeforeFormat = {
+        ...assetTypesFromServerAfterFormat,
+        records: assetTypesFromServerAfterFormat.records.map((asset) =>
+          fixture.build('assetType', asset, { fromServer: true })
+        )
+      };
 
-      formatAssetTypesDataFromServer = this.sandbox
-        .stub(assetsUtils, 'formatAssetTypesDataFromServer')
-        .returns({
-          _metadata: {
-            offset,
-            totalRecords: assetTypesFromServerBeforeFormat.length
-          },
-          records: assetTypesFromServerAfterFormat
-        });
-
+      formatPaginatedDataFromServer = this.sandbox
+        .stub(paginationUtils, 'formatPaginatedDataFromServer')
+        .returns(assetTypesFromServerAfterFormat);
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves({
-          records: assetTypesFromServerBeforeFormat,
-          _metadata: { offset: 0, totalRecords: numberOfAssetTypes }
-        })
+        get: this.sandbox.stub().resolves(assetTypesFromServerBeforeFormat)
       };
 
       const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
@@ -364,18 +350,16 @@ describe('Assets/Types', function() {
 
     it('formats the asset type object', function() {
       return promise.then(() => {
-        expect(formatAssetTypesDataFromServer).to.be.calledOnce;
+        expect(formatPaginatedDataFromServer).to.be.calledWith(
+          assetTypesFromServerBeforeFormat
+        );
       });
     });
 
     it('returns a list of asset types', function() {
-      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal({
-        records: assetTypesFromServerAfterFormat,
-        _metadata: {
-          offset,
-          totalRecords: numberOfAssetTypes
-        }
-      });
+      return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+        assetTypesFromServerAfterFormat
+      );
     });
   });
 
@@ -384,44 +368,31 @@ describe('Assets/Types', function() {
       let assetTypesFromServerAfterFormat;
       let assetTypesFromServerBeforeFormat;
       let expectedOrganizationId;
-      let formatAssetTypesDataFromServer;
+      let formatPaginatedDataFromServer;
       let numberOfAssetTypes;
-      let offset;
       let promise;
       let request;
 
       beforeEach(function() {
-        offset = faker.random.number({ min: 0, max: 100 });
         expectedOrganizationId = fixture.build('organization').id;
         numberOfAssetTypes = faker.random.number({ min: 1, max: 10 });
+        assetTypesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList('assetType', numberOfAssetTypes)
+        };
+        assetTypesFromServerBeforeFormat = {
+          ...assetTypesFromServerAfterFormat,
+          records: assetTypesFromServerAfterFormat.records.map((asset) =>
+            fixture.build('assetType', asset, { fromServer: true })
+          )
+        };
 
-        assetTypesFromServerAfterFormat = fixture.buildList(
-          'assetType',
-          numberOfAssetTypes
-        );
-        assetTypesFromServerBeforeFormat = fixture.buildList(
-          'assetType',
-          numberOfAssetTypes,
-          null,
-          { fromServer: true }
-        );
-
-        formatAssetTypesDataFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetTypesDataFromServer')
-          .returns({
-            _metadata: {
-              offset,
-              totalRecords: assetTypesFromServerBeforeFormat.length
-            },
-            records: assetTypesFromServerAfterFormat
-          });
-
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(assetTypesFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves({
-            records: assetTypesFromServerBeforeFormat,
-            _metadata: { offset: 0, totalRecords: numberOfAssetTypes }
-          })
+          get: this.sandbox.stub().resolves(assetTypesFromServerBeforeFormat)
         };
 
         const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
@@ -437,18 +408,16 @@ describe('Assets/Types', function() {
 
       it('formats the asset type object', function() {
         return promise.then(() => {
-          expect(formatAssetTypesDataFromServer).to.be.calledOnce;
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            assetTypesFromServerBeforeFormat
+          );
         });
       });
 
       it('returns a list of asset types', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal({
-          records: assetTypesFromServerAfterFormat,
-          _metadata: {
-            offset,
-            totalRecords: numberOfAssetTypes
-          }
-        });
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          assetTypesFromServerAfterFormat
+        );
       });
     });
 
@@ -468,8 +437,8 @@ describe('Assets/Types', function() {
     context('when all required information is available', function() {
       let assetTypeToServerAfterFormat;
       let assetTypeToServerBeforeFormat;
-      let formatAssetTypeToServer;
       let promise;
+      let toSnakeCase;
 
       beforeEach(function() {
         assetTypeToServerAfterFormat = fixture.build('assetType', null, {
@@ -477,8 +446,8 @@ describe('Assets/Types', function() {
         });
         assetTypeToServerBeforeFormat = fixture.build('assetType');
 
-        formatAssetTypeToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetTypeToServer')
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
           .returns(assetTypeToServerAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, baseRequest, expectedHost);
@@ -490,9 +459,9 @@ describe('Assets/Types', function() {
       });
 
       it('formats the data into the right format', function() {
-        expect(formatAssetTypeToServer).to.be.deep.calledWith(
-          assetTypeToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.calledWith(assetTypeToServerBeforeFormat, {
+          excludeKeys: ['id', 'label', 'organizationId']
+        });
       });
 
       it('updates the asset type', function() {

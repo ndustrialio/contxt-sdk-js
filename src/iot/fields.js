@@ -1,4 +1,4 @@
-import { formatOutputFieldFromServer } from '../utils/iot';
+import { toCamelCase } from '../utils/objects';
 
 /**
  * @typedef {Object} OutputField
@@ -70,7 +70,7 @@ class Fields {
 
     return this._request
       .get(`${this._baseUrl}/fields/${outputFieldId}`)
-      .then((outputField) => formatOutputFieldFromServer(outputField));
+      .then((outputField) => toCamelCase(outputField));
   }
 }
 

@@ -1,9 +1,5 @@
 import isPlainObject from 'lodash.isplainobject';
-import {
-  formatCostCenterFromServer,
-  formatCostCenterToServer,
-  formatCostCenterFacilityFromServer
-} from '../utils/facilities';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} CostCenter
@@ -80,9 +76,7 @@ class CostCenters {
       .post(
         `${this._baseUrl}/costcenters/${costCenterId}/facility/${facilityId}`
       )
-      .then((costCenterFacility) =>
-        formatCostCenterFacilityFromServer(costCenterFacility)
-      );
+      .then((costCenterFacility) => toCamelCase(costCenterFacility));
   }
 
   /**
@@ -123,11 +117,9 @@ class CostCenters {
       }
     }
 
-    const data = formatCostCenterToServer(costCenter);
-
     return this._request
-      .post(`${this._baseUrl}/costcenters`, data)
-      .then((costCenter) => formatCostCenterFromServer(costCenter));
+      .post(`${this._baseUrl}/costcenters`, toSnakeCase(costCenter))
+      .then((costCenter) => toCamelCase(costCenter));
   }
 
   /**
@@ -176,7 +168,7 @@ class CostCenters {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/costcenters`)
-      .then((costCenters) => costCenters.map(formatCostCenterFromServer));
+      .then((costCenters) => toCamelCase(costCenters));
   }
 
   /**
@@ -208,7 +200,7 @@ class CostCenters {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/costcenters`)
-      .then((costCenters) => costCenters.map(formatCostCenterFromServer));
+      .then((costCenters) => toCamelCase(costCenters));
   }
 
   /**
@@ -294,11 +286,9 @@ class CostCenters {
       );
     }
 
-    const formattedUpdate = formatCostCenterToServer(update);
-
     return this._request
-      .put(`${this._baseUrl}/costcenters/${costCenterId}`, formattedUpdate)
-      .then((costCenter) => formatCostCenterFromServer(costCenter));
+      .put(`${this._baseUrl}/costcenters/${costCenterId}`, toSnakeCase(update))
+      .then((costCenter) => toCamelCase(costCenter));
   }
 }
 

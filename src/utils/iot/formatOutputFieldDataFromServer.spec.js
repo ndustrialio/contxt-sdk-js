@@ -2,6 +2,7 @@ import omit from 'lodash.omit';
 import URL from 'url-parse';
 import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
 import * as iotUtils from './index';
+import * as objectUtils from '../objects';
 
 describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let expectedOutputFieldDataRecords;
@@ -11,6 +12,7 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let initialOutputFieldDataRecords;
   let initialOutputFieldMetadata;
   let parseOutputFieldNextPageUrlMetadata;
+  let toCamelCase;
 
   beforeEach(function() {
     this.sandbox = sandbox.create();
@@ -54,6 +56,20 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
     parseOutputFieldNextPageUrlMetadata = this.sandbox
       .stub(iotUtils, 'parseOutputFieldNextPageUrlMetadata')
       .returns(expectedOutputFieldParsedMetadata);
+    toCamelCase = this.sandbox
+      .stub(objectUtils, 'toCamelCase')
+      .callsFake((input) => {
+        switch (input) {
+          case initialOutputFieldMetadata:
+            return expectedOutputFieldMetadata;
+
+          case initialOutputFieldDataRecords:
+            return expectedOutputFieldDataRecords;
+
+          default:
+            return null;
+        }
+      });
 
     formattedOutputFieldData = formatOutputFieldDataFromServer({
       meta: initialOutputFieldMetadata,
@@ -65,22 +81,29 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
     this.sandbox.restore();
   });
 
+  it('transforms the regular metadata keys to camel case', function() {
+    expect(toCamelCase).to.be.calledWith(initialOutputFieldMetadata, {
+      excludeKeys: ['next_page_url']
+    });
+  });
+
   it('parses the `next_page_url` query string to be regular metadata', function() {
     expect(parseOutputFieldNextPageUrlMetadata).to.be.calledWith(
       initialOutputFieldMetadata.next_page_url
     );
   });
 
-  it('converts the metadata keys to camelCase', function() {
-    expect(formattedOutputFieldData.meta).to.deep.equal({
-      ...expectedOutputFieldParsedMetadata,
-      ...expectedOutputFieldMetadata
-    });
+  it('transforms the records keys to be camel case', function() {
+    expect(toCamelCase).to.be.calledWith(initialOutputFieldDataRecords);
   });
 
-  it("converts the records' keys to camelCase", function() {
-    expect(formattedOutputFieldData.records).to.deep.equal(
-      expectedOutputFieldDataRecords
-    );
+  it('returns the transformed metadata and records', function() {
+    expect(formattedOutputFieldData).to.deep.equal({
+      meta: {
+        ...expectedOutputFieldParsedMetadata,
+        ...expectedOutputFieldMetadata
+      },
+      records: expectedOutputFieldDataRecords
+    });
   });
 });

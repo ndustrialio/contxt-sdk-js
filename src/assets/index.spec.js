@@ -1,7 +1,8 @@
 import times from 'lodash.times';
 import omit from 'lodash.omit';
 import Assets from './index';
-import * as assetsUtils from '../utils/assets';
+import * as objectUtils from '../utils/objects';
+import * as paginationUtils from '../utils/pagination';
 
 describe('Assets', function() {
   let baseRequest;
@@ -59,10 +60,10 @@ describe('Assets', function() {
       let assetFromServerBeforeFormat;
       let assetToServerAfterFormat;
       let assetToServerBeforeFormat;
-      let formatAssetFromServer;
-      let formatAssetToServer;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         assetFromServerAfterFormat = fixture.build('asset');
@@ -74,17 +75,16 @@ describe('Assets', function() {
         });
         assetToServerBeforeFormat = fixture.build('asset');
 
-        formatAssetFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetFromServer')
-          .returns(assetFromServerAfterFormat);
-        formatAssetToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetToServer')
-          .returns(assetToServerAfterFormat);
-
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(assetFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(assetFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(assetToServerAfterFormat);
 
         const assets = new Assets(baseSdk, request);
         assets._baseUrl = expectedHost;
@@ -93,9 +93,7 @@ describe('Assets', function() {
       });
 
       it('formats the submitted asset object to send to the server', function() {
-        expect(formatAssetToServer).to.be.deep.calledWith(
-          assetToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.deep.calledWith(assetToServerBeforeFormat);
       });
 
       it('creates a new asset', function() {
@@ -107,7 +105,7 @@ describe('Assets', function() {
 
       it('formats the returned facility object', function() {
         return promise.then(() => {
-          expect(formatAssetFromServer).to.be.deep.calledWith(
+          expect(toCamelCase).to.be.deep.calledWith(
             assetFromServerBeforeFormat
           );
         });
@@ -178,9 +176,9 @@ describe('Assets', function() {
       let assetFromServerAfterFormat;
       let assetFromServerBeforeFormat;
       let expectedAssetId;
-      let formatAssetFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedAssetId = faker.random.uuid();
@@ -199,14 +197,13 @@ describe('Assets', function() {
           }
         );
 
-        formatAssetFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetFromServer')
-          .returns(assetFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(assetFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(assetFromServerAfterFormat);
 
         const assets = new Assets(baseSdk, request);
         assets._baseUrl = expectedHost;
@@ -222,9 +219,7 @@ describe('Assets', function() {
 
       it('formats the asset object', function() {
         return promise.then(() => {
-          expect(formatAssetFromServer).to.be.calledWith(
-            assetFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(assetFromServerBeforeFormat);
         });
       });
 
@@ -250,39 +245,30 @@ describe('Assets', function() {
   describe('getAll', function() {
     let assetsFromServerAfterFormat;
     let assetsFromServerBeforeFormat;
-    let formatAssetsDataFromServer;
+    let formatPaginatedDataFromServer;
     let numberOfAssets;
-    let offset;
     let promise;
     let request;
 
     beforeEach(function() {
-      offset = faker.random.number({ min: 0, max: 100 });
       numberOfAssets = faker.random.number({ min: 1, max: 10 });
-      assetsFromServerAfterFormat = fixture.buildList('asset', numberOfAssets);
-      assetsFromServerBeforeFormat = fixture.buildList(
-        'asset',
-        numberOfAssets,
-        null,
-        { fromServer: true }
-      );
+      assetsFromServerAfterFormat = {
+        _metadata: fixture.build('paginationMetadata'),
+        records: fixture.buildList('asset', numberOfAssets)
+      };
+      assetsFromServerBeforeFormat = {
+        ...assetsFromServerAfterFormat,
+        records: assetsFromServerAfterFormat.records.map((asset) =>
+          fixture.build('asset', asset, { fromServer: true })
+        )
+      };
 
-      formatAssetsDataFromServer = this.sandbox
-        .stub(assetsUtils, 'formatAssetsDataFromServer')
-        .returns({
-          _metadata: {
-            offset,
-            totalRecords: assetsFromServerBeforeFormat.length
-          },
-          records: assetsFromServerAfterFormat
-        });
-
+      formatPaginatedDataFromServer = this.sandbox
+        .stub(paginationUtils, 'formatPaginatedDataFromServer')
+        .returns(assetsFromServerAfterFormat);
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves({
-          records: assetsFromServerBeforeFormat,
-          _metadata: { offset: 0, totalRecords: numberOfAssets }
-        })
+        get: this.sandbox.stub().resolves(assetsFromServerBeforeFormat)
       };
 
       const assets = new Assets(baseSdk, request);
@@ -297,18 +283,16 @@ describe('Assets', function() {
 
     it('formats the asset data', function() {
       return promise.then(() => {
-        expect(formatAssetsDataFromServer).to.be.calledOnce;
+        expect(formatPaginatedDataFromServer).to.be.calledWith(
+          assetsFromServerBeforeFormat
+        );
       });
     });
 
     it('returns a list of assets', function() {
-      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal({
-        records: assetsFromServerAfterFormat,
-        _metadata: {
-          offset,
-          totalRecords: numberOfAssets
-        }
-      });
+      return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+        assetsFromServerAfterFormat
+      );
     });
   });
 
@@ -318,30 +302,26 @@ describe('Assets', function() {
       let assetsFromServerBeforeFormat;
       let expectedOptions;
       let expectedOrganizationId;
-      let formatAssetsDataFromServer;
-      let formatAssetOptionsToServer;
+      let formatPaginatedDataFromServer;
       let initialOptions;
       let numberOfAssets;
-      let offset;
       let promise;
       let request;
+      let toSnakeCase;
 
       beforeEach(function() {
-        offset = faker.random.number({ min: 0, max: 100 });
         expectedOrganizationId = fixture.build('organization').id;
         numberOfAssets = faker.random.number({ min: 1, max: 10 });
-
-        assetsFromServerBeforeFormat = fixture.buildList(
-          'asset',
-          numberOfAssets,
-          null,
-          { fromServer: true }
-        );
-        assetsFromServerAfterFormat = fixture.buildList(
-          'asset',
-          numberOfAssets
-        );
-
+        assetsFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList('asset', numberOfAssets)
+        };
+        assetsFromServerBeforeFormat = {
+          ...assetsFromServerAfterFormat,
+          records: assetsFromServerAfterFormat.records.map((values) =>
+            fixture.build('asset', values, { fromServer: true })
+          )
+        };
         initialOptions = times(faker.random.number({ min: 1, max: 5 })).reduce(
           (memo) => {
             memo[faker.hacker.adjective()] = faker.hacker.adjective();
@@ -349,7 +329,6 @@ describe('Assets', function() {
           },
           {}
         );
-
         expectedOptions = times(faker.random.number({ min: 1, max: 5 })).reduce(
           (memo) => {
             memo[faker.hacker.adjective()] = faker.hacker.adjective();
@@ -358,27 +337,16 @@ describe('Assets', function() {
           {}
         );
 
-        formatAssetOptionsToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetOptionsToServer')
-          .returns(expectedOptions);
-
-        formatAssetsDataFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetsDataFromServer')
-          .returns({
-            _metadata: {
-              offset,
-              totalRecords: assetsFromServerBeforeFormat.length
-            },
-            records: assetsFromServerAfterFormat
-          });
-
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(assetsFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves({
-            records: assetsFromServerBeforeFormat,
-            _metadata: { offset: 0, totalRecords: numberOfAssets }
-          })
+          get: this.sandbox.stub().resolves(assetsFromServerBeforeFormat)
         };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(expectedOptions);
 
         const assets = new Assets(baseSdk, request);
         assets._baseUrl = expectedHost;
@@ -390,7 +358,7 @@ describe('Assets', function() {
       });
 
       it('gets options that are in a format suitable for the API', function() {
-        expect(formatAssetOptionsToServer).to.be.calledWith(initialOptions);
+        expect(toSnakeCase).to.be.calledWith(initialOptions);
       });
 
       it('gets a list of assets for an organization from the server', function() {
@@ -402,18 +370,16 @@ describe('Assets', function() {
 
       it('formats the asset data', function() {
         return promise.then(() => {
-          expect(formatAssetsDataFromServer).to.be.calledOnce;
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            assetsFromServerBeforeFormat
+          );
         });
       });
 
       it('returns a list of assets', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal({
-          records: assetsFromServerAfterFormat,
-          _metadata: {
-            offset,
-            totalRecords: numberOfAssets
-          }
-        });
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          assetsFromServerAfterFormat
+        );
       });
     });
 
@@ -435,10 +401,10 @@ describe('Assets', function() {
       let assetFromServerBeforeFormat;
       let assetToServerAfterFormat;
       let assetToServerBeforeFormat;
-      let formatAssetFromServer;
-      let formatAssetToServer;
       let request;
       let promise;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         assetFromServerAfterFormat = fixture.build('asset');
@@ -450,17 +416,16 @@ describe('Assets', function() {
         });
         assetToServerBeforeFormat = fixture.build('asset');
 
-        formatAssetFromServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetFromServer')
-          .returns(assetFromServerAfterFormat);
-        formatAssetToServer = this.sandbox
-          .stub(assetsUtils, 'formatAssetToServer')
-          .returns(assetToServerAfterFormat);
-
         request = {
           ...baseRequest,
           put: this.sandbox.stub().resolves(assetFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(assetFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(assetToServerAfterFormat);
 
         const assets = new Assets(baseSdk, request);
         assets._baseUrl = expectedHost;
@@ -472,9 +437,9 @@ describe('Assets', function() {
       });
 
       it('formats the data into the right format', function() {
-        expect(formatAssetToServer).to.be.deep.calledWith(
-          assetToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.deep.calledWith(assetToServerBeforeFormat, {
+          excludeKeys: ['assetTypeId', 'id', 'label', 'organizationId']
+        });
       });
 
       it('updates the asset', function() {
@@ -486,7 +451,7 @@ describe('Assets', function() {
 
       it('formats the returned asset', function() {
         return promise.then(() => {
-          expect(formatAssetFromServer).to.be.deep.calledWith(
+          expect(toCamelCase).to.be.deep.calledWith(
             assetFromServerBeforeFormat
           );
         });

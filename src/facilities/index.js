@@ -1,11 +1,8 @@
 import isPlainObject from 'lodash.isplainobject';
 import FacilityGroupings from './groupings';
 import CostCenters from './costCenters';
-import {
-  formatFacilityFromServer,
-  formatFacilityToServer,
-  formatFacilityOptionsToServer
-} from '../utils/facilities';
+import { formatFacilityWithInfoFromServer } from '../utils/facilities';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} Facility
@@ -103,11 +100,9 @@ class Facilities {
       }
     }
 
-    const data = formatFacilityToServer(facility);
-
     return this._request
-      .post(`${this._baseUrl}/facilities`, data)
-      .then((facility) => formatFacilityFromServer(facility));
+      .post(`${this._baseUrl}/facilities`, toSnakeCase(facility))
+      .then((facility) => toCamelCase(facility));
   }
 
   /**
@@ -216,7 +211,7 @@ class Facilities {
 
     return this._request
       .get(`${this._baseUrl}/facilities/${facilityId}`)
-      .then((facility) => formatFacilityFromServer(facility));
+      .then((facility) => formatFacilityWithInfoFromServer(facility));
   }
 
   /**
@@ -239,7 +234,7 @@ class Facilities {
     return this._request
       .get(`${this._baseUrl}/facilities`)
       .then((facilities) =>
-        facilities.map((facility) => formatFacilityFromServer(facility))
+        facilities.map((facility) => formatFacilityWithInfoFromServer(facility))
       );
   }
 
@@ -272,14 +267,12 @@ class Facilities {
       );
     }
 
-    const params = formatFacilityOptionsToServer(options);
-
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/facilities`, {
-        params
+        params: toSnakeCase(options)
       })
       .then((facilities) =>
-        facilities.map((facility) => formatFacilityFromServer(facility))
+        facilities.map((facility) => formatFacilityWithInfoFromServer(facility))
       );
   }
 
@@ -336,7 +329,9 @@ class Facilities {
       );
     }
 
-    const formattedUpdate = formatFacilityToServer(update);
+    const formattedUpdate = toSnakeCase(update, {
+      excludeKeys: ['id', 'organizationId']
+    });
 
     return this._request.put(
       `${this._baseUrl}/facilities/${facilityId}`,

@@ -1,5 +1,5 @@
 import Fields from './fields';
-import * as iotUtils from '../utils/iot';
+import * as objectUtils from '../utils/objects';
 
 describe('Iot/Fields', function() {
   let baseRequest;
@@ -52,10 +52,10 @@ describe('Iot/Fields', function() {
   describe('get', function() {
     context('the output field ID is provided', function() {
       let expectedOutputField;
-      let formatOutputFieldFromServer;
       let promise;
       let rawOutputField;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedOutputField = fixture.build('outputField');
@@ -63,13 +63,13 @@ describe('Iot/Fields', function() {
           fromServer: true
         });
 
-        formatOutputFieldFromServer = this.sandbox
-          .stub(iotUtils, 'formatOutputFieldFromServer')
-          .returns(expectedOutputField);
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(rawOutputField)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedOutputField);
 
         const fields = new Fields(baseSdk, request);
         fields._baseUrl = expectedHost;
@@ -85,7 +85,7 @@ describe('Iot/Fields', function() {
 
       it('formats the output field', function() {
         return promise.then(() => {
-          expect(formatOutputFieldFromServer).to.be.calledWith(rawOutputField);
+          expect(toCamelCase).to.be.calledWith(rawOutputField);
         });
       });
 

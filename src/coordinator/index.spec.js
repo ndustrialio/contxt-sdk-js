@@ -1,5 +1,5 @@
 import Coordinator from './index';
-import * as coordinatorUtils from '../utils/coordinator';
+import * as objectUtils from '../utils/objects';
 
 describe('Coordinator', function() {
   let baseRequest;
@@ -53,10 +53,10 @@ describe('Coordinator', function() {
 
   describe('getAllOrganizations', function() {
     let expectedOrganizations;
-    let formatOrganizationFromServer;
     let organizationsFromServer;
     let promise;
     let request;
+    let toCamelCase;
 
     beforeEach(function() {
       const numberOfOrganizations = faker.random.number({
@@ -67,22 +67,19 @@ describe('Coordinator', function() {
         'contxtOrganization',
         numberOfOrganizations
       );
-      organizationsFromServer = fixture.buildList(
-        'contxtOrganization',
-        numberOfOrganizations,
-        null,
-        {
-          fromServer: true
-        }
+      organizationsFromServer = expectedOrganizations.map((org) =>
+        fixture.build('contxtOrganization', org, { fromServer: true })
       );
 
-      formatOrganizationFromServer = this.sandbox
-        .stub(coordinatorUtils, 'formatOrganizationFromServer')
-        .callsFake((org, index) => expectedOrganizations[index]);
       request = {
         ...baseRequest,
         get: this.sandbox.stub().resolves(organizationsFromServer)
       };
+      toCamelCase = this.sandbox
+        .stub(objectUtils, 'toCamelCase')
+        .callsFake(
+          (org) => expectedOrganizations.filter(({ id }) => id === org.id)[0]
+        );
 
       const coordinator = new Coordinator(baseSdk, request);
       coordinator._baseUrl = expectedHost;
@@ -95,11 +92,9 @@ describe('Coordinator', function() {
 
     it('formats the list of organizations', function() {
       return promise.then(() => {
-        expect(formatOrganizationFromServer).to.have.callCount(
-          organizationsFromServer.length
-        );
+        expect(toCamelCase).to.have.callCount(organizationsFromServer.length);
         organizationsFromServer.forEach((org) => {
-          expect(formatOrganizationFromServer).to.be.calledWith(org);
+          expect(toCamelCase).to.be.calledWith(org);
         });
       });
     });
@@ -116,9 +111,9 @@ describe('Coordinator', function() {
       let organizationFromServerAfterFormat;
       let organizationFromServerBeforeFormat;
       let expectedOrganizationId;
-      let formatOrganizationFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedOrganizationId = faker.random.uuid();
@@ -134,14 +129,13 @@ describe('Coordinator', function() {
           { fromServer: true }
         );
 
-        formatOrganizationFromServer = this.sandbox
-          .stub(coordinatorUtils, 'formatOrganizationFromServer')
-          .returns(organizationFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(organizationFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(organizationFromServerAfterFormat);
 
         const coordinator = new Coordinator(baseSdk, request);
         coordinator._baseUrl = expectedHost;
@@ -157,7 +151,7 @@ describe('Coordinator', function() {
 
       it('formats the organization object', function() {
         return promise.then(() => {
-          expect(formatOrganizationFromServer).to.be.calledWith(
+          expect(toCamelCase).to.be.calledWith(
             organizationFromServerBeforeFormat
           );
         });
@@ -187,9 +181,9 @@ describe('Coordinator', function() {
       let userFromServerAfterFormat;
       let userFromServerBeforeFormat;
       let expectedUserId;
-      let formatUserFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedUserId = faker.random.uuid();
@@ -202,14 +196,13 @@ describe('Coordinator', function() {
           { fromServer: true }
         );
 
-        formatUserFromServer = this.sandbox
-          .stub(coordinatorUtils, 'formatUserFromServer')
-          .returns(userFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(userFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(userFromServerAfterFormat);
 
         const coordinator = new Coordinator(baseSdk, request);
         coordinator._baseUrl = expectedHost;
@@ -225,9 +218,7 @@ describe('Coordinator', function() {
 
       it('formats the user object', function() {
         return promise.then(() => {
-          expect(formatUserFromServer).to.be.calledWith(
-            userFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(userFromServerBeforeFormat);
         });
       });
 

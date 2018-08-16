@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
-import { formatEventFromServer, formatEventToServer } from '../utils/events';
+import { formatEventUpdateToServer } from '../utils/events';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} Event
@@ -97,11 +98,9 @@ class Events {
       }
     }
 
-    const data = formatEventToServer(event);
-
     return this._request
-      .post(`${this._baseUrl}/events`, data)
-      .then((response) => formatEventFromServer(response));
+      .post(`${this._baseUrl}/events`, toSnakeCase(event))
+      .then((response) => toCamelCase(response));
   }
 
   /**
@@ -158,7 +157,7 @@ class Events {
 
     return this._request
       .get(`${this._baseUrl}/events/${eventId}`)
-      .then((event) => formatEventFromServer(event));
+      .then((event) => toCamelCase(event));
   }
 
   /**
@@ -169,12 +168,9 @@ class Events {
    *
    * @param {number} eventId The ID of the event to update
    * @param {Object} update An object containing the updated data for the event
-   * @param {boolean} [update.allowOthersToTrigger]
-   * @param {string} [update.eventTypeId] UUID corresponding with an event type
    * @param {number} [update.facilityId]
    * @param {boolean} [update.isPublic]
    * @param {string} [update.name]
-   * @param {string} [update.organizationId] UUID corresponding with an organization
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -206,7 +202,7 @@ class Events {
       );
     }
 
-    const formattedUpdate = formatEventToServer(update);
+    const formattedUpdate = formatEventUpdateToServer(update);
 
     return this._request.put(
       `${this._baseUrl}/events/${eventId}`,

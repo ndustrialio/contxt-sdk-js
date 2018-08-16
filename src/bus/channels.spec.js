@@ -1,6 +1,6 @@
 import omit from 'lodash.omit';
 import Channels from './channels';
-import * as busUtils from '../utils/bus';
+import * as objectUtils from '../utils/objects';
 
 describe('Channels', function() {
   let baseRequest;
@@ -56,10 +56,10 @@ describe('Channels', function() {
       let channelFromServerBeforeFormat;
       let channelToServerAfterFormat;
       let channelToServerBeforeFormat;
-      let formatChannelFromServer;
-      let formatChannelToServer;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         channelFromServerAfterFormat = fixture.build('channel');
@@ -75,17 +75,16 @@ describe('Channels', function() {
           { fromServer: true }
         );
 
-        formatChannelFromServer = this.sandbox
-          .stub(busUtils, 'formatChannelFromServer')
-          .returns(channelFromServerAfterFormat);
-        formatChannelToServer = this.sandbox
-          .stub(busUtils, 'formatChannelToServer')
-          .returns(channelToServerAfterFormat);
-
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(channelFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(channelFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(channelToServerAfterFormat);
 
         const channels = new Channels(baseSdk, request);
         channels._baseUrl = expectedHost;
@@ -93,9 +92,7 @@ describe('Channels', function() {
       });
 
       it('formats the submitted event object to send to the server', function() {
-        expect(formatChannelToServer).to.be.deep.calledWith(
-          channelToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.calledWith(channelToServerBeforeFormat);
       });
 
       it('creates a new channel', function() {
@@ -109,9 +106,7 @@ describe('Channels', function() {
 
       it('formats the returned object', function() {
         return promise.then(() => {
-          expect(formatChannelFromServer).to.be.deep.calledWith(
-            channelFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(channelFromServerBeforeFormat);
         });
       });
 
@@ -211,9 +206,9 @@ describe('Channels', function() {
       let expectedOrganizationId;
       let expectedServiceId;
       let expectedChannelId;
-      let formatChannelFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         channelFromServerAfterFormat = fixture.build('channel');
@@ -226,14 +221,13 @@ describe('Channels', function() {
           { fromServer: true }
         );
 
-        formatChannelFromServer = this.sandbox
-          .stub(busUtils, 'formatChannelFromServer')
-          .returns(channelFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(channelFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(channelFromServerAfterFormat);
 
         const channels = new Channels(baseSdk, request);
         channels._baseUrl = expectedHost;
@@ -253,9 +247,7 @@ describe('Channels', function() {
 
       it('formats the channel object', function() {
         return promise.then(() => {
-          expect(formatChannelFromServer).to.be.calledWith(
-            channelFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(channelFromServerBeforeFormat);
         });
       });
 
@@ -304,9 +296,9 @@ describe('Channels', function() {
     context('when all required information is available', function() {
       let channelToServerAfterFormat;
       let channelToServerBeforeFormat;
-      let formatChannelToServer;
-      let request;
       let promise;
+      let request;
+      let toSnakeCase;
 
       beforeEach(function() {
         channelToServerBeforeFormat = fixture.build('channel');
@@ -315,14 +307,14 @@ describe('Channels', function() {
           channelToServerBeforeFormat,
           { fromServer: true }
         );
-        formatChannelToServer = this.sandbox
-          .stub(busUtils, 'formatChannelToServer')
-          .returns(channelToServerAfterFormat);
 
         request = {
           ...baseRequest,
           put: this.sandbox.stub().resolves()
         };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(channelToServerAfterFormat);
 
         const channels = new Channels(baseSdk, request);
         channels._baseUrl = expectedHost;
@@ -336,7 +328,7 @@ describe('Channels', function() {
       });
 
       it('formats the data into the right format', function() {
-        expect(formatChannelToServer).to.be.deep.calledWith({
+        expect(toSnakeCase).to.be.deep.calledWith({
           name: channelToServerBeforeFormat.name
         });
       });

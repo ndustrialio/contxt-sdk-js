@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import Events from './index';
 import * as eventsUtils from '../utils/events';
+import * as objectUtils from '../utils/objects';
 
 describe('Events', function() {
   let baseRequest;
@@ -58,10 +59,10 @@ describe('Events', function() {
       let eventFromServerBeforeFormat;
       let eventToServerAfterFormat;
       let eventToServerBeforeFormat;
-      let formatEventFromServer;
-      let formatEventToServer;
       let promise;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         eventFromServerAfterFormat = fixture.build('event');
@@ -77,17 +78,16 @@ describe('Events', function() {
           { fromServer: true }
         );
 
-        formatEventFromServer = this.sandbox
-          .stub(eventsUtils, 'formatEventFromServer')
-          .returns(eventFromServerAfterFormat);
-        formatEventToServer = this.sandbox
-          .stub(eventsUtils, 'formatEventToServer')
-          .returns(eventToServerAfterFormat);
-
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(eventFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(eventToServerAfterFormat);
 
         const events = new Events(baseSdk, request);
         events._baseUrl = expectedHost;
@@ -96,9 +96,7 @@ describe('Events', function() {
       });
 
       it('formats the submitted event object to send to the server', function() {
-        expect(formatEventToServer).to.be.deep.calledWith(
-          eventToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.deep.calledWith(eventToServerBeforeFormat);
       });
 
       it('creates a new event', function() {
@@ -110,7 +108,7 @@ describe('Events', function() {
 
       it('formats the returned object', function() {
         return promise.then(() => {
-          expect(formatEventFromServer).to.be.deep.calledWith(
+          expect(toCamelCase).to.be.deep.calledWith(
             eventFromServerBeforeFormat
           );
         });
@@ -181,9 +179,9 @@ describe('Events', function() {
       let eventFromServerAfterFormat;
       let eventFromServerBeforeFormat;
       let expectedEventId;
-      let formatEventFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedEventId = faker.random.uuid();
@@ -196,14 +194,13 @@ describe('Events', function() {
           { fromServer: true }
         );
 
-        formatEventFromServer = this.sandbox
-          .stub(eventsUtils, 'formatEventFromServer')
-          .returns(eventFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(eventFromServerAfterFormat);
 
         const events = new Events(baseSdk, request);
         events._baseUrl = expectedHost;
@@ -219,9 +216,7 @@ describe('Events', function() {
 
       it('formats the event object', function() {
         return promise.then(() => {
-          expect(formatEventFromServer).to.be.calledWith(
-            eventFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(eventFromServerBeforeFormat);
         });
       });
 
@@ -249,7 +244,7 @@ describe('Events', function() {
       let eventFromServerBeforeFormat;
       let eventToServerAfterFormat;
       let eventToServerBeforeFormat;
-      let formatEventToServer;
+      let formatEventUpdateToServer;
       let request;
       let promise;
 
@@ -264,8 +259,8 @@ describe('Events', function() {
         );
         eventToServerBeforeFormat = fixture.build('event');
 
-        formatEventToServer = this.sandbox
-          .stub(eventsUtils, 'formatEventToServer')
+        formatEventUpdateToServer = this.sandbox
+          .stub(eventsUtils, 'formatEventUpdateToServer')
           .returns(eventToServerAfterFormat);
 
         request = {
@@ -283,7 +278,7 @@ describe('Events', function() {
       });
 
       it('formats the data into the right format', function() {
-        expect(formatEventToServer).to.be.deep.calledWith(
+        expect(formatEventUpdateToServer).to.be.deep.calledWith(
           eventToServerBeforeFormat
         );
       });

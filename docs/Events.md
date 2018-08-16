@@ -116,12 +116,9 @@ Method: PUT
 | --- | --- | --- |
 | eventId | <code>number</code> | The ID of the event to update |
 | update | <code>Object</code> | An object containing the updated data for the event |
-| [update.allowOthersToTrigger] | <code>boolean</code> |  |
-| [update.eventTypeId] | <code>string</code> | UUID corresponding with an event type |
 | [update.facilityId] | <code>number</code> |  |
 | [update.isPublic] | <code>boolean</code> |  |
 | [update.name] | <code>string</code> |  |
-| [update.organizationId] | <code>string</code> | UUID corresponding with an organization |
 
 **Example**  
 ```js

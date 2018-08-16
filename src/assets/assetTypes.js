@@ -1,10 +1,7 @@
 import has from 'lodash.has';
 import isPlainObject from 'lodash.isplainobject';
-import {
-  formatAssetTypeFromServer,
-  formatAssetTypesDataFromServer,
-  formatAssetTypeToServer
-} from '../utils/assets';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} AssetType
@@ -85,11 +82,9 @@ class AssetTypes {
       }
     }
 
-    const data = formatAssetTypeToServer(assetType);
-
     return this._request
-      .post(`${this._baseUrl}/assets/types`, data)
-      .then((assetType) => formatAssetTypeFromServer(assetType));
+      .post(`${this._baseUrl}/assets/types`, toSnakeCase(assetType))
+      .then((assetType) => toCamelCase(assetType));
   }
 
   /**
@@ -146,7 +141,7 @@ class AssetTypes {
 
     return this._request
       .get(`${this._baseUrl}/assets/types/${assetTypeId}`)
-      .then((assetType) => formatAssetTypeFromServer(assetType));
+      .then((assetType) => toCamelCase(assetType));
   }
 
   /**
@@ -168,7 +163,7 @@ class AssetTypes {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/assets/types`)
-      .then((response) => formatAssetTypesDataFromServer(response));
+      .then((assetTypesData) => formatPaginatedDataFromServer(assetTypesData));
   }
 
   /**
@@ -200,7 +195,7 @@ class AssetTypes {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/assets/types`)
-      .then((response) => formatAssetTypesDataFromServer(response));
+      .then((assetTypesData) => formatPaginatedDataFromServer(assetTypesData));
   }
 
   /**
@@ -219,7 +214,7 @@ class AssetTypes {
    *
    * @example
    * contxtSdk.assets.types
-   *   .update({
+   *   .update('5f310899-d8f9-4dac-ae82-cedb2048a8ef', {
    *     description: 'A physical facility building'
    *   });
    */
@@ -244,7 +239,9 @@ class AssetTypes {
       );
     }
 
-    const formattedUpdate = formatAssetTypeToServer(update);
+    const formattedUpdate = toSnakeCase(update, {
+      excludeKeys: ['id', 'label', 'organizationId']
+    });
 
     return this._request.put(
       `${this._baseUrl}/assets/types/${assetTypeId}`,

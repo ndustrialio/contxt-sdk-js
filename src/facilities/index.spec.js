@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import Facilities from './index';
 import * as facilitiesUtils from '../utils/facilities';
+import * as objectUtils from '../utils/objects';
 
 describe('Facilities', function() {
   let baseRequest;
@@ -55,13 +56,13 @@ describe('Facilities', function() {
   describe('create', function() {
     context('when all required information is supplied', function() {
       let expectedFacility;
-      let formatFacilityFromServer;
-      let formatFacilityToServer;
       let formattedFacility;
       let initialFacility;
       let promise;
       let rawFacility;
       let request;
+      let toCamelCase;
+      let toSnakeCase;
 
       beforeEach(function() {
         expectedFacility = fixture.build('facility', null, {
@@ -75,16 +76,16 @@ describe('Facilities', function() {
           fromServer: true
         });
 
-        formatFacilityFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatFacilityFromServer')
-          .returns(expectedFacility);
-        formatFacilityToServer = this.sandbox
-          .stub(facilitiesUtils, 'formatFacilityToServer')
-          .returns(formattedFacility);
         request = {
           ...baseRequest,
           post: this.sandbox.stub().resolves(rawFacility)
         };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedFacility);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(formattedFacility);
 
         const facilities = new Facilities(baseSdk, request);
         facilities._baseUrl = expectedHost;
@@ -93,7 +94,7 @@ describe('Facilities', function() {
       });
 
       it('formats the submitted facility object to send to the server', function() {
-        expect(formatFacilityToServer).to.be.calledWith(initialFacility);
+        expect(toSnakeCase).to.be.calledWith(initialFacility);
       });
 
       it('creates a new facility', function() {
@@ -105,7 +106,7 @@ describe('Facilities', function() {
 
       it('formats the returned facility object', function() {
         return promise.then(() => {
-          expect(formatFacilityFromServer).to.be.calledWith(rawFacility);
+          expect(toCamelCase).to.be.calledWith(rawFacility);
         });
       });
 
@@ -252,7 +253,7 @@ describe('Facilities', function() {
   describe('get', function() {
     context('the facility ID is provided', function() {
       let expectedFacilityId;
-      let formatFacilityFromServer;
+      let formatFacilityWithInfoFromServer;
       let formattedFacility;
       let promise;
       let rawFacility;
@@ -267,8 +268,8 @@ describe('Facilities', function() {
           id: rawFacility.id
         });
 
-        formatFacilityFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatFacilityFromServer')
+        formatFacilityWithInfoFromServer = this.sandbox
+          .stub(facilitiesUtils, 'formatFacilityWithInfoFromServer')
           .returns(formattedFacility);
         request = {
           ...baseRequest,
@@ -289,7 +290,9 @@ describe('Facilities', function() {
 
       it('formats the facility object', function() {
         return promise.then(() => {
-          expect(formatFacilityFromServer).to.be.calledWith(rawFacility);
+          expect(formatFacilityWithInfoFromServer).to.be.calledWith(
+            rawFacility
+          );
         });
       });
 
@@ -313,7 +316,7 @@ describe('Facilities', function() {
   });
 
   describe('getAll', function() {
-    let formatFacilityFromServer;
+    let formatFacilityWithInfoFromServer;
     let formattedFacilities;
     let promise;
     let rawFacilities;
@@ -329,8 +332,8 @@ describe('Facilities', function() {
         fromServer: true
       });
 
-      formatFacilityFromServer = this.sandbox
-        .stub(facilitiesUtils, 'formatFacilityFromServer')
+      formatFacilityWithInfoFromServer = this.sandbox
+        .stub(facilitiesUtils, 'formatFacilityWithInfoFromServer')
         .callsFake((facility) => {
           const index = rawFacilities.indexOf(facility);
           return formattedFacilities[index];
@@ -352,12 +355,12 @@ describe('Facilities', function() {
 
     it('formats the facility object', function() {
       return promise.then(() => {
-        expect(formatFacilityFromServer).to.have.callCount(
+        expect(formatFacilityWithInfoFromServer).to.have.callCount(
           rawFacilities.length
         );
 
         rawFacilities.forEach((facility) => {
-          expect(formatFacilityFromServer).to.be.calledWith(facility);
+          expect(formatFacilityWithInfoFromServer).to.be.calledWith(facility);
         });
       });
     });
@@ -372,14 +375,14 @@ describe('Facilities', function() {
   describe('getAllByOrganizationId', function() {
     context('the organization ID is provided', function() {
       let expectedOrganizationId;
-      let formatFacilityFromServer;
-      let formatFacilityOptionsToServer;
+      let formatFacilityWithInfoFromServer;
       let formattedFacilities;
       let initialOptions;
       let promise;
       let rawFacilities;
       let rawFacilityOptions;
       let request;
+      let toSnakeCase;
 
       beforeEach(function() {
         expectedOrganizationId = faker.random.number();
@@ -399,11 +402,8 @@ describe('Facilities', function() {
         initialOptions = faker.helpers.createTransaction();
         rawFacilityOptions = faker.helpers.createTransaction();
 
-        formatFacilityOptionsToServer = this.sandbox
-          .stub(facilitiesUtils, 'formatFacilityOptionsToServer')
-          .returns(rawFacilityOptions);
-        formatFacilityFromServer = this.sandbox
-          .stub(facilitiesUtils, 'formatFacilityFromServer')
+        formatFacilityWithInfoFromServer = this.sandbox
+          .stub(facilitiesUtils, 'formatFacilityWithInfoFromServer')
           .callsFake((facility) => {
             const index = rawFacilities.indexOf(facility);
             return formattedFacilities[index];
@@ -412,6 +412,9 @@ describe('Facilities', function() {
           ...baseRequest,
           get: this.sandbox.stub().resolves(rawFacilities)
         };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(rawFacilityOptions);
 
         const facilities = new Facilities(baseSdk, request);
         facilities._baseUrl = expectedHost;
@@ -423,7 +426,7 @@ describe('Facilities', function() {
       });
 
       it('gets options that are in a format suitable for the API', function() {
-        expect(formatFacilityOptionsToServer).to.be.calledWith(initialOptions);
+        expect(toSnakeCase).to.be.calledWith(initialOptions);
       });
 
       it('gets a list of facilities for an organization from the server', function() {
@@ -437,12 +440,12 @@ describe('Facilities', function() {
 
       it('formats the facility object', function() {
         return promise.then(() => {
-          expect(formatFacilityFromServer).to.have.callCount(
+          expect(formatFacilityWithInfoFromServer).to.have.callCount(
             rawFacilities.length
           );
 
           rawFacilities.forEach((facility) => {
-            expect(formatFacilityFromServer).to.be.calledWith(facility);
+            expect(formatFacilityWithInfoFromServer).to.be.calledWith(facility);
           });
         });
       });
@@ -469,9 +472,9 @@ describe('Facilities', function() {
   describe('update', function() {
     context('when all required information is available', function() {
       let facilityUpdate;
-      let formatFacilityToServer;
       let formattedFacility;
       let promise;
+      let toSnakeCase;
 
       beforeEach(function() {
         facilityUpdate = fixture.build('facility');
@@ -479,8 +482,8 @@ describe('Facilities', function() {
           fromServer: true
         });
 
-        formatFacilityToServer = this.sandbox
-          .stub(facilitiesUtils, 'formatFacilityToServer')
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
           .returns(formattedFacility);
 
         const facilities = new Facilities(baseSdk, baseRequest);
@@ -490,7 +493,9 @@ describe('Facilities', function() {
       });
 
       it('formats the data into the right format', function() {
-        expect(formatFacilityToServer).to.be.calledWith(facilityUpdate);
+        expect(toSnakeCase).to.be.calledWith(facilityUpdate, {
+          excludeKeys: ['id', 'organizationId']
+        });
       });
 
       it('updates the facility', function() {

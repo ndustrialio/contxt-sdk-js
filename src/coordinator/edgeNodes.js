@@ -1,4 +1,4 @@
-import { formatEdgeNodeFromServer } from '../utils/coordinator';
+import { toCamelCase } from '../utils/objects';
 
 /**
  * @typedef {Object} EdgeNode
@@ -66,7 +66,7 @@ class EdgeNodes {
           this._baseUrl
         }/organizations/${organizationId}/edgenodes/${edgeNodeId}`
       )
-      .then((edgeNode) => formatEdgeNodeFromServer(edgeNode));
+      .then((edgeNode) => toCamelCase(edgeNode));
   }
 }
 

@@ -1,9 +1,5 @@
 import EdgeNodes from './edgeNodes';
-
-import {
-  formatOrganizationFromServer,
-  formatUserFromServer
-} from '../utils/coordinator';
+import { toCamelCase } from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtOrganization
@@ -66,7 +62,7 @@ class Coordinator {
   getAllOrganizations() {
     return this._request
       .get(`${this._baseUrl}/organizations`)
-      .then((orgs) => orgs.map(formatOrganizationFromServer));
+      .then((orgs) => orgs.map((org) => toCamelCase(org)));
   }
 
   /**
@@ -98,7 +94,7 @@ class Coordinator {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}`)
-      .then((org) => formatOrganizationFromServer(org));
+      .then((org) => toCamelCase(org));
   }
 
   /**
@@ -128,7 +124,7 @@ class Coordinator {
 
     return this._request
       .get(`${this._baseUrl}/users/${userId}`)
-      .then((user) => formatUserFromServer(user));
+      .then((user) => toCamelCase(user));
   }
 }
 
