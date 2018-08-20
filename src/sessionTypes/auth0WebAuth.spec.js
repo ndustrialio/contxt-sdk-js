@@ -903,8 +903,50 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       context('when there is an error getting the session info', function() {
+        let logOut;
+
         beforeEach(function() {
           this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
+          logOut = this.sandbox.stub(Auth0WebAuth.prototype, 'logOut');
+        });
+
+        it('throws a 401 and logs the user out if Auth0 requires the session to be re-authenticated', function() {
+          const errorType = faker.random.arrayElement([
+            'consent_required',
+            'interaction_required',
+            'login_required'
+          ]);
+          const originalError = {
+            error: errorType,
+            error_description: {
+              consent_required: 'Consent required',
+              interaction_required: 'Interaction required',
+              login_required: 'Login required'
+            }[errorType]
+          };
+          const expectedError = new Error('Unauthorized');
+          expectedError.response = {
+            data: {
+              code: 401,
+              error: originalError.error,
+              error_description: originalError.error_description
+            },
+            status: 401
+          };
+
+          this.sandbox
+            .stub(Auth0WebAuth.prototype, '_checkSession')
+            .rejects(originalError);
+
+          const auth0WebAuth = new Auth0WebAuth(sdk);
+          const promise = auth0WebAuth._getUpdatedSessionInfo();
+
+          return promise.then(expect.fail).catch((error) => {
+            expect(error.message).to.equal('Unauthorized');
+            expect(error.response).to.deep.equal(expectedError.response);
+
+            expect(logOut).to.be.calledOnce;
+          });
         });
 
         it('throws a human readable error when unable to reach the server', function() {
