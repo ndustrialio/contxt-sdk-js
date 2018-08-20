@@ -339,17 +339,35 @@ class Auth0WebAuth {
           return sessionInfo;
         })
         .catch((err) => {
-          if (!(err.response && err.response.status)) {
-            const wrapperError = new Error(
+          let errorToThrow = err;
+
+          if (
+            err.error &&
+            [
+              'consent_required',
+              'interaction_required',
+              'login_required'
+            ].indexOf(err.error) > -1
+          ) {
+            errorToThrow = new Error('Unauthorized');
+            errorToThrow.response = {
+              data: {
+                ...err,
+                code: 401
+              },
+              status: 401
+            };
+
+            this.logOut();
+          } else if (!(err.response && err.response.status)) {
+            errorToThrow = new Error(
               'There was a problem getting new session info. Please check your configuration settings.'
             );
-            wrapperError.fromSdk = true;
-            wrapperError.originalError = err;
-
-            throw wrapperError;
+            errorToThrow.fromSdk = true;
+            errorToThrow.originalError = err;
           }
 
-          throw err;
+          throw errorToThrow;
         });
     }
 
