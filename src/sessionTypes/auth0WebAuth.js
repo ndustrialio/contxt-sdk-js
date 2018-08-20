@@ -320,8 +320,9 @@ class Auth0WebAuth {
   }
 
   /**
-   * Gets up to date session info. Will get an updated session/tokens if the previous session has
-   * already expired.
+   * Gets up to date session info. Will get an updated session/tokens if the
+   * previous session has already expired. Will log the user out if an error
+   * from Auth0 indicates the session cannot continue without re-authentication.
    *
    * @returns {Promise}
    * @fulfills {Auth0WebAuthSessionInfo} sessionInfo

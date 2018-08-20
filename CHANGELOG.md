@@ -1,3 +1,10 @@
+## [v0.0.30](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.30) (2018-08-20)
+
+**Changed**
+
+* Started normalizing Silent Authentication errors from Auth0 in the Auth0WebAuth session type to match Axios errors.
+  * Additionally, started logging the user out when one of these errors is encountered.
+
 ## [v0.0.29](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.29) (2018-08-16)
 
 **Changed**
