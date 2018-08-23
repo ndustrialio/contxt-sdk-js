@@ -112,13 +112,13 @@ describe('edgeNodes', function() {
       });
     });
 
-    context('the edge node ID is not provided', function() {
+    context('the edge node client ID is not provided', function() {
       it('throws an error', function() {
         const edgeNodes = new EdgeNodes(baseSdk, baseRequest);
         const promise = edgeNodes.get('1');
 
         return expect(promise).to.be.rejectedWith(
-          'An edgeNodeId is required for getting an edge node.'
+          'An edgeNodeClientId is required for getting an edge node.'
         );
       });
     });
