@@ -37,13 +37,24 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} AssetAttributeValue
+ * @property {Object} [asset] The associated parent asset. Will always be
+ *   present if retrieving more than one AssetAttributeValue.
+ * @property {string} [asset.label] Label of the parent asset. Will always be
+ *   present if retrieving more than one AssetAttributeValue.
+ * @property {Object} [assetAttribute] The associated parent assetAttribute.
+ *   Will always be present if retrieving more than one AssetAttributeValue.
+ * @property {boolean} [assetAttribute.isRequired] Indication of required status
+ *   for the parent asset attribute. Will always be present if retrieving more
+ *   than one AssetAttributeValue.
+ * @property {string} [assetAttribute.label] Label of the parent assetAttribute.
+ *   Will always be present if retrieving more than one AssetAttributeValue.
+ * @property {string} [assetAttribute.units] Units of the parent assetAttribute.
+ *   Will always be present if retrieving more than one AssetAttributeValue.
+ * @property {string} assetAttributeId UUID corresponding to the assetAttribute
  * @property {string} assetId UUID corresponding to the asset
- * @property {string} assetAttributeId UUID corresponding to the asset attribute
- * @property {string} [assetLabel] Label from the associated asset
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} effectiveDate ISO 8601 Extended Format date/time string
  * @property {string} id UUID
- * @property {string} [label] Label from the associated asset attribute
  * @property {string} [notes]
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  * @property {string} value
@@ -429,6 +440,53 @@ class AssetAttributes {
         params: toSnakeCase(assetAttributeFilters)
       })
       .then((assetAttributeValues) => toCamelCase(assetAttributeValues));
+  }
+
+  /**
+   * Gets a paginated list of effective asset attribute values for an
+   * organization.
+   *
+   * API Endpoint: '/organizations/:organizationId/attributes/values'
+   * Method: GET
+   *
+   * @param {String} organizationId UUID corresponding with an organization
+   * @param {PaginationOptions} [paginationOptions]
+   *
+   * @returns {Promise}
+   * @fulfill {AssetAttributeValueData}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.attributes
+   *   .getValuesByAttributeId(
+   *     '53fba880-70b7-47a2-b4e3-ad9ecfb67d5c',
+   *     {
+   *       limit: 100,
+   *       offset: 0
+   *     }
+   *   )
+   *   .then((assetAttributeValuesData) => {
+   *     console.log(assetAttributeValuesData);
+   *   })
+   *   .catch((err) => console.log(err));
+   */
+  getEffectiveValuesByOrganizationId(organizationId, paginationOptions) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organization ID is required to get a list of asset attribute values.'
+        )
+      );
+    }
+
+    return this._request
+      .get(
+        `${this._baseUrl}/organizations/${organizationId}/attributes/values`,
+        { params: toSnakeCase(paginationOptions) }
+      )
+      .then((assetAttributeValueData) =>
+        formatPaginatedDataFromServer(assetAttributeValueData)
+      );
   }
 
   /**

@@ -16,6 +16,7 @@ different asset attributes and their values
     * [.createValue(assetId, assetAttributeValue)](#AssetAttributes+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetAttributeValueId)](#AssetAttributes+deleteValue) ⇒ <code>Promise</code>
     * [.getEffectiveValuesByAssetId(assetId, [assetAttributeFilters])](#AssetAttributes+getEffectiveValuesByAssetId) ⇒ <code>Promise</code>
+    * [.getEffectiveValuesByOrganizationId(organizationId, [paginationOptions])](#AssetAttributes+getEffectiveValuesByOrganizationId) ⇒ <code>Promise</code>
     * [.getValuesByAttributeId(assetId, assetAttributeId, [paginationOptions])](#AssetAttributes+getValuesByAttributeId) ⇒ <code>Promise</code>
     * [.updateValue(assetAttributeId, update)](#AssetAttributes+updateValue) ⇒ <code>Promise</code>
 
@@ -249,6 +250,39 @@ contxtSdk.assets.attributes
   })
   .then((assetAttributeValues) => {
     console.log(assetAttributeValues);
+  })
+  .catch((err) => console.log(err));
+```
+<a name="AssetAttributes+getEffectiveValuesByOrganizationId"></a>
+
+### contxtSdk.assets.attributes.getEffectiveValuesByOrganizationId(organizationId, [paginationOptions]) ⇒ <code>Promise</code>
+Gets a paginated list of effective asset attribute values for an
+organization.
+
+API Endpoint: '/organizations/:organizationId/attributes/values'
+Method: GET
+
+**Kind**: instance method of [<code>AssetAttributes</code>](#AssetAttributes)  
+**Fulfill**: [<code>AssetAttributeValueData</code>](./Typedefs.md#AssetAttributeValueData)  
+**Rejects**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>String</code> | UUID corresponding with an organization |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
+
+**Example**  
+```js
+contxtSdk.assets.attributes
+  .getValuesByAttributeId(
+    '53fba880-70b7-47a2-b4e3-ad9ecfb67d5c',
+    {
+      limit: 100,
+      offset: 0
+    }
+  )
+  .then((assetAttributeValuesData) => {
+    console.log(assetAttributeValuesData);
   })
   .catch((err) => console.log(err));
 ```
