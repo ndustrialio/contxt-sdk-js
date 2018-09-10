@@ -31,11 +31,11 @@ class EdgeNodes {
   /**
    * Get an edge node
    *
-   * API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeId'
+   * API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeClientId'
    * METHOD: GET
    *
    * @param {string} organizationId UUID
-   * @param {string} edgeNodeId
+   * @param {string} edgeNodeClientId
    *
    * @returns {Promise}
    * @fulfill {EdgeNode}
@@ -47,16 +47,16 @@ class EdgeNodes {
    *   .then((edgeNode) => console.log(edgeNode))
    *   .catch((err) => console.log(err));
    */
-  get(organizationId, edgeNodeId) {
+  get(organizationId, edgeNodeClientId) {
     if (!organizationId) {
       return Promise.reject(
         new Error('An organizationId is required for getting an edge node.')
       );
     }
 
-    if (!edgeNodeId) {
+    if (!edgeNodeClientId) {
       return Promise.reject(
-        new Error('An edgeNodeId is required for getting an edge node.')
+        new Error('An edgeNodeClientId is required for getting an edge node.')
       );
     }
 
@@ -64,7 +64,7 @@ class EdgeNodes {
       .get(
         `${
           this._baseUrl
-        }/organizations/${organizationId}/edgenodes/${edgeNodeId}`
+        }/organizations/${organizationId}/edgenodes/${edgeNodeClientId}`
       )
       .then((edgeNode) => toCamelCase(edgeNode));
   }

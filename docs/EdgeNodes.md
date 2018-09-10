@@ -7,7 +7,7 @@ Module that provides access to contxt edge nodes
 
 * [EdgeNodes](#EdgeNodes)
     * [new EdgeNodes(sdk, request, baseUrl)](#new_EdgeNodes_new)
-    * [.get(organizationId, edgeNodeId)](#EdgeNodes+get) ⇒ <code>Promise</code>
+    * [.get(organizationId, edgeNodeClientId)](#EdgeNodes+get) ⇒ <code>Promise</code>
 
 <a name="new_EdgeNodes_new"></a>
 
@@ -21,10 +21,10 @@ Module that provides access to contxt edge nodes
 
 <a name="EdgeNodes+get"></a>
 
-### contxtSdk.coordinator.edgeNodes.get(organizationId, edgeNodeId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.edgeNodes.get(organizationId, edgeNodeClientId) ⇒ <code>Promise</code>
 Get an edge node
 
-API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeId'
+API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeClientId'
 METHOD: GET
 
 **Kind**: instance method of [<code>EdgeNodes</code>](#EdgeNodes)  
@@ -34,7 +34,7 @@ METHOD: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | organizationId | <code>string</code> | UUID |
-| edgeNodeId | <code>string</code> |  |
+| edgeNodeClientId | <code>string</code> |  |
 
 **Example**  
 ```js
