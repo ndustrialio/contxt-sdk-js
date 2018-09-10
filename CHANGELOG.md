@@ -1,3 +1,9 @@
+## [v0.0.31](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.31) (2018-08-30)
+
+**Added**
+
+* Added AssetAttributes#getEffectiveValuesByOrganizationId to retrieve all effective attribute values for a given organization.
+
 ## [v0.0.30](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.30) (2018-08-20)
 
 **Changed**

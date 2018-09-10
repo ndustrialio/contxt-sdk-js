@@ -52,13 +52,17 @@
 
 | Name | Type | Description |
 | --- | --- | --- |
+| [asset] | <code>Object</code> | The associated parent asset. Will always be   present if retrieving more than one AssetAttributeValue. |
+| [asset.label] | <code>string</code> | Label of the parent asset. Will always be   present if retrieving more than one AssetAttributeValue. |
+| [assetAttribute] | <code>Object</code> | The associated parent assetAttribute.   Will always be present if retrieving more than one AssetAttributeValue. |
+| [assetAttribute.isRequired] | <code>boolean</code> | Indication of required status   for the parent asset attribute. Will always be present if retrieving more   than one AssetAttributeValue. |
+| [assetAttribute.label] | <code>string</code> | Label of the parent assetAttribute.   Will always be present if retrieving more than one AssetAttributeValue. |
+| [assetAttribute.units] | <code>string</code> | Units of the parent assetAttribute.   Will always be present if retrieving more than one AssetAttributeValue. |
+| assetAttributeId | <code>string</code> | UUID corresponding to the assetAttribute |
 | assetId | <code>string</code> | UUID corresponding to the asset |
-| assetAttributeId | <code>string</code> | UUID corresponding to the asset attribute |
-| [assetLabel] | <code>string</code> | Label from the associated asset |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | effectiveDate | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>string</code> | UUID |
-| [label] | <code>string</code> | Label from the associated asset attribute |
 | [notes] | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | value | <code>string</code> |  |

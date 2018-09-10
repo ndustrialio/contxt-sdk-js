@@ -750,6 +750,106 @@ describe('Assets/Attributes', function() {
     });
   });
 
+  describe('getEffectiveValuesByOrganizationId', function() {
+    context('when all required information is supplied', function() {
+      let formatPaginatedDataFromServer;
+      let organizationId;
+      let paginationOptionsBeforeFormat;
+      let paginationOptionsAfterFormat;
+      let promise;
+      let request;
+      let toSnakeCase;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
+
+      beforeEach(function() {
+        organizationId = fixture.build('organization').id;
+        paginationOptionsBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        paginationOptionsAfterFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        valuesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList(
+            'assetAttributeValue',
+            faker.random.number({ min: 1, max: 20 })
+          )
+        };
+        valuesFromServerBeforeFormat = {
+          ...valuesFromServerAfterFormat,
+          records: valuesFromServerAfterFormat.records.map((values) =>
+            fixture.build('assetAttributeValue', values, { fromServer: true })
+          )
+        };
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+        };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(paginationOptionsAfterFormat);
+
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          request,
+          expectedHost
+        );
+        promise = assetAttributes.getEffectiveValuesByOrganizationId(
+          organizationId,
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options sent to the server', function() {
+        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+      });
+
+      it('gets a list of asset attribute values from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${organizationId}/attributes/values`,
+          { params: paginationOptionsAfterFormat }
+        );
+      });
+
+      it('formats the asset attribute value data', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('resolves with a list of asset attribute values', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when the organization ID is missing', function() {
+        const assetAttributes = new AssetAttributes(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+        const promise = assetAttributes.getEffectiveValuesByOrganizationId();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organization ID is required to get a list of asset attribute values.'
+        );
+      });
+    });
+  });
+
   describe('getValuesByAttributeId', function() {
     context('when all required information is supplied', function() {
       let assetId;
