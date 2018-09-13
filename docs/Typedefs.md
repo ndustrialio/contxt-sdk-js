@@ -78,6 +78,37 @@
 | _metadata | [<code>PaginationMetadata</code>](./Typedefs.md#PaginationMetadata) | Metadata about the pagination settings |
 | records | [<code>Array.&lt;AssetAttributeValue&gt;</code>](#AssetAttributeValue) |  |
 
+<a name="AssetMetric"></a>
+
+## AssetMetric : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| assetTypeId | <code>string</code> | UUID corresponding with the asset type |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| label | <code>string</code> |  |
+| organizationId | <code>string</code> | UUID corresponding with the organization |
+| timeInterval | <code>string</code> | Options are "hourly", "daily", "weekly", "monthly", "yearly" |
+| [units] | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="AssetMetricsFromServer"></a>
+
+## AssetMetricsFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;AssetMetric&gt;</code>](#AssetMetric) |  |
+
 <a name="AssetType"></a>
 
 ## AssetType : <code>Object</code>

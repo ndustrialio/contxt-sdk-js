@@ -5,6 +5,7 @@ const factory = require('rosie').Factory;
 require('./asset');
 require('./assetAttribute');
 require('./assetAttributeValue');
+require('./assetMetric');
 require('./assetType');
 require('./audience');
 require('./channel');
