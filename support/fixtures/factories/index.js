@@ -6,6 +6,7 @@ require('./asset');
 require('./assetAttribute');
 require('./assetAttributeValue');
 require('./assetMetric');
+require('./assetMetricValue');
 require('./assetType');
 require('./audience');
 require('./channel');

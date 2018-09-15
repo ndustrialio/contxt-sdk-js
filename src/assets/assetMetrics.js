@@ -25,6 +25,19 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} AssetMetricValue
+ * @property {string} assetId UUID corresponding to the asset
+ * @property {string} assetMetricId UUID corresponding to the asset metric
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} effectiveEndDate ISO 8601 Extended Format date/time string
+ * @property {string} effectiveStartDate ISO 8601 Extended Format date/time string
+ * @property {string} id UUID
+ * @property {string} notes
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {string} value
+ */
+
+/**
  * Module that provides access to, and the manipulation of, information about different asset metrics
  *
  * @typicalname contxtSdk.assets.metrics
@@ -254,6 +267,231 @@ class AssetMetrics {
 
     return this._request.put(
       `${this._baseUrl}/assets/metrics/${assetMetricId}`,
+      formattedUpdate
+    );
+  }
+
+  /**
+   * Creates a new asset metric value
+   *
+   * API Endpoint: '/assets/:assetId/metrics/:assetMetricId/values'
+   * Method: POST
+   *
+   * @param {string} assetId The ID of the asset (formatted as a UUID)
+   * @param {Object} assetMetricValue
+   * @param {string} assetMetricValue.assetMetricId UUID corresponding to the asset metric
+   * @param {string} assetMetricValue.effectiveEndDate ISO 8601 Extended Format date/time string
+   * @param {string} assetMetricValue.effectiveStartDate ISO 8601 Extended Format date/time string
+   * @param {string} [assetMetricValue.notes]
+   * @param {string} assetMetricValue.value
+   *
+   * @returns {Promise}
+   * @fulfill {AssetMetricValue}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.metrics
+   *   .createValue('1140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+   *      assetMetricId: 'cca11baa-cf7d-44c0-9d0a-6ad73d5f30cb',
+   *      effectiveEndDate: '2018-08-28T18:18:18.264Z',
+   *      effectiveStartDate: '2018-08-27T18:18:03.175Z',
+   *      notes: 'Iure delectus non sunt a voluptates pariatur fuga.',
+   *      value: '2000'
+   *    })
+   *    .then((newAssetMetricValue) => {
+   *      console.log(newAssetMetricValue);
+   *    })
+   *    .catch((error) => {
+   *      console.error(error);
+   *    });
+   */
+  createValue(assetId, assetMetricValue = {}) {
+    const requiredFields = [
+      'assetMetricId',
+      'effectiveEndDate',
+      'effectiveStartDate',
+      'value'
+    ];
+
+    if (!assetId) {
+      return Promise.reject(
+        new Error('An asset ID is required to create a new asset metric value.')
+      );
+    }
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      const field = requiredFields[i];
+
+      if (!assetMetricValue[field]) {
+        return Promise.reject(
+          new Error(
+            `A ${field} is required to create a new asset metric value.`
+          )
+        );
+      }
+    }
+
+    return this._request
+      .post(
+        `${this._baseUrl}/assets/${assetId}/metrics/${
+          assetMetricValue.assetMetricId
+        }/values`,
+        toSnakeCase(assetMetricValue)
+      )
+      .then((assetMetricValue) => toCamelCase(assetMetricValue));
+  }
+
+  /**
+   * Deletes an asset metric value
+   *
+   * API Endpoint: '/assets/metrics/values/:assetMetricValueId'
+   * Method: DELETE
+   *
+   * @param {string} assetMetricValueId The ID of the asset metric value (formatted as a UUID)
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.metrics.deleteValue(
+   *   'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
+   * );
+   */
+  deleteValue(assetMetricValueId) {
+    if (!assetMetricValueId) {
+      return Promise.reject(
+        new Error(
+          'An asset metric value ID is required for deleting an asset metric value.'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/assets/metrics/values/${assetMetricValueId}`
+    );
+  }
+
+  /**
+   * Gets asset metric values for a particular asset and metric
+   *
+   * API Endpoint: '/assets/:assetId/metrics/:assetMetricId/values'
+   * Method: GET
+   *
+   * @param {String} assetId The ID of the asset (formatted as a UUID)
+   * @param {String} assetMetricId The ID of the asset metric (formatted as a UUID)
+   * @param {Object} [assetMetricFilters] Specific information that is used to
+   *   filter the list of asset attribute values
+   * @param {String} [assetMetricFilters.effectiveEndDate] Effective end date
+   *   of the asset metric values
+   * @param {String} [assetMetricFilters.effectiveStartDate] Effective start date
+   *   of the asset metric values
+   * @param {Number} [assetMetricFilters.limit] Maximum number of records to return per query
+   * @param {Number} [assetMetricFilters.offset] How many records from the first record to start the query
+   *
+   * @returns {Promise}
+   * @fulfill {AssetMetricValue[]}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.metrics
+   *   .getValuesByMetricId(
+   *      'd7329ef3-ca63-4ad5-bb3e-632b702584f8',
+   *      'a1329ef3-ca63-4ad5-bb3e-632b702584f8',
+   *      {
+   *        limit: 10,
+   *        effectiveStartDate: '2018-07-11T19:14:49.715Z'
+   *      }
+   *    )
+   *   .then((assetMetricValuesData) => {
+   *     console.log(assetMetricValuesData);
+   *   })
+   *   .catch((err) => console.log(err));
+   */
+  getValuesByMetricId(assetId, assetMetricId, assetMetricFilters) {
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to get a list of asset metric values.'
+        )
+      );
+    }
+
+    if (!assetMetricId) {
+      return Promise.reject(
+        new Error(
+          'An asset metric ID is required to get a list of asset metric values.'
+        )
+      );
+    }
+
+    return this._request
+      .get(
+        `${this._baseUrl}/assets/${assetId}/metrics/${assetMetricId}/values`,
+        {
+          params: toSnakeCase(assetMetricFilters)
+        }
+      )
+      .then((assetMetricValueData) =>
+        formatPaginatedDataFromServer(assetMetricValueData)
+      );
+  }
+
+  /**
+   * Updates an asset metric value
+   *
+   * API Endpoint: '/assets/metrics/values/:assetMetricValueId'
+   * Method: PUT
+   *
+   * @param {string} assetMetricValueId The ID of the asset metric value to update (formatted as a UUID)
+   * @param {Object} update An object containing the updated data for the asset metric value
+   * @param {string} [update.effectiveEndDate] ISO 8601 Extended Format date/time string
+   * @param {string} [update.effectiveStartDate] ISO 8601 Extended Format date/time string
+   * @param {string} [update.notes]
+   * @param {string} [update.value]
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.metrics
+   *   .updateValue('2140cc2e-6d13-42ee-9941-487fe98f8e2d', {
+   *     effectiveEndDate: '2018-07-10T11:04:24.631Z',
+   *     notes: 'Dolores et sapiente sunt doloribus aut in.',
+   *     value: '61456'
+   *   })
+   *   .catch((err) => console.log(err));
+   */
+  updateValue(assetMetricValueId, update) {
+    if (!assetMetricValueId) {
+      return Promise.reject(
+        new Error(
+          'An asset metric value ID is required to update an asset metric value.'
+        )
+      );
+    }
+
+    if (!update) {
+      return Promise.reject(
+        new Error('An update is required to update an asset metric value.')
+      );
+    }
+
+    if (!isPlainObject(update)) {
+      return Promise.reject(
+        new Error(
+          'The asset metric value update must be a well-formed object with the data you wish to update.'
+        )
+      );
+    }
+
+    const formattedUpdate = toSnakeCase(update, {
+      excludeKeys: ['assetId', 'assetMetricId', 'id']
+    });
+
+    return this._request.put(
+      `${this._baseUrl}/assets/metrics/values/${assetMetricValueId}`,
       formattedUpdate
     );
   }
