@@ -74,7 +74,7 @@ class AssetMetrics {
   create(assetTypeId, assetMetric = {}) {
     if (!assetTypeId) {
       return Promise.reject(
-        new Error('An asset type ID is required for creating an asset metric.')
+        new Error('An asset type ID is required to create an asset metric.')
       );
     }
 
@@ -121,7 +121,7 @@ class AssetMetrics {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.assets.metrics.delete('4f0e51c6-728b-4892-9863-6d002e61204d')
+   * contxtSdk.assets.metrics.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
    */
   delete(assetMetricId) {
     if (!assetMetricId) {
@@ -184,11 +184,11 @@ class AssetMetrics {
    *
    * @example
    * contxtSdk.assets.metrics
-   *   .getAll('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *   .getByAssetTypeId('4f0e51c6-728b-4892-9863-6d002e61204d')
    *   .then((assetMetrics) => console.log(assetMetrics))
    *   .catch((err) => console.log(err));
    */
-  getAll(assetTypeId, paginationOptions) {
+  getByAssetTypeId(assetTypeId, paginationOptions) {
     if (!assetTypeId) {
       return Promise.reject(
         new Error(

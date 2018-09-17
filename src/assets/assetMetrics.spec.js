@@ -138,7 +138,7 @@ describe('Assets/Metrics', function() {
         promise = assetMetrics.create(null, assetMetric);
 
         return expect(promise).to.be.rejectedWith(
-          'An asset type ID is required for creating an asset metric.'
+          'An asset type ID is required to create an asset metric.'
         );
       });
 
@@ -274,7 +274,7 @@ describe('Assets/Metrics', function() {
     });
   });
 
-  describe('getAll', function() {
+  describe('getByAssetTypeId', function() {
     context('when all required information is supplied', function() {
       let assetTypeId;
       let formatPaginatedDataFromServer;
@@ -323,7 +323,7 @@ describe('Assets/Metrics', function() {
           .returns(paginationOptionsAfterFormat);
 
         const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
-        promise = assetMetrics.getAll(
+        promise = assetMetrics.getByAssetTypeId(
           assetTypeId,
           paginationOptionsBeforeFormat
         );
@@ -365,8 +365,9 @@ describe('Assets/Metrics', function() {
           expectedHost
         );
 
-        promise = assetMetrics.getAll();
+        promise = assetMetrics.getByAssetTypeId();
       });
+
       it('throws an error when the asset type ID is missing', function() {
         return expect(promise).to.be.rejectedWith(
           'An asset type ID is required to get a list of all asset metrics.'
@@ -442,7 +443,7 @@ describe('Assets/Metrics', function() {
           assetMetrics = new AssetMetrics(baseSdk, baseRequest, expectedHost);
         });
 
-        it('throws an error when there is not provided asset metric ID', function() {
+        it('throws an error when there is no provided asset metric ID', function() {
           const assetAttributeUpdate = fixture.build('assetMetric');
           const promise = assetMetrics.update(null, assetAttributeUpdate);
 
