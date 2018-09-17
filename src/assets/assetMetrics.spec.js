@@ -176,7 +176,7 @@ describe('Assets/Metrics', function() {
         promise = assetMetrics.delete(expectedAssetMetricId);
       });
 
-      it('requests to delete the asset attribute', function() {
+      it('requests to delete the asset metric', function() {
         expect(baseRequest.delete).to.be.calledWith(
           `${expectedHost}/assets/metrics/${expectedAssetMetricId}`
         );
@@ -205,7 +205,7 @@ describe('Assets/Metrics', function() {
   });
 
   describe('get', function() {
-    context('the asset attribute ID is provided', function() {
+    context('the asset metric ID is provided', function() {
       let assetMetricFromServerAfterFormat;
       let assetMetricFromServerBeforeFormat;
       let expectedAssetMetricId;
@@ -469,6 +469,374 @@ describe('Assets/Metrics', function() {
 
           return expect(promise).to.be.rejectedWith(
             'The asset metric update must be a well-formed object with the data you wish to update.'
+          );
+        });
+      }
+    );
+  });
+
+  describe('createValue', function() {
+    context('when all required information is supplied', function() {
+      let assetId;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+      let valueFromServerAfterFormat;
+      let valueFromServerBeforeFormat;
+      let valueToServerAfterFormat;
+      let valueToServerBeforeFormat;
+
+      beforeEach(function() {
+        valueToServerBeforeFormat = fixture.build('assetMetricValue');
+        valueToServerAfterFormat = fixture.build(
+          'assetMetricValue',
+          valueToServerBeforeFormat,
+          {
+            fromServer: true
+          }
+        );
+        valueFromServerAfterFormat = fixture.build('assetMetricValue');
+        valueFromServerBeforeFormat = fixture.build(
+          'assetMetricValue',
+          valueFromServerAfterFormat,
+          { fromServer: true }
+        );
+        assetId = fixture.build('asset').id;
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(valueFromServerBeforeFormat)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(valueFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(valueToServerAfterFormat);
+
+        const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
+
+        promise = assetMetrics.createValue(assetId, valueToServerBeforeFormat);
+      });
+
+      it('formats the submitted asset metric value object to send to the server ', function() {
+        expect(toSnakeCase).to.be.calledWith(valueToServerBeforeFormat);
+      });
+
+      it('creates a new asset metric value', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/assets/${assetId}/metrics/${
+            valueToServerBeforeFormat.assetMetricId
+          }/values`,
+          valueToServerAfterFormat
+        );
+      });
+
+      it('formats the returned asset metric value object', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(valueFromServerBeforeFormat);
+        });
+      });
+
+      it('returns a fulfilled promise with the new asset metric value information', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valueFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      let value;
+      let assetMetrics;
+
+      beforeEach(function() {
+        value = fixture.build('assetMetricValue');
+
+        assetMetrics = new AssetMetrics(baseSdk, baseRequest, expectedHost);
+      });
+
+      it('throws an error if there is no asset ID provided', function() {
+        const promise = assetMetrics.createValue(null, value);
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to create a new asset metric value.'
+        );
+      });
+
+      [
+        'assetMetricId',
+        'effectiveEndDate',
+        'effectiveStartDate',
+        'value'
+      ].forEach(function(field) {
+        it(`throws an error when ${field} is missing`, function() {
+          const promise = assetMetrics.createValue(
+            value.id,
+            omit(value, [field])
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            `A ${field} is required to create a new asset metric value.`
+          );
+        });
+      });
+    });
+  });
+
+  describe('deleteValue', function() {
+    context('when all required information is supplied', function() {
+      let valueId;
+      let promise;
+
+      beforeEach(function() {
+        valueId = fixture.build('assetMetricValue').id;
+
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        promise = assetMetrics.deleteValue(valueId);
+      });
+
+      it('requests to delete the asset metric value', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/assets/metrics/values/${valueId}`
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when the asset metric value ID is missing', function() {
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        const promise = assetMetrics.deleteValue();
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset metric value ID is required for deleting an asset metric value.'
+        );
+      });
+    });
+  });
+
+  describe('getValuesByMetricId', function() {
+    context('when all required information is supplied', function() {
+      let assetId;
+      let metricId;
+      let formatPaginatedDataFromServer;
+      let paginationOptionsBeforeFormat;
+      let paginationOptionsAfterFormat;
+      let promise;
+      let request;
+      let toSnakeCase;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
+
+      beforeEach(function() {
+        assetId = fixture.build('asset').id;
+        metricId = fixture.build('assetMetric').id;
+        paginationOptionsBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        paginationOptionsAfterFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        valuesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList(
+            'assetMetricValue',
+            faker.random.number({ min: 1, max: 20 }),
+            {
+              assetId,
+              assetMetricId: metricId
+            }
+          )
+        };
+        valuesFromServerBeforeFormat = {
+          ...valuesFromServerAfterFormat,
+          records: valuesFromServerAfterFormat.records.map((values) =>
+            fixture.build('assetMetricValue', values, { fromServer: true })
+          )
+        };
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+        };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(paginationOptionsAfterFormat);
+
+        const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
+        promise = assetMetrics.getValuesByMetricId(
+          assetId,
+          metricId,
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options sent to the server', function() {
+        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+      });
+
+      it('gets a list of asset metric values from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/assets/${assetId}/metrics/${metricId}/values`,
+          { params: paginationOptionsAfterFormat }
+        );
+      });
+
+      it('formats the asset metric value data', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('resolves with a list of asset metric values', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when the asset ID is missing', function() {
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+        const promise = assetMetrics.getValuesByMetricId(
+          null,
+          fixture.build('assetMetric').id
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to get a list of asset metric values.'
+        );
+      });
+
+      it('throws an error when the asset metric ID is missing', function() {
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+        const promise = assetMetrics.getValuesByMetricId(
+          fixture.build('asset').id,
+          null
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset metric ID is required to get a list of asset metric values.'
+        );
+      });
+    });
+  });
+
+  describe('updateValue', function() {
+    context('when all required information is supplied', function() {
+      let promise;
+      let toSnakeCase;
+      let valueToServerAfterFormat;
+      let valueToServerBeforeFormat;
+
+      beforeEach(function() {
+        valueToServerBeforeFormat = fixture.build('assetMetricValue');
+        valueToServerAfterFormat = fixture.build(
+          'assetMetricValue',
+          valueToServerBeforeFormat,
+          { fromServer: true }
+        );
+
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(valueToServerAfterFormat);
+
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        promise = assetMetrics.updateValue(
+          valueToServerBeforeFormat.id,
+          valueToServerBeforeFormat
+        );
+      });
+
+      it('formats the data into the right format', function() {
+        expect(toSnakeCase).to.calledWith(valueToServerBeforeFormat, {
+          excludeKeys: ['assetId', 'assetMetricId', 'id']
+        });
+      });
+
+      it('updates the asset metric value', function() {
+        expect(baseRequest.put).to.be.calledWith(
+          `${expectedHost}/assets/metrics/values/${
+            valueToServerAfterFormat.id
+          }`,
+          valueToServerAfterFormat
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context(
+      'when there is missing or malformed required information',
+      function() {
+        let assetMetrics;
+
+        beforeEach(function() {
+          assetMetrics = new AssetMetrics(baseSdk, baseRequest, expectedHost);
+        });
+
+        it('throws an error when there is not provided asset metric value ID', function() {
+          const valueUpdate = fixture.build('assetMetricValue');
+          const promise = assetMetrics.updateValue(null, valueUpdate);
+
+          return expect(promise).to.be.rejectedWith(
+            'An asset metric value ID is required to update an asset metric value.'
+          );
+        });
+
+        it('throws an error when there is no update provided', function() {
+          const valueUpdate = fixture.build('assetMetricValue');
+          const promise = assetMetrics.updateValue(valueUpdate.id);
+
+          return expect(promise).to.be.rejectedWith(
+            'An update is required to update an asset metric value.'
+          );
+        });
+
+        it('throws an error when the update is not a well-formed object', function() {
+          const valueUpdate = fixture.build('assetMetricValue');
+          const promise = assetMetrics.updateValue(valueUpdate.id, [
+            valueUpdate
+          ]);
+
+          return expect(promise).to.be.rejectedWith(
+            'The asset metric value update must be a well-formed object with the data you wish to update.'
           );
         });
       }

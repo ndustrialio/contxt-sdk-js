@@ -96,6 +96,24 @@
 | [units] | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="AssetMetricValue"></a>
+
+## AssetMetricValue : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| assetId | <code>string</code> | UUID corresponding to the asset |
+| assetMetricId | <code>string</code> | UUID corresponding to the asset metric |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| effectiveEndDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+| effectiveStartDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> | UUID |
+| notes | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| value | <code>string</code> |  |
+
 <a name="AssetMetricsFromServer"></a>
 
 ## AssetMetricsFromServer : <code>Object</code>
