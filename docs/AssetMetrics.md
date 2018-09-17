@@ -10,7 +10,7 @@ Module that provides access to, and the manipulation of, information about diffe
     * [.create(assetTypeId, assetMetric)](#AssetMetrics+create) ⇒ <code>Promise</code>
     * [.delete(assetMetricId)](#AssetMetrics+delete) ⇒ <code>Promise</code>
     * [.get(assetMetricId)](#AssetMetrics+get) ⇒ <code>Promise</code>
-    * [.getAll(assetTypeId, [paginationOptions])](#AssetMetrics+getAll) ⇒ <code>Promise</code>
+    * [.getByAssetTypeId(assetTypeId, [paginationOptions])](#AssetMetrics+getByAssetTypeId) ⇒ <code>Promise</code>
     * [.update(assetMetricId, update)](#AssetMetrics+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetMetricValue)](#AssetMetrics+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetMetricValueId)](#AssetMetrics+deleteValue) ⇒ <code>Promise</code>
@@ -80,7 +80,7 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.assets.metrics.delete('4f0e51c6-728b-4892-9863-6d002e61204d')
+contxtSdk.assets.metrics.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
 ```
 <a name="AssetMetrics+get"></a>
 
@@ -105,9 +105,9 @@ contxtSdk.assets.metrics
   .then((assetMetric) => console.log(assetMetric))
   .catch((err) => console.log(err));
 ```
-<a name="AssetMetrics+getAll"></a>
+<a name="AssetMetrics+getByAssetTypeId"></a>
 
-### contxtSdk.assets.metrics.getAll(assetTypeId, [paginationOptions]) ⇒ <code>Promise</code>
+### contxtSdk.assets.metrics.getByAssetTypeId(assetTypeId, [paginationOptions]) ⇒ <code>Promise</code>
 Gets a list of all asset metrics that belong to a given type
 
 API Endpoint: '/assets/types/:assetTypeId/metrics
@@ -125,7 +125,7 @@ Method: GET
 **Example**  
 ```js
 contxtSdk.assets.metrics
-  .getAll('4f0e51c6-728b-4892-9863-6d002e61204d')
+  .getByAssetTypeId('4f0e51c6-728b-4892-9863-6d002e61204d')
   .then((assetMetrics) => console.log(assetMetrics))
   .catch((err) => console.log(err));
 ```

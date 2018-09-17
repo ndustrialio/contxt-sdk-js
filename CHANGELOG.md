@@ -1,3 +1,18 @@
+## [v0.0.32](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.32) (2018-09-17)
+
+**Added**
+
+* Methods around Asset Metrics and Asset Metric Values. They are namespaced under `metrics` and include:
+  * AssetMetrics#create for creating an Asset Metric
+  * AssetMetrics#delete for removing an Asset Metric
+  * AssetMetrics#get for getting an Asset Metric by its ID
+  * AssetMetrics#getByAssetTypeId for getting all Asset Metrics by Asset Type
+  * AssetMetrics#update for updating an Asset Metric
+  * AssetMetrics#createValue for creating an Asset Metric Value
+  * AssetMetrics#deleteValue for deleting an Asset Metric Value
+  * AssetMetrics#getValuesByMetricId for getting Asset Metric Values by Asset Metric ID
+  * AssetMetrics#updateValue for updating an Asset Metric Value
+
 ## [v0.0.31](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.31) (2018-09-10)
 
 **Added**
