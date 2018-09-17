@@ -1,6 +1,8 @@
 import isPlainObject from 'lodash.isplainobject';
 import AssetAttributes from './assetAttributes';
+import AssetMetrics from './assetMetrics';
 import AssetTypes from './assetTypes';
+
 import { toCamelCase, toSnakeCase } from '../utils/objects';
 import { formatPaginatedDataFromServer } from '../utils/pagination';
 
@@ -42,6 +44,7 @@ class Assets {
 
     this.attributes = new AssetAttributes(sdk, request, baseUrl);
     this.types = new AssetTypes(sdk, request, baseUrl);
+    this.metrics = new AssetMetrics(sdk, request, baseUrl);
   }
 
   /**

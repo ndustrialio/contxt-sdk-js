@@ -5,6 +5,9 @@
 <dd><p>Module that provides access to, and the manipulation of, information about
 different asset attributes and their values</p>
 </dd>
+<dt><a href="./AssetMetrics.md">AssetMetrics</a></dt>
+<dd><p>Module that provides access to, and the manipulation of, information about different asset metrics</p>
+</dd>
 <dt><a href="./AssetTypes.md">AssetTypes</a></dt>
 <dd><p>Module that provides access to, and the manipulation of, information about different asset types</p>
 </dd>
@@ -89,6 +92,10 @@ which are obtained from Auth0.</p>
 <dt><a href="./Typedefs.md#AssetAttributeValue">AssetAttributeValue</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetAttributeValueData">AssetAttributeValueData</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetMetric">AssetMetric</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetMetricsFromServer">AssetMetricsFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
 <dd></dd>
