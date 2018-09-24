@@ -161,6 +161,74 @@ class Events {
   }
 
   /**
+   * Gets all event types for a client
+   *
+   * API Endpoint: '/clients/:clientId/types'
+   * Method: GET
+   *
+   * @param {string} clientID The ID of the client
+   *
+   * @returns {Promise}
+   * @fulfill {Event} Information about an event
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.events
+   *   .getEventTypesByClient('CW4B1Ih6M1nNwwxk0XOKI21MVH04pGUL')
+   *   .then((event) => console.log(event))
+   *   .catch((err) => console.log(err));
+   */
+  getEventTypesByClient(clientId) {
+    if (!clientId) {
+      return Promise.reject(
+        new Error('A client ID is required for getting types')
+      );
+    }
+    return this._request.get(`${this._baseUrl}/clients/${clientId}/types`);
+  }
+  /**
+   * Gets all events by type
+   *
+   * API Endpoint: '/types/:typeId/events?facility_id=:facility_id&include[]=latest'
+   * Method: GET
+   *
+   * @param {string} id The ID of the type
+   * @param {string} facilityId The ID of the facility
+   * @param {boolean} [lastest] {} Should I only grab the latest?
+   *
+   * @returns {Promise}
+   * @fulfill {Event} Information about an event
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.events
+   *   .getEventsByType('3e9b572b-6b39-4dd5-a9e5-075095eb0867', 150, true)
+   *   .then((event) => console.log(event))
+   *   .catch((err) => console.log(err));
+   */
+  getEventsByType(id, facilityId, latest = false) {
+    if (!id) {
+      return Promise.reject(
+        new Error('A type id is required for getting events')
+      );
+    }
+    if (!facilityId) {
+      return Promise.reject(
+        new Error('A facility id is required for getting events')
+      );
+    }
+    const params = {
+      facility_id: facilityId
+    };
+
+    if (latest) {
+      params.include = ['triggered.latest'];
+    }
+
+    return this._request.get(`${this._baseUrl}/types/${id}/events`, { params });
+  }
+
+  /**
    * Updates an event
    *
    * API Endpoint: '/events/:eventId'

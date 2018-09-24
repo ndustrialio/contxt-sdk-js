@@ -1,4 +1,4 @@
-import omit from 'lodash.omit';
+import { omit, times } from 'lodash';
 import Events from './index';
 import * as eventsUtils from '../utils/events';
 import * as objectUtils from '../utils/objects';
@@ -234,6 +234,113 @@ describe('Events', function() {
 
         return expect(promise).to.be.rejectedWith(
           'An event ID is required for getting information about an event'
+        );
+      });
+    });
+  });
+
+  describe('getEventTypesByClient', function() {
+    context('the clientId is provided', function() {
+      let clientId = faker.random.uuid();
+      let promise;
+      let request;
+      let eventTypeFromServer;
+
+      beforeEach(function() {
+        eventTypeFromServer = fixture.build('eventType', { fromServer: true });
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(eventTypeFromServer)
+        };
+
+        const events = new Events(baseSdk, request);
+        events._baseUrl = expectedHost;
+
+        promise = events.getEventTypesByClient(clientId);
+      });
+
+      it('gets the eventType from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/clients/${clientId}/types`
+        );
+      });
+
+      it('returns the requested event type', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          eventTypeFromServer
+        );
+      });
+    });
+
+    context('the clientId is not provided', function() {
+      it('throws an error', function() {
+        const events = new Events(baseSdk, baseRequest);
+        const promise = events.getEventTypesByClient();
+
+        return expect(promise).to.be.rejectedWith(
+          'A client ID is required for getting types'
+        );
+      });
+    });
+  });
+
+  describe('getEventsByType', function() {
+    let typeId = faker.random.uuid();
+    let facilityId = faker.random.uuid();
+    let promise;
+    let request;
+    let eventsFromServer;
+
+    beforeEach(function() {
+      eventsFromServer = times(
+        fixture.build('event', { fromServer: true }),
+        10
+      );
+
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves(eventsFromServer)
+      };
+
+      const events = new Events(baseSdk, request);
+      events._baseUrl = expectedHost;
+
+      promise = events.getEventsByType(typeId, facilityId);
+    });
+
+    context('all required params are passed', function() {
+      it('gets the events from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/types/${typeId}/events`
+        );
+      });
+
+      it('returns the requested events', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          eventsFromServer
+        );
+      });
+    });
+
+    context('the type id is not provided', function() {
+      it('throws an error', function() {
+        const events = new Events(baseSdk, baseRequest);
+        const promise = events.getEventsByType(null, facilityId);
+
+        return expect(promise).to.be.rejectedWith(
+          'A type id is required for getting events'
+        );
+      });
+    });
+
+    context('the facility id is not provided', function() {
+      it('throws an error', function() {
+        const events = new Events(baseSdk, baseRequest);
+        const promise = events.getEventsByType(typeId, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'A facility id is required for getting events'
         );
       });
     });
