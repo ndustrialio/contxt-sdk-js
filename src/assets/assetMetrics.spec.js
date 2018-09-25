@@ -381,8 +381,8 @@ describe('Assets/Metrics', function() {
       let assetTypeId;
       let formatPaginatedDataFromServer;
       let numberOfAssetMetrics;
-      let paginationOptionsAfterFormat;
-      let paginationOptionsBeforeFormat;
+      let metricsFiltersAfterFormat;
+      let metricsFiltersBeforeFormat;
       let promise;
       let request;
       let toSnakeCase;
@@ -392,11 +392,11 @@ describe('Assets/Metrics', function() {
       beforeEach(function() {
         numberOfAssetMetrics = faker.random.number({ min: 1, max: 10 });
         assetTypeId = fixture.build('assetType').id;
-        paginationOptionsBeforeFormat = {
+        metricsFiltersBeforeFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
-        paginationOptionsAfterFormat = {
+        metricsFiltersAfterFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
@@ -422,23 +422,23 @@ describe('Assets/Metrics', function() {
         };
         toSnakeCase = this.sandbox
           .stub(objectUtils, 'toSnakeCase')
-          .returns(paginationOptionsAfterFormat);
+          .returns(metricsFiltersAfterFormat);
 
         const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
         promise = assetMetrics.getByAssetTypeId(
           assetTypeId,
-          paginationOptionsBeforeFormat
+          metricsFiltersBeforeFormat
         );
       });
 
       it('formats the pagination options sent to the server', function() {
-        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+        expect(toSnakeCase).to.be.calledWith(metricsFiltersBeforeFormat);
       });
 
       it('gets a list of the asset metrics from the server', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/assets/types/${assetTypeId}/metrics`,
-          { params: paginationOptionsAfterFormat }
+          { params: metricsFiltersAfterFormat }
         );
       });
 
@@ -833,8 +833,8 @@ describe('Assets/Metrics', function() {
       let assetId;
       let metricId;
       let formatPaginatedDataFromServer;
-      let paginationOptionsBeforeFormat;
-      let paginationOptionsAfterFormat;
+      let metricValuesFiltersBeforeFormat;
+      let metricValuesFiltersAfterFormat;
       let promise;
       let request;
       let toSnakeCase;
@@ -844,11 +844,11 @@ describe('Assets/Metrics', function() {
       beforeEach(function() {
         assetId = fixture.build('asset').id;
         metricId = fixture.build('assetMetric').id;
-        paginationOptionsBeforeFormat = {
+        metricValuesFiltersBeforeFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
-        paginationOptionsAfterFormat = {
+        metricValuesFiltersAfterFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
@@ -879,24 +879,24 @@ describe('Assets/Metrics', function() {
         };
         toSnakeCase = this.sandbox
           .stub(objectUtils, 'toSnakeCase')
-          .returns(paginationOptionsAfterFormat);
+          .returns(metricValuesFiltersAfterFormat);
 
         const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
         promise = assetMetrics.getValuesByMetricId(
           assetId,
           metricId,
-          paginationOptionsBeforeFormat
+          metricValuesFiltersBeforeFormat
         );
       });
 
       it('formats the pagination options sent to the server', function() {
-        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+        expect(toSnakeCase).to.be.calledWith(metricValuesFiltersBeforeFormat);
       });
 
       it('gets a list of asset metric values from the server', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/assets/${assetId}/metrics/${metricId}/values`,
-          { params: paginationOptionsAfterFormat }
+          { params: metricValuesFiltersAfterFormat }
         );
       });
 

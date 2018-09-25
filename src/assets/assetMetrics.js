@@ -246,7 +246,14 @@ class AssetMetrics {
    * Method: GET
    *
    * @param {string} assetTypeId The UUID formatted ID of the asset type
-   * @param {PaginationOptions} [paginationOptions]
+   * @param {Object} [assetMetricsFilters] Specific information that is used to
+   *   filter the list of asset metrics
+   * @param {Number} [assetMetricsFilters.limit] Maximum number of records to
+   *   return per query
+   * @param {Number} [assetMetricsFilters.offset] How many records from the first
+   *   record to start the query
+   * @param {String} [assetMetricsFilters.organizationId] The UUID formatted ID
+   *   of the organization to filter asset metrics by
    *
    * @returns {Promise}
    * @fulfill {AssetMetricsFromServer}
@@ -254,11 +261,17 @@ class AssetMetrics {
    *
    * @example
    * contxtSdk.assets.metrics
-   *   .getByAssetTypeId('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *   .getByAssetTypeId(
+   *     '4f0e51c6-728b-4892-9863-6d002e61204d'
+   *      {
+   *        limit: 50,
+   *        offset: 150
+   *      }
+   *    )
    *   .then((assetMetrics) => console.log(assetMetrics))
    *   .catch((err) => console.log(err));
    */
-  getByAssetTypeId(assetTypeId, paginationOptions) {
+  getByAssetTypeId(assetTypeId, assetMetricsFilters) {
     if (!assetTypeId) {
       return Promise.reject(
         new Error(
@@ -269,9 +282,11 @@ class AssetMetrics {
 
     return this._request
       .get(`${this._baseUrl}/assets/types/${assetTypeId}/metrics`, {
-        params: toSnakeCase(paginationOptions)
+        params: toSnakeCase(assetMetricsFilters)
       })
-      .then((assetTypesData) => formatPaginatedDataFromServer(assetTypesData));
+      .then((assetMetricsData) =>
+        formatPaginatedDataFromServer(assetMetricsData)
+      );
   }
 
   /**
@@ -494,17 +509,19 @@ class AssetMetrics {
    *
    * @param {String} assetId The ID of the asset (formatted as a UUID)
    * @param {String} assetMetricId The ID of the asset metric (formatted as a UUID)
-   * @param {Object} [assetMetricFilters] Specific information that is used to
-   *   filter the list of asset attribute values
-   * @param {String} [assetMetricFilters.effectiveEndDate] Effective end date
-   *   of the asset metric values
-   * @param {String} [assetMetricFilters.effectiveStartDate] Effective start date
-   *   of the asset metric values
-   * @param {Number} [assetMetricFilters.limit] Maximum number of records to return per query
-   * @param {Number} [assetMetricFilters.offset] How many records from the first record to start the query
+   * @param {Object} [assetMetricValuesFilters] Specific information that is
+   *   used to filter the list of asset metric values
+   * @param {String} [assetMetricValuesFilters.effectiveEndDate] Effective end
+   *   date of the asset metric values
+   * @param {String} [assetMetricValuesFilters.effectiveStartDate] Effective
+   *   start date of the asset metric values
+   * @param {Number} [assetMetricValuesFilters.limit] Maximum number of records
+   *   to return per query
+   * @param {Number} [assetMetricValuesFilters.offset] How many records from the
+   *   first record to start the query
    *
    * @returns {Promise}
-   * @fulfill {AssetMetricValue[]}
+   * @fulfill {AssetMetricValuesFromServer}
    * @rejects {Error}
    *
    * @example
@@ -522,7 +539,7 @@ class AssetMetrics {
    *   })
    *   .catch((err) => console.log(err));
    */
-  getValuesByMetricId(assetId, assetMetricId, assetMetricFilters) {
+  getValuesByMetricId(assetId, assetMetricId, assetMetricValuesFilters) {
     if (!assetId) {
       return Promise.reject(
         new Error(
@@ -543,7 +560,7 @@ class AssetMetrics {
       .get(
         `${this._baseUrl}/assets/${assetId}/metrics/${assetMetricId}/values`,
         {
-          params: toSnakeCase(assetMetricFilters)
+          params: toSnakeCase(assetMetricValuesFilters)
         }
       )
       .then((assetMetricValueData) =>
