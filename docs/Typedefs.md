@@ -114,6 +114,19 @@
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | value | <code>string</code> |  |
 
+<a name="AssetMetricValuesFromServer"></a>
+
+## AssetMetricValuesFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;AssetMetricValue&gt;</code>](#AssetMetricValue) |  |
+
 <a name="AssetMetricsFromServer"></a>
 
 ## AssetMetricsFromServer : <code>Object</code>
