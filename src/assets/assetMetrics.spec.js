@@ -274,6 +274,108 @@ describe('Assets/Metrics', function() {
     });
   });
 
+  describe('getByAssetId', function() {
+    context('when all required information is supplied', function() {
+      let asset;
+      let formatPaginatedDataFromServer;
+      let numberOfAssetMetrics;
+      let metricsFiltersAfterFormat;
+      let metricsFiltersBeforeFormat;
+      let promise;
+      let request;
+      let toSnakeCase;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
+
+      beforeEach(function() {
+        numberOfAssetMetrics = faker.random.number({ min: 1, max: 10 });
+        asset = fixture.build('asset');
+        metricsFiltersBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        metricsFiltersAfterFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        valuesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList('assetMetric', numberOfAssetMetrics, {
+            assetTypeId: asset.assetTypeId
+          })
+        };
+        valuesFromServerBeforeFormat = {
+          ...valuesFromServerAfterFormat,
+          records: valuesFromServerAfterFormat.records.map((values) =>
+            fixture.build('assetMetric', values, { fromServer: true })
+          )
+        };
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+        };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(metricsFiltersAfterFormat);
+
+        const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
+        promise = assetMetrics.getByAssetId(
+          asset.id,
+          metricsFiltersBeforeFormat
+        );
+      });
+
+      it('formats the pagination options sent to the server', function() {
+        expect(toSnakeCase).to.be.calledWith(metricsFiltersBeforeFormat);
+      });
+
+      it('gets a list of the asset metrics from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/assets/${asset.id}/metrics`,
+          { params: metricsFiltersAfterFormat }
+        );
+      });
+
+      it('formats the asset metric data', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('resolves with a list of asset metrics', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      let promise;
+
+      beforeEach(function() {
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        promise = assetMetrics.getByAssetId();
+      });
+
+      it('throws an error when the asset type ID is missing', function() {
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to get a list of all asset metrics.'
+        );
+      });
+    });
+  });
+
   describe('getByAssetTypeId', function() {
     context('when all required information is supplied', function() {
       let assetTypeId;

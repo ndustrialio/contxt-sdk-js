@@ -38,6 +38,14 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} AssetMetricValuesFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {AssetMetricValue[]} records
+ */
+
+/**
  * Module that provides access to, and the manipulation of, information about different asset metrics
  *
  * @typicalname contxtSdk.assets.metrics
@@ -180,6 +188,55 @@ class AssetMetrics {
     return this._request
       .get(`${this._baseUrl}/assets/metrics/${assetMetricId}`)
       .then((assetMetric) => toCamelCase(assetMetric));
+  }
+
+  /**
+   * Gets a list of all asset metrics that belong to a given asset
+   *
+   * API Endpoint: '/assets/:assetId/metrics
+   * Method: GET
+   *
+   * @param {string} assetId The UUID formatted ID of the asset type
+   * @param {Object} [assetMetricsFilters] Specific information that is used to
+   *   filter the list of asset metrics
+   * @param {String} [assetMetricsFilters.assetMetricLabel] The label of the
+   *   associated asset metrics
+   * @param {Number} [assetMetricsFilters.limit] Maximum number of records to
+   *   return per query
+   * @param {Number} [assetMetricsFilters.offset] How many records from the first
+   *   record to start the query
+   *
+   * @returns {Promise}
+   * @fulfill {AssetMetricsFromServer}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.assets.metrics
+   *   .getByAssetId(
+   *     'f3be81fd-4494-443b-87a3-320b1c9aa495',
+   *      {
+   *        assetMetricLabel: 'Square Footage',
+   *        limit: 50,
+   *        offset: 150
+   *      }
+   *    )
+   *   .then((assetMetricData) => console.log(assetMetricData))
+   *   .catch((err) => console.log(err));
+   */
+  getByAssetId(assetId, assetMetricsFilters) {
+    if (!assetId) {
+      return Promise.reject(
+        new Error('An asset ID is required to get a list of all asset metrics.')
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/assets/${assetId}/metrics`, {
+        params: toSnakeCase(assetMetricsFilters)
+      })
+      .then((assetMetricsData) =>
+        formatPaginatedDataFromServer(assetMetricsData)
+      );
   }
 
   /**
