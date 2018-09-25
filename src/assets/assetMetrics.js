@@ -430,6 +430,63 @@ class AssetMetrics {
   }
 
   /**
+   * Gets asset metric values for a particular asset
+   *
+   * API Endpoint: '/assets/:assetId/metrics/values'
+   * Method: GET
+   *
+   * @param {String} assetId The ID of the asset (formatted as a UUID)
+   * @param {Object} [assetMetricValuesFilters] Specific information that is used to
+   *   filter the list of asset metric values
+   * @param {String} [assetMetricValuesFilters.assetMetricLabel] The label of the
+   *   associated asset metrics
+   * @param {String} [assetMetricValuesFilters.effectiveEndDate] Effective end date
+   *   of the asset metric values
+   * @param {String} [assetMetricValuesFilters.effectiveStartDate] Effective start
+   *   date of the asset metric values
+   * @param {Number} [assetMetricValuesFilters.limit] Maximum number of records to
+   *   return per query
+   * @param {Number} [assetMetricValuesFilters.offset] How many records from the first
+   *   record to start the query
+   *
+   * @returns {Promise}
+   * @fulfill {AssetMetricValuesFromServer}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.metrics
+   *   .getValuesByAssetId(
+   *      'f9c606f3-d270-4623-bf3b-b085424d9a8b',
+   *      {
+   *        assetMetricLabel: 'Square Footage',
+   *        effectiveEndDate: '2018-04-13T15:44:51.943Z'
+   *        effectiveStartDate: '2017-12-13T15:42:01.376Z'
+   *        limit: 10,
+   *        offset: 200
+   *      }
+   *    )
+   *   .then((assetMetricValuesData) => console.log(assetMetricValuesData))
+   *   .catch((err) => console.log(err));
+   */
+  getValuesByAssetId(assetId, assetMetricValuesFilters) {
+    if (!assetId) {
+      return Promise.reject(
+        new Error(
+          'An asset ID is required to get a list of asset metric values.'
+        )
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/assets/${assetId}/metrics/values`, {
+        params: toSnakeCase(assetMetricValuesFilters)
+      })
+      .then((assetMetricValueData) =>
+        formatPaginatedDataFromServer(assetMetricValueData)
+      );
+  }
+
+  /**
    * Gets asset metric values for a particular asset and metric
    *
    * API Endpoint: '/assets/:assetId/metrics/:assetMetricId/values'
