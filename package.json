@@ -57,7 +57,7 @@
     "lodash.times": "^4.3.2",
     "mocha": "^4.1.0",
     "nyc": "^13.0.1",
-    "prettier": "^1.12.1",
+    "prettier": "^1.14.3",
     "pretty-quick": "^1.4.1",
     "rollup": "^0.54.1",
     "rollup-plugin-babel": "^3.0.3",
