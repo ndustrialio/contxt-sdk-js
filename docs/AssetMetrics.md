@@ -278,12 +278,12 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | assetId | <code>String</code> | The ID of the asset (formatted as a UUID) |
-| [assetMetricValuesFilters] | <code>Object</code> | Specific information that is used to   filter the list of asset metric values |
-| [assetMetricValuesFilters.assetMetricLabel] | <code>String</code> | The label of the   associated asset metrics |
-| [assetMetricValuesFilters.effectiveEndDate] | <code>String</code> | Effective end date   of the asset metric values |
-| [assetMetricValuesFilters.effectiveStartDate] | <code>String</code> | Effective start   date of the asset metric values |
-| [assetMetricValuesFilters.limit] | <code>Number</code> | Maximum number of records to   return per query |
-| [assetMetricValuesFilters.offset] | <code>Number</code> | How many records from the first   record to start the query |
+| [assetMetricValuesFilters] | <code>Object</code> | Specific information that is   used to filter the list of asset metric values |
+| [assetMetricValuesFilters.assetMetricLabel] | <code>String</code> | The label of   the associated asset metrics |
+| [assetMetricValuesFilters.effectiveEndDate] | <code>String</code> | Effective end   date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricValuesFilters.effectiveStartDate] | <code>String</code> | Effective   start date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricValuesFilters.limit] | <code>Number</code> | Maximum number of records   to return per query |
+| [assetMetricValuesFilters.offset] | <code>Number</code> | How many records from the   first record to start the query |
 
 **Example**  
 ```js
@@ -316,10 +316,10 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | assetId | <code>String</code> | The ID of the asset (formatted as a UUID) |
-| assetMetricId | <code>String</code> | The ID of the asset metric (formatted as a UUID) |
+| assetMetricId | <code>String</code> | The ID of the asset metric (formatted as a   UUID) |
 | [assetMetricValuesFilters] | <code>Object</code> | Specific information that is   used to filter the list of asset metric values |
-| [assetMetricValuesFilters.effectiveEndDate] | <code>String</code> | Effective end   date of the asset metric values |
-| [assetMetricValuesFilters.effectiveStartDate] | <code>String</code> | Effective   start date of the asset metric values |
+| [assetMetricValuesFilters.effectiveEndDate] | <code>String</code> | Effective end   date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricValuesFilters.effectiveStartDate] | <code>String</code> | Effective   start date (ISO 8601 Extended formatted) of the asset metric values |
 | [assetMetricValuesFilters.limit] | <code>Number</code> | Maximum number of records   to return per query |
 | [assetMetricValuesFilters.offset] | <code>Number</code> | How many records from the   first record to start the query |
 

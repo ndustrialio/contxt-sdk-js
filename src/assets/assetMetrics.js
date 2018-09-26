@@ -451,18 +451,18 @@ class AssetMetrics {
    * Method: GET
    *
    * @param {String} assetId The ID of the asset (formatted as a UUID)
-   * @param {Object} [assetMetricValuesFilters] Specific information that is used to
-   *   filter the list of asset metric values
-   * @param {String} [assetMetricValuesFilters.assetMetricLabel] The label of the
-   *   associated asset metrics
-   * @param {String} [assetMetricValuesFilters.effectiveEndDate] Effective end date
-   *   of the asset metric values
-   * @param {String} [assetMetricValuesFilters.effectiveStartDate] Effective start
-   *   date of the asset metric values
-   * @param {Number} [assetMetricValuesFilters.limit] Maximum number of records to
-   *   return per query
-   * @param {Number} [assetMetricValuesFilters.offset] How many records from the first
-   *   record to start the query
+   * @param {Object} [assetMetricValuesFilters] Specific information that is
+   *   used to filter the list of asset metric values
+   * @param {String} [assetMetricValuesFilters.assetMetricLabel] The label of
+   *   the associated asset metrics
+   * @param {String} [assetMetricValuesFilters.effectiveEndDate] Effective end
+   *   date (ISO 8601 Extended formatted) of the asset metric values
+   * @param {String} [assetMetricValuesFilters.effectiveStartDate] Effective
+   *   start date (ISO 8601 Extended formatted) of the asset metric values
+   * @param {Number} [assetMetricValuesFilters.limit] Maximum number of records
+   *   to return per query
+   * @param {Number} [assetMetricValuesFilters.offset] How many records from the
+   *   first record to start the query
    *
    * @returns {Promise}
    * @fulfill {AssetMetricValuesFromServer}
@@ -508,13 +508,14 @@ class AssetMetrics {
    * Method: GET
    *
    * @param {String} assetId The ID of the asset (formatted as a UUID)
-   * @param {String} assetMetricId The ID of the asset metric (formatted as a UUID)
+   * @param {String} assetMetricId The ID of the asset metric (formatted as a
+   *   UUID)
    * @param {Object} [assetMetricValuesFilters] Specific information that is
    *   used to filter the list of asset metric values
    * @param {String} [assetMetricValuesFilters.effectiveEndDate] Effective end
-   *   date of the asset metric values
+   *   date (ISO 8601 Extended formatted) of the asset metric values
    * @param {String} [assetMetricValuesFilters.effectiveStartDate] Effective
-   *   start date of the asset metric values
+   *   start date (ISO 8601 Extended formatted) of the asset metric values
    * @param {Number} [assetMetricValuesFilters.limit] Maximum number of records
    *   to return per query
    * @param {Number} [assetMetricValuesFilters.offset] How many records from the
