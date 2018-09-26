@@ -1,7 +1,8 @@
-import { omit, times } from 'lodash';
+import omit from 'lodash.omit';
 import Events from './index';
 import * as eventsUtils from '../utils/events';
 import * as objectUtils from '../utils/objects';
+import * as paginationUtils from '../utils/pagination';
 
 describe('Events', function() {
   let baseRequest;
@@ -17,6 +18,7 @@ describe('Events', function() {
       post: this.sandbox.stub().resolves(),
       put: this.sandbox.stub().resolves()
     };
+
     baseSdk = {
       config: {
         audiences: {
@@ -162,7 +164,7 @@ describe('Events', function() {
       });
     });
 
-    context('the event Id is not provided', function() {
+    context('the event ID is not provided', function() {
       it('throws an error', function() {
         const events = new Events(baseSdk, baseRequest);
         const promise = events.delete();
@@ -185,19 +187,17 @@ describe('Events', function() {
 
       beforeEach(function() {
         expectedEventId = faker.random.uuid();
-        eventFromServerAfterFormat = fixture.build('event', {
-          id: expectedEventId
+        eventFromServerAfterFormat = fixture.build('event', expectedEventId);
+
+        eventFromServerBeforeFormat = fixture.build('event', expectedEventId, {
+          fromServer: true
         });
-        eventFromServerBeforeFormat = fixture.build(
-          'event',
-          { id: expectedEventId },
-          { fromServer: true }
-        );
 
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
         };
+
         toCamelCase = this.sandbox
           .stub(objectUtils, 'toCamelCase')
           .returns(eventFromServerAfterFormat);
@@ -239,25 +239,39 @@ describe('Events', function() {
     });
   });
 
-  describe('getEventTypesByClient', function() {
+  describe('getEventTypesByClientId', function() {
     context('the clientId is provided', function() {
-      let clientId = faker.random.uuid();
       let promise;
       let request;
-      let eventTypeFromServer;
+      let eventTypeFromServerBeforeFormat;
+      let eventTypeFromServerAfterFormat;
+      let clientId;
+      let numberOfEventTypes = faker.random.number({ min: 5, max: 10 });
 
       beforeEach(function() {
-        eventTypeFromServer = fixture.build('eventType', { fromServer: true });
+        clientId = faker.random.uuid();
+
+        eventTypeFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList('eventType', numberOfEventTypes, clientId)
+        };
+
+        eventTypeFromServerBeforeFormat = {
+          ...eventTypeFromServerAfterFormat,
+          records: eventTypeFromServerAfterFormat.records.map((values) =>
+            fixture.build('eventType', values, { fromServer: true })
+          )
+        };
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(eventTypeFromServer)
+          get: this.sandbox.stub().resolves(eventTypeFromServerBeforeFormat)
         };
 
         const events = new Events(baseSdk, request);
         events._baseUrl = expectedHost;
 
-        promise = events.getEventTypesByClient(clientId);
+        promise = events.getEventTypesByClientId(clientId);
       });
 
       it('gets the eventType from the server', function() {
@@ -268,7 +282,7 @@ describe('Events', function() {
 
       it('returns the requested event type', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          eventTypeFromServer
+          eventTypeFromServerAfterFormat
         );
       });
     });
@@ -276,7 +290,7 @@ describe('Events', function() {
     context('the clientId is not provided', function() {
       it('throws an error', function() {
         const events = new Events(baseSdk, baseRequest);
-        const promise = events.getEventTypesByClient();
+        const promise = events.getEventTypesByClientId();
 
         return expect(promise).to.be.rejectedWith(
           'A client ID is required for getting types'
@@ -285,64 +299,100 @@ describe('Events', function() {
     });
   });
 
-  describe('getEventsByType', function() {
+  describe('getEventsByTypeId', function() {
     let typeId = faker.random.uuid();
-    let facilityId = faker.random.uuid();
     let promise;
     let request;
-    let eventsFromServer;
-
-    beforeEach(function() {
-      eventsFromServer = times(
-        fixture.build('event', { fromServer: true }),
-        10
-      );
-
-      request = {
-        ...baseRequest,
-        get: this.sandbox.stub().resolves(eventsFromServer)
-      };
-
-      const events = new Events(baseSdk, request);
-      events._baseUrl = expectedHost;
-
-      promise = events.getEventsByType(typeId, facilityId);
-    });
+    let eventsFromServerAfterFormat;
+    let eventsFromServerBeforeFormat;
+    let numberOfEvents = faker.random.number({ min: 5, max: 20 });
+    let eventId;
+    let toSnakeCase;
+    let formatPaginatedDataFromServer;
+    let eventsFiltersBeforeFormat;
+    let eventsFiltersAfterFormat;
+    let events;
 
     context('all required params are passed', function() {
+      beforeEach(function() {
+        eventsFiltersBeforeFormat = {
+          include: ['triggered.latest'],
+          facilityId: faker.random.number(),
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+
+        eventsFiltersAfterFormat = { ...eventsFiltersBeforeFormat };
+
+        eventId = fixture.build('assetType').id;
+
+        eventsFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList('event', numberOfEvents, {
+            eventId
+          })
+        };
+
+        eventsFromServerBeforeFormat = {
+          ...eventsFromServerAfterFormat,
+          records: eventsFromServerAfterFormat.records.map((values) =>
+            fixture.build('event', values, { fromServer: true })
+          )
+        };
+
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(eventsFiltersAfterFormat);
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(eventsFromServerAfterFormat);
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(eventsFromServerBeforeFormat)
+        };
+
+        events = new Events(baseSdk, request);
+        events._baseUrl = expectedHost;
+        promise = events.getEventsByTypeId(typeId, eventsFiltersBeforeFormat);
+      });
+
       it('gets the events from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/types/${typeId}/events`
+          `${expectedHost}/types/${typeId}/events`,
+          { params: eventsFiltersAfterFormat }
         );
+      });
+
+      it('formats the parameters before sending', function() {
+        expect(toSnakeCase).to.be.deep.calledWith(eventsFiltersBeforeFormat);
+      });
+
+      it('formats the events object', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            eventsFromServerBeforeFormat
+          );
+        });
       });
 
       it('returns the requested events', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          eventsFromServer
+          eventsFromServerAfterFormat
         );
       });
     });
+  });
 
-    context('the type id is not provided', function() {
-      it('throws an error', function() {
-        const events = new Events(baseSdk, baseRequest);
-        const promise = events.getEventsByType(null, facilityId);
+  context('the type id is not provided', function() {
+    it('throws an error', function() {
+      const events = new Events(baseSdk, baseRequest);
+      const promise = events.getEventsByTypeId();
 
-        return expect(promise).to.be.rejectedWith(
-          'A type id is required for getting events'
-        );
-      });
-    });
-
-    context('the facility id is not provided', function() {
-      it('throws an error', function() {
-        const events = new Events(baseSdk, baseRequest);
-        const promise = events.getEventsByType(typeId, null);
-
-        return expect(promise).to.be.rejectedWith(
-          'A facility id is required for getting events'
-        );
-      });
+      return expect(promise).to.be.rejectedWith(
+        'A type ID is required for getting events'
+      );
     });
   });
 

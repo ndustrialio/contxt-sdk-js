@@ -11,8 +11,8 @@ of, information about different events
     * [.create(event)](#Events+create) ⇒ <code>Promise</code>
     * [.delete(eventId)](#Events+delete) ⇒ <code>Promise</code>
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
-    * [.getEventTypesByClient(clientID)](#Events+getEventTypesByClient) ⇒ <code>Promise</code>
-    * [.getEventsByType(id, facilityId, [lastest])](#Events+getEventsByType) ⇒ <code>Promise</code>
+    * [.getEventTypesByClientId(clientId)](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
+    * [.getEventsByTypeId(eventTypeId, facilityId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
 
 <a name="new_Events_new"></a>
@@ -102,52 +102,52 @@ contxtSdk.events
   .then((event) => console.log(event))
   .catch((err) => console.log(err));
 ```
-<a name="Events+getEventTypesByClient"></a>
+<a name="Events+getEventTypesByClientId"></a>
 
-### contxtSdk.events.getEventTypesByClient(clientID) ⇒ <code>Promise</code>
+### contxtSdk.events.getEventTypesByClientId(clientId) ⇒ <code>Promise</code>
 Gets all event types for a client
 
 API Endpoint: '/clients/:clientId/types'
 Method: GET
 
 **Kind**: instance method of [<code>Events</code>](#Events)  
-**Fulfill**: [<code>Event</code>](./Typedefs.md#Event) Information about an event  
+**Fulfill**: [<code>Events</code>](#Events) Events from the server  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| clientID | <code>string</code> | The ID of the client |
+| clientId | <code>string</code> | The ID of the client |
 
 **Example**  
 ```js
 contxtSdk.events
-  .getEventTypesByClient('CW4B1Ih6M1nNwwxk0XOKI21MVH04pGUL')
-  .then((event) => console.log(event))
+  .getEventTypesByClientId('CW4B1Ih6M1nNwwxk0XOKI21MVH04pGUL')
+  .then((events) => console.log(events))
   .catch((err) => console.log(err));
 ```
-<a name="Events+getEventsByType"></a>
+<a name="Events+getEventsByTypeId"></a>
 
-### contxtSdk.events.getEventsByType(id, facilityId, [lastest]) ⇒ <code>Promise</code>
+### contxtSdk.events.getEventsByTypeId(eventTypeId, facilityId, [latest]) ⇒ <code>Promise</code>
 Gets all events by type
 
 API Endpoint: '/types/:typeId/events?facility_id=:facility_id&include[]=latest'
 Method: GET
 
 **Kind**: instance method of [<code>Events</code>](#Events)  
-**Fulfill**: [<code>Event</code>](./Typedefs.md#Event) Information about an event  
+**Fulfill**: <code>EventTypes</code> EventTypes from server  
 **Reject**: <code>Error</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| id | <code>string</code> | The ID of the type |
-| facilityId | <code>string</code> | The ID of the facility |
-| [lastest] | <code>boolean</code> | {} Should I only grab the latest? |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| eventTypeId | <code>string</code> |  | The ID of the type |
+| facilityId | <code>number</code> |  | The ID of the facility |
+| [latest] | <code>boolean</code> | <code>false</code> | A boolean to determine if we only want to receive the most recent |
 
 **Example**  
 ```js
 contxtSdk.events
-  .getEventsByType('3e9b572b-6b39-4dd5-a9e5-075095eb0867', 150, true)
-  .then((event) => console.log(event))
+  .getEventsByTypeId('3e9b572b-6b39-4dd5-a9e5-075095eb0867', 150, true)
+  .then((events) => console.log(events))
   .catch((err) => console.log(err));
 ```
 <a name="Events+update"></a>

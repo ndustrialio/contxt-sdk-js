@@ -1,6 +1,7 @@
 import isPlainObject from 'lodash.isplainobject';
 import { formatEventUpdateToServer } from '../utils/events';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} Event
@@ -34,6 +35,35 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  * @property {string} [ownerId] The ID of the user who owns the event
  * @property {number} [topicArn] The Amazon Resource Name (ARN) associated with the event
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} EventType
+ * @property {string} client_id UUID corresponding with the client
+ * @property {string} created_at ISO 8601 Extended Format date/time string
+ * @property {string} description
+ * @property {string} id UUID
+ * @property {boolean} is_realtime_enabled Specifies whether that event types is enabled for realtime
+ * @property {number} level Priority level associated with event type
+ * @property {string} name
+ * @property {string} slug
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} EventTypesFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {EventType[]} records
+ */
+
+/**
+ * @typedef {Object} EventsFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {Events[]} records
  */
 
 /**
@@ -166,66 +196,74 @@ class Events {
    * API Endpoint: '/clients/:clientId/types'
    * Method: GET
    *
-   * @param {string} clientID The ID of the client
+   * @param {string} clientId The ID of the client
    *
    * @returns {Promise}
-   * @fulfill {Event} Information about an event
+   * @fulfill {EventTypesFromServer} Event types from the server
    * @reject {Error}
    *
    * @example
    * contxtSdk.events
-   *   .getEventTypesByClient('CW4B1Ih6M1nNwwxk0XOKI21MVH04pGUL')
-   *   .then((event) => console.log(event))
+   *   .getEventTypesByClientId('CW4B1Ih6M1nNwwxk0XOKI21MVH04pGUL')
+   *   .then((events) => console.log(events))
    *   .catch((err) => console.log(err));
    */
-  getEventTypesByClient(clientId) {
+  getEventTypesByClientId(clientId) {
     if (!clientId) {
       return Promise.reject(
         new Error('A client ID is required for getting types')
       );
     }
-    return this._request.get(`${this._baseUrl}/clients/${clientId}/types`);
+
+    return this._request
+      .get(`${this._baseUrl}/clients/${clientId}/types`)
+      .then((response) => formatPaginatedDataFromServer(response));
   }
   /**
    * Gets all events by type
    *
-   * API Endpoint: '/types/:typeId/events?facility_id=:facility_id&include[]=latest'
+   * API Endpoint: '/types/:typeId/events'
    * Method: GET
    *
-   * @param {string} id The ID of the type
-   * @param {string} facilityId The ID of the facility
-   * @param {boolean} [lastest] {} Should I only grab the latest?
+   * @param {string} eventTypeId The ID of the type
+   * @param {number} [eventsFilters.facilityId] ID of facility to restricti event types to
+   * @param {string[]} [eventsFilters.include] List of event types to include in the query. Possible options are: 'triggered.latest'
+   * @param {number} [eventsFilters.limit] Maximum number of records to return per query
+   * @param {number} [eventsFilters.offset] How many records from the first record to start the query
+   * @param {boolean} [latest = false] A boolean to determine if we only want to receive the most recent
    *
    * @returns {Promise}
-   * @fulfill {Event} Information about an event
+   * @fulfill {EventsFromServer} Event from server
    * @reject {Error}
    *
    * @example
    * contxtSdk.events
-   *   .getEventsByType('3e9b572b-6b39-4dd5-a9e5-075095eb0867', 150, true)
-   *   .then((event) => console.log(event))
+   *   .getEventsByTypeId(
+   *      '3e9b572b-6b39-4dd5-a9e5-075095eb0867',
+   *      {
+   *        limit: 10,
+   *        offset: 0,
+   *        include: ['triggered.latest']
+   *      }
+   *    )
+   *   .then((events) => console.log(events))
    *   .catch((err) => console.log(err));
    */
-  getEventsByType(id, facilityId, latest = false) {
-    if (!id) {
+  getEventsByTypeId(eventTypeId, eventFilters = {}) {
+    if (!eventTypeId) {
       return Promise.reject(
-        new Error('A type id is required for getting events')
+        new Error('A type ID is required for getting events')
       );
     }
-    if (!facilityId) {
-      return Promise.reject(
-        new Error('A facility id is required for getting events')
-      );
-    }
-    const params = {
-      facility_id: facilityId
-    };
 
-    if (latest) {
-      params.include = ['triggered.latest'];
-    }
-
-    return this._request.get(`${this._baseUrl}/types/${id}/events`, { params });
+    return this._request
+      .get(`${this._baseUrl}/types/${eventTypeId}/events`, {
+        params: toSnakeCase(eventFilters)
+      })
+      .then((events) => {
+        console.log(events);
+        return formatPaginatedDataFromServer(events);
+      });
   }
 
   /**
