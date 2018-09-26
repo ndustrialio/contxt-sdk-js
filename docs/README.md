@@ -97,6 +97,8 @@ which are obtained from Auth0.</p>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetMetricValue">AssetMetricValue</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#AssetMetricValuesFromServer">AssetMetricValuesFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#AssetMetricsFromServer">AssetMetricsFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>

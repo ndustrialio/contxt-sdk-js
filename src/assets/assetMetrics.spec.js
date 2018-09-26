@@ -274,13 +274,115 @@ describe('Assets/Metrics', function() {
     });
   });
 
+  describe('getByAssetId', function() {
+    context('when all required information is supplied', function() {
+      let asset;
+      let formatPaginatedDataFromServer;
+      let numberOfAssetMetrics;
+      let metricsFiltersAfterFormat;
+      let metricsFiltersBeforeFormat;
+      let promise;
+      let request;
+      let toSnakeCase;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
+
+      beforeEach(function() {
+        numberOfAssetMetrics = faker.random.number({ min: 1, max: 10 });
+        asset = fixture.build('asset');
+        metricsFiltersBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        metricsFiltersAfterFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        valuesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList('assetMetric', numberOfAssetMetrics, {
+            assetTypeId: asset.assetTypeId
+          })
+        };
+        valuesFromServerBeforeFormat = {
+          ...valuesFromServerAfterFormat,
+          records: valuesFromServerAfterFormat.records.map((values) =>
+            fixture.build('assetMetric', values, { fromServer: true })
+          )
+        };
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+        };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(metricsFiltersAfterFormat);
+
+        const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
+        promise = assetMetrics.getByAssetId(
+          asset.id,
+          metricsFiltersBeforeFormat
+        );
+      });
+
+      it('formats the pagination options sent to the server', function() {
+        expect(toSnakeCase).to.be.calledWith(metricsFiltersBeforeFormat);
+      });
+
+      it('gets a list of the asset metrics from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/assets/${asset.id}/metrics`,
+          { params: metricsFiltersAfterFormat }
+        );
+      });
+
+      it('formats the asset metric data', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('resolves with a list of asset metrics', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      let promise;
+
+      beforeEach(function() {
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+
+        promise = assetMetrics.getByAssetId();
+      });
+
+      it('throws an error when the asset type ID is missing', function() {
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to get a list of all asset metrics.'
+        );
+      });
+    });
+  });
+
   describe('getByAssetTypeId', function() {
     context('when all required information is supplied', function() {
       let assetTypeId;
       let formatPaginatedDataFromServer;
       let numberOfAssetMetrics;
-      let paginationOptionsAfterFormat;
-      let paginationOptionsBeforeFormat;
+      let metricsFiltersAfterFormat;
+      let metricsFiltersBeforeFormat;
       let promise;
       let request;
       let toSnakeCase;
@@ -290,11 +392,11 @@ describe('Assets/Metrics', function() {
       beforeEach(function() {
         numberOfAssetMetrics = faker.random.number({ min: 1, max: 10 });
         assetTypeId = fixture.build('assetType').id;
-        paginationOptionsBeforeFormat = {
+        metricsFiltersBeforeFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
-        paginationOptionsAfterFormat = {
+        metricsFiltersAfterFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
@@ -320,23 +422,23 @@ describe('Assets/Metrics', function() {
         };
         toSnakeCase = this.sandbox
           .stub(objectUtils, 'toSnakeCase')
-          .returns(paginationOptionsAfterFormat);
+          .returns(metricsFiltersAfterFormat);
 
         const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
         promise = assetMetrics.getByAssetTypeId(
           assetTypeId,
-          paginationOptionsBeforeFormat
+          metricsFiltersBeforeFormat
         );
       });
 
       it('formats the pagination options sent to the server', function() {
-        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+        expect(toSnakeCase).to.be.calledWith(metricsFiltersBeforeFormat);
       });
 
       it('gets a list of the asset metrics from the server', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/assets/types/${assetTypeId}/metrics`,
-          { params: paginationOptionsAfterFormat }
+          { params: metricsFiltersAfterFormat }
         );
       });
 
@@ -629,13 +731,110 @@ describe('Assets/Metrics', function() {
     });
   });
 
+  describe('getValuesByAssetId', function() {
+    context('when all required information is supplied', function() {
+      let assetId;
+      let formatPaginatedDataFromServer;
+      let metricValuesFiltersBeforeFormat;
+      let metricValuesFiltersAfterFormat;
+      let promise;
+      let request;
+      let toSnakeCase;
+      let valuesFromServerAfterFormat;
+      let valuesFromServerBeforeFormat;
+
+      beforeEach(function() {
+        assetId = fixture.build('asset').id;
+        metricValuesFiltersBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        metricValuesFiltersAfterFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        valuesFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList(
+            'assetMetricValue',
+            faker.random.number({ min: 1, max: 20 }),
+            { assetId }
+          )
+        };
+        valuesFromServerBeforeFormat = {
+          ...valuesFromServerAfterFormat,
+          records: valuesFromServerAfterFormat.records.map((values) =>
+            fixture.build('assetMetricValue', values, { fromServer: true })
+          )
+        };
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(valuesFromServerAfterFormat);
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+        };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(metricValuesFiltersAfterFormat);
+
+        const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
+        promise = assetMetrics.getValuesByAssetId(
+          assetId,
+          metricValuesFiltersBeforeFormat
+        );
+      });
+
+      it('formats the pagination options sent to the server', function() {
+        expect(toSnakeCase).to.be.calledWith(metricValuesFiltersBeforeFormat);
+      });
+
+      it('gets a list of asset metric values from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/assets/${assetId}/metrics/values`,
+          { params: metricValuesFiltersAfterFormat }
+        );
+      });
+
+      it('formats the asset metric value data', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            valuesFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('resolves with a list of asset metric values', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      it('throws an error when the asset ID is missing', function() {
+        const assetMetrics = new AssetMetrics(
+          baseSdk,
+          baseRequest,
+          expectedHost
+        );
+        const promise = assetMetrics.getValuesByMetricId();
+
+        return expect(promise).to.be.rejectedWith(
+          'An asset ID is required to get a list of asset metric values.'
+        );
+      });
+    });
+  });
+
   describe('getValuesByMetricId', function() {
     context('when all required information is supplied', function() {
       let assetId;
       let metricId;
       let formatPaginatedDataFromServer;
-      let paginationOptionsBeforeFormat;
-      let paginationOptionsAfterFormat;
+      let metricValuesFiltersBeforeFormat;
+      let metricValuesFiltersAfterFormat;
       let promise;
       let request;
       let toSnakeCase;
@@ -645,11 +844,11 @@ describe('Assets/Metrics', function() {
       beforeEach(function() {
         assetId = fixture.build('asset').id;
         metricId = fixture.build('assetMetric').id;
-        paginationOptionsBeforeFormat = {
+        metricValuesFiltersBeforeFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
-        paginationOptionsAfterFormat = {
+        metricValuesFiltersAfterFormat = {
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
@@ -680,24 +879,24 @@ describe('Assets/Metrics', function() {
         };
         toSnakeCase = this.sandbox
           .stub(objectUtils, 'toSnakeCase')
-          .returns(paginationOptionsAfterFormat);
+          .returns(metricValuesFiltersAfterFormat);
 
         const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
         promise = assetMetrics.getValuesByMetricId(
           assetId,
           metricId,
-          paginationOptionsBeforeFormat
+          metricValuesFiltersBeforeFormat
         );
       });
 
       it('formats the pagination options sent to the server', function() {
-        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+        expect(toSnakeCase).to.be.calledWith(metricValuesFiltersBeforeFormat);
       });
 
       it('gets a list of asset metric values from the server', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/assets/${assetId}/metrics/${metricId}/values`,
-          { params: paginationOptionsAfterFormat }
+          { params: metricValuesFiltersAfterFormat }
         );
       });
 

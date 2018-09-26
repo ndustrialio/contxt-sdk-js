@@ -10,11 +10,13 @@ Module that provides access to, and the manipulation of, information about diffe
     * [.create(assetTypeId, assetMetric)](#AssetMetrics+create) ⇒ <code>Promise</code>
     * [.delete(assetMetricId)](#AssetMetrics+delete) ⇒ <code>Promise</code>
     * [.get(assetMetricId)](#AssetMetrics+get) ⇒ <code>Promise</code>
-    * [.getByAssetTypeId(assetTypeId, [paginationOptions])](#AssetMetrics+getByAssetTypeId) ⇒ <code>Promise</code>
+    * [.getByAssetId(assetId, [assetMetricsFilters])](#AssetMetrics+getByAssetId) ⇒ <code>Promise</code>
+    * [.getByAssetTypeId(assetTypeId, [assetMetricsFilters])](#AssetMetrics+getByAssetTypeId) ⇒ <code>Promise</code>
     * [.update(assetMetricId, update)](#AssetMetrics+update) ⇒ <code>Promise</code>
     * [.createValue(assetId, assetMetricValue)](#AssetMetrics+createValue) ⇒ <code>Promise</code>
     * [.deleteValue(assetMetricValueId)](#AssetMetrics+deleteValue) ⇒ <code>Promise</code>
-    * [.getValuesByMetricId(assetId, assetMetricId, [assetMetricFilters])](#AssetMetrics+getValuesByMetricId) ⇒ <code>Promise</code>
+    * [.getValuesByAssetId(assetId, [assetMetricValuesFilters])](#AssetMetrics+getValuesByAssetId) ⇒ <code>Promise</code>
+    * [.getValuesByMetricId(assetId, assetMetricId, [assetMetricValuesFilters])](#AssetMetrics+getValuesByMetricId) ⇒ <code>Promise</code>
     * [.updateValue(assetMetricValueId, update)](#AssetMetrics+updateValue) ⇒ <code>Promise</code>
 
 <a name="new_AssetMetrics_new"></a>
@@ -105,9 +107,43 @@ contxtSdk.assets.metrics
   .then((assetMetric) => console.log(assetMetric))
   .catch((err) => console.log(err));
 ```
+<a name="AssetMetrics+getByAssetId"></a>
+
+### contxtSdk.assets.metrics.getByAssetId(assetId, [assetMetricsFilters]) ⇒ <code>Promise</code>
+Gets a list of all asset metrics that belong to a given asset
+
+API Endpoint: '/assets/:assetId/metrics
+Method: GET
+
+**Kind**: instance method of [<code>AssetMetrics</code>](#AssetMetrics)  
+**Fulfill**: [<code>AssetMetricsFromServer</code>](./Typedefs.md#AssetMetricsFromServer)  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assetId | <code>string</code> | The UUID formatted ID of the asset type |
+| [assetMetricsFilters] | <code>Object</code> | Specific information that is used to   filter the list of asset metrics |
+| [assetMetricsFilters.assetMetricLabel] | <code>String</code> | The label of the   associated asset metrics |
+| [assetMetricsFilters.limit] | <code>Number</code> | Maximum number of records to   return per query |
+| [assetMetricsFilters.offset] | <code>Number</code> | How many records from the first   record to start the query |
+
+**Example**  
+```js
+contxtSdk.assets.metrics
+  .getByAssetId(
+    'f3be81fd-4494-443b-87a3-320b1c9aa495',
+     {
+       assetMetricLabel: 'Square Footage',
+       limit: 50,
+       offset: 150
+     }
+   )
+  .then((assetMetricData) => console.log(assetMetricData))
+  .catch((err) => console.log(err));
+```
 <a name="AssetMetrics+getByAssetTypeId"></a>
 
-### contxtSdk.assets.metrics.getByAssetTypeId(assetTypeId, [paginationOptions]) ⇒ <code>Promise</code>
+### contxtSdk.assets.metrics.getByAssetTypeId(assetTypeId, [assetMetricsFilters]) ⇒ <code>Promise</code>
 Gets a list of all asset metrics that belong to a given type
 
 API Endpoint: '/assets/types/:assetTypeId/metrics
@@ -120,12 +156,21 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | assetTypeId | <code>string</code> | The UUID formatted ID of the asset type |
-| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
+| [assetMetricsFilters] | <code>Object</code> | Specific information that is used to   filter the list of asset metrics |
+| [assetMetricsFilters.limit] | <code>Number</code> | Maximum number of records to   return per query |
+| [assetMetricsFilters.offset] | <code>Number</code> | How many records from the first   record to start the query |
+| [assetMetricsFilters.organizationId] | <code>String</code> | The UUID formatted ID   of the organization to filter asset metrics by |
 
 **Example**  
 ```js
 contxtSdk.assets.metrics
-  .getByAssetTypeId('4f0e51c6-728b-4892-9863-6d002e61204d')
+  .getByAssetTypeId(
+    '4f0e51c6-728b-4892-9863-6d002e61204d'
+     {
+       limit: 50,
+       offset: 150
+     }
+   )
   .then((assetMetrics) => console.log(assetMetrics))
   .catch((err) => console.log(err));
 ```
@@ -218,27 +263,65 @@ contxtSdk.assets.metrics.deleteValue(
   'f4cd0d84-6c61-4d19-9322-7c1ab226dc83'
 );
 ```
+<a name="AssetMetrics+getValuesByAssetId"></a>
+
+### contxtSdk.assets.metrics.getValuesByAssetId(assetId, [assetMetricValuesFilters]) ⇒ <code>Promise</code>
+Gets asset metric values for a particular asset
+
+API Endpoint: '/assets/:assetId/metrics/values'
+Method: GET
+
+**Kind**: instance method of [<code>AssetMetrics</code>](#AssetMetrics)  
+**Fulfill**: [<code>AssetMetricValuesFromServer</code>](./Typedefs.md#AssetMetricValuesFromServer)  
+**Rejects**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assetId | <code>String</code> | The ID of the asset (formatted as a UUID) |
+| [assetMetricValuesFilters] | <code>Object</code> | Specific information that is   used to filter the list of asset metric values |
+| [assetMetricValuesFilters.assetMetricLabel] | <code>String</code> | The label of   the associated asset metrics |
+| [assetMetricValuesFilters.effectiveEndDate] | <code>String</code> | Effective end   date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricValuesFilters.effectiveStartDate] | <code>String</code> | Effective   start date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricValuesFilters.limit] | <code>Number</code> | Maximum number of records   to return per query |
+| [assetMetricValuesFilters.offset] | <code>Number</code> | How many records from the   first record to start the query |
+
+**Example**  
+```js
+contxtSdk.assets.metrics
+  .getValuesByAssetId(
+     'f9c606f3-d270-4623-bf3b-b085424d9a8b',
+     {
+       assetMetricLabel: 'Square Footage',
+       effectiveEndDate: '2018-04-13T15:44:51.943Z'
+       effectiveStartDate: '2017-12-13T15:42:01.376Z'
+       limit: 10,
+       offset: 200
+     }
+   )
+  .then((assetMetricValuesData) => console.log(assetMetricValuesData))
+  .catch((err) => console.log(err));
+```
 <a name="AssetMetrics+getValuesByMetricId"></a>
 
-### contxtSdk.assets.metrics.getValuesByMetricId(assetId, assetMetricId, [assetMetricFilters]) ⇒ <code>Promise</code>
+### contxtSdk.assets.metrics.getValuesByMetricId(assetId, assetMetricId, [assetMetricValuesFilters]) ⇒ <code>Promise</code>
 Gets asset metric values for a particular asset and metric
 
 API Endpoint: '/assets/:assetId/metrics/:assetMetricId/values'
 Method: GET
 
 **Kind**: instance method of [<code>AssetMetrics</code>](#AssetMetrics)  
-**Fulfill**: <code>AssetMetricValue[]</code>  
+**Fulfill**: [<code>AssetMetricValuesFromServer</code>](./Typedefs.md#AssetMetricValuesFromServer)  
 **Rejects**: <code>Error</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | assetId | <code>String</code> | The ID of the asset (formatted as a UUID) |
-| assetMetricId | <code>String</code> | The ID of the asset metric (formatted as a UUID) |
-| [assetMetricFilters] | <code>Object</code> | Specific information that is used to   filter the list of asset attribute values |
-| [assetMetricFilters.effectiveEndDate] | <code>String</code> | Effective end date   of the asset metric values |
-| [assetMetricFilters.effectiveStartDate] | <code>String</code> | Effective start date   of the asset metric values |
-| [assetMetricFilters.limit] | <code>Number</code> | Maximum number of records to return per query |
-| [assetMetricFilters.offset] | <code>Number</code> | How many records from the first record to start the query |
+| assetMetricId | <code>String</code> | The ID of the asset metric (formatted as a   UUID) |
+| [assetMetricValuesFilters] | <code>Object</code> | Specific information that is   used to filter the list of asset metric values |
+| [assetMetricValuesFilters.effectiveEndDate] | <code>String</code> | Effective end   date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricValuesFilters.effectiveStartDate] | <code>String</code> | Effective   start date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricValuesFilters.limit] | <code>Number</code> | Maximum number of records   to return per query |
+| [assetMetricValuesFilters.offset] | <code>Number</code> | How many records from the   first record to start the query |
 
 **Example**  
 ```js
