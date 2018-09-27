@@ -187,11 +187,15 @@ describe('Events', function() {
 
       beforeEach(function() {
         expectedEventId = faker.random.uuid();
-        eventFromServerAfterFormat = fixture.build('event', expectedEventId);
-
-        eventFromServerBeforeFormat = fixture.build('event', expectedEventId, {
-          fromServer: true
+        eventFromServerAfterFormat = fixture.build('event', {
+          id: expectedEventId
         });
+
+        eventFromServerBeforeFormat = fixture.build(
+          'event',
+          { id: expectedEventId },
+          { fromServer: true }
+        );
 
         request = {
           ...baseRequest,
@@ -241,19 +245,21 @@ describe('Events', function() {
 
   describe('getEventTypesByClientId', function() {
     context('the clientId is provided', function() {
-      let promise;
-      let request;
+      let clientId;
       let eventTypeFromServerBeforeFormat;
       let eventTypeFromServerAfterFormat;
-      let clientId;
-      let numberOfEventTypes = faker.random.number({ min: 5, max: 10 });
+      let promise;
+      let request;
 
       beforeEach(function() {
         clientId = faker.random.uuid();
 
         eventTypeFromServerAfterFormat = {
           _metadata: fixture.build('paginationMetadata'),
-          records: fixture.buildList('eventType', numberOfEventTypes, clientId)
+          records: fixture.buildList(
+            'eventType',
+            faker.random.number({ min: 5, max: 10 })
+          )
         };
 
         eventTypeFromServerBeforeFormat = {
@@ -300,21 +306,22 @@ describe('Events', function() {
   });
 
   describe('getEventsByTypeId', function() {
-    let typeId = faker.random.uuid();
-    let promise;
-    let request;
+    let events;
+    let eventId;
+    let eventsFiltersAfterFormat;
+    let eventsFiltersBeforeFormat;
     let eventsFromServerAfterFormat;
     let eventsFromServerBeforeFormat;
-    let numberOfEvents = faker.random.number({ min: 5, max: 20 });
-    let eventId;
-    let toSnakeCase;
     let formatPaginatedDataFromServer;
-    let eventsFiltersBeforeFormat;
-    let eventsFiltersAfterFormat;
-    let events;
+    let promise;
+    let request;
+    let toSnakeCase;
+    let typeId;
 
     context('all required params are passed', function() {
       beforeEach(function() {
+        typeId = faker.random.uuid();
+
         eventsFiltersBeforeFormat = {
           include: ['triggered.latest'],
           facilityId: faker.random.number(),
@@ -328,9 +335,11 @@ describe('Events', function() {
 
         eventsFromServerAfterFormat = {
           _metadata: fixture.build('paginationMetadata'),
-          records: fixture.buildList('event', numberOfEvents, {
-            eventId
-          })
+          records: fixture.buildList(
+            'event',
+            faker.random.number({ min: 5, max: 20 }),
+            { eventId }
+          )
         };
 
         eventsFromServerBeforeFormat = {
@@ -358,15 +367,15 @@ describe('Events', function() {
         promise = events.getEventsByTypeId(typeId, eventsFiltersBeforeFormat);
       });
 
+      it('formats the parameters before sending', function() {
+        expect(toSnakeCase).to.be.deep.calledWith(eventsFiltersBeforeFormat);
+      });
+
       it('gets the events from the server', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/types/${typeId}/events`,
           { params: eventsFiltersAfterFormat }
         );
-      });
-
-      it('formats the parameters before sending', function() {
-        expect(toSnakeCase).to.be.deep.calledWith(eventsFiltersBeforeFormat);
       });
 
       it('formats the events object', function() {

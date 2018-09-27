@@ -70,6 +70,7 @@ class ContxtSdk {
    */
   constructor({ config = {}, externalModules = {}, sessionType }) {
     this.config = new Config(config, externalModules);
+
     this.assets = new Assets(this, this._createRequest('facilities'));
     this.auth = this._createAuthSession(sessionType);
     this.bus = new Bus(this, this._createRequest('bus'));

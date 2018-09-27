@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## [v0.0.33](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.33) (2018-xx-xx)
 
 **Added**
@@ -8,6 +9,16 @@
     - Allows filtering by `assetMetricLabel`
   - `AssetMetrics#getValuesByAssetId` for getting Asset Metric Values by for a specific Asset ID
     - Allows filtering by `assetMetricLabel`, `effectiveEndDate`, and `effectiveStartDate`
+=======
+## [v0.0.33](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.33) (2018-09-26)
+
+**Added**
+
+* Methods around event types by id and events for those event types:
+  * AssetMetrics#create for creating an Asset Metric
+  * Events#getEventTypesByClientId for retrieving all event types tied to a client id
+  * Events#getEventsByTypeId for retrieving all events that belong that a specific type id
+>>>>>>> 665bc0a... Cleaning up comments and spacing. Adjusting fixtures
 
 ## [v0.0.32](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.32) (2018-09-17)
 

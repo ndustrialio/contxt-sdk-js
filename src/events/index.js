@@ -38,12 +38,20 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} EventsFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {Event[]} records
+ */
+
+/**
  * @typedef {Object} EventType
- * @property {string} client_id UUID corresponding with the client
- * @property {string} created_at ISO 8601 Extended Format date/time string
+ * @property {string} clientId UUID corresponding with the client
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} description
  * @property {string} id UUID
- * @property {boolean} is_realtime_enabled Specifies whether that event types is enabled for realtime
+ * @property {boolean} isRealtimeEnabled
  * @property {number} level Priority level associated with event type
  * @property {string} name
  * @property {string} slug
@@ -56,14 +64,6 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  * @property {number} _metadata.offset Offset of records in subsequent queries
  * @property {number} _metadata.totalRecords Total number of asset types found
  * @property {EventType[]} records
- */
-
-/**
- * @typedef {Object} EventsFromServer
- * @property {Object} _metadata Metadata about the pagination settings
- * @property {number} _metadata.offset Offset of records in subsequent queries
- * @property {number} _metadata.totalRecords Total number of asset types found
- * @property {Events[]} records
  */
 
 /**
@@ -219,6 +219,7 @@ class Events {
       .get(`${this._baseUrl}/clients/${clientId}/types`)
       .then((response) => formatPaginatedDataFromServer(response));
   }
+
   /**
    * Gets all events by type
    *
@@ -226,8 +227,8 @@ class Events {
    * Method: GET
    *
    * @param {string} eventTypeId The ID of the type
-   * @param {number} [eventsFilters.facilityId] ID of facility to restricti event types to
-   * @param {string[]} [eventsFilters.include] List of event types to include in the query. Possible options are: 'triggered.latest'
+   * @param {number} [eventsFilters.facilityId] ID of facility to restrict event types to
+   * @param {string[]} [eventsFilters.include] List of additional information to be included in the results. Possible options are: 'triggered.latest'
    * @param {number} [eventsFilters.limit] Maximum number of records to return per query
    * @param {number} [eventsFilters.offset] How many records from the first record to start the query
    * @param {boolean} [latest = false] A boolean to determine if we only want to receive the most recent
@@ -260,10 +261,7 @@ class Events {
       .get(`${this._baseUrl}/types/${eventTypeId}/events`, {
         params: toSnakeCase(eventFilters)
       })
-      .then((events) => {
-        console.log(events);
-        return formatPaginatedDataFromServer(events);
-      });
+      .then((events) => formatPaginatedDataFromServer(events));
   }
 
   /**
