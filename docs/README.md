@@ -137,6 +137,12 @@ single module.</p>
 </dd>
 <dt><a href="./Typedefs.md#Event">Event</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#EventType">EventType</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#EventTypesFromServer">EventTypesFromServer</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#EventsFromServer">EventsFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#ExternalModule">ExternalModule</a> : <code>Object</code></dt>
 <dd><p>An external module to be integrated into the SDK as a first class citizen. Includes information
 for authenticating and communicating with an individual API and the external module itself.</p>
