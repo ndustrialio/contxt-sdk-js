@@ -84,9 +84,11 @@ describe('Events', function() {
           ...baseRequest,
           post: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
         };
+
         toCamelCase = this.sandbox
           .stub(objectUtils, 'toCamelCase')
           .returns(eventFromServerAfterFormat);
+
         toSnakeCase = this.sandbox
           .stub(objectUtils, 'toSnakeCase')
           .returns(eventToServerAfterFormat);
@@ -248,6 +250,7 @@ describe('Events', function() {
       let clientId;
       let eventTypeFromServerBeforeFormat;
       let eventTypeFromServerAfterFormat;
+      let formatPaginatedDataFromServer;
       let promise;
       let request;
 
@@ -269,6 +272,10 @@ describe('Events', function() {
           )
         };
 
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(eventTypeFromServerAfterFormat);
+
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(eventTypeFromServerBeforeFormat)
@@ -286,8 +293,16 @@ describe('Events', function() {
         );
       });
 
+      it('formats the eventType object', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            eventTypeFromServerBeforeFormat
+          );
+        });
+      });
+
       it('returns the requested event type', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
           eventTypeFromServerAfterFormat
         );
       });
@@ -387,7 +402,7 @@ describe('Events', function() {
       });
 
       it('returns the requested events', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
           eventsFromServerAfterFormat
         );
       });
