@@ -1,4 +1,4 @@
-## [v0.0.33](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.33) (2018-xx-xx)
+## [v0.0.33](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.33) (2018-09-27)
 
 **Added**
 
@@ -6,8 +6,14 @@
 
   - `AssetMetrics#getByAssetId` for getting all Asset Metrics for a specific Asset ID
     - Allows filtering by `assetMetricLabel`
-  - `AssetMetrics#getValuesByAssetId` for getting Asset Metric Values by for a specific Asset ID
+  - `AssetMetrics#getValuesByAssetId` for getting Asset Metric Values for a specific Asset ID
     - Allows filtering by `assetMetricLabel`, `effectiveEndDate`, and `effectiveStartDate`
+
+- Additional methods for Events
+
+  - `Events#getEventTypesByClientId` for getting all Event Types for a specific Client ID
+  - `Events#getEventsByTypeId` for getting Events for a specific Event Type ID
+    - Allows passing option to add latest `triggered_event` to Events.
 
 ## [v0.0.32](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.32) (2018-09-17)
 

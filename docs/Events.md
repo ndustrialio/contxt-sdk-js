@@ -11,6 +11,8 @@ of, information about different events
     * [.create(event)](#Events+create) ⇒ <code>Promise</code>
     * [.delete(eventId)](#Events+delete) ⇒ <code>Promise</code>
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
+    * [.getEventTypesByClientId(clientId)](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
+    * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
 
 <a name="new_Events_new"></a>
@@ -98,6 +100,64 @@ Method: GET
 contxtSdk.events
   .get('875afddd-091c-4385-bc21-0edf38804d27')
   .then((event) => console.log(event))
+  .catch((err) => console.log(err));
+```
+<a name="Events+getEventTypesByClientId"></a>
+
+### contxtSdk.events.getEventTypesByClientId(clientId) ⇒ <code>Promise</code>
+Gets all event types for a client
+
+API Endpoint: '/clients/:clientId/types'
+Method: GET
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>EventTypesFromServer</code>](./Typedefs.md#EventTypesFromServer) Event types from the server  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| clientId | <code>string</code> | The ID of the client |
+
+**Example**  
+```js
+contxtSdk.events
+  .getEventTypesByClientId('CW4B1Ih6M1nNwwxk0XOKI21MVH04pGUL')
+  .then((events) => console.log(events))
+  .catch((err) => console.log(err));
+```
+<a name="Events+getEventsByTypeId"></a>
+
+### contxtSdk.events.getEventsByTypeId(eventTypeId, [latest]) ⇒ <code>Promise</code>
+Gets all events by type
+
+API Endpoint: '/types/:typeId/events'
+Method: GET
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>EventsFromServer</code>](./Typedefs.md#EventsFromServer) Event from server  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| eventTypeId | <code>string</code> |  | The ID of the type |
+| [eventsFilters.facilityId] | <code>number</code> |  | ID of facility to restrict event types to |
+| [eventsFilters.include] | <code>Array.&lt;string&gt;</code> |  | List of additional information to be included in the results. Possible options are: 'triggered.latest' |
+| [eventsFilters.limit] | <code>number</code> |  | Maximum number of records to return per query |
+| [eventsFilters.offset] | <code>number</code> |  | How many records from the first record to start the query |
+| [latest] | <code>boolean</code> | <code>false</code> | A boolean to determine if we only want to receive the most recent |
+
+**Example**  
+```js
+contxtSdk.events
+  .getEventsByTypeId(
+     '3e9b572b-6b39-4dd5-a9e5-075095eb0867',
+     {
+       limit: 10,
+       offset: 0,
+       include: ['triggered.latest']
+     }
+   )
+  .then((events) => console.log(events))
   .catch((err) => console.log(err));
 ```
 <a name="Events+update"></a>

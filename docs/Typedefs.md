@@ -353,6 +353,50 @@ single module.
 | [topicArn] | <code>number</code> | The Amazon Resource Name (ARN) associated with the event |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="EventType"></a>
+
+## EventType : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| clientId | <code>string</code> | UUID corresponding with the client |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| isRealtimeEnabled | <code>boolean</code> |  |
+| level | <code>number</code> | Priority level associated with event type |
+| name | <code>string</code> |  |
+| slug | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="EventTypesFromServer"></a>
+
+## EventTypesFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;EventType&gt;</code>](#EventType) |  |
+
+<a name="EventsFromServer"></a>
+
+## EventsFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;Event&gt;</code>](#Event) |  |
+
 <a name="ExternalModule"></a>
 
 ## ExternalModule : <code>Object</code>
