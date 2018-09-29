@@ -150,6 +150,8 @@ class AssetTypes {
    * API Endpoint: '/assets/types/
    * Method: GET
    *
+   * @param {PaginationOptions} [paginationOptions]
+   *
    * @returns {Promise}
    * @fulfill {AssetTypesFromServer}
    * @reject {Error}
@@ -160,9 +162,11 @@ class AssetTypes {
    *   .then((assetTypes) => console.log(assetTypes))
    *   .catch((err) => console.log(err));
    */
-  getAll() {
+  getAll(paginationOptions) {
     return this._request
-      .get(`${this._baseUrl}/assets/types`)
+      .get(`${this._baseUrl}/assets/types`, {
+        params: toSnakeCase(paginationOptions)
+      })
       .then((assetTypesData) => formatPaginatedDataFromServer(assetTypesData));
   }
 
@@ -173,6 +177,7 @@ class AssetTypes {
    * Method: GET
    *
    * @param {string} organizationId UUID corresponding with an organization
+   * @param {PaginationOptions} [paginationOptions]
    *
    * @returns {Promise}
    * @fulfill {AssetTypesFromServer}
@@ -184,7 +189,7 @@ class AssetTypes {
    *   .then((assetTypes) => console.log(assetTypes))
    *   .catch((err) => console.log(assetTypes));
    */
-  getAllByOrganizationId(organizationId) {
+  getAllByOrganizationId(organizationId, paginationOptions) {
     if (!organizationId) {
       return Promise.reject(
         new Error(
@@ -194,7 +199,9 @@ class AssetTypes {
     }
 
     return this._request
-      .get(`${this._baseUrl}/organizations/${organizationId}/assets/types`)
+      .get(`${this._baseUrl}/organizations/${organizationId}/assets/types`, {
+        params: toSnakeCase(paginationOptions)
+      })
       .then((assetTypesData) => formatPaginatedDataFromServer(assetTypesData));
   }
 

@@ -1,4 +1,3 @@
-import times from 'lodash.times';
 import omit from 'lodash.omit';
 import Assets from './index';
 import * as objectUtils from '../utils/objects';
@@ -247,8 +246,11 @@ describe('Assets', function() {
     let assetsFromServerBeforeFormat;
     let formatPaginatedDataFromServer;
     let numberOfAssets;
+    let paginationOptionsAfterFormat;
+    let paginationOptionsBeforeFormat;
     let promise;
     let request;
+    let toSnakeCase;
 
     beforeEach(function() {
       numberOfAssets = faker.random.number({ min: 1, max: 10 });
@@ -262,6 +264,13 @@ describe('Assets', function() {
           fixture.build('asset', asset, { fromServer: true })
         )
       };
+      paginationOptionsBeforeFormat = {
+        limit: faker.random.number({ min: 10, max: 1000 }),
+        offset: faker.random.number({ max: 1000 })
+      };
+      paginationOptionsAfterFormat = {
+        ...paginationOptionsBeforeFormat
+      };
 
       formatPaginatedDataFromServer = this.sandbox
         .stub(paginationUtils, 'formatPaginatedDataFromServer')
@@ -270,15 +279,24 @@ describe('Assets', function() {
         ...baseRequest,
         get: this.sandbox.stub().resolves(assetsFromServerBeforeFormat)
       };
+      toSnakeCase = this.sandbox
+        .stub(objectUtils, 'toSnakeCase')
+        .returns(paginationOptionsAfterFormat);
 
       const assets = new Assets(baseSdk, request);
       assets._baseUrl = expectedHost;
 
-      promise = assets.getAll();
+      promise = assets.getAll(paginationOptionsBeforeFormat);
+    });
+
+    it('formats the pagination options', function() {
+      expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
     });
 
     it('gets a list of the assets from the server', function() {
-      expect(request.get).to.be.calledWith(`${expectedHost}/assets`);
+      expect(request.get).to.be.calledWith(`${expectedHost}/assets`, {
+        params: paginationOptionsAfterFormat
+      });
     });
 
     it('formats the asset data', function() {
@@ -322,20 +340,14 @@ describe('Assets', function() {
             fixture.build('asset', values, { fromServer: true })
           )
         };
-        initialOptions = times(faker.random.number({ min: 1, max: 5 })).reduce(
-          (memo) => {
-            memo[faker.hacker.adjective()] = faker.hacker.adjective();
-            return memo;
-          },
-          {}
-        );
-        expectedOptions = times(faker.random.number({ min: 1, max: 5 })).reduce(
-          (memo) => {
-            memo[faker.hacker.adjective()] = faker.hacker.adjective();
-            return memo;
-          },
-          {}
-        );
+        initialOptions = {
+          assetTypeId: faker.random.uuid(),
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        expectedOptions = {
+          ...initialOptions
+        };
 
         formatPaginatedDataFromServer = this.sandbox
           .stub(paginationUtils, 'formatPaginatedDataFromServer')

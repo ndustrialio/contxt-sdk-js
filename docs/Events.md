@@ -11,7 +11,7 @@ of, information about different events
     * [.create(event)](#Events+create) ⇒ <code>Promise</code>
     * [.delete(eventId)](#Events+delete) ⇒ <code>Promise</code>
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
-    * [.getEventTypesByClientId(clientId)](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
+    * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
 
@@ -104,7 +104,7 @@ contxtSdk.events
 ```
 <a name="Events+getEventTypesByClientId"></a>
 
-### contxtSdk.events.getEventTypesByClientId(clientId) ⇒ <code>Promise</code>
+### contxtSdk.events.getEventTypesByClientId(clientId, [paginationOptions]) ⇒ <code>Promise</code>
 Gets all event types for a client
 
 API Endpoint: '/clients/:clientId/types'
@@ -117,6 +117,7 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | clientId | <code>string</code> | The ID of the client |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
 
 **Example**  
 ```js

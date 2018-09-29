@@ -155,6 +155,8 @@ class Assets {
    * API Endpoint: '/assets'
    * Method: GET
    *
+   * @param {PaginationOptions} [paginationOptions]
+   *
    * @returns {Promise}
    * @fulfill {AssetsFromServer}
    * @reject {Error}
@@ -165,9 +167,11 @@ class Assets {
    *   .then((assets) => console.log(assets))
    *   .catch((err) => console.log(err));
    */
-  getAll() {
+  getAll(paginationOptions) {
     return this._request
-      .get(`${this._baseUrl}/assets`)
+      .get(`${this._baseUrl}/assets`, {
+        params: toSnakeCase(paginationOptions)
+      })
       .then((assetsData) => formatPaginatedDataFromServer(assetsData));
   }
 
@@ -179,7 +183,9 @@ class Assets {
    *
    * @param {string} organizationId UUID corresponding with an organization
    * @param {Object} [options] Object containing parameters to be called with the request
-   * @param {string} [options.assetTypeId] ID of the asset type to use for filtering
+   * @param {string} [options.assetTypeId] UUID of the asset type to use for filtering
+   * @param {Number} [options.limit] Maximum number of records to return per query
+   * @param {Number} [options.offset] How many records from the first record to start
    *
    * @returns {Promise}
    * @fulfill {AssetsFromServer}

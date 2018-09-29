@@ -1,3 +1,13 @@
+## [v0.0.34](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.34) (2018-xx-xx)
+
+**Fixed**
+
+- There were some methods that returned paginated data, but did not pass the `limit` and `offset` to the API. This has been fixed and now allows for passing `limit` and `offset` for:
+  - `AssetTypes#getAll`
+  - `AssetTypes#getAllByOrganizationId`
+  - `Assets#getAll`
+  - `Events#getEventTypesByClientId`
+
 ## [v0.0.33](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.33) (2018-09-27)
 
 **Added**

@@ -315,8 +315,11 @@ describe('Assets/Types', function() {
     let assetTypesFromServerBeforeFormat;
     let formatPaginatedDataFromServer;
     let numberOfAssetTypes;
+    let paginationOptionsAfterFormat;
+    let paginationOptionsBeforeFormat;
     let promise;
     let request;
+    let toSnakeCase;
 
     beforeEach(function() {
       numberOfAssetTypes = faker.random.number({ min: 1, max: 10 });
@@ -330,6 +333,13 @@ describe('Assets/Types', function() {
           fixture.build('assetType', asset, { fromServer: true })
         )
       };
+      paginationOptionsBeforeFormat = {
+        limit: faker.random.number({ min: 10, max: 1000 }),
+        offset: faker.random.number({ max: 1000 })
+      };
+      paginationOptionsAfterFormat = {
+        ...paginationOptionsBeforeFormat
+      };
 
       formatPaginatedDataFromServer = this.sandbox
         .stub(paginationUtils, 'formatPaginatedDataFromServer')
@@ -338,14 +348,23 @@ describe('Assets/Types', function() {
         ...baseRequest,
         get: this.sandbox.stub().resolves(assetTypesFromServerBeforeFormat)
       };
+      toSnakeCase = this.sandbox
+        .stub(objectUtils, 'toSnakeCase')
+        .returns(paginationOptionsAfterFormat);
 
       const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
 
-      promise = assetTypes.getAll();
+      promise = assetTypes.getAll(paginationOptionsBeforeFormat);
+    });
+
+    it('formats the pagination options', function() {
+      expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
     });
 
     it('gets a list of the asset types from the server', function() {
-      expect(request.get).to.be.calledWith(`${expectedHost}/assets/types`);
+      expect(request.get).to.be.calledWith(`${expectedHost}/assets/types`, {
+        params: paginationOptionsAfterFormat
+      });
     });
 
     it('formats the asset type object', function() {
@@ -370,8 +389,11 @@ describe('Assets/Types', function() {
       let expectedOrganizationId;
       let formatPaginatedDataFromServer;
       let numberOfAssetTypes;
+      let paginationOptionsAfterFormat;
+      let paginationOptionsBeforeFormat;
       let promise;
       let request;
+      let toSnakeCase;
 
       beforeEach(function() {
         expectedOrganizationId = fixture.build('organization').id;
@@ -386,6 +408,13 @@ describe('Assets/Types', function() {
             fixture.build('assetType', asset, { fromServer: true })
           )
         };
+        paginationOptionsBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        paginationOptionsAfterFormat = {
+          ...paginationOptionsBeforeFormat
+        };
 
         formatPaginatedDataFromServer = this.sandbox
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
@@ -394,15 +423,26 @@ describe('Assets/Types', function() {
           ...baseRequest,
           get: this.sandbox.stub().resolves(assetTypesFromServerBeforeFormat)
         };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(paginationOptionsAfterFormat);
 
         const assetTypes = new AssetTypes(baseSdk, request, expectedHost);
 
-        promise = assetTypes.getAllByOrganizationId(expectedOrganizationId);
+        promise = assetTypes.getAllByOrganizationId(
+          expectedOrganizationId,
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options', function() {
+        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
       });
 
       it('gets a list of asset types for an organization from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/organizations/${expectedOrganizationId}/assets/types`
+          `${expectedHost}/organizations/${expectedOrganizationId}/assets/types`,
+          { params: paginationOptionsAfterFormat }
         );
       });
 

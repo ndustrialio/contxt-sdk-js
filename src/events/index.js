@@ -197,6 +197,7 @@ class Events {
    * Method: GET
    *
    * @param {string} clientId The ID of the client
+   * @param {PaginationOptions} [paginationOptions]
    *
    * @returns {Promise}
    * @fulfill {EventTypesFromServer} Event types from the server
@@ -208,7 +209,7 @@ class Events {
    *   .then((events) => console.log(events))
    *   .catch((err) => console.log(err));
    */
-  getEventTypesByClientId(clientId) {
+  getEventTypesByClientId(clientId, paginationOptions) {
     if (!clientId) {
       return Promise.reject(
         new Error('A client ID is required for getting types')
@@ -216,7 +217,9 @@ class Events {
     }
 
     return this._request
-      .get(`${this._baseUrl}/clients/${clientId}/types`)
+      .get(`${this._baseUrl}/clients/${clientId}/types`, {
+        params: toSnakeCase(paginationOptions)
+      })
       .then((response) => formatPaginatedDataFromServer(response));
   }
 
