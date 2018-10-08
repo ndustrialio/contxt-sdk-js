@@ -10,7 +10,7 @@ Module that provides access to, and the manipulation of, information about diffe
     * [.create(asset)](#Assets+create) ⇒ <code>Promise</code>
     * [.delete(assetId)](#Assets+delete) ⇒ <code>Promise</code>
     * [.get(assetId)](#Assets+get) ⇒ <code>Promise</code>
-    * [.getAll()](#Assets+getAll) ⇒ <code>Promise</code>
+    * [.getAll([paginationOptions])](#Assets+getAll) ⇒ <code>Promise</code>
     * [.getAllByOrganizationId(organizationId, [options])](#Assets+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.update(assetId, update)](#Assets+update)
 
@@ -100,7 +100,7 @@ contxtSdk.assets
 ```
 <a name="Assets+getAll"></a>
 
-### contxtSdk.assets.getAll() ⇒ <code>Promise</code>
+### contxtSdk.assets.getAll([paginationOptions]) ⇒ <code>Promise</code>
 Get a list of all assets
 
 API Endpoint: '/assets'
@@ -109,6 +109,11 @@ Method: GET
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
 **Fulfill**: [<code>AssetsFromServer</code>](./Typedefs.md#AssetsFromServer)  
 **Reject**: <code>Error</code>  
+
+| Param | Type |
+| --- | --- |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) | 
+
 **Example**  
 ```js
 contxtSdk.assets
@@ -132,7 +137,9 @@ Method: GET
 | --- | --- | --- |
 | organizationId | <code>string</code> | UUID corresponding with an organization |
 | [options] | <code>Object</code> | Object containing parameters to be called with the request |
-| [options.assetTypeId] | <code>string</code> | ID of the asset type to use for filtering |
+| [options.assetTypeId] | <code>string</code> | UUID of the asset type to use for filtering |
+| [options.limit] | <code>Number</code> | Maximum number of records to return per query |
+| [options.offset] | <code>Number</code> | How many records from the first record to start |
 
 **Example**  
 ```js

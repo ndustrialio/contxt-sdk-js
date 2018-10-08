@@ -10,8 +10,8 @@ Module that provides access to, and the manipulation of, information about diffe
     * [.create(assetType)](#AssetTypes+create) ⇒ <code>Promise</code>
     * [.delete(assetTypeId)](#AssetTypes+delete) ⇒ <code>Promise</code>
     * [.get(assetTypeId)](#AssetTypes+get) ⇒ <code>Promise</code>
-    * [.getAll()](#AssetTypes+getAll) ⇒ <code>Promise</code>
-    * [.getAllByOrganizationId(organizationId)](#AssetTypes+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.getAll([paginationOptions])](#AssetTypes+getAll) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId, [paginationOptions])](#AssetTypes+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.update(assetTypeId, update)](#AssetTypes+update) ⇒ <code>Promise</code>
 
 <a name="new_AssetTypes_new"></a>
@@ -99,7 +99,7 @@ contxtSdk.assets.types
 ```
 <a name="AssetTypes+getAll"></a>
 
-### contxtSdk.assets.types.getAll() ⇒ <code>Promise</code>
+### contxtSdk.assets.types.getAll([paginationOptions]) ⇒ <code>Promise</code>
 Gets a list of all asset types
 
 API Endpoint: '/assets/types/
@@ -108,6 +108,11 @@ Method: GET
 **Kind**: instance method of [<code>AssetTypes</code>](#AssetTypes)  
 **Fulfill**: [<code>AssetTypesFromServer</code>](./Typedefs.md#AssetTypesFromServer)  
 **Reject**: <code>Error</code>  
+
+| Param | Type |
+| --- | --- |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) | 
+
 **Example**  
 ```js
 contxtSdk.assets.types
@@ -117,7 +122,7 @@ contxtSdk.assets.types
 ```
 <a name="AssetTypes+getAllByOrganizationId"></a>
 
-### contxtSdk.assets.types.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
+### contxtSdk.assets.types.getAllByOrganizationId(organizationId, [paginationOptions]) ⇒ <code>Promise</code>
 Gets a list of all asset types that belong to a particular organization
 
 API Endpoint: '/organizations/:organizationId/assets/types'
@@ -130,6 +135,7 @@ Method: GET
 | Param | Type | Description |
 | --- | --- | --- |
 | organizationId | <code>string</code> | UUID corresponding with an organization |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
 
 **Example**  
 ```js

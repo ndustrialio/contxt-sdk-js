@@ -251,12 +251,14 @@ describe('Events', function() {
       let eventTypeFromServerBeforeFormat;
       let eventTypeFromServerAfterFormat;
       let formatPaginatedDataFromServer;
+      let paginationOptionsAfterFormat;
+      let paginationOptionsBeforeFormat;
       let promise;
       let request;
+      let toSnakeCase;
 
       beforeEach(function() {
         clientId = faker.random.uuid();
-
         eventTypeFromServerAfterFormat = {
           _metadata: fixture.build('paginationMetadata'),
           records: fixture.buildList(
@@ -264,32 +266,48 @@ describe('Events', function() {
             faker.random.number({ min: 5, max: 10 })
           )
         };
-
         eventTypeFromServerBeforeFormat = {
           ...eventTypeFromServerAfterFormat,
           records: eventTypeFromServerAfterFormat.records.map((values) =>
             fixture.build('eventType', values, { fromServer: true })
           )
         };
+        paginationOptionsBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        paginationOptionsAfterFormat = {
+          ...paginationOptionsBeforeFormat
+        };
 
         formatPaginatedDataFromServer = this.sandbox
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(eventTypeFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(eventTypeFromServerBeforeFormat)
         };
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(paginationOptionsAfterFormat);
 
         const events = new Events(baseSdk, request);
         events._baseUrl = expectedHost;
 
-        promise = events.getEventTypesByClientId(clientId);
+        promise = events.getEventTypesByClientId(
+          clientId,
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options', function() {
+        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
       });
 
       it('gets the eventType from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/clients/${clientId}/types`
+          `${expectedHost}/clients/${clientId}/types`,
+          { params: paginationOptionsAfterFormat }
         );
       });
 
@@ -336,18 +354,14 @@ describe('Events', function() {
     context('all required params are passed', function() {
       beforeEach(function() {
         typeId = faker.random.uuid();
-
         eventsFiltersBeforeFormat = {
           include: ['triggered.latest'],
           facilityId: faker.random.number(),
           limit: faker.random.number({ min: 10, max: 1000 }),
           offset: faker.random.number({ max: 1000 })
         };
-
         eventsFiltersAfterFormat = { ...eventsFiltersBeforeFormat };
-
         eventId = fixture.build('assetType').id;
-
         eventsFromServerAfterFormat = {
           _metadata: fixture.build('paginationMetadata'),
           records: fixture.buildList(
@@ -356,7 +370,6 @@ describe('Events', function() {
             { eventId }
           )
         };
-
         eventsFromServerBeforeFormat = {
           ...eventsFromServerAfterFormat,
           records: eventsFromServerAfterFormat.records.map((values) =>
@@ -367,11 +380,9 @@ describe('Events', function() {
         toSnakeCase = this.sandbox
           .stub(objectUtils, 'toSnakeCase')
           .returns(eventsFiltersAfterFormat);
-
         formatPaginatedDataFromServer = this.sandbox
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(eventsFromServerAfterFormat);
-
         request = {
           ...baseRequest,
           get: this.sandbox.stub().resolves(eventsFromServerBeforeFormat)
