@@ -156,7 +156,7 @@ describe('Assets/Attributes', function() {
         );
       });
 
-      ['description', 'label', 'organizationId'].forEach((field) => {
+      ['description', 'label'].forEach((field) => {
         it(`throws an error when ${field} is missing`, function() {
           promise = assetAttributes.create(
             assetTypeId,

@@ -117,7 +117,7 @@ class AssetAttributes {
    *   .catch((err) => console.log(err));
    */
   create(assetTypeId, assetAttribute = {}) {
-    const requiredFields = ['description', 'label', 'organizationId'];
+    const requiredFields = ['description', 'label'];
 
     if (!assetTypeId) {
       return Promise.reject(
