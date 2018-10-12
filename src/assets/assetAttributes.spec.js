@@ -132,6 +132,81 @@ describe('Assets/Attributes', function() {
       });
     });
 
+    context('when creating a global attribute', function() {
+      let assetTypeId;
+      let attributeFromServerAfterFormat;
+      let attributeFromServerBeforeFormat;
+      let attributeToServerAfterFormat;
+      let attributeToServerBeforeFormat;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+
+      beforeEach(function() {
+        attributeFromServerBeforeFormat = fixture.build('assetAttribute', {
+          organizationId: null
+        });
+        attributeFromServerAfterFormat = fixture.build(
+          'assetAttribute',
+          attributeToServerBeforeFormat,
+          { fromServer: true }
+        );
+        attributeToServerBeforeFormat = fixture.build('assetAttribute', {
+          organizationId: null
+        });
+        attributeToServerAfterFormat = fixture.build(
+          'assetAttribute',
+          attributeToServerBeforeFormat,
+          { fromServer: true }
+        );
+
+        assetTypeId = fixture.build('assetType').id;
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(attributeFromServerBeforeFormat)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(attributeFromServerAfterFormat);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(attributeToServerAfterFormat);
+
+        const attributes = new AssetAttributes(baseSdk, request, expectedHost);
+
+        promise = attributes.create(assetTypeId, attributeToServerBeforeFormat);
+      });
+
+      it('formats the submitted attribute object to send to the server', function() {
+        expect(toSnakeCase).to.be.deep.calledWith(
+          attributeToServerBeforeFormat
+        );
+      });
+
+      it('creates a new attribute', function() {
+        expect(request.post).to.be.deep.calledWith(
+          `${expectedHost}/assets/types/${assetTypeId}/attributes`,
+          attributeToServerAfterFormat
+        );
+      });
+
+      it('formats the returned attribute object', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.deep.calledWith(
+            attributeFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('returns a fulfilled promise with the new attribute information', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          attributeFromServerAfterFormat
+        );
+      });
+    });
+
     context('when there is missing required information', function() {
       let assetAttribute;
       let assetAttributes;
@@ -156,7 +231,7 @@ describe('Assets/Attributes', function() {
         );
       });
 
-      ['description', 'label'].forEach((field) => {
+      ['description', 'label', 'organizationId'].forEach((field) => {
         it(`throws an error when ${field} is missing`, function() {
           promise = assetAttributes.create(
             assetTypeId,

@@ -1,3 +1,4 @@
+import has from 'lodash.has';
 import isPlainObject from 'lodash.isplainobject';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
 import { formatPaginatedDataFromServer } from '../utils/pagination';
@@ -96,7 +97,7 @@ class AssetAttributes {
    * @param {string} assetAttribute.description
    * @param {boolean} [assetAttribute.isRequired]
    * @param {string} assetAttribute.label
-   * @param {string} assetAttribute.organizationId
+   * @param {string} assetAttribute.organizationId Can be explicitly set to `null` to create a global attribute
    * @param {string} [assetAttribute.units]
    *
    * @returns {Promise}
@@ -117,7 +118,12 @@ class AssetAttributes {
    *   .catch((err) => console.log(err));
    */
   create(assetTypeId, assetAttribute = {}) {
-    const requiredFields = ['description', 'label'];
+    const hasFieldFns = {
+      default: (object, key) => !!object[key],
+      organizationId: (object, key) => has(object, key)
+    };
+
+    const requiredFields = ['description', 'label', 'organizationId'];
 
     if (!assetTypeId) {
       return Promise.reject(
@@ -129,8 +135,9 @@ class AssetAttributes {
 
     for (let i = 0; i < requiredFields.length; i++) {
       const field = requiredFields[i];
+      const hasField = hasFieldFns[field] || hasFieldFns.default;
 
-      if (!assetAttribute[field]) {
+      if (!hasField(assetAttribute, field)) {
         return Promise.reject(
           new Error(`A ${field} is required to create a new asset attribute.`)
         );
