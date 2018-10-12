@@ -50,7 +50,7 @@ Method: POST
 | assetAttribute.description | <code>string</code> |  |
 | [assetAttribute.isRequired] | <code>boolean</code> |  |
 | assetAttribute.label | <code>string</code> |  |
-| assetAttribute.organizationId | <code>string</code> |  |
+| assetAttribute.organizationId | <code>string</code> | Can be explicitly set to `null` to create a global attribute |
 | [assetAttribute.units] | <code>string</code> |  |
 
 **Example**  
