@@ -2,7 +2,7 @@
 
 **Fixed**
 
-- Updated `AssetAttributes#create` and removed `organizationId` from the required fields.
+- Updated `AssetAttributes#create` to allow for the creation of global asset attributes.
 
 ## [v0.0.34](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.34) (2018-10-08)
 
