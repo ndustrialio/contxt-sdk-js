@@ -62,6 +62,7 @@ class FieldGroupings {
    */
   addField(fieldGroupingId, outputFieldId) {
     let errorMsg;
+
     if (!fieldGroupingId) {
       errorMsg =
         'A fieldGroupingId is required to create a relationship between a field grouping and a field.';
@@ -105,18 +106,17 @@ class FieldGroupings {
    *      fieldCategoryId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e',
    *      isPublic: true,
    *      label: 'Room 2 Compressors'
-   * })
+   *   })
    *   .then((fieldGrouping) => console.log(fieldGrouping))
    *   .catch((err) => console.log(err));
    */
   create(facilityId, fieldGrouping) {
     if (!facilityId) {
       return Promise.reject(
-        new Error(
-          'A facilityId is required for getting information about a field grouping.'
-        )
+        new Error('A facilityId is required for creating a field grouping.')
       );
     }
+
     const requiredFields = ['label', 'description'];
 
     for (let i = 0; requiredFields.length > i; i++) {
@@ -211,11 +211,11 @@ class FieldGroupings {
    *
    * @example
    * contxtSdk.iot.fieldGroupings
-   *   .getAll(135)
+   *   .getAllByFacilityId(135)
    *   .then((fieldGroupings) => console.log(fieldGroupings))
    *   .catch((err) => console.log(err));
    */
-  getAll(facilityId) {
+  getAllByFacilityId(facilityId) {
     if (!facilityId) {
       return Promise.reject(
         new Error('A facilityId is required for getting all field groupings.')
@@ -314,6 +314,7 @@ class FieldGroupings {
         )
       );
     }
+
     const formattedUpdate = toSnakeCase(update, {
       excludeKeys: ['facilityId', 'id', 'ownerId', 'slug']
     });

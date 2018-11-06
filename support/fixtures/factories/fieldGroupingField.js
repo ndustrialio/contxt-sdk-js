@@ -14,7 +14,7 @@ factory
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((fieldGroupingField, options) => {
-    // If building a facility grouping facility object that comes from the server, transform it to
+    // If building a field grouping field object that comes from the server, transform it to
     // have camel case and capital letters in the right spots
     if (options.fromServer) {
       fieldGroupingField.created_at = fieldGroupingField.createdAt;

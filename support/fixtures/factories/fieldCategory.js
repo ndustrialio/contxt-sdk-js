@@ -16,7 +16,7 @@ factory
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((fieldCategory, options) => {
-    // If building a field grouping object that comes from the server, transform it to have camel
+    // If building a field category object that comes from the server, transform it to have camel
     // case and capital letters in the right spots
     if (options.fromServer) {
       fieldCategory.created_at = fieldCategory.createdAt;

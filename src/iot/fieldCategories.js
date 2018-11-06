@@ -52,7 +52,7 @@ class FieldCategories {
    *      name: 'Room 2',
    *      organizationId: '8a3cb818-0889-4674-b871-7ceadaecd26a',
    *      parentCategoryId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e'
-   * })
+   *   })
    *   .then((fieldCategory) => console.log(fieldCategory))
    *   .catch((err) => console.log(err));
    */
@@ -156,6 +156,38 @@ class FieldCategories {
   }
 
   /**
+   * Get a listing of all field categories available to the user.
+   *
+   * API Endpoint: '/categories'
+   * Method: GET
+   *
+   * @param {String} facilityId
+   *
+   * @returns {Promise}
+   * @fulfill {FieldCategory[]} Information about the field categories
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.iot.fieldCategories
+   *   .getAllByFacility(187)
+   *   .then((fieldCategories) => console.log(fieldCategories))
+   *   .catch((err) => console.log(err));
+   */
+  getAllByFacility(facilityId) {
+    if (!facilityId) {
+      return Promise.reject(
+        new Error(
+          'A facilityId is required for getting field categories by facility.'
+        )
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/facilities/${facilityId}/categories`)
+      .then((fieldCategories) => toCamelCase(fieldCategories));
+  }
+
+  /**
    * Updates information about a field category
    *
    * API Endpoint: '/categories/:categoryId'
@@ -172,7 +204,7 @@ class FieldCategories {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.iot.fieldGroupings
+   * contxtSdk.iot.fieldCategories
    *   .update('b3dbaae3-25dd-475b-80dc-66296630a8d0', {
    *      description: 'Power usage from all compressors in Room 2',
    *      parentCategoryId: 'e9f8f89c-609c-4c83-8ebc-cea928af661e',
@@ -203,6 +235,7 @@ class FieldCategories {
         )
       );
     }
+
     const formattedUpdate = toSnakeCase(update, {
       excludeKeys: ['id', 'organizationId']
     });

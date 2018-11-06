@@ -64,9 +64,13 @@ describe('Iot/FieldGroupings', function() {
         expectedGroupingField = fixture.build('fieldGroupingField');
         expectedFieldId = expectedGroupingField.outputFieldId;
         expectedGroupingId = expectedGroupingField.fieldGroupingId;
-        rawGroupingField = fixture.build('fieldGroupingField', {
-          fromServer: true
-        });
+        rawGroupingField = fixture.build(
+          'fieldGroupingField',
+          expectedGroupingField,
+          {
+            fromServer: true
+          }
+        );
 
         request = {
           ...baseRequest,
@@ -91,7 +95,7 @@ describe('Iot/FieldGroupings', function() {
         );
       });
 
-      it('formats the returning field grouping field object', function() {
+      it('formats the returned field grouping field object', function() {
         return promise.then(() => {
           expect(toCamelCase).to.be.calledWith(rawGroupingField);
         });
@@ -151,7 +155,7 @@ describe('Iot/FieldGroupings', function() {
           fromServer: true
         });
         expectedGrouping = fixture.build('fieldGrouping', null, {
-          fromServer: true
+          fromServer: false
         });
 
         request = {
@@ -209,7 +213,7 @@ describe('Iot/FieldGroupings', function() {
         const promise = fieldGroupings.create(null, fieldGrouping);
 
         return expect(promise).to.be.rejectedWith(
-          'A facilityId is required for getting information about a field grouping.'
+          'A facilityId is required for creating a field grouping.'
         );
       });
 
@@ -341,7 +345,7 @@ describe('Iot/FieldGroupings', function() {
     });
   });
 
-  describe('getAll', function() {
+  describe('getAllByFacilityId', function() {
     context('the facility ID is provided', function() {
       let expectedFieldGroupings;
       let promise;
@@ -373,7 +377,7 @@ describe('Iot/FieldGroupings', function() {
         const fieldGroupings = new FieldGroupings(baseSdk, request);
         fieldGroupings._baseUrl = expectedHost;
 
-        promise = fieldGroupings.getAll(facilityId);
+        promise = fieldGroupings.getAllByFacilityId(facilityId);
       });
 
       it('gets the field groupings from the server', function() {
@@ -398,7 +402,7 @@ describe('Iot/FieldGroupings', function() {
     context('the facility ID is not provided', function() {
       it('throws an error', function() {
         const fieldGroupings = new FieldGroupings(baseSdk, baseRequest);
-        const promise = fieldGroupings.getAll();
+        const promise = fieldGroupings.getAllByFacilityId();
 
         return expect(promise).to.be.rejectedWith(
           'A facilityId is required for getting all field groupings.'
