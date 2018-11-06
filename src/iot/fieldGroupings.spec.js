@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import FieldGroupings from './fieldGroupings';
 import * as objectUtils from '../utils/objects';
+import * as paginationUtils from '../utils/pagination';
 
 describe('Iot/FieldGroupings', function() {
   let baseRequest;
@@ -53,20 +54,20 @@ describe('Iot/FieldGroupings', function() {
   describe('addField', function() {
     context('when all required information is supplied', function() {
       let expectedFieldId;
-      let expectedGroupingField;
       let expectedGroupingId;
+      let fieldGroupingFieldToServer;
+      let fieldGroupingFieldFromServer;
       let promise;
-      let rawGroupingField;
       let request;
       let toCamelCase;
 
       beforeEach(function() {
-        expectedGroupingField = fixture.build('fieldGroupingField');
-        expectedFieldId = expectedGroupingField.outputFieldId;
-        expectedGroupingId = expectedGroupingField.fieldGroupingId;
-        rawGroupingField = fixture.build(
+        fieldGroupingFieldToServer = fixture.build('fieldGroupingField');
+        expectedFieldId = fieldGroupingFieldToServer.outputFieldId;
+        expectedGroupingId = fieldGroupingFieldToServer.fieldGroupingId;
+        fieldGroupingFieldFromServer = fixture.build(
           'fieldGroupingField',
-          expectedGroupingField,
+          fieldGroupingFieldToServer,
           {
             fromServer: true
           }
@@ -74,11 +75,11 @@ describe('Iot/FieldGroupings', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(rawGroupingField)
+          post: this.sandbox.stub().resolves(fieldGroupingFieldFromServer)
         };
         toCamelCase = this.sandbox
           .stub(objectUtils, 'toCamelCase')
-          .returns(expectedGroupingField);
+          .returns(fieldGroupingFieldToServer);
 
         const fieldGroupings = new FieldGroupings(
           baseSdk,
@@ -89,7 +90,7 @@ describe('Iot/FieldGroupings', function() {
         promise = fieldGroupings.addField(expectedGroupingId, expectedFieldId);
       });
 
-      it('creates the new field grouping <--> field relationship', function() {
+      it('creates a new relationship between the field grouping and field', function() {
         expect(request.post).to.be.calledWith(
           `${expectedHost}/groupings/${expectedGroupingId}/fields/${expectedFieldId}`
         );
@@ -97,13 +98,13 @@ describe('Iot/FieldGroupings', function() {
 
       it('formats the returned field grouping field object', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(rawGroupingField);
+          expect(toCamelCase).to.be.calledWith(fieldGroupingFieldFromServer);
         });
       });
 
       it('returns a fulfilled promise with the new field information', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedGroupingField
+          fieldGroupingFieldToServer
         );
       });
     });
@@ -284,17 +285,17 @@ describe('Iot/FieldGroupings', function() {
 
   describe('get', function() {
     context('the field grouping ID is provided', function() {
-      let expectedFieldGrouping;
+      let fieldGroupingToServer;
       let promise;
-      let rawFieldGrouping;
+      let fieldGroupingFromServer;
       let request;
       let toCamelCase;
 
       beforeEach(function() {
-        expectedFieldGrouping = fixture.build('fieldGrouping');
-        rawFieldGrouping = fixture.build(
+        fieldGroupingToServer = fixture.build('fieldGrouping');
+        fieldGroupingFromServer = fixture.build(
           'fieldGrouping',
-          expectedFieldGrouping,
+          fieldGroupingToServer,
           {
             fromServer: true
           }
@@ -302,33 +303,33 @@ describe('Iot/FieldGroupings', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawFieldGrouping)
+          get: this.sandbox.stub().resolves(fieldGroupingFromServer)
         };
         toCamelCase = this.sandbox
           .stub(objectUtils, 'toCamelCase')
-          .returns(expectedFieldGrouping);
+          .returns(fieldGroupingToServer);
 
         const fieldGroupings = new FieldGroupings(baseSdk, request);
         fieldGroupings._baseUrl = expectedHost;
 
-        promise = fieldGroupings.get(expectedFieldGrouping.id);
+        promise = fieldGroupings.get(fieldGroupingToServer.id);
       });
 
       it('gets the field grouping from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/groupings/${expectedFieldGrouping.id}`
+          `${expectedHost}/groupings/${fieldGroupingToServer.id}`
         );
       });
 
       it('formats the field grouping', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(rawFieldGrouping);
+          expect(toCamelCase).to.be.calledWith(fieldGroupingFromServer);
         });
       });
 
       it('returns the requested field grouping', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedFieldGrouping
+          fieldGroupingToServer
         );
       });
     });
@@ -345,56 +346,84 @@ describe('Iot/FieldGroupings', function() {
     });
   });
 
-  describe('getAllByFacilityId', function() {
+  describe('getGroupingsByFacilityId', function() {
     context('the facility ID is provided', function() {
-      let expectedFieldGroupings;
-      let promise;
-      let rawFieldGroupings;
-      let request;
-      let toCamelCase;
       let facilityId;
+      let fieldGroupingFromServerBeforeFormat;
+      let fieldGroupingFromServerAfterFormat;
+      let formatPaginatedDataFromServer;
+      let paginationOptionsAfterFormat;
+      let paginationOptionsBeforeFormat;
+      let promise;
+      let request;
+      let toSnakeCase;
 
       beforeEach(function() {
-        const numberOfGroupings = faker.random.number({ min: 1, max: 10 });
         facilityId = faker.random.number({ min: 1, max: 300 });
-        expectedFieldGroupings = fixture.buildList(
-          'fieldGrouping',
-          numberOfGroupings
-        );
-        rawFieldGroupings = fixture.buildList(
-          'fieldGrouping',
-          numberOfGroupings
-        );
+        fieldGroupingFromServerAfterFormat = {
+          _metadata: fixture.build('paginationMetadata'),
+          records: fixture.buildList(
+            'fieldGrouping',
+            faker.random.number({ min: 5, max: 10 })
+          )
+        };
+        fieldGroupingFromServerBeforeFormat = {
+          ...fieldGroupingFromServerAfterFormat,
+          records: fieldGroupingFromServerAfterFormat.records.map((values) =>
+            fixture.build('fieldGrouping', values, { fromServer: true })
+          )
+        };
+        paginationOptionsBeforeFormat = {
+          limit: faker.random.number({ min: 10, max: 1000 }),
+          offset: faker.random.number({ max: 1000 })
+        };
+        paginationOptionsAfterFormat = {
+          ...paginationOptionsBeforeFormat
+        };
+
+        formatPaginatedDataFromServer = this.sandbox
+          .stub(paginationUtils, 'formatPaginatedDataFromServer')
+          .returns(fieldGroupingFromServerAfterFormat);
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawFieldGroupings)
+          get: this.sandbox.stub().resolves(fieldGroupingFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
-          .stub(objectUtils, 'toCamelCase')
-          .returns(expectedFieldGroupings);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(paginationOptionsAfterFormat);
 
         const fieldGroupings = new FieldGroupings(baseSdk, request);
         fieldGroupings._baseUrl = expectedHost;
 
-        promise = fieldGroupings.getAllByFacilityId(facilityId);
+        promise = fieldGroupings.getGroupingsByFacilityId(
+          facilityId,
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options', function() {
+        expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
       });
 
       it('gets the field groupings from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/facilities/${facilityId}/groupings`
+          `${expectedHost}/facilities/${facilityId}/groupings`,
+          { params: paginationOptionsAfterFormat }
         );
       });
 
       it('formats the field groupings', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(rawFieldGroupings);
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            fieldGroupingFromServerBeforeFormat
+          );
         });
       });
 
       it('returns the requested field groupingss', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedFieldGroupings
+          fieldGroupingFromServerAfterFormat
         );
       });
     });
@@ -402,7 +431,7 @@ describe('Iot/FieldGroupings', function() {
     context('the facility ID is not provided', function() {
       it('throws an error', function() {
         const fieldGroupings = new FieldGroupings(baseSdk, baseRequest);
-        const promise = fieldGroupings.getAllByFacilityId();
+        const promise = fieldGroupings.getGroupingsByFacilityId();
 
         return expect(promise).to.be.rejectedWith(
           'A facilityId is required for getting all field groupings.'
@@ -430,7 +459,7 @@ describe('Iot/FieldGroupings', function() {
         );
       });
 
-      it('requests to remove the field', function() {
+      it('requests to remove the field from the field grouping', function() {
         const fieldGroupingId = fieldGroupingField.fieldGroupingId;
         const outputFieldId = fieldGroupingField.outputFieldId;
 
@@ -494,9 +523,12 @@ describe('Iot/FieldGroupings', function() {
           'ownerId',
           'updatedAt'
         ]);
-        formattedUpdateToServer = fixture.build('facilityGrouping', update, {
-          fromServer: true
-        });
+        formattedUpdateToServer = omit(
+          fixture.build('facilityGrouping', update, {
+            fromServer: true
+          }),
+          ['created_at', 'id', 'organization_id', 'owner_id', 'updated_at']
+        );
 
         request = {
           ...baseRequest,

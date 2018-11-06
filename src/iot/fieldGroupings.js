@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} FieldGrouping
@@ -197,13 +198,14 @@ class FieldGroupings {
   }
 
   /**
-   * Get a listing of all field groupings for a facility available to the user. Includes public groupings across
+   * Get a paginated listing of field groupings for a facility available to the user. Includes public groupings across
    * any organization the user has access to and the user's private groupings.
    *
    * API Endpoint: '/facilities/:facilityId/groupings'
    * Method: GET
    *
    * @param {number} facilityId The ID of a facility with groupings
+   * @param {PaginationOptions} [paginationOptions]
    *
    * @returns {Promise}
    * @fulfill {FieldGrouping[]} Information about the field grouping
@@ -211,11 +213,11 @@ class FieldGroupings {
    *
    * @example
    * contxtSdk.iot.fieldGroupings
-   *   .getAllByFacilityId(135)
+   *   .getGroupingsByFacilityId(135)
    *   .then((fieldGroupings) => console.log(fieldGroupings))
    *   .catch((err) => console.log(err));
    */
-  getAllByFacilityId(facilityId) {
+  getGroupingsByFacilityId(facilityId, paginationOptions) {
     if (!facilityId) {
       return Promise.reject(
         new Error('A facilityId is required for getting all field groupings.')
@@ -223,8 +225,10 @@ class FieldGroupings {
     }
 
     return this._request
-      .get(`${this._baseUrl}/facilities/${facilityId}/groupings`)
-      .then((fieldGrouping) => toCamelCase(fieldGrouping));
+      .get(`${this._baseUrl}/facilities/${facilityId}/groupings`, {
+        params: toSnakeCase(paginationOptions)
+      })
+      .then((fieldGrouping) => formatPaginatedDataFromServer(fieldGrouping));
   }
 
   /**
