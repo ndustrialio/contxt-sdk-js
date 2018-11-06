@@ -275,7 +275,7 @@ class FacilityGroupings {
    *
    * @example
    * contxtSdk.facilities.groupings
-   *   .update({
+   *   .update('b3dbaae3-25dd-475b-80dc-66296630a8d0', {
    *     description: 'US States of CT, MA, ME, NH, RI, VT',
    *     isPrivate: false,
    *     name: 'New England, USA',
