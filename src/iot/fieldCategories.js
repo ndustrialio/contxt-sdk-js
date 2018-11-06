@@ -13,7 +13,7 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
 /**
  * Module that provides access to field category information
  *
- * @typicalname contxtSdk.iot.fieldGroupings
+ * @typicalname contxtSdk.iot.fieldCategories
  */
 class FieldCategories {
   /**
