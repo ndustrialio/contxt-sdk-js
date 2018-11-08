@@ -475,6 +475,50 @@ for authenticating and communicating with an individual API and the external mod
 | id | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="FieldCategory"></a>
+
+## FieldCategory : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| description | <code>String</code> |  |
+| id | <code>String</code> | UUID |
+| name | <code>String</code> |  |
+| organizationId | <code>String</code> |  |
+| [parentCategoryId] | <code>String</code> | UUID |
+
+<a name="FieldGrouping"></a>
+
+## FieldGrouping : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| description | <code>String</code> |  |
+| [fieldCategoryId] | <code>String</code> | UUID |
+| facilityId | <code>Number</code> |  |
+| id | <code>String</code> | UUID |
+| isPublic | <code>Boolean</code> |  |
+| label | <code>String</code> |  |
+| ownerId | <code>String</code> |  |
+| slug | <code>String</code> |  |
+
+<a name="FieldGroupingField"></a>
+
+## FieldGroupingField : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| fieldGroupingId | <code>string</code> | UUID |
+| id | <code>string</code> | UUID |
+| outputFieldId | <code>number</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>
