@@ -1,5 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} FieldCategory
@@ -139,6 +140,8 @@ class FieldCategories {
    * API Endpoint: '/categories'
    * Method: GET
    *
+   * @param {PaginationOptions} [paginationOptions]
+   *
    * @returns {Promise}
    * @fulfill {FieldCategory[]} Information about the field categories
    * @reject {Error}
@@ -149,10 +152,14 @@ class FieldCategories {
    *   .then((fieldCategories) => console.log(fieldCategories))
    *   .catch((err) => console.log(err));
    */
-  getAll() {
+  getAll(paginationOptions) {
     return this._request
-      .get(`${this._baseUrl}/categories`)
-      .then((fieldCategories) => toCamelCase(fieldCategories));
+      .get(`${this._baseUrl}/categories`, {
+        params: toSnakeCase(paginationOptions)
+      })
+      .then((fieldCategories) =>
+        formatPaginatedDataFromServer(fieldCategories)
+      );
   }
 
   /**

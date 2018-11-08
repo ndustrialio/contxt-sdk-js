@@ -1,6 +1,7 @@
 import omit from 'lodash.omit';
 import FieldCategories from './fieldCategories';
 import * as objectUtils from '../utils/objects';
+import * as paginationUtils from '../utils/pagination';
 
 describe('Iot/FieldCategories', function() {
   let baseRequest;
@@ -181,17 +182,17 @@ describe('Iot/FieldCategories', function() {
 
   describe('get', function() {
     context('the field category ID is provided', function() {
-      let expectedFieldCategory;
+      let fieldCategoryFromServer;
+      let fieldCategoryToServer;
       let promise;
-      let rawFieldCategory;
       let request;
       let toCamelCase;
 
       beforeEach(function() {
-        expectedFieldCategory = fixture.build('fieldCategory');
-        rawFieldCategory = fixture.build(
+        fieldCategoryToServer = fixture.build('fieldCategory');
+        fieldCategoryFromServer = fixture.build(
           'fieldCategory',
-          expectedFieldCategory,
+          fieldCategoryToServer,
           {
             fromServer: true
           }
@@ -199,33 +200,33 @@ describe('Iot/FieldCategories', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawFieldCategory)
+          get: this.sandbox.stub().resolves(fieldCategoryFromServer)
         };
         toCamelCase = this.sandbox
           .stub(objectUtils, 'toCamelCase')
-          .returns(expectedFieldCategory);
+          .returns(fieldCategoryToServer);
 
         const fieldCategories = new FieldCategories(baseSdk, request);
         fieldCategories._baseUrl = expectedHost;
 
-        promise = fieldCategories.get(expectedFieldCategory.id);
+        promise = fieldCategories.get(fieldCategoryToServer.id);
       });
 
       it('gets the field category from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/categories/${expectedFieldCategory.id}`
+          `${expectedHost}/categories/${fieldCategoryToServer.id}`
         );
       });
 
       it('formats the field category', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(rawFieldCategory);
+          expect(toCamelCase).to.be.calledWith(fieldCategoryFromServer);
         });
       });
 
       it('returns the requested field category', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedFieldCategory
+          fieldCategoryToServer
         );
       });
     });
@@ -243,50 +244,77 @@ describe('Iot/FieldCategories', function() {
   });
 
   describe('getAll', function() {
-    let expectedFieldCategories;
+    let fieldCategoriesFromServerBeforeFormat;
+    let fieldCategoriesFromServerAfterFormat;
+    let formatPaginatedDataFromServer;
+    let paginationOptionsAfterFormat;
+    let paginationOptionsBeforeFormat;
     let promise;
-    let rawFieldCategories;
     let request;
-    let toCamelCase;
+    let toSnakeCase;
 
     beforeEach(function() {
-      const numberOfCategories = faker.random.number({ min: 1, max: 10 });
-      expectedFieldCategories = fixture.buildList(
-        'fieldCategory',
-        numberOfCategories
-      );
-      rawFieldCategories = fixture.buildList(
-        'fieldCategory',
-        numberOfCategories
-      );
+      fieldCategoriesFromServerAfterFormat = {
+        _metadata: fixture.build('paginationMetadata'),
+        records: fixture.buildList(
+          'fieldCategory',
+          faker.random.number({ min: 5, max: 10 })
+        )
+      };
+      fieldCategoriesFromServerBeforeFormat = {
+        ...fieldCategoriesFromServerAfterFormat,
+        records: fieldCategoriesFromServerAfterFormat.records.map((values) =>
+          fixture.build('fieldCategory', values, { fromServer: true })
+        )
+      };
+      paginationOptionsBeforeFormat = {
+        limit: faker.random.number({ min: 10, max: 1000 }),
+        offset: faker.random.number({ max: 1000 })
+      };
+      paginationOptionsAfterFormat = {
+        ...paginationOptionsBeforeFormat
+      };
+
+      formatPaginatedDataFromServer = this.sandbox
+        .stub(paginationUtils, 'formatPaginatedDataFromServer')
+        .returns(fieldCategoriesFromServerAfterFormat);
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(rawFieldCategories)
+        get: this.sandbox.stub().resolves(fieldCategoriesFromServerBeforeFormat)
       };
-      toCamelCase = this.sandbox
-        .stub(objectUtils, 'toCamelCase')
-        .returns(expectedFieldCategories);
+
+      toSnakeCase = this.sandbox
+        .stub(objectUtils, 'toSnakeCase')
+        .returns(paginationOptionsAfterFormat);
 
       const fieldCategories = new FieldCategories(baseSdk, request);
       fieldCategories._baseUrl = expectedHost;
 
-      promise = fieldCategories.getAll();
+      promise = fieldCategories.getAll(paginationOptionsBeforeFormat);
+    });
+
+    it('formats the pagination options', function() {
+      expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
     });
 
     it('gets the field categories from the server', function() {
-      expect(request.get).to.be.calledWith(`${expectedHost}/categories`);
+      expect(request.get).to.be.calledWith(`${expectedHost}/categories`, {
+        params: paginationOptionsAfterFormat
+      });
     });
 
     it('formats the field categories', function() {
       return promise.then(() => {
-        expect(toCamelCase).to.be.calledWith(rawFieldCategories);
+        expect(formatPaginatedDataFromServer).to.be.calledWith(
+          fieldCategoriesFromServerBeforeFormat
+        );
       });
     });
 
     it('returns the requested field categories', function() {
       return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-        expectedFieldCategories
+        fieldCategoriesFromServerAfterFormat
       );
     });
   });
