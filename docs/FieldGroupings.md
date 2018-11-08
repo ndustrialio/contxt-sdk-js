@@ -136,7 +136,7 @@ API Endpoint: '/facilities/:facilityId/groupings'
 Method: GET
 
 **Kind**: instance method of [<code>FieldGroupings</code>](#FieldGroupings)  
-**Fulfill**: <code>FieldGrouping[]</code> Information about the field grouping  
+**Fulfill**: [<code>FieldGroupingsFromServer</code>](./Typedefs.md#FieldGroupingsFromServer) Information about the field grouping  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |

@@ -159,11 +159,15 @@ for authenticating and communicating with an individual API and the external mod
 <dd></dd>
 <dt><a href="./Typedefs.md#FacilityGroupingFacility">FacilityGroupingFacility</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#FieldCategoriesFromServer">FieldCategoriesFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#FieldCategory">FieldCategory</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FieldGrouping">FieldGrouping</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FieldGroupingField">FieldGroupingField</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#FieldGroupingsFromServer">FieldGroupingsFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>

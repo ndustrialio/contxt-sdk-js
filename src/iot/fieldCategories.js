@@ -12,6 +12,14 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} FieldCategoriesFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {FieldCategory[]} records
+ */
+
+/**
  * Module that provides access to field category information
  *
  * @typicalname contxtSdk.iot.fieldCategories
@@ -143,7 +151,7 @@ class FieldCategories {
    * @param {PaginationOptions} [paginationOptions]
    *
    * @returns {Promise}
-   * @fulfill {FieldCategory[]} Information about the field categories
+   * @fulfill {FieldCategoriesFromServer} Information about the field categories
    * @reject {Error}
    *
    * @example
@@ -163,9 +171,9 @@ class FieldCategories {
   }
 
   /**
-   * Get a listing of all field categories available to the user.
+   * Get a listing of all field categories for a given facility ID.
    *
-   * API Endpoint: '/categories'
+   * API Endpoint: '/facilities/:facilityId/categories'
    * Method: GET
    *
    * @param {String} facilityId

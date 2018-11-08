@@ -109,7 +109,7 @@ API Endpoint: '/categories'
 Method: GET
 
 **Kind**: instance method of [<code>FieldCategories</code>](#FieldCategories)  
-**Fulfill**: <code>FieldCategory[]</code> Information about the field categories  
+**Fulfill**: [<code>FieldCategoriesFromServer</code>](./Typedefs.md#FieldCategoriesFromServer) Information about the field categories  
 **Reject**: <code>Error</code>  
 
 | Param | Type |
@@ -126,9 +126,9 @@ contxtSdk.iot.fieldCategories
 <a name="FieldCategories+getAllByFacility"></a>
 
 ### contxtSdk.iot.fieldCategories.getAllByFacility(facilityId) ⇒ <code>Promise</code>
-Get a listing of all field categories available to the user.
+Get a listing of all field categories for a given facility ID.
 
-API Endpoint: '/categories'
+API Endpoint: '/facilities/:facilityId/categories'
 Method: GET
 
 **Kind**: instance method of [<code>FieldCategories</code>](#FieldCategories)  

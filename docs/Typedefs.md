@@ -475,6 +475,19 @@ for authenticating and communicating with an individual API and the external mod
 | id | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="FieldCategoriesFromServer"></a>
+
+## FieldCategoriesFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;FieldCategory&gt;</code>](#FieldCategory) |  |
+
 <a name="FieldCategory"></a>
 
 ## FieldCategory : <code>Object</code>
@@ -518,6 +531,19 @@ for authenticating and communicating with an individual API and the external mod
 | id | <code>string</code> | UUID |
 | outputFieldId | <code>number</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="FieldGroupingsFromServer"></a>
+
+## FieldGroupingsFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | [<code>Array.&lt;FieldGrouping&gt;</code>](#FieldGrouping) |  |
 
 <a name="MachineAuthSessionInfo"></a>
 

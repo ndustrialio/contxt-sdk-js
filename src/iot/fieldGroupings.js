@@ -15,6 +15,14 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} FieldGroupingsFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of asset types found
+ * @property {FieldGrouping[]} records
+ */
+
+/**
  * @typedef {Object} FieldGroupingField
  * @param {string} createdAt ISO 8601 Extended Format date/time string
  * @param {string} fieldGroupingId UUID
@@ -208,7 +216,7 @@ class FieldGroupings {
    * @param {PaginationOptions} [paginationOptions]
    *
    * @returns {Promise}
-   * @fulfill {FieldGrouping[]} Information about the field grouping
+   * @fulfill {FieldGroupingsFromServer} Information about the field grouping
    * @reject {Error}
    *
    * @example
