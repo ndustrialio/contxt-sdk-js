@@ -1,3 +1,5 @@
+import FieldCategories from './fieldCategories';
+import FieldGroupings from './fieldGroupings';
 import Fields from './fields';
 import Outputs from './outputs';
 
@@ -22,6 +24,8 @@ class Iot {
 
     this.fields = new Fields(sdk, request, baseUrl);
     this.outputs = new Outputs(sdk, request, baseUrl);
+    this.fieldCategories = new FieldCategories(sdk, request, baseUrl);
+    this.fieldGroupings = new FieldGroupings(sdk, request, baseUrl);
   }
 }
 
