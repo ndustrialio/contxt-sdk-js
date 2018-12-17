@@ -31,6 +31,7 @@ require('./outputFieldData');
 require('./organization');
 require('./owner');
 require('./paginationMetadata');
+require('./userPermissionsMap');
 require('./userProfile');
 
 module.exports = factory;

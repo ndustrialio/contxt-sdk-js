@@ -240,4 +240,59 @@ describe('Coordinator', function() {
       });
     });
   });
+
+  describe('getUserPermissionsMap', function() {
+    context('the user ID is provided', function() {
+      let expectedPermissionsMap;
+      let expectedUserId;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedPermissionsMap = fixture.build('userPermissionsMap');
+        expectedUserId = faker.random.uuid();
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(expectedPermissionsMap)
+        };
+        toCamelCase = this.sandbox.stub(objectUtils, 'toCamelCase');
+
+        const coordinator = new Coordinator(baseSdk, request);
+        coordinator._baseUrl = expectedHost;
+
+        promise = coordinator.getUserPermissionsMap(expectedUserId);
+      });
+
+      it('gets the user from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/users/${expectedUserId}/permissions`
+        );
+      });
+
+      it('does not format the returned permissions map to avoid mangling the service ID (keys)', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.not.be.called;
+        });
+      });
+
+      it('returns the requested permissions map', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedPermissionsMap
+        );
+      });
+    });
+
+    context('the user ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.getUserPermissionsMap();
+
+        return expect(promise).to.be.rejectedWith(
+          "A user ID is required for getting information about a user's permissions map"
+        );
+      });
+    });
+  });
 });
