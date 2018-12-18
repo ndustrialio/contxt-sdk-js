@@ -11,10 +11,7 @@ factory.define('userPermissionsMap').after((userPermissionsMap) => {
     memo[faker.internet.password()] = times(
       faker.random.number({ min: 1, max: 5 })
     ).reduce((existingScopes) => {
-      const scopeLabel = faker.company
-        .catchPhrase()
-        .toLowerCase()
-        .replace(/[ -]/g, '_');
+      const scopeLabel = `${faker.lorem.word()}_${faker.lorem.word()}`;
 
       return [...existingScopes, `read:${scopeLabel}`, `write:${scopeLabel}`];
     }, []);
