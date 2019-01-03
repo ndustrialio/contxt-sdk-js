@@ -1,3 +1,9 @@
+## [v0.0.37](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.37) (2019-01-03)
+
+**Added**
+
+-Added `Coordinator#getUserPermissionsMap` to retrieve a map of all permission scopes a user can access
+
 ## [v0.0.36](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.36) (2018-11-09)
 
 **Added**
