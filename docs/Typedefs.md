@@ -557,7 +557,7 @@ for authenticating and communicating with an individual API and the external mod
 | contentType | <code>string</code> | The MIME type of the file |
 | description | <code>string</code> |  |
 | filename | <code>string</code> |  |
-| id | <code>number</code> |  |
+| id | <code>string</code> | UUID of the file |
 | organizationId | <code>string</code> | UUID of the organization to which the file belongs |
 | ownerId | <code>string</code> | The ID of the user who owns the file |
 | status | <code>string</code> | The status of the File, e.g. "ACTIVE" |

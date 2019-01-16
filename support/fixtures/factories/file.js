@@ -11,7 +11,7 @@ factory
     contentType: () => faker.system.mimeType(),
     description: () => faker.hacker.phrase(),
     filename: () => `${faker.hacker.noun()}.${faker.system.commonFileExt()}`,
-    id: () => faker.random.number(),
+    id: () => faker.random.uuid(),
     organizationId: () => factory.build('organization').id,
     status: () => faker.random.arrayElement(['ACTIVE', 'UPLOADING']),
     updatedAt: () => faker.date.recent().toISOString()

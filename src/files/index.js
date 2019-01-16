@@ -6,7 +6,7 @@ import { toCamelCase } from '../utils/objects';
  * @property {string} contentType The MIME type of the file
  * @property {string} description
  * @property {string} filename
- * @property {number} id
+ * @property {string} id UUID of the file
  * @property {string} organizationId UUID of the organization to which the file belongs
  * @property {string} ownerId The ID of the user who owns the file
  * @property {string} status The status of the File, e.g. "ACTIVE"
@@ -45,7 +45,7 @@ class Files {
    *
    * @example
    * contxtSdk.files
-   *   .get(12345)
+   *   .get('bbcdd201-58f7-4b69-a24e-752e9490a347')
    *   .then((file) => console.log(file))
    *   .catch((err) => console.log(err));
    */

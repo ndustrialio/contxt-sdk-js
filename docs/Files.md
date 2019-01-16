@@ -37,7 +37,7 @@ Method: GET
 **Example**  
 ```js
 contxtSdk.files
-  .get('875afddd-091c-4385-bc21-0edf38804d27')
+  .get('bbcdd201-58f7-4b69-a24e-752e9490a347')
   .then((file) => console.log(file))
   .catch((err) => console.log(err));
 ```
