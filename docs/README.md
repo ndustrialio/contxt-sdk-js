@@ -71,6 +71,9 @@ the relationship between those groupings and facilities</p>
 <dt><a href="./Fields.md">Fields</a></dt>
 <dd><p>Module that provides access to field information</p>
 </dd>
+<dt><a href="./Files.md">Files</a></dt>
+<dd><p>Module that provides access to information about Files</p>
+</dd>
 <dt><a href="./Iot.md">Iot</a></dt>
 <dd><p>Module that provides access to real time IOT feeds and fields.</p>
 </dd>
@@ -168,6 +171,8 @@ for authenticating and communicating with an individual API and the external mod
 <dt><a href="./Typedefs.md#FieldGroupingField">FieldGroupingField</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FieldGroupingsFromServer">FieldGroupingsFromServer</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#File">File</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
