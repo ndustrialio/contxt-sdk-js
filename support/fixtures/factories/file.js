@@ -10,7 +10,7 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     contentType: () => faker.system.mimeType(),
     description: () => faker.hacker.phrase(),
-    filename: () => `${faker.hacker.noun()}.${faker.system.commonFileExt()}`,
+    filename: () => faker.system.commonFileName(),
     id: () => faker.random.uuid(),
     organizationId: () => factory.build('organization').id,
     status: () => faker.random.arrayElement(['ACTIVE', 'UPLOADING']),

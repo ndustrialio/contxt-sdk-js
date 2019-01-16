@@ -63,13 +63,14 @@ describe('Files', function() {
 
       beforeEach(function() {
         expectedFileId = faker.random.uuid();
+
         fileFromServerAfterFormat = fixture.build('file', {
           id: expectedFileId
         });
 
         fileFromServerBeforeFormat = fixture.build(
           'file',
-          { id: expectedFileId },
+          fileFromServerAfterFormat,
           { fromServer: true }
         );
 

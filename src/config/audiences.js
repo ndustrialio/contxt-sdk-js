@@ -51,11 +51,11 @@ export default {
   },
   files: {
     production: {
-      clientId: '6jPAqJCMFMRP5t7Rw2X19qt2EtTfdQ2Q',
+      clientId: 'VZJ2MRd71dM9oX2hB1EVAEjUe6loL7pl',
       host: 'https://files.api.ndustrial.io'
     },
     staging: {
-      clientId: '6jPAqJCMFMRP5t7Rw2X19qt2EtTfdQ2Q',
+      clientId: 'SLE310LY4nDT5p06sUGPVOLlGXk5osbQ',
       host: 'https://files-staging.api.ndustrial.io'
     }
   },
