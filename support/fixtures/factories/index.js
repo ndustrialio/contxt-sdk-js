@@ -26,6 +26,7 @@ require('./facilityTag');
 require('./fieldCategory');
 require('./fieldGrouping');
 require('./fieldGroupingField');
+require('./file');
 require('./outputField');
 require('./outputFieldData');
 require('./organization');
