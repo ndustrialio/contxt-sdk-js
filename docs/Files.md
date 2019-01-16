@@ -3,7 +3,7 @@
 ## Files
 Module that provides access to information about Files
 
-**Kind**: global class  
+**Kind**: global class
 
 * [Files](#Files)
     * [new Files(sdk, request)](#new_Files_new)
@@ -26,15 +26,15 @@ Gets metadata about a file. This does not return the actual file.
 API Endpoint: '/files/:fileId'
 Method: GET
 
-**Kind**: instance method of [<code>Files</code>](#Files)  
-**Fulfill**: [<code>File</code>](./Typedefs.md#File) Information about a file  
-**Reject**: <code>Error</code>  
+**Kind**: instance method of [<code>Files</code>](#Files)
+**Fulfill**: [<code>File</code>](./Typedefs.md#File) Information about a file
+**Reject**: <code>Error</code>
 
 | Param | Type | Description |
 | --- | --- | --- |
 | fileId | <code>string</code> | The ID of the file |
 
-**Example**  
+**Example**
 ```js
 contxtSdk.files
   .get('bbcdd201-58f7-4b69-a24e-752e9490a347')
