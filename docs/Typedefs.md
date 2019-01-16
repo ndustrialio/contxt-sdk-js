@@ -1,7 +1,7 @@
 <a name="Asset"></a>
 
 ## Asset : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -17,7 +17,7 @@
 <a name="AssetAttribute"></a>
 
 ## AssetAttribute : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -36,7 +36,7 @@
 <a name="AssetAttributeData"></a>
 
 ## AssetAttributeData : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -47,7 +47,7 @@
 <a name="AssetAttributeValue"></a>
 
 ## AssetAttributeValue : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -70,7 +70,7 @@
 <a name="AssetAttributeValueData"></a>
 
 ## AssetAttributeValueData : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -81,7 +81,7 @@
 <a name="AssetMetric"></a>
 
 ## AssetMetric : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -99,7 +99,7 @@
 <a name="AssetMetricValue"></a>
 
 ## AssetMetricValue : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -117,7 +117,7 @@
 <a name="AssetMetricValuesFromServer"></a>
 
 ## AssetMetricValuesFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -130,7 +130,7 @@
 <a name="AssetMetricsFromServer"></a>
 
 ## AssetMetricsFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -143,7 +143,7 @@
 <a name="AssetType"></a>
 
 ## AssetType : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -158,7 +158,7 @@
 <a name="AssetTypesFromServer"></a>
 
 ## AssetTypesFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -171,7 +171,7 @@
 <a name="AssetsFromServer"></a>
 
 ## AssetsFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -186,7 +186,7 @@
 ## Audience : <code>Object</code>
 A single audience used for authenticating and communicating with an individual API.
 
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -196,14 +196,14 @@ A single audience used for authenticating and communicating with an individual A
 <a name="Auth0WebAuthSessionInfo"></a>
 
 ## Auth0WebAuthSessionInfo : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type |
 | --- | --- |
-| accessToken | <code>string</code> |
-| apiToken | <code>string</code> |
-| expiresAt | <code>number</code> |
+| accessToken | <code>string</code> | 
+| apiToken | <code>string</code> | 
+| expiresAt | <code>number</code> | 
 
 <a name="AxiosInterceptor"></a>
 
@@ -211,7 +211,7 @@ A single audience used for authenticating and communicating with an individual A
 An object of interceptors that get called on every request or response.
 More information at [axios Interceptors](https://github.com/axios/axios#interceptors)
 
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -221,7 +221,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 <a name="ContxtOrganization"></a>
 
 ## ContxtOrganization : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -235,7 +235,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 <a name="ContxtUser"></a>
 
 ## ContxtUser : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -253,7 +253,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 <a name="CostCenter"></a>
 
 ## CostCenter : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -267,7 +267,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 <a name="CostCenterFacility"></a>
 
 ## CostCenterFacility : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -284,7 +284,7 @@ A custom audience that will override the configuration of an individual module. 
 either a reference to an environment that already exists or a clientId and host for a
 custom environment.
 
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -295,7 +295,7 @@ custom environment.
 <a name="EdgeNode"></a>
 
 ## EdgeNode : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -313,11 +313,11 @@ custom environment.
 An object of audiences that corresponds to all the different environments available for a
 single module.
 
-**Kind**: global typedef
+**Kind**: global typedef  
 <a name="Event"></a>
 
 ## Event : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -356,7 +356,7 @@ single module.
 <a name="EventType"></a>
 
 ## EventType : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -374,7 +374,7 @@ single module.
 <a name="EventTypesFromServer"></a>
 
 ## EventTypesFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -387,7 +387,7 @@ single module.
 <a name="EventsFromServer"></a>
 
 ## EventsFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -403,7 +403,7 @@ single module.
 An external module to be integrated into the SDK as a first class citizen. Includes information
 for authenticating and communicating with an individual API and the external module itself.
 
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -414,7 +414,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="Facility"></a>
 
 ## Facility : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -447,7 +447,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="FacilityGrouping"></a>
 
 ## FacilityGrouping : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -465,7 +465,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="FacilityGroupingFacility"></a>
 
 ## FacilityGroupingFacility : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -478,7 +478,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="FieldCategoriesFromServer"></a>
 
 ## FieldCategoriesFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -491,7 +491,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="FieldCategory"></a>
 
 ## FieldCategory : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -505,7 +505,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="FieldGrouping"></a>
 
 ## FieldGrouping : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -522,7 +522,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="FieldGroupingField"></a>
 
 ## FieldGroupingField : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -535,7 +535,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="FieldGroupingsFromServer"></a>
 
 ## FieldGroupingsFromServer : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -548,7 +548,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="File"></a>
 
 ## File : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -563,21 +563,32 @@ for authenticating and communicating with an individual API and the external mod
 | status | <code>string</code> | The status of the File, e.g. "ACTIVE" |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="FileToDownload"></a>
+
+## FileToDownload : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| expiresAt | <code>string</code> | ISO 8601 Extended Format date/time |
+| temporaryUrl | <code>string</code> | A temporary URL that can be used to download the file |
+
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type |
 | --- | --- |
-| apiToken | <code>string</code> |
-| expiresAt | <code>number</code> |
+| apiToken | <code>string</code> | 
+| expiresAt | <code>number</code> | 
 
 <a name="MessageBusChannel"></a>
 
 ## MessageBusChannel : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -590,7 +601,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="OutputField"></a>
 
 ## OutputField : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -616,7 +627,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="OutputFieldData"></a>
 
 ## OutputFieldData : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -627,7 +638,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="OutputFieldDataResponse"></a>
 
 ## OutputFieldDataResponse : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -645,7 +656,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="PaginationMetadata"></a>
 
 ## PaginationMetadata : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -656,7 +667,7 @@ for authenticating and communicating with an individual API and the external mod
 <a name="PaginationOptions"></a>
 
 ## PaginationOptions : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -672,7 +683,7 @@ Can authenticate with a service like Auth0 and then with Contxt or can communica
 with Contxt. The adapter must implement required methods, but most methods are optional. Some of
 the optional methods are documented below.
 
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
@@ -690,7 +701,7 @@ the optional methods are documented below.
 ## UserConfig : <code>Object</code>
 User provided configuration options
 
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Default | Description |
@@ -710,7 +721,7 @@ User provided configuration options
 <a name="UserProfile"></a>
 
 ## UserProfile : <code>Object</code>
-**Kind**: global typedef
+**Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
