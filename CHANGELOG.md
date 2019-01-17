@@ -2,7 +2,10 @@
 
 **Added**
 
-* Added Files module with the ability to perform read, download on Files stored in the Files API
+* Added Files moudle with several methods
+
+  * `Files#download` for getting a temporary URL to a File
+  * `Files#get` for getting metdata about a File
 
 ## [v0.0.37](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.37) (2019-01-03)
 

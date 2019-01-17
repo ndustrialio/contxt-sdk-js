@@ -22,7 +22,7 @@ Module that provides access to information about Files
 <a name="Files+download"></a>
 
 ### contxtSdk.files.download(fileId) ⇒ <code>Promise</code>
-Gets a temporary URL for the file in S3.
+Gets a temporary URL for the file.
 
 API Endpoint: '/files/:fileId/download'
 Method: GET
