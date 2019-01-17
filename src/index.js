@@ -102,6 +102,9 @@ class ContxtSdk {
       case sessionTypes.TYPES.AUTH0_WEB_AUTH:
         return new sessionTypes.Auth0WebAuth(this);
 
+      case sessionTypes.TYPES.CLI_AUTH:
+        return new sessionTypes.CliAuth(this);
+
       case sessionTypes.TYPES.MACHINE_AUTH:
         return new sessionTypes.MachineAuth(this);
 
