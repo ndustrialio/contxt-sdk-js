@@ -1,3 +1,12 @@
+## [v0.0.39](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.39) (2019-xx-xx)
+
+**Added**
+
+- Added Files module with several methods
+
+  - `Files#download` for getting a temporary URL to a File
+  - `Files#get` for getting metadata about a File
+
 ## [v0.0.38](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.38) (2019-01-29)
 
 **Added**

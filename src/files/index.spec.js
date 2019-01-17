@@ -52,6 +52,71 @@ describe('Files', function() {
     });
   });
 
+  describe('download', function() {
+    context('the file ID is provided', function() {
+      let fileFromServerAfterFormat;
+      let fileFromServerBeforeFormat;
+      let expectedFileId;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedFileId = faker.random.uuid();
+        fileFromServerAfterFormat = fixture.build('fileToDownload');
+
+        fileFromServerBeforeFormat = fixture.build(
+          'file',
+          fileFromServerAfterFormat,
+          { fromServer: true }
+        );
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(fileFromServerBeforeFormat)
+        };
+
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(fileFromServerAfterFormat);
+
+        const files = new Files(baseSdk, request);
+        files._baseUrl = expectedHost;
+
+        promise = files.download(expectedFileId);
+      });
+
+      it('gets the file from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/files/${expectedFileId}/download`
+        );
+      });
+
+      it('formats the file object', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(fileFromServerBeforeFormat);
+        });
+      });
+
+      it('returns the requested file', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          fileFromServerAfterFormat
+        );
+      });
+    });
+
+    context('the file Id is not provided', function() {
+      it('throws an error', function() {
+        const files = new Files(baseSdk, baseRequest);
+        const promise = files.download();
+
+        return expect(promise).to.be.rejectedWith(
+          'A file ID is required for downloading a file'
+        );
+      });
+    });
+  });
+
   describe('get', function() {
     context('the file ID is provided', function() {
       let fileFromServerAfterFormat;
@@ -63,7 +128,6 @@ describe('Files', function() {
 
       beforeEach(function() {
         expectedFileId = faker.random.uuid();
-
         fileFromServerAfterFormat = fixture.build('file', {
           id: expectedFileId
         });
