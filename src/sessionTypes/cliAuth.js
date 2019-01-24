@@ -54,7 +54,7 @@ class CliAuth {
    * @fulfills {string}
    * @rejects {Error}
    */
-  login(username, password) {
+  logIn(username, password) {
     return new Promise((resolve, reject) => {
       this._auth0.loginWithDefaultDirectory(
         { password, username },
@@ -79,7 +79,7 @@ class CliAuth {
   /**
    * Logs the user out by removing any stored session info.
    */
-  logout() {
+  logOut() {
     return new Promise((resolve) => {
       this._sessionInfo = {};
 

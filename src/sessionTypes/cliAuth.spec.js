@@ -57,7 +57,7 @@ describe('sessionTypes/CliAuth', function() {
     });
   });
 
-  describe('login', function() {
+  describe('logIn', function() {
     let cliAuth;
 
     context('a successful login', function() {
@@ -99,7 +99,7 @@ describe('sessionTypes/CliAuth', function() {
 
         cliAuth = new CliAuth(sdk);
 
-        promise = cliAuth.login(username, password);
+        promise = cliAuth.logIn(username, password);
       });
 
       it("calls the 'loginWithDefaultDirectory' function with the username and password", function() {
@@ -159,13 +159,47 @@ describe('sessionTypes/CliAuth', function() {
 
         cliAuth = new CliAuth(sdk);
 
-        promise = cliAuth.login(username, password);
+        promise = cliAuth.logIn(username, password);
       });
 
       it('returns a rejected promise with an error message', function() {
         return expect(promise).to.be.eventually.rejectedWith(
           expectedErrorMessage
         );
+      });
+    });
+  });
+
+  describe('logOut', function() {
+    let cliAuth;
+    let promise;
+
+    beforeEach(function() {
+      sdk = {
+        config: {
+          audiences: {
+            contxtAuth: fixture.build('audience'),
+            facilities: fixture.build('audience')
+          },
+          auth: {
+            clientId: faker.internet.password()
+          }
+        }
+      };
+
+      cliAuth = new CliAuth(sdk);
+
+      promise = cliAuth.logOut();
+    });
+
+    it('clears out the session info', function() {
+      expect(cliAuth._sessionInfo).to.be.an('object');
+      expect(cliAuth._sessionInfo).to.be.empty;
+    });
+
+    it('returns a fulfilled promise with a success message', function() {
+      return promise.then((response) => {
+        expect(response).to.equal('Logout successful - session info cleared.');
       });
     });
   });
