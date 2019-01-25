@@ -56,8 +56,10 @@ class CliAuth {
    */
   logIn(username, password) {
     return new Promise((resolve, reject) => {
+      const audience = this._sdk.config.audiences.contxtAuth.clientId;
+
       this._auth0.loginWithDefaultDirectory(
-        { password, username },
+        { password, username, audience },
         (err, response) => {
           if (err) {
             const errorMessage =
@@ -66,18 +68,22 @@ class CliAuth {
             return reject(new Error(errorMessage));
           }
 
-          this._sessionInfo = {
-            grantInfo: response
-          };
+          this._saveSession('accessInfo', response);
 
           return resolve('Authentication successful.');
         }
       );
     });
+    // .then(() => {
+    //   // return this._getApiToken(this._sessionInfo.accessInfo.accessToken)
+    // })
   }
 
   /**
    * Logs the user out by removing any stored session info.
+   *
+   * @returns {Promise}
+   * @fulfills {string}
    */
   logOut() {
     return new Promise((resolve) => {
@@ -87,6 +93,17 @@ class CliAuth {
     });
   }
 
+  /**
+   * Requests an access token from Contxt Auth with the correct audiences.
+   *
+   * @param {string} accessToken
+   *
+   * @returns {Promise}
+   * @fulfill {string}
+   * @rejects {Error}
+   *
+   * @private
+   */
   _getApiToken(accessToken) {
     return axios
       .post(
@@ -108,18 +125,28 @@ class CliAuth {
           headers: { Authorization: `Bearer ${accessToken}` }
         }
       )
-      .then((data) => {
-        console.log('data');
-        console.log(data);
+      .then((response) => {
+        const { data } = response;
+
+        this._saveSession('apiToken', data);
+
+        return 'Contxt Authentication successful.';
       })
-      .catch((err) => {
-        console.log('err');
-        console.log(err);
+      .catch(() => {
+        throw new Error('An error occurred during authorization with Contxt.');
       });
   }
 
-  _saveSession(sessionInfo) {
-    this._sessionInfo = sessionInfo;
+  /**
+   * Saves session info under a specific key for future use
+   *
+   * @param {string} key
+   * @param {Object} sessionInfo
+   *
+   * @private
+   */
+  _saveSession(key, sessionInfo) {
+    this._sessionInfo[key] = sessionInfo;
   }
 }
 
