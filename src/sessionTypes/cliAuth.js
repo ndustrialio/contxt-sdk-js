@@ -2,7 +2,7 @@ import auth0 from 'auth0-js';
 import axios from 'axios';
 
 /**
- * A SessionType that allows the user to initially authenticate with Auth0 and
+ * A SessionType that allows the user to authenticate with Auth0 and
  * then gain a valid JWT from the Contxt Auth service. This would only
  * be used in command line applications such as `contxt-cli`.
  *
@@ -73,10 +73,9 @@ class CliAuth {
           return resolve('Authentication successful.');
         }
       );
+    }).then(() => {
+      return this._getApiToken(this._sessionInfo.accessInfo.accessToken);
     });
-    // .then(() => {
-    //   // return this._getApiToken(this._sessionInfo.accessInfo.accessToken)
-    // })
   }
 
   /**

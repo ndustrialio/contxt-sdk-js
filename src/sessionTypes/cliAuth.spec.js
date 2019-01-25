@@ -2,7 +2,7 @@ import auth0 from 'auth0-js';
 import axios from 'axios';
 import CliAuth from './cliAuth';
 
-describe.only('sessionTypes/CliAuth', function() {
+describe('sessionTypes/CliAuth', function() {
   let authentication;
   let authenticationSession;
   let sdk;
@@ -63,6 +63,7 @@ describe.only('sessionTypes/CliAuth', function() {
 
     context('a successful login', function() {
       let expectedResponse;
+      let getApiToken;
       let password;
       let promise;
       let username;
@@ -82,9 +83,7 @@ describe.only('sessionTypes/CliAuth', function() {
         password = faker.internet.password();
         username = faker.internet.email();
         expectedResponse = {
-          accessToken: faker.random.alphaNumeric(30),
-          idToken: faker.random.alphaNumeric(300),
-          scope: faker.lorem.sentence(),
+          accessToken: faker.internet.password(),
           expiresIn: faker.random.number({ min: 100, max: 1000 }),
           tokenType: 'Bearer'
         };
@@ -97,6 +96,10 @@ describe.only('sessionTypes/CliAuth', function() {
         this.sandbox
           .stub(auth0, 'Authentication')
           .returns(authenticationSession);
+
+        getApiToken = this.sandbox
+          .stub(CliAuth.prototype, '_getApiToken')
+          .resolves('Contxt Authentication successful.');
 
         cliAuth = new CliAuth(sdk);
 
@@ -126,7 +129,14 @@ describe.only('sessionTypes/CliAuth', function() {
 
       it('returns a fulfilled promise with a success message', function() {
         return promise.then((response) => {
-          expect(response).to.equal('Authentication successful.');
+          expect(response).to.equal('Contxt Authentication successful.');
+        });
+      });
+
+      it("calls the '_getApiToken' private method with the correct information", function() {
+        return promise.then(() => {
+          expect(getApiToken).to.be.calledOnce;
+          expect(getApiToken).to.be.calledWith(expectedResponse.accessToken);
         });
       });
     });
