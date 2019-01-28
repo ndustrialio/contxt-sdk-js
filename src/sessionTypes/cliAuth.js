@@ -50,10 +50,28 @@ class CliAuth {
    *
    * @returns {Promise}
    * @fulfills {string} apiToken
+   * @rejects {Error}
    */
-  // getCurrentApiToken() {
-  //   return new Promise()
-  // }
+  getCurrentApiToken() {
+    return new Promise((resolve, reject) => {
+      if (!this._sessionInfo.accessToken) {
+        return reject(new Error('No access token found.'));
+      }
+
+      return resolve(this._sessionInfo.accessToken);
+    });
+  }
+
+  /**
+   * Tells caller if the current user is authenticated
+   *
+   * @returns {boolean}
+   */
+  isAuthenticated() {
+    const hasToken = !!(this._sessionInfo && this._sessionInfo.accessToken);
+
+    return hasToken;
+  }
 
   /**
    * Logs the user in using Auth0 using a username a password

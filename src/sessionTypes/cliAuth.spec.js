@@ -2,7 +2,7 @@ import auth0 from 'auth0-js';
 import axios from 'axios';
 import CliAuth from './cliAuth';
 
-describe('sessionTypes/CliAuth', function() {
+describe.only('sessionTypes/CliAuth', function() {
   let authentication;
   let authenticationSession;
   let sdk;
@@ -30,9 +30,7 @@ describe('sessionTypes/CliAuth', function() {
           }
         }
       };
-      authentication = this.sandbox
-        .stub(auth0, 'Authentication')
-        .returns(authenticationSession);
+      authentication = this.sandbox.stub(auth0, 'Authentication').returns({});
 
       cliAuth = new CliAuth(sdk);
     });
@@ -52,6 +50,88 @@ describe('sessionTypes/CliAuth', function() {
     it('sets an initial, empty session info state', function() {
       expect(cliAuth._sessionInfo).to.be.an('object');
       expect(cliAuth._sessionInfo).to.be.empty;
+    });
+  });
+
+  describe('getCurrentApiToken', function() {
+    let cliAuth;
+    let expectedApiToken;
+    let promise;
+
+    beforeEach(function() {
+      sdk = {
+        config: {
+          audiences: {
+            contxtAuth: fixture.build('audience'),
+            facilities: fixture.build('audience')
+          },
+          auth: {
+            clientId: faker.internet.password()
+          }
+        }
+      };
+      this.sandbox.stub(auth0, 'Authentication').returns({});
+
+      expectedApiToken = faker.internet.password();
+
+      cliAuth = new CliAuth(sdk);
+    });
+
+    it('returns a rejected promise if there is no access token in the session info', function() {
+      promise = cliAuth.getCurrentApiToken();
+
+      return expect(promise).to.be.eventually.rejectedWith(
+        'No access token found.'
+      );
+    });
+
+    it('returns a fulfilled promise with the access token', function() {
+      cliAuth._sessionInfo = {
+        accessToken: expectedApiToken
+      };
+
+      promise = cliAuth.getCurrentApiToken();
+
+      return promise.then((token) => {
+        expect(token).to.deep.equal(expectedApiToken);
+      });
+    });
+  });
+
+  describe('isAuthenticated', function() {
+    let cliAuth;
+
+    beforeEach(function() {
+      sdk = {
+        config: {
+          audiences: {
+            contxtAuth: fixture.build('audience'),
+            facilities: fixture.build('audience')
+          },
+          auth: {
+            clientId: faker.internet.password()
+          }
+        }
+      };
+      this.sandbox.stub(auth0, 'Authentication').returns({});
+
+      cliAuth = new CliAuth(sdk);
+    });
+
+    it('returns true when there is a stored access token', function() {
+      cliAuth._sessionInfo = {
+        accessToken: faker.internet.password()
+      };
+
+      const isAuthenticated = cliAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.true;
+    });
+
+    it('returns false when there is no stored access token', function() {
+      const isAuthenticated = cliAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.false;
     });
   });
 
