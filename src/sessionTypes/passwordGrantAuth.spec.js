@@ -1,6 +1,6 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
-import PasswordGrantAuth from './cliAuth';
+import PasswordGrantAuth from './passwordGrantAuth';
 
 describe('sessionTypes/passwordGrantAuth', function() {
   let authentication;

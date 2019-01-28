@@ -103,7 +103,7 @@ class ContxtSdk {
         return new sessionTypes.Auth0WebAuth(this);
 
       case sessionTypes.TYPES.PASSWORD_GRANT_AUTH:
-        return new sessionTypes.CliAuth(this);
+        return new sessionTypes.PASSWORD_GRANT_AUTH(this);
 
       case sessionTypes.TYPES.MACHINE_AUTH:
         return new sessionTypes.MachineAuth(this);
