@@ -30,9 +30,6 @@ describe('sessionTypes/CliAuth', function() {
           }
         }
       };
-      authenticationSession = {
-        loginWithDefaultDirectory: this.sandbox.stub()
-      };
       authentication = this.sandbox
         .stub(auth0, 'Authentication')
         .returns(authenticationSession);
