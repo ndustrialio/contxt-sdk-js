@@ -16,7 +16,7 @@ import axios from 'axios';
  * const contxtService = new ContxtSdk({
  *   config: {
  *     auth: {
- *       clientId: 'bleED0RUwb7CJ9j7D48tqSiSZRZn29AV'
+ *       clientId: '<client id>'
  *     }
  *   },
  *   sessionType: 'cliAuth'
