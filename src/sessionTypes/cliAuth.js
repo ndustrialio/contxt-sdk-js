@@ -30,6 +30,7 @@ class CliAuth {
    * @param {Object} sdk.audiences.contxtAuth
    * @param {string} sdk.audiences.contxtAuth.clientId The Auth0 client id of the
    *   Contxt Auth environment
+   * @param {string} sdk.audiences.contxtAuth.host
    * @param {Object} sdk.config
    * @param {Object} sdk.config.auth
    * @param {string} sdk.config.auth.clientId The Auth0 client id of the application
