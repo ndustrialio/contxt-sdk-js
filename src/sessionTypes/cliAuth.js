@@ -71,11 +71,11 @@ class CliAuth {
 
           this._saveSession('accessInfo', response);
 
-          return resolve('Authentication successful.');
+          return resolve(response.accessToken);
         }
       );
-    }).then(() => {
-      return this._getApiToken(this._sessionInfo.accessInfo.accessToken);
+    }).then((accessToken) => {
+      return this._getApiToken(accessToken);
     });
   }
 
