@@ -59,6 +59,7 @@ describe('sessionTypes/CliAuth', function() {
     let cliAuth;
 
     context('a successful login', function() {
+      let apiToken;
       let expectedResponse;
       let getApiToken;
       let password;
@@ -77,6 +78,7 @@ describe('sessionTypes/CliAuth', function() {
             }
           }
         };
+        apiToken = faker.internet.password();
         password = faker.internet.password();
         username = faker.internet.email();
         expectedResponse = {
@@ -96,7 +98,7 @@ describe('sessionTypes/CliAuth', function() {
 
         getApiToken = this.sandbox
           .stub(CliAuth.prototype, '_getApiToken')
-          .resolves('Contxt Authentication successful.');
+          .resolves(apiToken);
 
         cliAuth = new CliAuth(sdk);
 
@@ -126,7 +128,7 @@ describe('sessionTypes/CliAuth', function() {
 
       it('returns a fulfilled promise with a success message', function() {
         return promise.then((response) => {
-          expect(response).to.equal('Contxt Authentication successful.');
+          expect(response).to.equal(apiToken);
         });
       });
 
@@ -277,7 +279,7 @@ describe('sessionTypes/CliAuth', function() {
 
         it('returns a promise that fulfuills with a success message', function() {
           return promise.then((response) => {
-            expect(response).to.equal('Contxt Authentication successful.');
+            expect(response).to.equal(expectedApiToken);
           });
         });
 

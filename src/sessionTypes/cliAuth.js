@@ -46,6 +46,16 @@ class CliAuth {
   }
 
   /**
+   * Gets the current API token (used to communicate with other Contxt APIs)
+   *
+   * @returns {Promise}
+   * @fulfills {string} apiToken
+   */
+  // getCurrentApiToken() {
+  //   return new Promise()
+  // }
+
+  /**
    * Logs the user in using Auth0 using a username a password
    *
    * @param {string} username The username of the user to authenticate
@@ -99,7 +109,7 @@ class CliAuth {
    * @param {string} accessToken
    *
    * @returns {Promise}
-   * @fulfill {string}
+   * @fulfill {string} accessToken
    * @rejects {Error}
    *
    * @private
@@ -130,7 +140,7 @@ class CliAuth {
 
         this._saveSession('apiToken', data);
 
-        return 'Contxt Authentication successful.';
+        return data.access_token;
       })
       .catch(() => {
         throw new Error('An error occurred during authorization with Contxt.');
