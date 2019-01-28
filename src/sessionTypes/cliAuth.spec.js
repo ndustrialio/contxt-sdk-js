@@ -1,8 +1,8 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
-import CliAuth from './cliAuth';
+import PasswordGrantAuth from './cliAuth';
 
-describe.only('sessionTypes/CliAuth', function() {
+describe('sessionTypes/passwordGrantAuth', function() {
   let authentication;
   let authenticationSession;
   let sdk;
@@ -16,7 +16,7 @@ describe.only('sessionTypes/CliAuth', function() {
   });
 
   describe('constructor', function() {
-    let cliAuth;
+    let passwordGrantAuth;
 
     beforeEach(function() {
       sdk = {
@@ -32,29 +32,29 @@ describe.only('sessionTypes/CliAuth', function() {
       };
       authentication = this.sandbox.stub(auth0, 'Authentication').returns({});
 
-      cliAuth = new CliAuth(sdk);
+      passwordGrantAuth = new PasswordGrantAuth(sdk);
     });
 
     it('appends the supplied sdk to the class instance', function() {
-      expect(cliAuth._sdk).to.deep.equal(sdk);
+      expect(passwordGrantAuth._sdk).to.deep.equal(sdk);
     });
 
     it('calls the auth0 Authentication constructor with the proper arguments', function() {
       expect(authentication).to.be.calledOnce;
       expect(authentication).to.be.calledWith({
         domain: 'ndustrial.auth0.com',
-        clientID: cliAuth._sdk.config.auth.clientId
+        clientID: passwordGrantAuth._sdk.config.auth.clientId
       });
     });
 
     it('sets an initial, empty session info state', function() {
-      expect(cliAuth._sessionInfo).to.be.an('object');
-      expect(cliAuth._sessionInfo).to.be.empty;
+      expect(passwordGrantAuth._sessionInfo).to.be.an('object');
+      expect(passwordGrantAuth._sessionInfo).to.be.empty;
     });
   });
 
   describe('getCurrentApiToken', function() {
-    let cliAuth;
+    let passwordGrantAuth;
     let expectedApiToken;
     let promise;
 
@@ -74,11 +74,11 @@ describe.only('sessionTypes/CliAuth', function() {
 
       expectedApiToken = faker.internet.password();
 
-      cliAuth = new CliAuth(sdk);
+      passwordGrantAuth = new PasswordGrantAuth(sdk);
     });
 
     it('returns a rejected promise if there is no access token in the session info', function() {
-      promise = cliAuth.getCurrentApiToken();
+      promise = passwordGrantAuth.getCurrentApiToken();
 
       return expect(promise).to.be.eventually.rejectedWith(
         'No access token found.'
@@ -86,11 +86,11 @@ describe.only('sessionTypes/CliAuth', function() {
     });
 
     it('returns a fulfilled promise with the access token', function() {
-      cliAuth._sessionInfo = {
+      passwordGrantAuth._sessionInfo = {
         accessToken: expectedApiToken
       };
 
-      promise = cliAuth.getCurrentApiToken();
+      promise = passwordGrantAuth.getCurrentApiToken();
 
       return promise.then((token) => {
         expect(token).to.deep.equal(expectedApiToken);
@@ -99,7 +99,7 @@ describe.only('sessionTypes/CliAuth', function() {
   });
 
   describe('isAuthenticated', function() {
-    let cliAuth;
+    let passwordGrantAuth;
 
     beforeEach(function() {
       sdk = {
@@ -115,28 +115,28 @@ describe.only('sessionTypes/CliAuth', function() {
       };
       this.sandbox.stub(auth0, 'Authentication').returns({});
 
-      cliAuth = new CliAuth(sdk);
+      passwordGrantAuth = new PasswordGrantAuth(sdk);
     });
 
     it('returns true when there is a stored access token', function() {
-      cliAuth._sessionInfo = {
+      passwordGrantAuth._sessionInfo = {
         accessToken: faker.internet.password()
       };
 
-      const isAuthenticated = cliAuth.isAuthenticated();
+      const isAuthenticated = passwordGrantAuth.isAuthenticated();
 
       expect(isAuthenticated).to.be.true;
     });
 
     it('returns false when there is no stored access token', function() {
-      const isAuthenticated = cliAuth.isAuthenticated();
+      const isAuthenticated = passwordGrantAuth.isAuthenticated();
 
       expect(isAuthenticated).to.be.false;
     });
   });
 
   describe('logIn', function() {
-    let cliAuth;
+    let passwordGrantAuth;
 
     context('a successful login', function() {
       let apiToken;
@@ -177,12 +177,12 @@ describe.only('sessionTypes/CliAuth', function() {
           .returns(authenticationSession);
 
         getApiToken = this.sandbox
-          .stub(CliAuth.prototype, '_getApiToken')
+          .stub(PasswordGrantAuth.prototype, '_getApiToken')
           .resolves(apiToken);
 
-        cliAuth = new CliAuth(sdk);
+        passwordGrantAuth = new PasswordGrantAuth(sdk);
 
-        promise = cliAuth.logIn(username, password);
+        promise = passwordGrantAuth.logIn(username, password);
       });
 
       it("calls the 'loginWithDefaultDirectory' function with the username and password and correct audience", function() {
@@ -194,7 +194,7 @@ describe.only('sessionTypes/CliAuth', function() {
         ).to.be.calledWith({
           username,
           password,
-          audience: cliAuth._sdk.config.audiences.contxtAuth.clientId
+          audience: passwordGrantAuth._sdk.config.audiences.contxtAuth.clientId
         });
       });
 
@@ -243,9 +243,9 @@ describe.only('sessionTypes/CliAuth', function() {
           .stub(auth0, 'Authentication')
           .returns(authenticationSession);
 
-        cliAuth = new CliAuth(sdk);
+        passwordGrantAuth = new PasswordGrantAuth(sdk);
 
-        promise = cliAuth.logIn(username, password);
+        promise = passwordGrantAuth.logIn(username, password);
       });
 
       it('returns a rejected promise with an error message', function() {
@@ -257,7 +257,7 @@ describe.only('sessionTypes/CliAuth', function() {
   });
 
   describe('logOut', function() {
-    let cliAuth;
+    let passwordGrantAuth;
     let promise;
 
     beforeEach(function() {
@@ -277,14 +277,14 @@ describe.only('sessionTypes/CliAuth', function() {
       };
       authentication = this.sandbox.stub(auth0, 'Authentication');
 
-      cliAuth = new CliAuth(sdk);
+      passwordGrantAuth = new PasswordGrantAuth(sdk);
 
-      promise = cliAuth.logOut();
+      promise = passwordGrantAuth.logOut();
     });
 
     it('clears out the session info', function() {
-      expect(cliAuth._sessionInfo).to.be.an('object');
-      expect(cliAuth._sessionInfo).to.be.empty;
+      expect(passwordGrantAuth._sessionInfo).to.be.an('object');
+      expect(passwordGrantAuth._sessionInfo).to.be.empty;
     });
 
     it('returns a fulfilled promise with a success message', function() {
@@ -331,11 +331,14 @@ describe.only('sessionTypes/CliAuth', function() {
             });
           });
 
-          saveSession = this.sandbox.stub(CliAuth.prototype, '_saveSession');
+          saveSession = this.sandbox.stub(
+            PasswordGrantAuth.prototype,
+            '_saveSession'
+          );
 
-          const cliAuth = new CliAuth(sdk);
+          const passwordGrantAuth = new PasswordGrantAuth(sdk);
 
-          promise = cliAuth._getApiToken(accessToken);
+          promise = passwordGrantAuth._getApiToken(accessToken);
         });
 
         it('makes a POST to the contxt api to get a token', function() {
@@ -371,9 +374,9 @@ describe.only('sessionTypes/CliAuth', function() {
         beforeEach(function() {
           accessToken = faker.internet.password();
           post = this.sandbox.stub(axios, 'post').resolves({ data: {} });
-          this.sandbox.stub(CliAuth.prototype, '_saveSession');
+          this.sandbox.stub(PasswordGrantAuth.prototype, '_saveSession');
 
-          const cliAuth = new CliAuth({
+          const passwordGrantAuth = new PasswordGrantAuth({
             ...sdk,
             config: {
               ...sdk.config,
@@ -388,7 +391,7 @@ describe.only('sessionTypes/CliAuth', function() {
             }
           });
 
-          cliAuth._getApiToken(accessToken);
+          passwordGrantAuth._getApiToken(accessToken);
         });
 
         it('does not include null values when getting a token from the contxt api', function() {
@@ -409,9 +412,9 @@ describe.only('sessionTypes/CliAuth', function() {
           return Promise.reject(new Error(faker.lorem.sentence()));
         });
 
-        const cliAuth = new CliAuth(sdk);
+        const passwordGrantAuth = new PasswordGrantAuth(sdk);
 
-        promise = cliAuth._getApiToken(accessToken);
+        promise = passwordGrantAuth._getApiToken(accessToken);
       });
 
       it('returns a rejected promise with an error message', function() {
@@ -423,7 +426,7 @@ describe.only('sessionTypes/CliAuth', function() {
   });
 
   describe('_saveSession', function() {
-    let cliAuth;
+    let passwordGrantAuth;
     let expectedSessionInfo;
 
     beforeEach(function() {
@@ -447,13 +450,13 @@ describe.only('sessionTypes/CliAuth', function() {
         accessToken: faker.internet.password()
       };
 
-      cliAuth = new CliAuth(sdk);
+      passwordGrantAuth = new PasswordGrantAuth(sdk);
 
-      cliAuth._saveSession(expectedSessionInfo);
+      passwordGrantAuth._saveSession(expectedSessionInfo);
     });
 
     it('saves the session info', function() {
-      expect(cliAuth._sessionInfo).to.deep.equal(expectedSessionInfo);
+      expect(passwordGrantAuth._sessionInfo).to.deep.equal(expectedSessionInfo);
     });
   });
 });

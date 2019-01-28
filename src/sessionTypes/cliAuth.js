@@ -3,8 +3,8 @@ import axios from 'axios';
 
 /**
  * A SessionType that allows the user to authenticate with Auth0 and
- * then gain a valid JWT from the Contxt Auth service. This would only
- * be used in command line applications such as `contxt-cli`.
+ * then gain a valid JWT from the Contxt Auth service. This method
+ * utitlizes the password grant type authorization with Auth0.
  *
  * @type SessionType
  *
@@ -19,11 +19,11 @@ import axios from 'axios';
  *       clientId: '<client id>'
  *     }
  *   },
- *   sessionType: 'cliAuth'
+ *   sessionType: 'passwordGrantAuth'
  * });
  */
 
-class CliAuth {
+class PasswordGrantAuth {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} sdk.audiences
@@ -178,5 +178,5 @@ class CliAuth {
   }
 }
 
-export const TYPE = 'cliAuth';
-export default CliAuth;
+export const TYPE = 'passwordGrantAuth';
+export default PasswordGrantAuth;
