@@ -79,8 +79,6 @@ class CliAuth {
             return reject(new Error(errorMessage));
           }
 
-          this._saveSession('accessInfo', response);
-
           return resolve(response.accessToken);
         }
       );
@@ -138,7 +136,9 @@ class CliAuth {
       .then((response) => {
         const { data } = response;
 
-        this._saveSession('apiToken', data);
+        this._saveSession({
+          accessToken: data.access_token
+        });
 
         return data.access_token;
       })
@@ -148,15 +148,15 @@ class CliAuth {
   }
 
   /**
-   * Saves session info under a specific key for future use
+   * Saves the session info (i.e. the Contxt access token) for future use
    *
-   * @param {string} key
    * @param {Object} sessionInfo
+   * @param {string} sessionInfo.accessToken
    *
    * @private
    */
-  _saveSession(key, sessionInfo) {
-    this._sessionInfo[key] = sessionInfo;
+  _saveSession(sessionInfo) {
+    this._sessionInfo = sessionInfo;
   }
 }
 

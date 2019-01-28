@@ -118,14 +118,6 @@ describe('sessionTypes/CliAuth', function() {
         });
       });
 
-      it('updates the session info', function() {
-        return promise.then(() => {
-          expect(cliAuth._sessionInfo).to.deep.equal({
-            accessInfo: expectedResponse
-          });
-        });
-      });
-
       it('returns a fulfilled promise with a success message', function() {
         return promise.then((response) => {
           expect(response).to.equal(apiToken);
@@ -285,8 +277,8 @@ describe('sessionTypes/CliAuth', function() {
 
         it('calls the _saveSession method with the correct information', function() {
           return promise.then(() => {
-            expect(saveSession).to.be.calledWith('apiToken', {
-              access_token: expectedApiToken
+            expect(saveSession).to.be.calledWith({
+              accessToken: expectedApiToken
             });
           });
         });
@@ -353,7 +345,6 @@ describe('sessionTypes/CliAuth', function() {
   describe('_saveSession', function() {
     let cliAuth;
     let expectedSessionInfo;
-    let expectedKey;
 
     beforeEach(function() {
       sdk = {
@@ -372,22 +363,17 @@ describe('sessionTypes/CliAuth', function() {
       };
       authentication = this.sandbox.stub(auth0, 'Authentication');
 
-      expectedKey = faker.lorem.word();
       expectedSessionInfo = {
-        accessToken: faker.internet.password(),
-        apiToken: faker.internet.password(),
-        expiresAt: faker.date.future().getTime()
+        accessToken: faker.internet.password()
       };
 
       cliAuth = new CliAuth(sdk);
 
-      cliAuth._saveSession(expectedKey, expectedSessionInfo);
+      cliAuth._saveSession(expectedSessionInfo);
     });
 
-    it('saves the session info  under the correct key', function() {
-      expect(cliAuth._sessionInfo).to.deep.equal({
-        [expectedKey]: expectedSessionInfo
-      });
+    it('saves the session info', function() {
+      expect(cliAuth._sessionInfo).to.deep.equal(expectedSessionInfo);
     });
   });
 });
