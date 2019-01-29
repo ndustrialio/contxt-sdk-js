@@ -325,10 +325,8 @@ describe('sessionTypes/passwordGrantAuth', function() {
           accessToken = faker.internet.password();
           expectedApiToken = faker.internet.password();
 
-          post = this.sandbox.stub(axios, 'post').callsFake(() => {
-            return Promise.resolve({
-              data: { access_token: expectedApiToken }
-            });
+          post = this.sandbox.stub(axios, 'post').resolves({
+            data: { access_token: expectedApiToken }
           });
 
           saveSession = this.sandbox.stub(
