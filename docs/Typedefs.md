@@ -563,17 +563,6 @@ for authenticating and communicating with an individual API and the external mod
 | status | <code>string</code> | The status of the File, e.g. "ACTIVE" |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
-<a name="FileToDownload"></a>
-
-## FileToDownload : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| expiresAt | <code>string</code> | ISO 8601 Extended Format date/time |
-| temporaryUrl | <code>string</code> | A temporary URL that can be used to download the file |
-
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>
