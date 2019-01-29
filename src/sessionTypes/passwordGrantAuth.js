@@ -55,7 +55,7 @@ class PasswordGrantAuth {
   getCurrentApiToken() {
     return new Promise((resolve, reject) => {
       if (!this._sessionInfo.accessToken) {
-        return reject(new Error('No access token found.'));
+        return reject(new Error('No api token found.'));
       }
 
       return resolve(this._sessionInfo.accessToken);

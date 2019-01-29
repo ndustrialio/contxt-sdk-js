@@ -81,7 +81,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
       promise = passwordGrantAuth.getCurrentApiToken();
 
       return expect(promise).to.be.eventually.rejectedWith(
-        'No access token found.'
+        'No api token found.'
       );
     });
 
