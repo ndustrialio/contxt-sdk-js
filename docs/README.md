@@ -34,11 +34,6 @@ enabled in Auth0.</p>
 <dt><a href="./Channels.md">Channels</a></dt>
 <dd><p>Module that provides access to message bus channels</p>
 </dd>
-<dt><a href="./CliAuth.md">CliAuth</a> : <code><a href="./Typedefs.md#SessionType">SessionType</a></code></dt>
-<dd><p>A SessionType that allows the user to authenticate with Auth0 and
-then gain a valid JWT from the Contxt Auth service. This would only
-be used in command line applications such as <code>contxt-cli</code>.</p>
-</dd>
 <dt><a href="./Config.md">Config</a></dt>
 <dd><p>Module that merges user assigned configurations with default configurations.</p>
 </dd>
@@ -89,6 +84,11 @@ which are obtained from Auth0.</p>
 </dd>
 <dt><a href="./Outputs.md">Outputs</a></dt>
 <dd><p>Module that provides access to output information</p>
+</dd>
+<dt><a href="./PasswordGrantAuth.md">PasswordGrantAuth</a> : <code><a href="./Typedefs.md#SessionType">SessionType</a></code></dt>
+<dd><p>A SessionType that allows the user to authenticate with Auth0 and
+then gain a valid JWT from the Contxt Auth service. This method
+utitlizes the password grant type authorization with Auth0.</p>
 </dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>
