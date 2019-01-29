@@ -401,14 +401,14 @@ describe('sessionTypes/passwordGrantAuth', function() {
 
     context('a failed request', function() {
       let accessToken;
+      let errorMsg;
       let promise;
 
       beforeEach(function() {
         accessToken = faker.internet.password();
+        errorMsg = faker.lorem.sentence();
 
-        this.sandbox.stub(axios, 'post').callsFake(() => {
-          return Promise.reject(new Error(faker.lorem.sentence()));
-        });
+        this.sandbox.stub(axios, 'post').rejects(new Error(errorMsg));
 
         const passwordGrantAuth = new PasswordGrantAuth(sdk);
 
@@ -416,9 +416,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
       });
 
       it('returns a rejected promise with an error message', function() {
-        return expect(promise).to.be.eventually.rejectedWith(
-          'An error occurred during authorization with Contxt.'
-        );
+        return expect(promise).to.be.eventually.rejectedWith(errorMsg);
       });
     });
   });

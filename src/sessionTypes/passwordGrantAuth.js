@@ -159,9 +159,6 @@ class PasswordGrantAuth {
         });
 
         return data.access_token;
-      })
-      .catch(() => {
-        throw new Error('An error occurred during authorization with Contxt.');
       });
   }
 
