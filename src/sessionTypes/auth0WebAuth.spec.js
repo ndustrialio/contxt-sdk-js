@@ -598,7 +598,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
   });
 
   describe('_getApiToken', function() {
-    context('when handing audiences with a client id', function() {
+    context('when handling audiences with a client id', function() {
       let accessToken;
       let expectedApiToken;
       let post;
