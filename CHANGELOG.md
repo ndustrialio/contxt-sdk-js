@@ -1,4 +1,4 @@
-## [v0.0.38](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.38) (2019-xx-xx)
+## [v0.0.38](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.38) (2019-01-29)
 
 **Added**
 
@@ -7,9 +7,9 @@
   - `Files#download` for getting a temporary URL to a File
   - `Files#get` for getting metdata about a File
 
-- Added CliAuth SessionType for use on Node.js CLI projects with the following methods:
+- Added ` passwordGrantAuth`` SessionType for use where the Auth0 `password` grant type can be utilized.
 
-  - `logIn` for logging into Contxt
+  - `logIn` for logging into Contxt through Auth0
   - `logOut` for clearing the session info retrieved from logging in
 
 ## [v0.0.37](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.37) (2019-01-03)
