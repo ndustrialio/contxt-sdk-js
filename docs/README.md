@@ -88,7 +88,9 @@ which are obtained from Auth0.</p>
 <dt><a href="./PasswordGrantAuth.md">PasswordGrantAuth</a> : <code><a href="./Typedefs.md#SessionType">SessionType</a></code></dt>
 <dd><p>A SessionType that allows the user to authenticate with Auth0 and
 then gain a valid JWT from the Contxt Auth service. This method
-utitlizes the password grant type authorization with Auth0.</p>
+utitlizes the password grant type authorization with Auth0. This
+SessionType will expect a username and a password to be passed into
+the <code>logIn</code> function from the user to authenticate.</p>
 </dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>

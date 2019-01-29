@@ -4,7 +4,9 @@ import axios from 'axios';
 /**
  * A SessionType that allows the user to authenticate with Auth0 and
  * then gain a valid JWT from the Contxt Auth service. This method
- * utitlizes the password grant type authorization with Auth0.
+ * utitlizes the password grant type authorization with Auth0. This
+ * SessionType will expect a username and a password to be passed into
+ * the `logIn` function from the user to authenticate.
  *
  * @type SessionType
  *
