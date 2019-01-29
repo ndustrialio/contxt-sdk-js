@@ -2,11 +2,6 @@
 
 **Added**
 
-- Added Files moudle with several methods
-
-  - `Files#download` for getting a temporary URL to a File
-  - `Files#get` for getting metdata about a File
-
 - Added ` passwordGrantAuth`` SessionType for use where the Auth0 `password` grant type can be utilized.
 
   - `logIn` for logging into Contxt through Auth0

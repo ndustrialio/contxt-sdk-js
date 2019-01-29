@@ -4,7 +4,6 @@ import Config from './config';
 import Coordinator from './coordinator';
 import Events from './events';
 import Facilities from './facilities';
-import Files from './files';
 import Iot from './iot';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
@@ -81,7 +80,6 @@ class ContxtSdk {
     );
     this.events = new Events(this, this._createRequest('events'));
     this.facilities = new Facilities(this, this._createRequest('facilities'));
-    this.files = new Files(this, this._createRequest('files'));
     this.iot = new Iot(this, this._createRequest('iot'));
 
     this._decorate(externalModules);

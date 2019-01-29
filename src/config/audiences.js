@@ -49,16 +49,6 @@ export default {
       host: 'https://facilities-staging.api.ndustrial.io'
     }
   },
-  files: {
-    production: {
-      clientId: 'VZJ2MRd71dM9oX2hB1EVAEjUe6loL7pl',
-      host: 'https://files.api.ndustrial.io'
-    },
-    staging: {
-      clientId: 'SLE310LY4nDT5p06sUGPVOLlGXk5osbQ',
-      host: 'https://files-staging.api.ndustrial.io'
-    }
-  },
   iot: {
     staging: {
       clientId: 'm35AEcxD8hf65sq04ZU7yFxqpqVkKzES',
