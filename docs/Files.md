@@ -7,6 +7,7 @@ Module that provides access to information about Files
 
 * [Files](#Files)
     * [new Files(sdk, request)](#new_Files_new)
+    * [.delete(fileId)](#Files+delete) ⇒ <code>Promise</code>
     * [.download(fileId)](#Files+download) ⇒ <code>Promise</code>
     * [.get(fileId)](#Files+get) ⇒ <code>Promise</code>
 
@@ -19,6 +20,26 @@ Module that provides access to information about Files
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Files+delete"></a>
+
+### contxtSdk.files.delete(fileId) ⇒ <code>Promise</code>
+Deletes a file and associated file actions.
+
+API Endpoint: '/files/:fileId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Files</code>](#Files)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileId | <code>string</code> | The ID of the file |
+
+**Example**  
+```js
+contxtSdk.files.delete('8704f900-28f2-4951-aaf0-1827fcd0b0cb');
+```
 <a name="Files+download"></a>
 
 ### contxtSdk.files.download(fileId) ⇒ <code>Promise</code>

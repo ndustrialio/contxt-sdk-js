@@ -52,6 +52,51 @@ describe('Files', function() {
     });
   });
 
+  describe('delete', function() {
+    context('the file ID is provided', function() {
+      let expectedFile;
+      let promise;
+      let request;
+
+      beforeEach(function() {
+        expectedFile = fixture.build('file');
+
+        request = {
+          ...baseRequest,
+          delete: this.sandbox.stub().resolves()
+        };
+
+        const files = new Files(baseSdk, request);
+        files._baseUrl = expectedHost;
+
+        promise = files.delete(expectedFile.id);
+      });
+
+      it('deletes the file from the server', function() {
+        return promise.then(() => {
+          expect(request.delete).to.be.calledWith(
+            `${expectedHost}/files/${expectedFile.id}`
+          );
+        });
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('the file ID is not provided', function() {
+      it('returns a rejected promise with an error', function() {
+        const files = new Files(baseSdk, baseRequest);
+        const promise = files.delete();
+
+        return expect(promise).to.be.rejectedWith(
+          'A file ID is required to delete a file'
+        );
+      });
+    });
+  });
+
   describe('download', function() {
     context('the file ID is provided', function() {
       let fileFromServerAfterFormat;

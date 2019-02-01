@@ -38,6 +38,31 @@ class Files {
   }
 
   /**
+   * Deletes a file and associated file actions.
+   *
+   * API Endpoint: '/files/:fileId'
+   * Method: DELETE
+   *
+   * @param {string} fileId The ID of the file
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.files.delete('8704f900-28f2-4951-aaf0-1827fcd0b0cb');
+   */
+  delete(fileId) {
+    if (!fileId) {
+      return Promise.reject(
+        new Error('A file ID is required to delete a file')
+      );
+    }
+
+    return this._request.delete(`${this._baseUrl}/files/${fileId}`);
+  }
+
+  /**
    * Gets a temporary URL for the file.
    *
    * API Endpoint: '/files/:fileId/download'
