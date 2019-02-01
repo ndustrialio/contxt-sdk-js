@@ -574,6 +574,19 @@ for authenticating and communicating with an individual API and the external mod
 | expiresAt | <code>string</code> | ISO 8601 Extended Format date/time |
 | temporaryUrl | <code>string</code> | A temporary URL that can be used to download the file |
 
+<a name="FilesFromServer"></a>
+
+## FilesFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of files found |
+| records | [<code>Array.&lt;File&gt;</code>](#File) |  |
+
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>

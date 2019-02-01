@@ -183,6 +183,8 @@ for authenticating and communicating with an individual API and the external mod
 <dd></dd>
 <dt><a href="./Typedefs.md#FileToDownload">FileToDownload</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#FilesFromServer">FilesFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#MessageBusChannel">MessageBusChannel</a> : <code>Object</code></dt>
