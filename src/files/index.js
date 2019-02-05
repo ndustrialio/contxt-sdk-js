@@ -1,4 +1,5 @@
-import { toCamelCase } from '../utils/objects';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} File
@@ -11,6 +12,14 @@ import { toCamelCase } from '../utils/objects';
  * @property {string} ownerId The ID of the user who owns the file
  * @property {string} status The status of the File, e.g. "ACTIVE"
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} FilesFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of files found
+ * @property {File[]} records
  */
 
 /**
@@ -35,6 +44,31 @@ class Files {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+  }
+
+  /**
+   * Deletes a file and associated file actions.
+   *
+   * API Endpoint: '/files/:fileId'
+   * Method: DELETE
+   *
+   * @param {string} fileId The ID of the file
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.files.delete('8704f900-28f2-4951-aaf0-1827fcd0b0cb');
+   */
+  delete(fileId) {
+    if (!fileId) {
+      return Promise.reject(
+        new Error('A file ID is required to delete a file')
+      );
+    }
+
+    return this._request.delete(`${this._baseUrl}/files/${fileId}`);
   }
 
   /**
@@ -95,6 +129,38 @@ class Files {
     return this._request
       .get(`${this._baseUrl}/files/${fileId}`)
       .then((file) => toCamelCase(file));
+  }
+
+  /**
+   * Gets a paginated list of files and their metadata. This does not return
+   * the actual files.
+   *
+   * API Endpoint: '/files'
+   * Method: GET
+   *
+   * @param {Object} [filesFilters]
+   * @param {Number} [filesFilters.limit = 100] Maximum number of records to return per query
+   * @param {Number} [filesFilters.offset = 0] How many records from the first record to start the query
+   * @param {String} [filesFilters.orderBy = 'createdAt'] How many records from the first record to start the query
+   * @param {Boolean} [filesFilters.reverseOrder = false] Determine the results should be sorted in reverse (ascending) order
+   * @param {String} [filesFilters.status = 'ACTIVE'] Filter by a file's current status
+   *
+   * @returns {Promise}
+   * @fulfill {FilesFromServer} Information about the files
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.files
+   *   .getAll()
+   *   .then((files) => console.log(files))
+   *   .catch((err) => console.log(err));
+   */
+  getAll(filesFilters) {
+    return this._request
+      .get(`${this._baseUrl}/files`, {
+        params: toSnakeCase(filesFilters)
+      })
+      .then((assetsData) => formatPaginatedDataFromServer(assetsData));
   }
 }
 

@@ -4,8 +4,10 @@
 
 - Added Files module with several methods
 
+  - `Files#delete` for deleting a single File
   - `Files#download` for getting a temporary URL to a File
   - `Files#get` for getting metadata about a File
+  - `Files#getAll` for getting a paginated list of Files and their metadata
 
 ## [v0.0.38](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.38) (2019-01-29)
 
