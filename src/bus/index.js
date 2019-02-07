@@ -15,19 +15,20 @@ class Bus {
    */
   constructor(sdk, request) {
     const baseUrl = `${sdk.config.audiences.bus.host}`;
-    const baseSocketUrl = `${sdk.config.audiences.bus.socket}`;
-    this._baseSocketUrl = baseSocketUrl;
+    const baseWebSocketUrl = `${sdk.config.audiences.bus.webSocket}`;
+
+    this._baseWebSocketUrl = baseWebSocketUrl;
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
-    this._sockets = {};
+    this._webSockets = {};
 
     this.channels = new Channels(sdk, request, baseUrl);
   }
 
   /**
    * Connects to the message bus via websocket.
-   * If a connection already exists for that organization id, the connection is returned, otherwise a new connection is created.
+   * If a connection already exists for that organization id, the connection is returned, otherwise a new connection is created and returned.
    *
    * @param {string} organizationId UUID corresponding with an organization
    *
@@ -37,21 +38,25 @@ class Bus {
    *
    * @example
    * contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
-   * .then((socket) => {
-   *    console.log(socket);
-   * })
-   * .catch((event) => {
-   *    console.log(event);
-   * })
+   *   .then((webSocket) => {
+   *     console.log(webSocket);
+   *   })
+   *   .catch((errorEvent) => {
+   *     console.log(errorEvent);
+   *   });
    */
   connect(organizationId) {
     return new Promise((resolve, reject) => {
-      if (!this._sockets[organizationId]) {
+      if (this._webSockets[organizationId]) {
+        resolve(this._webSockets[organizationId]);
+      } else {
         return this._sdk.auth
           .getCurrentApiToken('contxtAuth')
           .then((apiToken) => {
-            const socket = new WebSocket(
-              `${this._baseSocketUrl}/organizations/${organizationId}/stream`,
+            const ws = new WebSocket(
+              `${
+                this._baseWebSocketUrl
+              }/organizations/${organizationId}/stream`,
               [],
               {
                 headers: {
@@ -60,25 +65,23 @@ class Bus {
               }
             );
 
-            socket.onopen = (event) => {
-              this._sockets[organizationId] = new Socket(
-                socket,
-                organizationId
-              );
+            ws.onopen = (event) => {
+              this._webSockets[organizationId] = new Socket(ws, organizationId);
 
-              resolve(this._sockets[organizationId]);
+              resolve(this._webSockets[organizationId]);
             };
 
-            socket.onclose = (event) => {
-              this._sockets[organizationId] = null;
+            ws.onclose = (event) => {
+              this._webSockets[organizationId] = null;
             };
 
-            socket.onerror = (event) => {
-              reject(event);
+            ws.onerror = (errorEvent) => {
+              reject(errorEvent);
             };
+          })
+          .catch((err) => {
+            reject(err);
           });
-      } else {
-        resolve(this._sockets[organizationId]);
       }
     });
   }

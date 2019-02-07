@@ -5,12 +5,12 @@
  */
 class Socket {
   /**
-   * @param {Websocket} socket A websocket connection to the message bus
+   * @param {WebSocket} webSocket A WebSocket connection to the message bus
    * @param {string} organizationId UUID corresponding with an organization
    */
-  constructor(socket, organizationId) {
+  constructor(webSocket, organizationId) {
     this._organizationId = organizationId;
-    this._socket = socket;
+    this._webSocket = webSocket;
   }
 
   /**
@@ -18,15 +18,15 @@ class Socket {
    *
    * @example
    * contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
-   * .then((socket) => {
-   *    socket.close()
-   * })
-   * .catch((event) => {
-   *    console.log(event);
-   * })
+   *   .then((webSocket) => {
+   *     webSocket.close()
+   *   })
+   *   .catch((errorEvent) => {
+   *     console.log(errorEvent);
+   *   });
    */
   close() {
-    this._socket.close();
+    this._webSocket.close();
   }
 }
 

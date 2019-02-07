@@ -2,54 +2,53 @@ import { WebSocket } from 'mock-socket';
 import Socket from './socket';
 
 describe('Socket', function() {
-  let socketUrl;
-  let webSocket;
+  let expectedWebSocket;
+  let webSocketUrl;
 
   beforeEach(function() {
     this.sandbox = sandbox.create();
 
-    socketUrl = `wss://${faker.internet.domainName()}`;
-    webSocket = new WebSocket(socketUrl);
+    webSocketUrl = `wss://${faker.internet.domainName()}`;
+    expectedWebSocket = new WebSocket(webSocketUrl);
   });
 
   afterEach(function() {
     this.sandbox.restore();
 
-    webSocket.close();
+    expectedWebSocket.close();
   });
 
   describe('constructor', function() {
     let expectedOrganization;
-    let socket;
+    let ws;
 
     beforeEach(function() {
       expectedOrganization = fixture.build('organization');
-      socket = new Socket(webSocket, expectedOrganization.id);
+      ws = new Socket(expectedWebSocket, expectedOrganization.id);
     });
 
     it('sets a socket for the class instance', function() {
-      expect(socket._socket).to.deep.equal(webSocket);
+      expect(ws._webSocket).to.deep.equal(expectedWebSocket);
     });
 
     it('sets an organization id for the class instance', function() {
-      expect(socket._organizationId).to.equal(expectedOrganization.id);
-    });
-
-    it("returns a function called 'close'", function() {
-      expect(socket.close).to.be.a('function');
+      expect(ws._organizationId).to.equal(expectedOrganization.id);
     });
   });
 
   describe('close', function() {
     let close;
     let expectedOrganization;
-    let socket;
+    let ws;
 
     beforeEach(function() {
-      close = this.sandbox.stub(webSocket, 'close');
       expectedOrganization = fixture.build('organization');
-      socket = new Socket(webSocket, expectedOrganization.id);
-      socket.close();
+
+      close = this.sandbox.stub(expectedWebSocket, 'close');
+
+      ws = new Socket(expectedWebSocket, expectedOrganization.id);
+
+      ws.close();
     });
 
     it('calls close on the web socket', function() {

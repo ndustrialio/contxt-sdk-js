@@ -8,10 +8,10 @@ The `contxt-sdk` can be installed with NPM:
 npm install --save @ndustrial/contxt-sdk
 ```
 
-There are three peer dependencies for `contxt-sdk`, `auth0-js`, `axios`, and `ws`. If you don't already have a compatible version installed, run:
+There are three peer dependencies for `contxt-sdk`: `auth0-js`, `axios`, and `ws`. If you don't already have a compatible version installed, run:
 
 ```bash
-npm install --save auth0-js@^9.0.0 axios@~0.17.0 ws
+npm install --save auth0-js@^9.0.0 axios@~0.17.0 ws@~6.1.3
 ```
 
 ## Getting Started

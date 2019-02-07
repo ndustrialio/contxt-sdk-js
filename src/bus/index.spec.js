@@ -4,7 +4,7 @@ import proxyquire from 'proxyquire';
 import Channels from './channels';
 import Socket from './socket';
 
-describe('Bus', function() {
+describe.only('Bus', function() {
   let baseRequest;
   let baseSdk;
   let Bus;
@@ -52,6 +52,12 @@ describe('Bus', function() {
       expect(bus._baseUrl).to.equal(`${baseSdk.config.audiences.bus.host}`);
     });
 
+    it('sets a base websocket url for the class instance', function() {
+      expect(bus._baseWebSocketUrl).to.equal(
+        `${baseSdk.config.audiences.bus.webSocket}`
+      );
+    });
+
     it('appends the supplied request module to the class instance', function() {
       expect(bus._request).to.equal(baseRequest);
     });
@@ -64,8 +70,8 @@ describe('Bus', function() {
       expect(bus.channels).to.be.an.instanceof(Channels);
     });
 
-    it("returns a function called 'connect'", function() {
-      expect(bus.connect).to.be.a('function');
+    it('sets websockets to an empty object', function() {
+      expect(bus._webSockets).to.be.empty;
     });
   });
 
@@ -92,7 +98,6 @@ describe('Bus', function() {
       let expectedSocket;
       let promise;
       let sdk;
-      let socket;
 
       beforeEach(function() {
         sdk = {
@@ -104,14 +109,16 @@ describe('Bus', function() {
         };
 
         bus = new Bus(sdk, baseRequest);
-        bus._baseSocketUrl = expectedHost;
+        bus._baseWebSocketUrl = expectedHost;
 
-        socket = new WebSocket(
-          `${expectedHost}/organizations/${expectedOrganization.id}/stream`
+        expectedSocket = new Socket(
+          new WebSocket(
+            `${expectedHost}/organizations/${expectedOrganization.id}/stream`
+          ),
+          expectedOrganization.id
         );
-        expectedSocket = new Socket(socket, expectedOrganization.id);
 
-        bus._sockets[expectedOrganization.id] = expectedSocket;
+        bus._webSockets[expectedOrganization.id] = expectedSocket;
 
         promise = bus.connect(expectedOrganization.id);
       });
@@ -129,11 +136,6 @@ describe('Bus', function() {
       it('resolves the promise with the existing socket', function() {
         return promise.then((socket) => {
           expect(socket).to.deep.equal(expectedSocket);
-          expect(socket).to.be.an.instanceof(Socket);
-          expect(socket._organizationId).to.equal(expectedOrganization.id);
-          expect(socket._socket.url).to.equal(
-            `${expectedHost}/organizations/${expectedOrganization.id}/stream`
-          );
         });
       });
     });
@@ -161,12 +163,12 @@ describe('Bus', function() {
             };
 
             bus = new Bus(sdk, baseRequest);
-            bus._baseSocketUrl = expectedHost;
+            bus._baseWebSocketUrl = expectedHost;
 
             promise = bus.connect(expectedOrganization.id);
           });
 
-          context('when intially opening the websocket', function() {
+          context('when initially opening the websocket', function() {
             it('gets an api token', function() {
               return promise.then(() => {
                 expect(sdk.auth.getCurrentApiToken).to.be.calledWith(
@@ -176,32 +178,10 @@ describe('Bus', function() {
             });
 
             it('stores a copy of the websocket', function() {
-              return promise.then(() => {
-                const socket = bus._sockets[expectedOrganization.id];
+              return promise.then((resolvedWebSocket) => {
+                const ws = bus._webSockets[expectedOrganization.id];
 
-                expect(socket).to.be.an.instanceof(Socket);
-                expect(socket._organizationId).to.equal(
-                  expectedOrganization.id
-                );
-                expect(socket._socket.url).to.equal(
-                  `${expectedHost}/organizations/${
-                    expectedOrganization.id
-                  }/stream`
-                );
-              });
-            });
-          });
-
-          context('when the websocket closes', function() {
-            beforeEach(function() {
-              return promise.then(() => {
-                server.close();
-              });
-            });
-
-            it('clears out the stored copy of the websocket when it closes', function() {
-              return promise.then(() => {
-                expect(bus._sockets[expectedOrganization.id]).to.be.null;
+                expect(resolvedWebSocket).to.deep.equal(ws);
               });
             });
           });
@@ -214,7 +194,6 @@ describe('Bus', function() {
             let expectedApiToken;
             let promise;
             let sdk;
-            let socketUrl;
 
             beforeEach(function() {
               expectedApiToken = faker.internet.password();
@@ -229,12 +208,12 @@ describe('Bus', function() {
                 }
               };
 
-              socketUrl = `wss://${faker.internet.domainName()}`;
               bus = new Bus(sdk, baseRequest);
-
-              bus._baseSocketUrl = socketUrl;
+              bus._baseWebSocketUrl = expectedHost;
 
               promise = bus.connect(expectedOrganization.id);
+
+              server.simulate('error');
             });
 
             it('gets an api token', function() {
@@ -252,9 +231,64 @@ describe('Bus', function() {
             it('triggers an error event', function() {
               return promise.catch((event) => {
                 expect(event.type).to.equal('error');
-                expect(event.target.url).to.equal(
-                  `${socketUrl}/organizations/${expectedOrganization.id}/stream`
-                );
+              });
+            });
+          }
+        );
+
+        context(
+          'when a websocket connection is already established',
+          function() {
+            let bus;
+            let sdk;
+            let ws;
+
+            beforeEach(function() {
+              sdk = {
+                ...baseSdk,
+                auth: {
+                  ...baseSdk.auth,
+                  getCurrentApiToken: this.sandbox.stub().resolves()
+                }
+              };
+
+              bus = new Bus(sdk, baseRequest);
+
+              bus._baseWebSocketUrl = expectedHost;
+
+              ws = new WebSocket(
+                `${bus._baseWebSocketUrl}/organizations/${
+                  expectedOrganization.id
+                }/stream`
+              );
+
+              bus._webSockets[expectedOrganization.id] = new Socket(
+                ws,
+                expectedOrganization.id
+              );
+            });
+
+            context('when close is called on the websocket', function() {
+              beforeEach(function() {
+                ws.close();
+              });
+
+              it('clears out the stored copy of the websocket', function() {
+                setTimeout(() => {
+                  expect(bus._webSockets[expectedOrganization.id]).to.be.null;
+                }, 1000);
+              });
+            });
+
+            context('when close emitted from the server', function() {
+              beforeEach(function() {
+                server.emit('close');
+              });
+
+              it('clears out the stored copy of the websocket', function() {
+                setTimeout(() => {
+                  expect(bus._webSockets[expectedOrganization.id]).to.be.null;
+                }, 1000);
               });
             });
           }
