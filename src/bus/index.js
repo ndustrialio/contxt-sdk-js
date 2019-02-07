@@ -66,7 +66,11 @@ class Bus {
             );
 
             ws.onopen = (event) => {
-              this._webSockets[organizationId] = new Socket(ws, organizationId);
+              this._webSockets[organizationId] = new Socket(
+                ws,
+                organizationId,
+                this._request
+              );
 
               resolve(this._webSockets[organizationId]);
             };
