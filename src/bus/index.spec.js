@@ -2,9 +2,9 @@ import { Server, WebSocket } from 'mock-socket';
 import proxyquire from 'proxyquire';
 
 import Channels from './channels';
-import Socket from './socket';
+import WebSocketConnection from './webSocketConnection';
 
-describe.only('Bus', function() {
+describe('Bus', function() {
   let baseRequest;
   let baseSdk;
   let Bus;
@@ -111,7 +111,7 @@ describe.only('Bus', function() {
         bus = new Bus(sdk, baseRequest);
         bus._baseWebSocketUrl = expectedHost;
 
-        expectedSocket = new Socket(
+        expectedSocket = new WebSocketConnection(
           new WebSocket(
             `${expectedHost}/organizations/${expectedOrganization.id}/stream`
           ),
@@ -262,10 +262,8 @@ describe.only('Bus', function() {
                 }/stream`
               );
 
-              bus._webSockets[expectedOrganization.id] = new Socket(
-                ws,
-                expectedOrganization.id
-              );
+              // prettier-ignore
+              bus._webSockets[expectedOrganization.id] = new WebSocketConnection(ws, expectedOrganization.id);
             });
 
             context('when close is called on the websocket', function() {
@@ -276,7 +274,7 @@ describe.only('Bus', function() {
               it('clears out the stored copy of the websocket', function() {
                 setTimeout(() => {
                   expect(bus._webSockets[expectedOrganization.id]).to.be.null;
-                }, 1000);
+                }, 100);
               });
             });
 
@@ -288,7 +286,7 @@ describe.only('Bus', function() {
               it('clears out the stored copy of the websocket', function() {
                 setTimeout(() => {
                   expect(bus._webSockets[expectedOrganization.id]).to.be.null;
-                }, 1000);
+                }, 100);
               });
             });
           }
