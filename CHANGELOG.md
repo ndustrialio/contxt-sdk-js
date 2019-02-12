@@ -1,4 +1,4 @@
-## [v0.0.39](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.39) (2019-xx-xx)
+## [v0.0.40](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.40) (2019-xx-xx)
 
 **Added**
 
@@ -8,6 +8,12 @@
   - `Files#download` for getting a temporary URL to a File
   - `Files#get` for getting metadata about a File
   - `Files#getAll` for getting a paginated list of Files and their metadata
+
+## [v0.0.39](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.39) (2019-02-12)
+
+**Fixed**
+
+- Updated `extend`, `just-extend`, `lodash`, and `nise` libraries to fix newly discovered vulnerabilities
 
 ## [v0.0.38](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.38) (2019-01-29)
 
