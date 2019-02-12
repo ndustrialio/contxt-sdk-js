@@ -58,16 +58,24 @@ class WebSocketConnection {
    */
   authorize(token) {
     return new Promise((resolve, reject) => {
+      if (!token) {
+        return reject(new Error('A token is required for authorization'));
+      }
+
+      if (!this._webSocket || !this._webSocket.OPEN) {
+        return reject(new Error('WebSocket connection not open'));
+      }
+
       this._webSocket.onmessage = (message) => {
         const messageData = JSON.parse(message.data);
         const error = messageData.error || null;
         const authorized = !error;
 
-        resolve({ authorized, error });
+        return resolve({ authorized, error });
       };
 
       this._webSocket.onerror = (errorEvent) => {
-        reject(errorEvent);
+        return reject(errorEvent);
       };
 
       this._webSocket.send(

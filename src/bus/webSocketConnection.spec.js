@@ -1,7 +1,7 @@
 import { Server, WebSocket } from 'mock-socket';
 import WebSocketConnection from './webSocketConnection';
 
-describe.only('WebScoketConnection', function() {
+describe('WebScoketConnection', function() {
   let expectedWebSocket;
   let webSocketServer;
   let webSocketUrl;
@@ -227,6 +227,143 @@ describe.only('WebScoketConnection', function() {
         return promise.catch((event) => {
           expect(event.type).to.equal('error');
         });
+      });
+    });
+
+    context('when the websocket is null', function() {
+      let expectedOrganization;
+      let jsonRpcId;
+      let promise;
+      let send;
+      let token;
+      let ws;
+
+      beforeEach(function() {
+        expectedOrganization = fixture.build('organization');
+        send = this.sandbox.stub(expectedWebSocket, 'send');
+        token = faker.random.uuid();
+
+        ws = new WebSocketConnection(null, expectedOrganization.id);
+
+        jsonRpcId = ws._jsonRpcId;
+
+        promise = ws.authorize(token);
+      });
+
+      it('does not send a message to the message bus', function() {
+        return promise.catch(() => {
+          expect(send).to.not.be.called;
+        });
+      });
+
+      it('does not increment the jsonRpcId', function() {
+        return promise.catch(() => {
+          expect(ws._jsonRpcId).to.equal(jsonRpcId);
+        });
+      });
+
+      it('rejects the promise', function() {
+        expect(promise).to.be.rejected;
+      });
+
+      it('rejects with an error', function() {
+        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+      });
+    });
+
+    context('when the websocket is not open', function() {
+      let expectedOrganization;
+      let jsonRpcId;
+      let promise;
+      let send;
+      let token;
+      let ws;
+
+      beforeEach(function() {
+        expectedOrganization = fixture.build('organization');
+        send = this.sandbox.stub(expectedWebSocket, 'send');
+        token = faker.random.uuid();
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        jsonRpcId = ws._jsonRpcId;
+
+        promise = ws.authorize(token);
+
+        ws.close();
+      });
+
+      it('does not send a message to the message bus', function() {
+        return promise.catch(() => {
+          // wait for WebSocket connection to close
+          setTimeout(function() {
+            expect(send).to.not.be.called;
+          }, 100);
+        });
+      });
+
+      it('does not increment the jsonRpcId', function() {
+        return promise.catch(() => {
+          // wait for WebSocket connection to close
+          setTimeout(function() {
+            expect(ws._jsonRpcId).to.equal(jsonRpcId);
+          }, 100);
+        });
+      });
+
+      it('rejects the promise', function() {
+        expect(promise).to.be.rejected;
+      });
+
+      it('rejects with an error', function() {
+        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+      });
+    });
+
+    context('when there is not a token sent', function() {
+      let expectedOrganization;
+      let jsonRpcId;
+      let promise;
+      let send;
+      let ws;
+
+      beforeEach(function() {
+        expectedOrganization = fixture.build('organization');
+        send = this.sandbox.stub(expectedWebSocket, 'send');
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        jsonRpcId = ws._jsonRpcId;
+
+        promise = ws.authorize();
+      });
+
+      it('does not send a message to the message bus', function() {
+        return promise.catch(() => {
+          expect(send).to.not.be.called;
+        });
+      });
+
+      it('does not increment the jsonRpcId', function() {
+        return promise.catch(() => {
+          expect(ws._jsonRpcId).to.equal(jsonRpcId);
+        });
+      });
+
+      it('rejects the promise', function() {
+        expect(promise).to.be.rejected;
+      });
+
+      it('rejects with an error', function() {
+        expect(promise).to.be.rejectedWith(
+          'A token is required for authorization'
+        );
       });
     });
   });
