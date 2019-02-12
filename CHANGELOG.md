@@ -1,3 +1,9 @@
+## [v0.0.39](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.39) (2019-02-12)
+
+**Fixed**
+
+- Updated `extend`, `just-extend`, `lodash`, and `nise` libraries to fix newly discovered vulnerabilities
+
 ## [v0.0.38](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.38) (2019-01-29)
 
 **Added**
