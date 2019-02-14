@@ -1,7 +1,7 @@
 import { Server, WebSocket } from 'mock-socket';
 import WebSocketConnection from './webSocketConnection';
 
-describe('WebScoketConnection', function() {
+describe('WebSocketConnection', function() {
   let expectedWebSocket;
   let webSocketServer;
   let webSocketUrl;
@@ -17,7 +17,11 @@ describe('WebScoketConnection', function() {
   afterEach(function() {
     this.sandbox.restore();
 
+    expectedWebSocket.onmessage = null;
+    expectedWebSocket.onerror = null;
+
     expectedWebSocket.close();
+
     webSocketServer.close();
   });
 
