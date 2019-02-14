@@ -107,6 +107,53 @@ class WebSocketConnection {
   close() {
     this._webSocket.close();
   }
+
+  publish(serviceClientId, channel, message) {
+    return new Promise((resolve, reject) => {
+      if (!serviceClientId) {
+        return reject(
+          new Error('A service client id is required for publishing')
+        );
+      }
+
+      if (!channel) {
+        return reject(new Error('A channel is required for publishing'));
+      }
+
+      if (!message) {
+        return reject(new Error('A message is required for publishing'));
+      }
+
+      if (!this._webSocket || !this._webSocket.OPEN) {
+        return reject(new Error('WebSocket connection not open'));
+      }
+
+      this._webSocket.onmessage = (message) => {
+        const messageData = JSON.parse(message.data);
+        const error = messageData.error || null;
+
+        return resolve({ error });
+      };
+
+      this._webSocket.onerror = (errorEvent) => {
+        return reject(errorEvent);
+      };
+
+      this._webSocket.send(
+        JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'MessageBus.Publish',
+          params: {
+            service_id: serviceClientId,
+            channel,
+            message
+          },
+          id: this._jsonRpcId
+        })
+      );
+      this._jsonRpcId++;
+    });
+  }
 }
 
 export default WebSocketConnection;
