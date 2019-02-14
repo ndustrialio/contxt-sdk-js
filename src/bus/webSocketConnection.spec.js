@@ -8,7 +8,6 @@ describe('WebSocketConnection', function() {
 
   beforeEach(function() {
     this.sandbox = sandbox.create();
-
     webSocketUrl = `wss://${faker.internet.domainName()}`;
     webSocketServer = new Server(webSocketUrl);
     expectedWebSocket = new WebSocket(webSocketUrl);
@@ -86,13 +85,13 @@ describe('WebSocketConnection', function() {
         });
 
         it('sends a message to the message bus', function() {
-          return promise.then(() => {
+          return promise.then(function() {
             expect(send).to.be.calledWith(expectedJsonRpc);
           });
         });
 
         it('increments the jsonRpcId', function() {
-          return promise.then(() => {
+          return promise.then(function() {
             expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
           });
         });
@@ -179,13 +178,13 @@ describe('WebSocketConnection', function() {
       });
 
       it('sends a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.be.calledWith(expectedJsonRpc);
         });
       });
 
       it('increments the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
         });
       });
@@ -222,13 +221,13 @@ describe('WebSocketConnection', function() {
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
@@ -246,7 +245,7 @@ describe('WebSocketConnection', function() {
       let token;
       let ws;
 
-      beforeEach(function() {
+      beforeEach(function(done) {
         expectedOrganization = fixture.build('organization');
         send = this.sandbox.spy(expectedWebSocket, 'send');
         token = faker.internet.password();
@@ -258,26 +257,24 @@ describe('WebSocketConnection', function() {
 
         jsonRpcId = ws._jsonRpcId;
 
-        promise = ws.authorize(token);
-
         ws.close();
+
+        expectedWebSocket.onclose = () => {
+          expectedWebSocket.OPEN = 0;
+          promise = ws.authorize(token);
+          done();
+        };
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
-          // wait for WebSocket connection to close
-          setTimeout(function() {
-            expect(send).to.not.be.called;
-          }, 100);
+        return promise.catch(function() {
+          expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
-          // wait for WebSocket connection to close
-          setTimeout(function() {
-            expect(ws._jsonRpcId).to.equal(jsonRpcId);
-          }, 100);
+        return promise.catch(function() {
+          expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
 
@@ -308,13 +305,13 @@ describe('WebSocketConnection', function() {
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
@@ -398,13 +395,13 @@ describe('WebSocketConnection', function() {
         });
 
         it('sends a message to the message bus', function() {
-          return promise.then(() => {
+          return promise.then(function() {
             expect(send).to.be.calledWith(expectedJsonRpc);
           });
         });
 
         it('increments the jsonRpcId', function() {
-          return promise.then(() => {
+          return promise.then(function() {
             expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
           });
         });
@@ -505,13 +502,13 @@ describe('WebSocketConnection', function() {
       });
 
       it('sends a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.be.calledWith(expectedJsonRpc);
         });
       });
 
       it('increments the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
         });
       });
@@ -554,13 +551,13 @@ describe('WebSocketConnection', function() {
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
@@ -580,7 +577,7 @@ describe('WebSocketConnection', function() {
       let serviceId;
       let ws;
 
-      beforeEach(function() {
+      beforeEach(function(done) {
         channel = faker.random.word();
         expectedOrganization = fixture.build('organization');
         message = {
@@ -596,26 +593,24 @@ describe('WebSocketConnection', function() {
 
         jsonRpcId = ws._jsonRpcId;
 
-        promise = ws.publish(serviceId, channel, message);
-
         ws.close();
+
+        expectedWebSocket.onclose = () => {
+          expectedWebSocket.OPEN = 0;
+          promise = ws.publish(serviceId, channel, message);
+          done();
+        };
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
-          // wait for WebSocket connection to close
-          setTimeout(function() {
-            expect(send).to.not.be.called;
-          }, 100);
+        return promise.catch(function() {
+          expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
-          // wait for WebSocket connection to close
-          setTimeout(function() {
-            expect(ws._jsonRpcId).to.equal(jsonRpcId);
-          }, 100);
+        return promise.catch(function() {
+          expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
 
@@ -654,20 +649,20 @@ describe('WebSocketConnection', function() {
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
 
       it('rejects the promise', function() {
         expect(promise).to.be.rejectedWith(
-          'A token is required for authorization'
+          'A service client id is required for publishing'
         );
       });
     });
@@ -702,20 +697,20 @@ describe('WebSocketConnection', function() {
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
 
       it('rejects the promise', function() {
         expect(promise).to.be.rejectedWith(
-          'A token is required for authorization'
+          'A channel is required for publishing'
         );
       });
     });
@@ -748,20 +743,20 @@ describe('WebSocketConnection', function() {
       });
 
       it('does not send a message to the message bus', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(send).to.not.be.called;
         });
       });
 
       it('does not increment the jsonRpcId', function() {
-        return promise.catch(() => {
+        return promise.catch(function() {
           expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
 
       it('rejects the promise', function() {
         expect(promise).to.be.rejectedWith(
-          'A token is required for authorization'
+          'A message is required for publishing'
         );
       });
     });
