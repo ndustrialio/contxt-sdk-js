@@ -52,10 +52,9 @@ describe('WebScoketConnection', function() {
         let ws;
 
         beforeEach(function() {
-          expectedMessage = { jsonrpc: '2.0', id: '0', result: null };
           expectedOrganization = fixture.build('organization');
-          send = this.sandbox.stub(expectedWebSocket, 'send');
-          token = faker.random.uuid();
+          send = this.sandbox.spy(expectedWebSocket, 'send');
+          token = faker.internet.password();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -63,6 +62,8 @@ describe('WebScoketConnection', function() {
           );
 
           jsonRpcId = ws._jsonRpcId;
+
+          expectedMessage = { jsonrpc: '2.0', id: jsonRpcId, result: null };
 
           expectedJsonRpc = JSON.stringify({
             jsonrpc: '2.0',
@@ -94,35 +95,20 @@ describe('WebScoketConnection', function() {
 
         it('fulfills the promise', function() {
           expect(promise).to.be.fulfilled;
-        });
-
-        it('recieves a message from the server', function() {
-          return promise.then((response) => {
-            expect(response.authorized).to.be.true;
-            expect(response.error).to.be.null;
-          });
         });
       });
 
       context('when a user is not authorized', function() {
         let expectedMessage;
         let expectedOrganization;
-        let expectedJsonRpc;
         let jsonRpcId;
         let promise;
-        let send;
         let token;
         let ws;
 
         beforeEach(function() {
-          expectedMessage = {
-            jsonrpc: '2.0',
-            id: '0',
-            error: 'user is not authorized'
-          };
           expectedOrganization = fixture.build('organization');
-          send = this.sandbox.stub(expectedWebSocket, 'send');
-          token = faker.random.uuid();
+          token = faker.internet.password();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -131,14 +117,14 @@ describe('WebScoketConnection', function() {
 
           jsonRpcId = ws._jsonRpcId;
 
-          expectedJsonRpc = JSON.stringify({
+          expectedMessage = {
             jsonrpc: '2.0',
-            method: 'MessageBus.Authorize',
-            params: {
-              token
-            },
-            id: jsonRpcId
-          });
+            id: jsonRpcId,
+            error: {
+              status: 401,
+              message: 'user is not authorized'
+            }
+          };
 
           promise = ws.authorize(token);
 
@@ -147,32 +133,13 @@ describe('WebScoketConnection', function() {
           });
         });
 
-        it('sends a message to the message bus', function() {
-          return promise.then(() => {
-            expect(send).to.be.calledWith(expectedJsonRpc);
-          });
-        });
-
-        it('increments the jsonRpcId', function() {
-          return promise.then(() => {
-            expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
-          });
-        });
-
-        it('fulfills the promise', function() {
-          expect(promise).to.be.fulfilled;
-        });
-
-        it('recieves a message from the server', function() {
-          return promise.then((response) => {
-            expect(response.authorized).to.be.false;
-            expect(response.error).to.equal(expectedMessage.error);
-          });
+        it('rejects the promise', function() {
+          expect(promise).to.be.rejectedWith(expectedMessage.error);
         });
       });
     });
 
-    context('on an unsuccessful message', function() {
+    context('on a WebSocket error', function() {
       let expectedOrganization;
       let expectedJsonRpc;
       let jsonRpcId;
@@ -183,8 +150,8 @@ describe('WebScoketConnection', function() {
 
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.stub(expectedWebSocket, 'send');
-        token = faker.random.uuid();
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        token = faker.internet.password();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -240,8 +207,8 @@ describe('WebScoketConnection', function() {
 
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.stub(expectedWebSocket, 'send');
-        token = faker.random.uuid();
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        token = faker.internet.password();
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
 
@@ -263,10 +230,6 @@ describe('WebScoketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejected;
-      });
-
-      it('rejects with an error', function() {
         expect(promise).to.be.rejectedWith('WebSocket connection not open');
       });
     });
@@ -281,8 +244,8 @@ describe('WebScoketConnection', function() {
 
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.stub(expectedWebSocket, 'send');
-        token = faker.random.uuid();
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        token = faker.internet.password();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -315,10 +278,6 @@ describe('WebScoketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejected;
-      });
-
-      it('rejects with an error', function() {
         expect(promise).to.be.rejectedWith('WebSocket connection not open');
       });
     });
@@ -332,7 +291,7 @@ describe('WebScoketConnection', function() {
 
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.stub(expectedWebSocket, 'send');
+        send = this.sandbox.spy(expectedWebSocket, 'send');
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -357,10 +316,6 @@ describe('WebScoketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejected;
-      });
-
-      it('rejects with an error', function() {
         expect(promise).to.be.rejectedWith(
           'A token is required for authorization'
         );
