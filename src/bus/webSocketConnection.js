@@ -90,6 +90,29 @@ class WebSocketConnection {
     this._webSocket.close();
   }
 
+  /**
+   * Publishes a message to a specific channel on the message bus
+   *
+   * @param {string} serviceClientId Client ID of the message bus service
+   * @param {string} channel Message bus channel the message is being sent to
+   * @param {Object} message Message being sent to the message bus
+   *
+   * @returns {Promise}
+   * @fulfill
+   * @reject {error} The error event from the WebSocket or the error message from the message bus
+   *
+   * @example
+   *   contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *     .then((webSocket) => {
+   *       webSocket.publish('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', {"example": 1}).then(() => {
+   *         console.log("publish successful")
+   *       })
+   *       .catch((error) => {
+   *         console.log(error)
+   *       });
+   *     })
+   * });
+   */
   publish(serviceClientId, channel, message) {
     return new Promise((resolve, reject) => {
       if (!serviceClientId) {
@@ -112,9 +135,13 @@ class WebSocketConnection {
 
       this._webSocket.onmessage = (message) => {
         const messageData = JSON.parse(message.data);
-        const error = messageData.error || null;
+        const error = messageData.error;
 
-        return resolve({ error });
+        if (error) {
+          return reject(error);
+        }
+
+        return resolve();
       };
 
       this._webSocket.onerror = (errorEvent) => {
