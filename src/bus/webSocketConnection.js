@@ -36,6 +36,8 @@ class WebSocketConnection {
    * });
    */
   authorize(token) {
+    let messageId;
+
     return new Promise((resolve, reject) => {
       if (!token) {
         return reject(new Error('A token is required for authorization'));
@@ -50,15 +52,23 @@ class WebSocketConnection {
         const error = messageData.error;
 
         if (error) {
+          this._webSocket.onmessage = null;
+
           return reject(error);
         }
 
-        return resolve();
+        if (messageData.id === messageId) {
+          this._webSocket.onmessage = null;
+
+          return resolve();
+        }
       };
 
       this._webSocket.onerror = (errorEvent) => {
         return reject(errorEvent);
       };
+
+      messageId = this._jsonRpcId;
 
       this._webSocket.send(
         JSON.stringify({

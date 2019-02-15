@@ -45,102 +45,148 @@ describe('WebSocketConnection', function() {
 
   describe('authorize', function() {
     context('on a successful message', function() {
-      context('when a user is authorized', function() {
-        let expectedMessage;
-        let expectedOrganization;
-        let expectedJsonRpc;
-        let jsonRpcId;
-        let promise;
-        let send;
-        let token;
-        let ws;
+      context('when the message has a matching jsonRpcId', function() {
+        context('when a user is authorized', function() {
+          let expectedMessage;
+          let expectedOrganization;
+          let expectedJsonRpc;
+          let jsonRpcId;
+          let promise;
+          let send;
+          let token;
+          let ws;
 
-        beforeEach(function() {
-          expectedOrganization = fixture.build('organization');
-          send = this.sandbox.spy(expectedWebSocket, 'send');
-          token = faker.internet.password();
+          beforeEach(function() {
+            expectedOrganization = fixture.build('organization');
+            send = this.sandbox.spy(expectedWebSocket, 'send');
+            token = faker.internet.password();
 
-          ws = new WebSocketConnection(
-            expectedWebSocket,
-            expectedOrganization.id
-          );
+            ws = new WebSocketConnection(
+              expectedWebSocket,
+              expectedOrganization.id
+            );
 
-          jsonRpcId = ws._jsonRpcId;
+            jsonRpcId = ws._jsonRpcId;
 
-          expectedMessage = { jsonrpc: '2.0', id: jsonRpcId, result: null };
+            expectedMessage = { jsonrpc: '2.0', id: jsonRpcId, result: null };
 
-          expectedJsonRpc = JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'MessageBus.Authorize',
-            params: {
-              token
-            },
-            id: jsonRpcId
+            expectedJsonRpc = JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'MessageBus.Authorize',
+              params: {
+                token
+              },
+              id: jsonRpcId
+            });
+
+            promise = ws.authorize(token);
+
+            webSocketServer.on('connection', (socket) => {
+              socket.send(JSON.stringify(expectedMessage));
+            });
           });
 
-          promise = ws.authorize(token);
+          it('sends a message to the message bus', function() {
+            return promise.then(function() {
+              expect(send).to.be.calledWith(expectedJsonRpc);
+            });
+          });
 
-          webSocketServer.on('connection', (socket) => {
-            socket.send(JSON.stringify(expectedMessage));
+          it('increments the jsonRpcId', function() {
+            return promise.then(function() {
+              expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
+            });
+          });
+
+          it('fulfills the promise', function() {
+            expect(promise).to.be.fulfilled;
+          });
+
+          it('tears down the onmessage handler', function() {
+            return promise.then(function() {
+              expect(ws._webSocket.onmessage).to.be.undefined;
+            });
           });
         });
 
-        it('sends a message to the message bus', function() {
-          return promise.then(function() {
-            expect(send).to.be.calledWith(expectedJsonRpc);
-          });
-        });
+        context('when a user is not authorized', function() {
+          let expectedMessage;
+          let expectedOrganization;
+          let jsonRpcId;
+          let promise;
+          let token;
+          let ws;
 
-        it('increments the jsonRpcId', function() {
-          return promise.then(function() {
-            expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
-          });
-        });
+          beforeEach(function() {
+            expectedOrganization = fixture.build('organization');
+            token = faker.internet.password();
 
-        it('fulfills the promise', function() {
-          expect(promise).to.be.fulfilled;
+            ws = new WebSocketConnection(
+              expectedWebSocket,
+              expectedOrganization.id
+            );
+
+            jsonRpcId = ws._jsonRpcId;
+
+            expectedMessage = {
+              jsonrpc: '2.0',
+              id: jsonRpcId,
+              error: {
+                status: 401,
+                message: 'user is not authorized'
+              }
+            };
+
+            promise = ws.authorize(token);
+
+            webSocketServer.on('connection', (socket) => {
+              socket.send(JSON.stringify(expectedMessage));
+            });
+          });
+
+          it('rejects the promise', function() {
+            expect(promise).to.be.rejectedWith(expectedMessage.error);
+          });
         });
       });
+      context(
+        'when the message does not have a matching jsonRpcId',
+        function() {
+          let expectedMessage;
+          let expectedOrganization;
+          let promise;
+          let token;
+          let ws;
 
-      context('when a user is not authorized', function() {
-        let expectedMessage;
-        let expectedOrganization;
-        let jsonRpcId;
-        let promise;
-        let token;
-        let ws;
+          beforeEach(function() {
+            expectedOrganization = fixture.build('organization');
+            token = faker.internet.password();
 
-        beforeEach(function() {
-          expectedOrganization = fixture.build('organization');
-          token = faker.internet.password();
+            ws = new WebSocketConnection(
+              expectedWebSocket,
+              expectedOrganization.id
+            );
 
-          ws = new WebSocketConnection(
-            expectedWebSocket,
-            expectedOrganization.id
-          );
+            expectedMessage = {
+              jsonrpc: '2.0',
+              id: faker.random.uuid(),
+              result: null
+            };
 
-          jsonRpcId = ws._jsonRpcId;
+            promise = ws.authorize(token);
 
-          expectedMessage = {
-            jsonrpc: '2.0',
-            id: jsonRpcId,
-            error: {
-              status: 401,
-              message: 'user is not authorized'
-            }
-          };
-
-          promise = ws.authorize(token);
-
-          webSocketServer.on('connection', (socket) => {
-            socket.send(JSON.stringify(expectedMessage));
+            webSocketServer.on('connection', (socket) => {
+              socket.send(JSON.stringify(expectedMessage));
+            });
           });
-        });
 
-        it('rejects the promise', function() {
-          expect(promise).to.be.rejectedWith(expectedMessage.error);
-        });
-      });
+          it('does not resolve the promise', function(done) {
+            expect(promise).to.not.be.fulfilled;
+            expect(promise).to.not.be.rejected;
+            done();
+          });
+        }
+      );
     });
 
     context('on a WebSocket error', function() {
