@@ -149,44 +149,42 @@ describe('WebSocketConnection', function() {
           });
         });
       });
-      context(
-        'when the message does not have a matching jsonRpcId',
-        function() {
-          let expectedMessage;
-          let expectedOrganization;
-          let promise;
-          let token;
-          let ws;
+    });
 
-          beforeEach(function() {
-            expectedOrganization = fixture.build('organization');
-            token = faker.internet.password();
+    context('when the message does not have a matching jsonRpcId', function() {
+      let expectedMessage;
+      let expectedOrganization;
+      let promise;
+      let token;
+      let ws;
 
-            ws = new WebSocketConnection(
-              expectedWebSocket,
-              expectedOrganization.id
-            );
+      beforeEach(function() {
+        expectedOrganization = fixture.build('organization');
+        token = faker.internet.password();
 
-            expectedMessage = {
-              jsonrpc: '2.0',
-              id: faker.random.uuid(),
-              result: null
-            };
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
 
-            promise = ws.authorize(token);
+        expectedMessage = {
+          jsonrpc: '2.0',
+          id: faker.random.uuid(),
+          result: null
+        };
 
-            webSocketServer.on('connection', (socket) => {
-              socket.send(JSON.stringify(expectedMessage));
-            });
-          });
+        promise = ws.authorize(token);
 
-          it('does not resolve the promise', function(done) {
-            expect(promise).to.not.be.fulfilled;
-            expect(promise).to.not.be.rejected;
-            done();
-          });
-        }
-      );
+        webSocketServer.on('connection', (socket) => {
+          socket.send(JSON.stringify(expectedMessage));
+        });
+      });
+
+      it('does not resolve the promise', function(done) {
+        expect(promise).to.not.be.fulfilled;
+        expect(promise).to.not.be.rejected;
+        done();
+      });
     });
 
     context('on a WebSocket error', function() {
