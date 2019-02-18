@@ -91,6 +91,10 @@ the <code>logIn</code> function from the user to authenticate.</p>
 </dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>
+<dt><a href="./WebSocketConnection.md">WebSocketConnection</a></dt>
+<dd><p>Module that wraps the websocket connection to the message bus
+to provide the developer with a specific set of functionality</p>
+</dd>
 </dl>
 
 ## Typedefs
@@ -201,5 +205,11 @@ the optional methods are documented below.</p>
 </dd>
 <dt><a href="./Typedefs.md#UserProfile">UserProfile</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#WebSocket">WebSocket</a> : <code>Object</code></dt>
+<dd><p>The raw WebSocket created by ws</p>
+</dd>
+<dt><a href="./Typedefs.md#WebSocketConnection">WebSocketConnection</a> : <code>Object</code></dt>
+<dd><p>A wrapper around the raw WebSocket to provide a finite set of operations</p>
+</dd>
 </dl>
 
