@@ -1,26 +1,26 @@
 import { Server, WebSocket } from 'mock-socket';
+import sinon from 'sinon';
 import WebSocketConnection from './webSocketConnection';
 
-describe('WebSocketConnection', function() {
+const DELAY = 5;
+
+describe('Bus/WebSocketConnection', function() {
   let expectedWebSocket;
   let webSocketServer;
   let webSocketUrl;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     this.sandbox = sandbox.create();
     webSocketUrl = `wss://${faker.internet.domainName()}`;
     webSocketServer = new Server(webSocketUrl);
     expectedWebSocket = new WebSocket(webSocketUrl);
+
+    // Wait to allow `mock-socket` to set everything up
+    setTimeout(done, DELAY);
   });
 
   afterEach(function() {
     this.sandbox.restore();
-
-    expectedWebSocket.onmessage = null;
-    expectedWebSocket.onerror = null;
-
-    expectedWebSocket.close();
-
     webSocketServer.close();
   });
 
@@ -45,7 +45,6 @@ describe('WebSocketConnection', function() {
   describe('authorize', function() {
     context('on a successful message', function() {
       context('when a user is authorized', function() {
-        let expectedMessage;
         let expectedOrganization;
         let expectedJsonRpc;
         let jsonRpcId;
@@ -66,8 +65,6 @@ describe('WebSocketConnection', function() {
 
           jsonRpcId = ws._jsonRpcId;
 
-          expectedMessage = { jsonrpc: '2.0', id: jsonRpcId, result: null };
-
           expectedJsonRpc = JSON.stringify({
             jsonrpc: '2.0',
             method: 'MessageBus.Authorize',
@@ -79,9 +76,10 @@ describe('WebSocketConnection', function() {
 
           promise = ws.authorize(token);
 
-          webSocketServer.on('connection', (socket) => {
-            socket.send(JSON.stringify(expectedMessage));
-          });
+          webSocketServer.emit(
+            'message',
+            JSON.stringify({ jsonrpc: '2.0', id: jsonRpcId, result: null })
+          );
         });
 
         it('sends a message to the message bus', function() {
@@ -96,8 +94,20 @@ describe('WebSocketConnection', function() {
           });
         });
 
+        it('tears down the onmessage handler', function() {
+          return promise.then(function() {
+            expect(ws._webSocket.onmessage).to.be.undefined;
+          });
+        });
+
+        it('tears down the onerror handler', function() {
+          return promise.then(function() {
+            expect(ws._webSocket.onerror).to.be.undefined;
+          });
+        });
+
         it('fulfills the promise', function() {
-          expect(promise).to.be.fulfilled;
+          return expect(promise).to.be.fulfilled;
         });
       });
 
@@ -131,15 +141,88 @@ describe('WebSocketConnection', function() {
 
           promise = ws.authorize(token);
 
-          webSocketServer.on('connection', (socket) => {
-            socket.send(JSON.stringify(expectedMessage));
+          webSocketServer.emit('message', JSON.stringify(expectedMessage));
+        });
+
+        it('tears down the onmessage handler', function() {
+          return promise.catch(function() {
+            expect(ws._webSocket.onmessage).to.be.undefined;
           });
         });
 
-        it('rejects the promise', function() {
-          expect(promise).to.be.rejectedWith(expectedMessage.error);
+        it('tears down the onerror handler', function() {
+          return promise.catch(function() {
+            expect(ws._webSocket.onerror).to.be.undefined;
+          });
+        });
+
+        it('rejects the promise with the authorization error', function() {
+          return expect(promise).to.be.rejectedWith(expectedMessage.error);
         });
       });
+
+      context(
+        'when receiving a different message than the expected message (i.e. the message does not have a matching jsonRpcId)',
+        function() {
+          let clock;
+          let expectedOrganization;
+          let promise;
+          let resolvedIndicator;
+          let token;
+          let waitTime;
+          let ws;
+
+          beforeEach(function() {
+            clock = sinon.useFakeTimers();
+
+            expectedOrganization = fixture.build('organization');
+            token = faker.internet.password();
+            resolvedIndicator = Symbol(faker.hacker.noun());
+            waitTime = 1 * 60 * 1000; // 1 minute
+
+            ws = new WebSocketConnection(
+              expectedWebSocket,
+              expectedOrganization.id
+            );
+
+            promise = Promise.race([
+              ws.authorize(token),
+              new Promise((resolve, reject) => {
+                setTimeout(resolve, waitTime, resolvedIndicator);
+              })
+            ]);
+
+            webSocketServer.emit(
+              'message',
+              JSON.stringify({
+                jsonrpc: '2.0',
+                id: faker.random.uuid(),
+                result: null
+              })
+            );
+          });
+
+          afterEach(function() {
+            clock.restore();
+          });
+
+          it('does not resolve or reject the promise within 1 minute', function() {
+            clock.tick(waitTime);
+
+            return promise.then(
+              (value) => {
+                expect(value).to.equal(
+                  resolvedIndicator,
+                  'Promise should not have been resolved'
+                );
+              },
+              () => {
+                throw new Error('Promise should not have been rejected');
+              }
+            );
+          });
+        }
+      );
     });
 
     context('on a WebSocket error', function() {
@@ -189,11 +272,23 @@ describe('WebSocketConnection', function() {
         });
       });
 
-      it('rejects the promise', function() {
-        expect(promise).to.be.rejected;
+      it('tears down the onmessage handler', function() {
+        return promise.catch(function() {
+          expect(ws._webSocket.onmessage).to.be.undefined;
+        });
       });
 
-      it('triggers an error event', function() {
+      it('tears down the onerror handler', function() {
+        return promise.catch(function() {
+          expect(ws._webSocket.onerror).to.be.undefined;
+        });
+      });
+
+      it('rejects the promise', function() {
+        return expect(promise).to.be.rejected;
+      });
+
+      it('rejects with an error event', function() {
         return promise.catch((event) => {
           expect(event.type).to.equal('error');
         });
@@ -233,7 +328,9 @@ describe('WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
       });
     });
 
@@ -260,7 +357,6 @@ describe('WebSocketConnection', function() {
         ws.close();
 
         expectedWebSocket.onclose = () => {
-          expectedWebSocket.OPEN = 0;
           promise = ws.authorize(token);
           done();
         };
@@ -279,7 +375,9 @@ describe('WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
       });
     });
 
@@ -317,7 +415,7 @@ describe('WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith(
+        return expect(promise).to.be.rejectedWith(
           'A token is required for authorization'
         );
       });
