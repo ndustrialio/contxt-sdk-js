@@ -78,26 +78,17 @@ describe('Bus', function() {
   describe('connect', function() {
     let expectedHost;
     let expectedOrganization;
-    let server;
 
     beforeEach(function() {
       expectedHost = `wss://${faker.internet.domainName()}`;
       expectedOrganization = fixture.build('organization');
-
-      server = new Server(
-        `${expectedHost}/organizations/${expectedOrganization.id}/stream`
-      );
-    });
-
-    afterEach(function() {
-      server.stop();
     });
 
     context('when a websocket already exists for the organization', function() {
-      let bus;
       let expectedSocket;
       let promise;
       let sdk;
+      let server;
 
       beforeEach(function() {
         sdk = {
@@ -108,8 +99,9 @@ describe('Bus', function() {
           }
         };
 
-        bus = new Bus(sdk, baseRequest);
-        bus._baseWebSocketUrl = expectedHost;
+        server = new Server(
+          `${expectedHost}/organizations/${expectedOrganization.id}/stream`
+        );
 
         expectedSocket = new WebSocketConnection(
           new WebSocket(
@@ -118,13 +110,19 @@ describe('Bus', function() {
           expectedOrganization.id
         );
 
+        const bus = new Bus(sdk, baseRequest);
+        bus._baseWebSocketUrl = expectedHost;
         bus._webSockets[expectedOrganization.id] = expectedSocket;
 
         promise = bus.connect(expectedOrganization.id);
       });
 
+      afterEach(function() {
+        server.stop();
+      });
+
       it('fulfills the promise', function() {
-        expect(promise).to.be.fulfilled;
+        return expect(promise).to.be.fulfilled;
       });
 
       it('does not fetch an api token', function() {
@@ -148,6 +146,7 @@ describe('Bus', function() {
           let expectedApiToken;
           let promise;
           let sdk;
+          let server;
 
           beforeEach(function() {
             expectedApiToken = faker.internet.password();
@@ -162,13 +161,21 @@ describe('Bus', function() {
               }
             };
 
+            server = new Server(
+              `${expectedHost}/organizations/${expectedOrganization.id}/stream`
+            );
+
             bus = new Bus(sdk, baseRequest);
             bus._baseWebSocketUrl = expectedHost;
 
             promise = bus.connect(expectedOrganization.id);
           });
 
-          context('when initially opening the websocket', function() {
+          afterEach(function() {
+            server.stop();
+          });
+
+          context('when initially connecting', function() {
             it('gets an api token', function() {
               return promise.then(() => {
                 expect(sdk.auth.getCurrentApiToken).to.be.calledWith(
@@ -185,15 +192,56 @@ describe('Bus', function() {
               });
             });
           });
+
+          context('when the connection closes', function() {
+            beforeEach(function() {
+              return promise.then(() => {
+                server.close();
+              });
+            });
+
+            it('clears out the stored copy of the websocket', function() {
+              return promise.then(() => {
+                expect(bus._webSockets[expectedOrganization.id]).to.be.null;
+              });
+            });
+          });
+        });
+
+        context('when there is a problem getting an API token', function() {
+          let expectedError;
+          let promise;
+          let sdk;
+
+          beforeEach(function() {
+            expectedError = new Error(faker.hacker.phrase());
+
+            sdk = {
+              ...baseSdk,
+              auth: {
+                ...baseSdk.auth,
+                getCurrentApiToken: this.sandbox.stub().rejects(expectedError)
+              }
+            };
+
+            const bus = new Bus(sdk, baseRequest);
+            bus._baseWebSocketUrl = expectedHost;
+
+            promise = bus.connect(expectedOrganization.id);
+          });
+
+          it('rejects with the error', function() {
+            return expect(promise).to.be.rejectedWith(expectedError);
+          });
         });
 
         context(
           'when unsuccessful at connecting to the message bus',
           function() {
-            let bus;
             let expectedApiToken;
             let promise;
             let sdk;
+            let server;
 
             beforeEach(function() {
               expectedApiToken = faker.internet.password();
@@ -208,12 +256,24 @@ describe('Bus', function() {
                 }
               };
 
-              bus = new Bus(sdk, baseRequest);
+              server = new Server(
+                `${expectedHost}/organizations/${
+                  expectedOrganization.id
+                }/stream`,
+                {
+                  // set up the connection to fail every time
+                  verifyClient: () => false
+                }
+              );
+
+              const bus = new Bus(sdk, baseRequest);
               bus._baseWebSocketUrl = expectedHost;
 
               promise = bus.connect(expectedOrganization.id);
+            });
 
-              server.simulate('error');
+            afterEach(function() {
+              server.stop();
             });
 
             it('gets an api token', function() {
@@ -225,68 +285,12 @@ describe('Bus', function() {
             });
 
             it('rejects the promise', function() {
-              expect(promise).to.be.rejected;
+              return expect(promise).to.be.rejected;
             });
 
-            it('triggers an error event', function() {
+            it('rejects with an error event', function() {
               return promise.catch((event) => {
                 expect(event.type).to.equal('error');
-              });
-            });
-          }
-        );
-
-        context(
-          'when a websocket connection is already established',
-          function() {
-            let bus;
-            let sdk;
-            let ws;
-
-            beforeEach(function() {
-              sdk = {
-                ...baseSdk,
-                auth: {
-                  ...baseSdk.auth,
-                  getCurrentApiToken: this.sandbox.stub().resolves()
-                }
-              };
-
-              bus = new Bus(sdk, baseRequest);
-
-              bus._baseWebSocketUrl = expectedHost;
-
-              ws = new WebSocket(
-                `${bus._baseWebSocketUrl}/organizations/${
-                  expectedOrganization.id
-                }/stream`
-              );
-
-              // prettier-ignore
-              bus._webSockets[expectedOrganization.id] = new WebSocketConnection(ws, expectedOrganization.id);
-            });
-
-            context('when close is called on the websocket', function() {
-              beforeEach(function() {
-                ws.close();
-              });
-
-              it('clears out the stored copy of the websocket', function() {
-                setTimeout(() => {
-                  expect(bus._webSockets[expectedOrganization.id]).to.be.null;
-                }, 100);
-              });
-            });
-
-            context('when close emitted from the server', function() {
-              beforeEach(function() {
-                server.emit('close');
-              });
-
-              it('clears out the stored copy of the websocket', function() {
-                setTimeout(() => {
-                  expect(bus._webSockets[expectedOrganization.id]).to.be.null;
-                }, 100);
               });
             });
           }

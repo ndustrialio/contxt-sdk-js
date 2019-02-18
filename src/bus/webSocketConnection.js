@@ -36,14 +36,17 @@ class WebSocketConnection {
    * });
    */
   authorize(token) {
-    let messageId;
-
     return new Promise((resolve, reject) => {
       if (!token) {
         return reject(new Error('A token is required for authorization'));
       }
 
-      if (!this._webSocket || !this._webSocket.OPEN) {
+      const messageId = this._jsonRpcId;
+
+      if (
+        !this._webSocket ||
+        this._webSocket.readyState !== this._webSocket.OPEN
+      ) {
         return reject(new Error('WebSocket connection not open'));
       }
 
@@ -53,22 +56,25 @@ class WebSocketConnection {
 
         if (error) {
           this._webSocket.onmessage = null;
+          this._webSocket.onerror = null;
 
           return reject(error);
         }
 
         if (messageData.id === messageId) {
           this._webSocket.onmessage = null;
+          this._webSocket.onerror = null;
 
           return resolve();
         }
       };
 
       this._webSocket.onerror = (errorEvent) => {
+        this._webSocket.onmessage = null;
+        this._webSocket.onerror = null;
+
         return reject(errorEvent);
       };
-
-      messageId = this._jsonRpcId;
 
       this._webSocket.send(
         JSON.stringify({
@@ -80,6 +86,7 @@ class WebSocketConnection {
           id: this._jsonRpcId
         })
       );
+
       this._jsonRpcId++;
     });
   }

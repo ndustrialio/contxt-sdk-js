@@ -1,27 +1,27 @@
 import { Server, WebSocket } from 'mock-socket';
+import sinon from 'sinon';
 import WebSocketConnection from './webSocketConnection';
 
-describe('WebSocketConnection', function() {
+const DELAY = 5;
+
+describe('Bus/WebSocketConnection', function() {
   let expectedWebSocket;
   let webSocketServer;
   let webSocketUrl;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     this.sandbox = sandbox.create();
 
     webSocketUrl = `wss://${faker.internet.domainName()}`;
     webSocketServer = new Server(webSocketUrl);
     expectedWebSocket = new WebSocket(webSocketUrl);
+
+    // Wait to allow `mock-socket` to set everything up
+    setTimeout(done, DELAY);
   });
 
   afterEach(function() {
     this.sandbox.restore();
-
-    expectedWebSocket.onmessage = null;
-    expectedWebSocket.onerror = null;
-
-    expectedWebSocket.close();
-
     webSocketServer.close();
   });
 
@@ -45,146 +45,185 @@ describe('WebSocketConnection', function() {
 
   describe('authorize', function() {
     context('on a successful message', function() {
-      context('when the message has a matching jsonRpcId', function() {
-        context('when a user is authorized', function() {
-          let expectedMessage;
+      context('when a user is authorized', function() {
+        let expectedOrganization;
+        let expectedJsonRpc;
+        let jsonRpcId;
+        let promise;
+        let send;
+        let token;
+        let ws;
+
+        beforeEach(function() {
+          expectedOrganization = fixture.build('organization');
+          send = this.sandbox.spy(expectedWebSocket, 'send');
+          token = faker.internet.password();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          jsonRpcId = ws._jsonRpcId;
+
+          expectedJsonRpc = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'MessageBus.Authorize',
+            params: {
+              token
+            },
+            id: jsonRpcId
+          });
+
+          promise = ws.authorize(token);
+
+          webSocketServer.emit(
+            'message',
+            JSON.stringify({ jsonrpc: '2.0', id: jsonRpcId, result: null })
+          );
+        });
+
+        it('sends a message to the message bus', function() {
+          return promise.then(function() {
+            expect(send).to.be.calledWith(expectedJsonRpc);
+          });
+        });
+
+        it('increments the jsonRpcId', function() {
+          return promise.then(function() {
+            expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
+          });
+        });
+
+        it('tears down the onmessage handler', function() {
+          return promise.then(function() {
+            expect(ws._webSocket.onmessage).to.be.undefined;
+          });
+        });
+
+        it('tears down the onerror handler', function() {
+          return promise.then(function() {
+            expect(ws._webSocket.onerror).to.be.undefined;
+          });
+        });
+
+        it('fulfills the promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      });
+
+      context('when a user is not authorized', function() {
+        let expectedMessage;
+        let expectedOrganization;
+        let jsonRpcId;
+        let promise;
+        let token;
+        let ws;
+
+        beforeEach(function() {
+          expectedOrganization = fixture.build('organization');
+          token = faker.internet.password();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          jsonRpcId = ws._jsonRpcId;
+
+          expectedMessage = {
+            jsonrpc: '2.0',
+            id: jsonRpcId,
+            error: {
+              status: 401,
+              message: 'user is not authorized'
+            }
+          };
+
+          promise = ws.authorize(token);
+
+          webSocketServer.emit('message', JSON.stringify(expectedMessage));
+        });
+
+        it('tears down the onmessage handler', function() {
+          return promise.catch(function() {
+            expect(ws._webSocket.onmessage).to.be.undefined;
+          });
+        });
+
+        it('tears down the onerror handler', function() {
+          return promise.catch(function() {
+            expect(ws._webSocket.onerror).to.be.undefined;
+          });
+        });
+
+        it('rejects the promise with the authorization error', function() {
+          return expect(promise).to.be.rejectedWith(expectedMessage.error);
+        });
+      });
+
+      context(
+        'when receiving a different message than the expected message (i.e. the message does not have a matching jsonRpcId)',
+        function() {
+          let clock;
           let expectedOrganization;
-          let expectedJsonRpc;
-          let jsonRpcId;
           let promise;
-          let send;
+          let resolvedIndicator;
           let token;
+          let waitTime;
           let ws;
 
           beforeEach(function() {
+            clock = sinon.useFakeTimers();
+
             expectedOrganization = fixture.build('organization');
-            send = this.sandbox.spy(expectedWebSocket, 'send');
             token = faker.internet.password();
+            resolvedIndicator = Symbol(faker.hacker.noun());
+            waitTime = 1 * 60 * 1000; // 1 minute
 
             ws = new WebSocketConnection(
               expectedWebSocket,
               expectedOrganization.id
             );
 
-            jsonRpcId = ws._jsonRpcId;
+            promise = Promise.race([
+              ws.authorize(token),
+              new Promise((resolve, reject) => {
+                setTimeout(resolve, waitTime, resolvedIndicator);
+              })
+            ]);
 
-            expectedMessage = { jsonrpc: '2.0', id: jsonRpcId, result: null };
+            webSocketServer.emit(
+              'message',
+              JSON.stringify({
+                jsonrpc: '2.0',
+                id: faker.random.uuid(),
+                result: null
+              })
+            );
+          });
 
-            expectedJsonRpc = JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'MessageBus.Authorize',
-              params: {
-                token
+          afterEach(function() {
+            clock.restore();
+          });
+
+          it('does not resolve or reject the promise within 1 minute', function() {
+            clock.tick(waitTime);
+
+            return promise.then(
+              (value) => {
+                expect(value).to.equal(
+                  resolvedIndicator,
+                  'Promise should not have been resolved'
+                );
               },
-              id: jsonRpcId
-            });
-
-            promise = ws.authorize(token);
-
-            webSocketServer.on('connection', (socket) => {
-              socket.send(JSON.stringify(expectedMessage));
-            });
-          });
-
-          it('sends a message to the message bus', function() {
-            return promise.then(function() {
-              expect(send).to.be.calledWith(expectedJsonRpc);
-            });
-          });
-
-          it('increments the jsonRpcId', function() {
-            return promise.then(function() {
-              expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
-            });
-          });
-
-          it('fulfills the promise', function() {
-            expect(promise).to.be.fulfilled;
-          });
-
-          it('tears down the onmessage handler', function() {
-            return promise.then(function() {
-              expect(ws._webSocket.onmessage).to.be.undefined;
-            });
-          });
-        });
-
-        context('when a user is not authorized', function() {
-          let expectedMessage;
-          let expectedOrganization;
-          let jsonRpcId;
-          let promise;
-          let token;
-          let ws;
-
-          beforeEach(function() {
-            expectedOrganization = fixture.build('organization');
-            token = faker.internet.password();
-
-            ws = new WebSocketConnection(
-              expectedWebSocket,
-              expectedOrganization.id
-            );
-
-            jsonRpcId = ws._jsonRpcId;
-
-            expectedMessage = {
-              jsonrpc: '2.0',
-              id: jsonRpcId,
-              error: {
-                status: 401,
-                message: 'user is not authorized'
+              () => {
+                throw new Error('Promise should not have been rejected');
               }
-            };
-
-            promise = ws.authorize(token);
-
-            webSocketServer.on('connection', (socket) => {
-              socket.send(JSON.stringify(expectedMessage));
-            });
+            );
           });
-
-          it('rejects the promise', function() {
-            expect(promise).to.be.rejectedWith(expectedMessage.error);
-          });
-        });
-      });
-    });
-
-    context('when the message does not have a matching jsonRpcId', function() {
-      let expectedMessage;
-      let expectedOrganization;
-      let promise;
-      let token;
-      let ws;
-
-      beforeEach(function() {
-        expectedOrganization = fixture.build('organization');
-        token = faker.internet.password();
-
-        ws = new WebSocketConnection(
-          expectedWebSocket,
-          expectedOrganization.id
-        );
-
-        expectedMessage = {
-          jsonrpc: '2.0',
-          id: faker.random.uuid(),
-          result: null
-        };
-
-        promise = ws.authorize(token);
-
-        webSocketServer.on('connection', (socket) => {
-          socket.send(JSON.stringify(expectedMessage));
-        });
-      });
-
-      it('does not resolve the promise', function(done) {
-        expect(promise).to.not.be.fulfilled;
-        expect(promise).to.not.be.rejected;
-        done();
-      });
+        }
+      );
     });
 
     context('on a WebSocket error', function() {
@@ -234,11 +273,23 @@ describe('WebSocketConnection', function() {
         });
       });
 
-      it('rejects the promise', function() {
-        expect(promise).to.be.rejected;
+      it('tears down the onmessage handler', function() {
+        return promise.catch(function() {
+          expect(ws._webSocket.onmessage).to.be.undefined;
+        });
       });
 
-      it('triggers an error event', function() {
+      it('tears down the onerror handler', function() {
+        return promise.catch(function() {
+          expect(ws._webSocket.onerror).to.be.undefined;
+        });
+      });
+
+      it('rejects the promise', function() {
+        return expect(promise).to.be.rejected;
+      });
+
+      it('rejects with an error event', function() {
         return promise.catch((event) => {
           expect(event.type).to.equal('error');
         });
@@ -278,7 +329,9 @@ describe('WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
       });
     });
 
@@ -305,7 +358,6 @@ describe('WebSocketConnection', function() {
         ws.close();
 
         expectedWebSocket.onclose = () => {
-          expectedWebSocket.OPEN = 0;
           promise = ws.authorize(token);
           done();
         };
@@ -324,7 +376,9 @@ describe('WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
       });
     });
 
@@ -362,7 +416,7 @@ describe('WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith(
+        return expect(promise).to.be.rejectedWith(
           'A token is required for authorization'
         );
       });
