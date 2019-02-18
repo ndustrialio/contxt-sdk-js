@@ -106,6 +106,97 @@ class WebSocketConnection {
   close() {
     this._webSocket.close();
   }
+
+  /**
+   * Publishes a message to a specific channel on the message bus
+   *
+   * @param {string} serviceClientId Client ID of the message bus service
+   * @param {string} channel Message bus channel the message is being sent to
+   * @param {Any} message Message being sent to the message bus. Must be valid JSON.
+   *
+   * @returns {Promise}
+   * @fulfill
+   * @reject {error} The error event from the WebSocket or the error message from the message bus
+   *
+   * @example
+   *   contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *     .then((webSocket) => {
+   *       webSocket.publish('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', {"example": 1}).then(() => {
+   *         console.log("publish successful")
+   *       })
+   *       .catch((error) => {
+   *         console.log(error)
+   *       });
+   *     })
+   * });
+   */
+  publish(serviceClientId, channel, message) {
+    return new Promise((resolve, reject) => {
+      if (!serviceClientId) {
+        return reject(
+          new Error('A service client id is required for publishing')
+        );
+      }
+
+      if (!channel) {
+        return reject(new Error('A channel is required for publishing'));
+      }
+
+      if (!message) {
+        return reject(new Error('A message is required for publishing'));
+      }
+
+      const messageId = this._jsonRpcId;
+
+      if (
+        !this._webSocket ||
+        this._webSocket.readyState !== this._webSocket.OPEN
+      ) {
+        return reject(new Error('WebSocket connection not open'));
+      }
+
+      this._webSocket.onmessage = (message) => {
+        const messageData = JSON.parse(message.data);
+        const error = messageData.error;
+
+        if (error) {
+          this._webSocket.onmessage = null;
+          this._webSocket.onerror = null;
+
+          return reject(error);
+        }
+
+        if (messageData.id === messageId) {
+          this._webSocket.onmessage = null;
+          this._webSocket.onerror = null;
+
+          return resolve();
+        }
+      };
+
+      this._webSocket.onerror = (errorEvent) => {
+        this._webSocket.onmessage = null;
+        this._webSocket.onerror = null;
+
+        return reject(errorEvent);
+      };
+
+      this._webSocket.send(
+        JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'MessageBus.Publish',
+          params: {
+            service_id: serviceClientId,
+            channel,
+            message
+          },
+          id: this._jsonRpcId
+        })
+      );
+
+      this._jsonRpcId++;
+    });
+  }
 }
 
 export default WebSocketConnection;
