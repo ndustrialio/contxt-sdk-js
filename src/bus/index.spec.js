@@ -302,12 +302,11 @@ describe('Bus', function() {
   describe('getWebSocketConnection', function() {
     let bus;
     let expectedOrganization;
+    let expectedWebSocket;
 
     beforeEach(function() {
       expectedOrganization = fixture.build('organization');
-
-      bus = new Bus(baseSdk, baseRequest);
-      bus._webSockets[expectedOrganization.id] = new WebSocketConnection(
+      expectedWebSocket = new WebSocketConnection(
         new WebSocket(
           `wss://${faker.internet.domainName()}/organizations/${
             expectedOrganization.id
@@ -315,49 +314,48 @@ describe('Bus', function() {
         ),
         expectedOrganization.id
       );
+
+      bus = new Bus(baseSdk, baseRequest);
+      bus._webSockets[expectedOrganization.id] = expectedWebSocket;
     });
 
     context('when an organization id is passed in', function() {
       context('when a websocket connection exists', function() {
-        let expectedReturnedSocket;
+        let webSocketConnection;
 
         beforeEach(function() {
-          expectedReturnedSocket = bus.getWebSocketConnection(
+          webSocketConnection = bus.getWebSocketConnection(
             expectedOrganization.id
           );
         });
 
         it('returns the socket', function() {
-          expect(expectedReturnedSocket).to.deep.equal(
-            bus._webSockets[expectedOrganization.id]
-          );
+          expect(webSocketConnection).to.deep.equal(expectedWebSocket);
         });
       });
 
       context('when a websocket connection does not exist', function() {
-        let expectedReturnedSocket;
+        let webSocketConnection;
 
         beforeEach(function() {
-          expectedReturnedSocket = bus.getWebSocketConnection(
-            faker.random.uuid()
-          );
+          webSocketConnection = bus.getWebSocketConnection(faker.random.uuid());
         });
 
         it('returns undefined', function() {
-          expect(expectedReturnedSocket).to.be.undefined;
+          expect(webSocketConnection).to.be.undefined;
         });
       });
     });
 
     context('when an organization id is not passed in', function() {
-      let expectedReturnedSocket;
+      let webSocketConnection;
 
       beforeEach(function() {
-        expectedReturnedSocket = bus.getWebSocketConnection();
+        webSocketConnection = bus.getWebSocketConnection();
       });
 
       it('returns undefined', function() {
-        expect(expectedReturnedSocket).to.be.undefined;
+        expect(webSocketConnection).to.be.undefined;
       });
     });
   });
