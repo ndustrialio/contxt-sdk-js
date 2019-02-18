@@ -112,7 +112,7 @@ class WebSocketConnection {
    *
    * @param {string} serviceClientId Client ID of the message bus service
    * @param {string} channel Message bus channel the message is being sent to
-   * @param {Object} message Message being sent to the message bus
+   * @param {Any} message Message being sent to the message bus. Must be valid JSON.
    *
    * @returns {Promise}
    * @fulfill
