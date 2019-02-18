@@ -298,4 +298,67 @@ describe('Bus', function() {
       }
     );
   });
+
+  describe('getWebSocketConnection', function() {
+    let bus;
+    let expectedOrganization;
+
+    beforeEach(function() {
+      expectedOrganization = fixture.build('organization');
+
+      bus = new Bus(baseSdk, baseRequest);
+      bus._webSockets[expectedOrganization.id] = new WebSocketConnection(
+        new WebSocket(
+          `wss://${faker.internet.domainName()}/organizations/${
+            expectedOrganization.id
+          }/stream`
+        ),
+        expectedOrganization.id
+      );
+    });
+
+    context('when an organization id is passed in', function() {
+      context('when a websocket connection exists', function() {
+        let expectedReturnedSocket;
+
+        beforeEach(function() {
+          expectedReturnedSocket = bus.getWebSocketConnection(
+            expectedOrganization.id
+          );
+        });
+
+        it('returns the socket', function() {
+          expect(expectedReturnedSocket).to.deep.equal(
+            bus._webSockets[expectedOrganization.id]
+          );
+        });
+      });
+
+      context('when a websocket connection does not exist', function() {
+        let expectedReturnedSocket;
+
+        beforeEach(function() {
+          expectedReturnedSocket = bus.getWebSocketConnection(
+            faker.random.uuid()
+          );
+        });
+
+        it('returns undefined', function() {
+          expect(expectedReturnedSocket).to.be.undefined;
+        });
+      });
+    });
+
+    context('when an organization id is not passed in', function() {
+      let expectedReturnedSocket;
+
+      beforeEach(function() {
+        expectedReturnedSocket = bus.getWebSocketConnection();
+      });
+
+      it('returns undefined', function() {
+        expect(expectedReturnedSocket).to.be.undefined;
+      });
+    });
+  });
 });
