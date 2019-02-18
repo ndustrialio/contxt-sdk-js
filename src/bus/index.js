@@ -118,6 +118,21 @@ class Bus {
         });
     });
   }
+
+  /**
+   * Gets the WebSocketConnection for an organization id
+   * If a connection already exists for that organization id, the connection is returned, otherwise returns undefined.
+   *
+   * @param {string} organizationId UUID corresponding with an organization
+   *
+   * @returns {WebSocketConnection}
+   *
+   * @example
+   * const messageBusWebSocket = contxtSdk.bus.getWebSocketConnection('4f0e51c6-728b-4892-9863-6d002e61204d');
+   */
+  getWebSocketConnection(organizationId) {
+    return this._webSockets[organizationId];
+  }
 }
 
 export default Bus;
