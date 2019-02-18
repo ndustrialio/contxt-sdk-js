@@ -446,7 +446,6 @@ describe('Bus/WebSocketConnection', function() {
     context('on a successful message', function() {
       context('when publish succeeds', function() {
         let channel;
-        let expectedMessage;
         let expectedOrganization;
         let expectedJsonRpc;
         let jsonRpcId;
@@ -472,8 +471,6 @@ describe('Bus/WebSocketConnection', function() {
 
           jsonRpcId = ws._jsonRpcId;
 
-          expectedMessage = { jsonrpc: '2.0', id: jsonRpcId, result: null };
-
           expectedJsonRpc = JSON.stringify({
             jsonrpc: '2.0',
             method: 'MessageBus.Publish',
@@ -487,9 +484,10 @@ describe('Bus/WebSocketConnection', function() {
 
           promise = ws.publish(serviceId, channel, message);
 
-          webSocketServer.on('connection', (socket) => {
-            socket.send(JSON.stringify(expectedMessage));
-          });
+          webSocketServer.emit(
+            'message',
+            JSON.stringify({ jsonrpc: '2.0', id: jsonRpcId, result: null })
+          );
         });
 
         it('sends a message to the message bus', function() {
@@ -501,6 +499,18 @@ describe('Bus/WebSocketConnection', function() {
         it('increments the jsonRpcId', function() {
           return promise.then(function() {
             expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
+          });
+        });
+
+        it('tears down the onmessage handler', function() {
+          return promise.then(function() {
+            expect(ws._webSocket.onmessage).to.be.undefined;
+          });
+        });
+
+        it('tears down the onerror handler', function() {
+          return promise.then(function() {
+            expect(ws._webSocket.onerror).to.be.undefined;
           });
         });
 
@@ -545,15 +555,95 @@ describe('Bus/WebSocketConnection', function() {
 
           promise = ws.publish(serviceId, channel, message);
 
-          webSocketServer.on('connection', (socket) => {
-            socket.send(JSON.stringify(expectedMessage));
+          webSocketServer.emit('message', JSON.stringify(expectedMessage));
+        });
+
+        it('tears down the onmessage handler', function() {
+          return promise.catch(function() {
+            expect(ws._webSocket.onmessage).to.be.undefined;
           });
         });
 
-        it('rejects the promise', function() {
-          expect(promise).to.be.rejectedWith(expectedMessage.error);
+        it('tears down the onerror handler', function() {
+          return promise.catch(function() {
+            expect(ws._webSocket.onerror).to.be.undefined;
+          });
+        });
+
+        it('rejects the promise with the publication error', function() {
+          return expect(promise).to.be.rejectedWith(expectedMessage.error);
         });
       });
+
+      context(
+        'when receiving a different message than the expected message (i.e. the message does not have a matching jsonRpcId)',
+        function() {
+          let channel;
+          let clock;
+          let expectedMessage;
+          let expectedOrganization;
+          let promise;
+          let resolvedIndicator;
+          let serviceId;
+          let waitTime;
+          let ws;
+
+          beforeEach(function() {
+            channel = faker.random.word();
+            clock = sinon.useFakeTimers();
+            expectedMessage = {
+              jsonrpc: '2.0',
+              id: faker.random.uuid(),
+              result: null
+            };
+            expectedOrganization = fixture.build('organization');
+            resolvedIndicator = Symbol(faker.hacker.noun());
+            serviceId = faker.random.uuid();
+            waitTime = 1 * 60 * 1000; // 1 minute
+
+            ws = new WebSocketConnection(
+              expectedWebSocket,
+              expectedOrganization.id
+            );
+
+            promise = Promise.race([
+              ws.publish(serviceId, channel, expectedMessage),
+              new Promise((resolve, reject) => {
+                setTimeout(resolve, waitTime, resolvedIndicator);
+              })
+            ]);
+
+            webSocketServer.emit(
+              'message',
+              JSON.stringify({
+                jsonrpc: '2.0',
+                id: faker.random.uuid(),
+                result: null
+              })
+            );
+          });
+
+          afterEach(function() {
+            clock.restore();
+          });
+
+          it('does not resolve or reject the promise within 1 minute', function() {
+            clock.tick(waitTime);
+
+            return promise.then(
+              (value) => {
+                expect(value).to.equal(
+                  resolvedIndicator,
+                  'Promise should not have been resolved'
+                );
+              },
+              () => {
+                throw new Error('Promise should not have been rejected');
+              }
+            );
+          });
+        }
+      );
     });
 
     context('on a WebSocket error', function() {
@@ -611,11 +701,23 @@ describe('Bus/WebSocketConnection', function() {
         });
       });
 
-      it('rejects the promise', function() {
-        expect(promise).to.be.rejected;
+      it('tears down the onmessage handler', function() {
+        return promise.catch(function() {
+          expect(ws._webSocket.onmessage).to.be.undefined;
+        });
       });
 
-      it('triggers an error event', function() {
+      it('tears down the onerror handler', function() {
+        return promise.catch(function() {
+          expect(ws._webSocket.onerror).to.be.undefined;
+        });
+      });
+
+      it('rejects the promise', function() {
+        return expect(promise).to.be.rejected;
+      });
+
+      it('rejects with an error event', function() {
         return promise.catch((event) => {
           expect(event.type).to.equal('error');
         });
@@ -661,7 +763,9 @@ describe('Bus/WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
       });
     });
 
@@ -694,7 +798,6 @@ describe('Bus/WebSocketConnection', function() {
         ws.close();
 
         expectedWebSocket.onclose = () => {
-          expectedWebSocket.OPEN = 0;
           promise = ws.publish(serviceId, channel, message);
           done();
         };
@@ -713,7 +816,9 @@ describe('Bus/WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith('WebSocket connection not open');
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
       });
     });
 
@@ -759,7 +864,7 @@ describe('Bus/WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith(
+        return expect(promise).to.be.rejectedWith(
           'A service client id is required for publishing'
         );
       });
@@ -807,7 +912,7 @@ describe('Bus/WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith(
+        return expect(promise).to.be.rejectedWith(
           'A channel is required for publishing'
         );
       });
@@ -853,7 +958,7 @@ describe('Bus/WebSocketConnection', function() {
       });
 
       it('rejects the promise', function() {
-        expect(promise).to.be.rejectedWith(
+        return expect(promise).to.be.rejectedWith(
           'A message is required for publishing'
         );
       });
