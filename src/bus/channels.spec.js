@@ -2,7 +2,7 @@ import omit from 'lodash.omit';
 import Channels from './channels';
 import * as objectUtils from '../utils/objects';
 
-describe('Channels', function() {
+describe('Bus/Channels', function() {
   let baseRequest;
   let baseSdk;
   let expectedHost;

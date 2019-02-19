@@ -1,3 +1,13 @@
+## [v0.0.40](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.40) (2019-02-18)
+
+**Added**
+
+- Added `Bus#connect` to connect to the message bus via WebSockets
+- Added `WebSocketConnection` class to wrap the open WebSocket connection
+  - `authorize` for authorizing publish and/or subscribe for a particular channel
+  - `close` for closing the WebSocket connection
+  - `publish` for publishing a message to the message bus
+
 ## [v0.0.39](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.39) (2019-02-12)
 
 **Fixed**

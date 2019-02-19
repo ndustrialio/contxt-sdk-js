@@ -4,7 +4,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 
 export default {
-  external: ['auth0-js', 'axios'],
+  external: ['auth0-js', 'axios', 'ws'],
   input: 'src/index.js',
   output: [
     {
