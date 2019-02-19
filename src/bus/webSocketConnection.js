@@ -61,7 +61,7 @@ class WebSocketConnection {
           return reject(error);
         }
 
-        if (messageData.id === messageId) {
+        if (parseInt(messageData.id) === messageId) {
           this._webSocket.onmessage = null;
           this._webSocket.onerror = null;
 
@@ -166,7 +166,7 @@ class WebSocketConnection {
           return reject(error);
         }
 
-        if (messageData.id === messageId) {
+        if (parseInt(messageData.id) === messageId) {
           this._webSocket.onmessage = null;
           this._webSocket.onerror = null;
 
