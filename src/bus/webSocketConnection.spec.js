@@ -4,7 +4,7 @@ import WebSocketConnection from './webSocketConnection';
 
 const DELAY = 5;
 
-describe('Bus/WebSocketConnection', function() {
+describe.only('Bus/WebSocketConnection', function() {
   let expectedWebSocket;
   let webSocketServer;
   let webSocketUrl;
@@ -63,6 +63,8 @@ describe('Bus/WebSocketConnection', function() {
             expectedOrganization.id
           );
 
+          promise = ws.authorize(token);
+
           jsonRpcId = ws._jsonRpcId;
 
           expectedJsonRpc = JSON.stringify({
@@ -74,11 +76,13 @@ describe('Bus/WebSocketConnection', function() {
             id: jsonRpcId
           });
 
-          promise = ws.authorize(token);
-
           webSocketServer.emit(
             'message',
-            JSON.stringify({ jsonrpc: '2.0', id: jsonRpcId, result: null })
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: jsonRpcId,
+              result: null
+            })
           );
         });
 
@@ -88,26 +92,14 @@ describe('Bus/WebSocketConnection', function() {
           });
         });
 
-        it('increments the jsonRpcId', function() {
-          return promise.then(function() {
-            expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
-          });
-        });
-
-        it('tears down the onmessage handler', function() {
-          return promise.then(function() {
-            expect(ws._webSocket.onmessage).to.be.undefined;
-          });
-        });
-
-        it('tears down the onerror handler', function() {
-          return promise.then(function() {
-            expect(ws._webSocket.onerror).to.be.undefined;
-          });
-        });
-
         it('fulfills the promise', function() {
           return expect(promise).to.be.fulfilled;
+        });
+
+        it('tears down the on message and on error handlers', function() {
+          return promise.then(function() {
+            expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+          });
         });
       });
 
@@ -128,6 +120,8 @@ describe('Bus/WebSocketConnection', function() {
             expectedOrganization.id
           );
 
+          promise = ws.authorize(token);
+
           jsonRpcId = ws._jsonRpcId;
 
           expectedMessage = {
@@ -139,21 +133,7 @@ describe('Bus/WebSocketConnection', function() {
             }
           };
 
-          promise = ws.authorize(token);
-
           webSocketServer.emit('message', JSON.stringify(expectedMessage));
-        });
-
-        it('tears down the onmessage handler', function() {
-          return promise.catch(function() {
-            expect(ws._webSocket.onmessage).to.be.undefined;
-          });
-        });
-
-        it('tears down the onerror handler', function() {
-          return promise.catch(function() {
-            expect(ws._webSocket.onerror).to.be.undefined;
-          });
         });
 
         it('rejects the promise with the authorization error', function() {
@@ -225,79 +205,8 @@ describe('Bus/WebSocketConnection', function() {
       );
     });
 
-    context('on a WebSocket error', function() {
-      let expectedOrganization;
-      let expectedJsonRpc;
-      let jsonRpcId;
-      let promise;
-      let send;
-      let token;
-      let ws;
-
-      beforeEach(function() {
-        expectedOrganization = fixture.build('organization');
-        send = this.sandbox.spy(expectedWebSocket, 'send');
-        token = faker.internet.password();
-
-        ws = new WebSocketConnection(
-          expectedWebSocket,
-          expectedOrganization.id
-        );
-
-        jsonRpcId = ws._jsonRpcId;
-
-        expectedJsonRpc = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'MessageBus.Authorize',
-          params: {
-            token
-          },
-          id: jsonRpcId
-        });
-
-        promise = ws.authorize(token);
-
-        webSocketServer.simulate('error');
-      });
-
-      it('sends a message to the message bus', function() {
-        return promise.catch(function() {
-          expect(send).to.be.calledWith(expectedJsonRpc);
-        });
-      });
-
-      it('increments the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
-        });
-      });
-
-      it('tears down the onmessage handler', function() {
-        return promise.catch(function() {
-          expect(ws._webSocket.onmessage).to.be.undefined;
-        });
-      });
-
-      it('tears down the onerror handler', function() {
-        return promise.catch(function() {
-          expect(ws._webSocket.onerror).to.be.undefined;
-        });
-      });
-
-      it('rejects the promise', function() {
-        return expect(promise).to.be.rejected;
-      });
-
-      it('rejects with an error event', function() {
-        return promise.catch((event) => {
-          expect(event.type).to.equal('error');
-        });
-      });
-    });
-
     context('when the websocket is null', function() {
       let expectedOrganization;
-      let jsonRpcId;
       let promise;
       let send;
       let token;
@@ -310,20 +219,12 @@ describe('Bus/WebSocketConnection', function() {
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
 
-        jsonRpcId = ws._jsonRpcId;
-
         promise = ws.authorize(token);
       });
 
       it('does not send a message to the message bus', function() {
         return promise.catch(function() {
           expect(send).to.not.be.called;
-        });
-      });
-
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
 
@@ -336,7 +237,6 @@ describe('Bus/WebSocketConnection', function() {
 
     context('when the websocket is not open', function() {
       let expectedOrganization;
-      let jsonRpcId;
       let promise;
       let send;
       let token;
@@ -352,8 +252,6 @@ describe('Bus/WebSocketConnection', function() {
           expectedOrganization.id
         );
 
-        jsonRpcId = ws._jsonRpcId;
-
         ws.close();
 
         expectedWebSocket.onclose = () => {
@@ -368,12 +266,6 @@ describe('Bus/WebSocketConnection', function() {
         });
       });
 
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
-        });
-      });
-
       it('rejects the promise', function() {
         return expect(promise).to.be.rejectedWith(
           'WebSocket connection not open'
@@ -383,7 +275,6 @@ describe('Bus/WebSocketConnection', function() {
 
     context('when there is not a token sent', function() {
       let expectedOrganization;
-      let jsonRpcId;
       let promise;
       let send;
       let ws;
@@ -397,20 +288,12 @@ describe('Bus/WebSocketConnection', function() {
           expectedOrganization.id
         );
 
-        jsonRpcId = ws._jsonRpcId;
-
         promise = ws.authorize();
       });
 
       it('does not send a message to the message bus', function() {
         return promise.catch(function() {
           expect(send).to.not.be.called;
-        });
-      });
-
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
         });
       });
 
@@ -442,6 +325,176 @@ describe('Bus/WebSocketConnection', function() {
     });
   });
 
+  describe('onError', function() {
+    context('when the websocket throws an error', function() {
+      let expectedOrganization;
+      let onError;
+      let ws;
+      beforeEach(function() {
+        expectedOrganization = fixture.build('organization');
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        ws._jsonRpcId = faker.random.uuid();
+        ws._messageHandlers = {
+          [faker.random.uuid()]: this.sandbox.stub()
+        };
+
+        onError = this.sandbox.spy(ws, 'onError');
+      });
+
+      it('throws an error', function() {
+        try {
+          webSocketServer.emit('error');
+        } catch (err) {
+          expect(onError).to.throw(Error);
+        }
+      });
+
+      it('resets the jsonRpcId', function() {
+        try {
+          webSocketServer.emit('error');
+        } catch (err) {
+          expect(ws._jsonRpcId).to.be.null;
+        }
+      });
+
+      it('resets the messageHandlers', function() {
+        try {
+          webSocketServer.emit('error');
+        } catch (err) {
+          expect(ws._messageHandlers).to.be.empty;
+        }
+      });
+    });
+  });
+
+  describe('onMessage', function() {
+    context('when message handlers exist for the message id', function() {
+      context('when the message is a valid json string', function() {
+        let expectedMessageHandlers;
+        let expectedOrganization;
+        let expectedUUID;
+        let ws;
+
+        beforeEach(function() {
+          expectedOrganization = fixture.build('organization');
+          expectedUUID = faker.random.uuid();
+          expectedMessageHandlers = {
+            [expectedUUID]: this.sandbox.stub()
+          };
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          ws._messageHandlers = expectedMessageHandlers;
+
+          webSocketServer.emit(
+            'message',
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: expectedUUID,
+              result: null
+            })
+          );
+        });
+
+        it('calls the onmessage function for the message handler', function() {
+          expect(expectedMessageHandlers[expectedUUID]).to.be.calledOnce;
+        });
+      });
+
+      context('when the message is not a valid json string', function() {
+        let expectedMessageHandlers;
+        let expectedOrganization;
+        let expectedUUID;
+        let onMessage;
+        let ws;
+
+        beforeEach(function() {
+          expectedOrganization = fixture.build('organization');
+          expectedUUID = faker.random.uuid();
+          expectedMessageHandlers = {
+            [expectedUUID]: this.sandbox.stub()
+          };
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          ws._messageHandlers = expectedMessageHandlers;
+
+          onMessage = this.sandbox.spy(ws, 'onMessage');
+        });
+
+        it('does not call the onmessage function for the message handler', function() {
+          try {
+            webSocketServer.emit('message', {
+              jsonrpc: '2.0',
+              id: expectedUUID,
+              result: null
+            });
+          } catch (err) {
+            expect(expectedMessageHandlers[expectedUUID]).to.not.be.called;
+          }
+        });
+
+        it('throws an error', function() {
+          try {
+            webSocketServer.emit('message', {
+              jsonrpc: '2.0',
+              id: expectedUUID,
+              result: null
+            });
+          } catch (err) {
+            expect(onMessage).to.throw('Invalid JSON in message');
+          }
+        });
+      });
+    });
+
+    context("when message handlers don't exist for a message id", function() {
+      let expectedMessageHandlers;
+      let expectedOrganization;
+      let expectedUUID;
+      let ws;
+
+      beforeEach(function() {
+        expectedOrganization = fixture.build('organization');
+        expectedUUID = faker.random.uuid();
+        expectedMessageHandlers = {
+          [expectedUUID]: this.sandbox.stub()
+        };
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        ws._messageHandlers = expectedMessageHandlers;
+
+        webSocketServer.emit(
+          'message',
+          JSON.stringify({
+            jsonrpc: '2.0',
+            id: faker.random.uuid(),
+            result: null
+          })
+        );
+      });
+
+      it('does not call the onmessage function for the message handler', function() {
+        expect(expectedMessageHandlers[expectedUUID]).to.not.be.called;
+      });
+    });
+  });
+
   describe('publish', function() {
     context('on a successful message', function() {
       context('when publish succeeds', function() {
@@ -469,6 +522,8 @@ describe('Bus/WebSocketConnection', function() {
             expectedOrganization.id
           );
 
+          promise = ws.publish(serviceId, channel, message);
+
           jsonRpcId = ws._jsonRpcId;
 
           expectedJsonRpc = JSON.stringify({
@@ -482,8 +537,6 @@ describe('Bus/WebSocketConnection', function() {
             id: jsonRpcId
           });
 
-          promise = ws.publish(serviceId, channel, message);
-
           webSocketServer.emit(
             'message',
             JSON.stringify({ jsonrpc: '2.0', id: jsonRpcId, result: null })
@@ -496,26 +549,14 @@ describe('Bus/WebSocketConnection', function() {
           });
         });
 
-        it('increments the jsonRpcId', function() {
-          return promise.then(function() {
-            expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
-          });
-        });
-
-        it('tears down the onmessage handler', function() {
-          return promise.then(function() {
-            expect(ws._webSocket.onmessage).to.be.undefined;
-          });
-        });
-
-        it('tears down the onerror handler', function() {
-          return promise.then(function() {
-            expect(ws._webSocket.onerror).to.be.undefined;
-          });
-        });
-
         it('fulfills the promise', function() {
           expect(promise).to.be.fulfilled;
+        });
+
+        it('tears down the on message and on error handlers', function() {
+          return promise.then(function() {
+            expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+          });
         });
       });
 
@@ -542,6 +583,8 @@ describe('Bus/WebSocketConnection', function() {
             expectedOrganization.id
           );
 
+          promise = ws.publish(serviceId, channel, message);
+
           jsonRpcId = ws._jsonRpcId;
 
           expectedMessage = {
@@ -553,21 +596,7 @@ describe('Bus/WebSocketConnection', function() {
             }
           };
 
-          promise = ws.publish(serviceId, channel, message);
-
           webSocketServer.emit('message', JSON.stringify(expectedMessage));
-        });
-
-        it('tears down the onmessage handler', function() {
-          return promise.catch(function() {
-            expect(ws._webSocket.onmessage).to.be.undefined;
-          });
-        });
-
-        it('tears down the onerror handler', function() {
-          return promise.catch(function() {
-            expect(ws._webSocket.onerror).to.be.undefined;
-          });
         });
 
         it('rejects the promise with the publication error', function() {
@@ -646,84 +675,6 @@ describe('Bus/WebSocketConnection', function() {
       );
     });
 
-    context('on a WebSocket error', function() {
-      let channel;
-      let expectedOrganization;
-      let expectedJsonRpc;
-      let jsonRpcId;
-      let message;
-      let promise;
-      let send;
-      let serviceId;
-      let ws;
-
-      beforeEach(function() {
-        channel = faker.random.word();
-        expectedOrganization = fixture.build('organization');
-        message = {
-          example: 1
-        };
-        send = this.sandbox.spy(expectedWebSocket, 'send');
-        serviceId = faker.random.uuid();
-
-        ws = new WebSocketConnection(
-          expectedWebSocket,
-          expectedOrganization.id
-        );
-
-        jsonRpcId = ws._jsonRpcId;
-
-        expectedJsonRpc = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'MessageBus.Publish',
-          params: {
-            service_id: serviceId,
-            channel,
-            message
-          },
-          id: jsonRpcId
-        });
-
-        promise = ws.publish(serviceId, channel, message);
-
-        webSocketServer.simulate('error');
-      });
-
-      it('sends a message to the message bus', function() {
-        return promise.catch(function() {
-          expect(send).to.be.calledWith(expectedJsonRpc);
-        });
-      });
-
-      it('increments the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId + 1);
-        });
-      });
-
-      it('tears down the onmessage handler', function() {
-        return promise.catch(function() {
-          expect(ws._webSocket.onmessage).to.be.undefined;
-        });
-      });
-
-      it('tears down the onerror handler', function() {
-        return promise.catch(function() {
-          expect(ws._webSocket.onerror).to.be.undefined;
-        });
-      });
-
-      it('rejects the promise', function() {
-        return expect(promise).to.be.rejected;
-      });
-
-      it('rejects with an error event', function() {
-        return promise.catch((event) => {
-          expect(event.type).to.equal('error');
-        });
-      });
-    });
-
     context('when the websocket is null', function() {
       let channel;
       let expectedOrganization;
@@ -745,9 +696,9 @@ describe('Bus/WebSocketConnection', function() {
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
 
-        jsonRpcId = ws._jsonRpcId;
-
         promise = ws.publish(serviceId, channel, message);
+
+        jsonRpcId = ws._jsonRpcId;
       });
 
       it('does not send a message to the message bus', function() {
@@ -756,16 +707,16 @@ describe('Bus/WebSocketConnection', function() {
         });
       });
 
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
-        });
-      });
-
       it('rejects the promise', function() {
         return expect(promise).to.be.rejectedWith(
           'WebSocket connection not open'
         );
+      });
+
+      it('does not create the on message or on error handlers', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
       });
     });
 
@@ -793,12 +744,11 @@ describe('Bus/WebSocketConnection', function() {
           expectedOrganization.id
         );
 
-        jsonRpcId = ws._jsonRpcId;
-
         ws.close();
 
         expectedWebSocket.onclose = () => {
           promise = ws.publish(serviceId, channel, message);
+          jsonRpcId = ws._jsonRpcId;
           done();
         };
       });
@@ -809,16 +759,16 @@ describe('Bus/WebSocketConnection', function() {
         });
       });
 
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
-        });
-      });
-
       it('rejects the promise', function() {
         return expect(promise).to.be.rejectedWith(
           'WebSocket connection not open'
         );
+      });
+
+      it('does not create the on message or on error handlers', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
       });
     });
 
@@ -846,9 +796,9 @@ describe('Bus/WebSocketConnection', function() {
           expectedOrganization.id
         );
 
-        jsonRpcId = ws._jsonRpcId;
-
         promise = ws.publish(serviceId, channel, message);
+
+        jsonRpcId = ws._jsonRpcId;
       });
 
       it('does not send a message to the message bus', function() {
@@ -857,16 +807,16 @@ describe('Bus/WebSocketConnection', function() {
         });
       });
 
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
-        });
-      });
-
       it('rejects the promise', function() {
         return expect(promise).to.be.rejectedWith(
           'A service client id is required for publishing'
         );
+      });
+
+      it('does not create the on message or on error handlers', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
       });
     });
 
@@ -894,9 +844,9 @@ describe('Bus/WebSocketConnection', function() {
           expectedOrganization.id
         );
 
-        jsonRpcId = ws._jsonRpcId;
-
         promise = ws.publish(serviceId, channel, message);
+
+        jsonRpcId = ws._jsonRpcId;
       });
 
       it('does not send a message to the message bus', function() {
@@ -905,16 +855,16 @@ describe('Bus/WebSocketConnection', function() {
         });
       });
 
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
-        });
-      });
-
       it('rejects the promise', function() {
         return expect(promise).to.be.rejectedWith(
           'A channel is required for publishing'
         );
+      });
+
+      it('does not create the on message or on error handlers', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
       });
     });
 
@@ -940,9 +890,9 @@ describe('Bus/WebSocketConnection', function() {
           expectedOrganization.id
         );
 
-        jsonRpcId = ws._jsonRpcId;
-
         promise = ws.publish(serviceId, channel, message);
+
+        jsonRpcId = ws._jsonRpcId;
       });
 
       it('does not send a message to the message bus', function() {
@@ -951,16 +901,16 @@ describe('Bus/WebSocketConnection', function() {
         });
       });
 
-      it('does not increment the jsonRpcId', function() {
-        return promise.catch(function() {
-          expect(ws._jsonRpcId).to.equal(jsonRpcId);
-        });
-      });
-
       it('rejects the promise', function() {
         return expect(promise).to.be.rejectedWith(
           'A message is required for publishing'
         );
+      });
+
+      it('does not create the on message or on error handlers', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
       });
     });
   });

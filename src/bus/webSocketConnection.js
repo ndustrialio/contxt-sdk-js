@@ -1,3 +1,5 @@
+import uuid from 'uuid/v4';
+
 /**
  * Module that wraps the websocket connection to the message bus
  * to provide the developer with a specific set of functionality
@@ -9,9 +11,15 @@ class WebSocketConnection {
    * @param {string} organizationId UUID corresponding with an organization
    */
   constructor(webSocket, organizationId) {
-    this._jsonRpcId = 0;
+    this._jsonRpcId = null;
+    this._messageHandlers = {};
     this._organizationId = organizationId;
     this._webSocket = webSocket;
+
+    if (this._webSocket) {
+      this._webSocket.onmessage = this.onMessage;
+      this._webSocket.onerror = this.onError;
+    }
   }
 
   /**
@@ -41,8 +49,6 @@ class WebSocketConnection {
         return reject(new Error('A token is required for authorization'));
       }
 
-      const messageId = this._jsonRpcId;
-
       if (
         !this._webSocket ||
         this._webSocket.readyState !== this._webSocket.OPEN
@@ -50,30 +56,19 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      this._webSocket.onmessage = (message) => {
-        const messageData = JSON.parse(message.data);
-        const error = messageData.error;
+      this._jsonRpcId = uuid();
+      const messageId = this._jsonRpcId;
+
+      this._messageHandlers[messageId] = (message) => {
+        const error = message.error;
+
+        delete this._messageHandlers[messageId];
 
         if (error) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
           return reject(error);
         }
 
-        if (parseInt(messageData.id) === messageId) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
-          return resolve();
-        }
-      };
-
-      this._webSocket.onerror = (errorEvent) => {
-        this._webSocket.onmessage = null;
-        this._webSocket.onerror = null;
-
-        return reject(errorEvent);
+        return resolve();
       };
 
       this._webSocket.send(
@@ -83,11 +78,9 @@ class WebSocketConnection {
           params: {
             token
           },
-          id: this._jsonRpcId
+          id: messageId
         })
       );
-
-      this._jsonRpcId++;
     });
   }
 
@@ -106,6 +99,37 @@ class WebSocketConnection {
   close() {
     this._webSocket.close();
   }
+
+  /**
+   * Handles WebSocket errors.
+   * The `ws` library also closes the socket when an error occurs.
+   * Since the socket connection closes, the jsonRpcId and message handlers are cleared
+   *
+   */
+  onError = (error) => {
+    this._jsonRpcId = null;
+    this._messageHandlers = {};
+
+    throw new Error(error);
+  };
+
+  /**
+   * Handles messages sent from the Message Bus WebSocket connection.
+   *
+   */
+  onMessage = (message) => {
+    let messageData;
+
+    try {
+      messageData = JSON.parse(message.data);
+    } catch (err) {
+      throw new Error('Invalid JSON in message');
+    }
+
+    if (this._messageHandlers[messageData.id]) {
+      this._messageHandlers[messageData.id](messageData);
+    }
+  };
 
   /**
    * Publishes a message to a specific channel on the message bus
@@ -146,8 +170,6 @@ class WebSocketConnection {
         return reject(new Error('A message is required for publishing'));
       }
 
-      const messageId = this._jsonRpcId;
-
       if (
         !this._webSocket ||
         this._webSocket.readyState !== this._webSocket.OPEN
@@ -155,30 +177,18 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      this._webSocket.onmessage = (message) => {
-        const messageData = JSON.parse(message.data);
-        const error = messageData.error;
+      this._jsonRpcId = uuid();
+      const messageId = this._jsonRpcId;
+
+      this._messageHandlers[messageId] = (message) => {
+        const error = message.error;
+        delete this._messageHandlers[messageId];
 
         if (error) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
           return reject(error);
         }
 
-        if (parseInt(messageData.id) === messageId) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
-          return resolve();
-        }
-      };
-
-      this._webSocket.onerror = (errorEvent) => {
-        this._webSocket.onmessage = null;
-        this._webSocket.onerror = null;
-
-        return reject(errorEvent);
+        return resolve();
       };
 
       this._webSocket.send(
@@ -190,11 +200,9 @@ class WebSocketConnection {
             channel,
             message
           },
-          id: this._jsonRpcId
+          id: messageId
         })
       );
-
-      this._jsonRpcId++;
     });
   }
 }
