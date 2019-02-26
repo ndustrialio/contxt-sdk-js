@@ -1,3 +1,16 @@
+## [v0.0.41](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.41) (2019-02-26)
+
+**Added**
+
+- Added `WebSocketConnection#onMessage` for handling all messages recieved by the WebSocket
+- Added `WebSocketConnection#onError` for handling all WebSocket errors
+
+**Changed**
+
+- Updated `onmessage` handling for the `WebSocketConnection`
+  - Multiple messages can be sent to the Message Bus and an `onmessage` handler is created for each message sent
+  - When a response comes back for a sent message, the response is sent back to the user and the `onmessage` handler is torn down
+
 ## [v0.0.40](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.40) (2019-02-18)
 
 **Added**
