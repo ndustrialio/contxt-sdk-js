@@ -11,7 +11,6 @@ class WebSocketConnection {
    * @param {string} organizationId UUID corresponding with an organization
    */
   constructor(webSocket, organizationId) {
-    this._jsonRpcId = null;
     this._messageHandlers = {};
     this._organizationId = organizationId;
     this._webSocket = webSocket;
@@ -56,8 +55,7 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      this._jsonRpcId = uuid();
-      const messageId = this._jsonRpcId;
+      const messageId = uuid();
 
       this._messageHandlers[messageId] = (message) => {
         const error = message.error;
@@ -106,10 +104,9 @@ class WebSocketConnection {
    * Since the socket connection closes, the jsonRpcId and message handlers are cleared
    */
   onError = (error) => {
-    this._jsonRpcId = null;
     this._messageHandlers = {};
 
-    throw new Error(error);
+    console.log(error);
   };
 
   /**
@@ -175,8 +172,7 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      this._jsonRpcId = uuid();
-      const messageId = this._jsonRpcId;
+      const messageId = uuid();
 
       this._messageHandlers[messageId] = (message) => {
         const error = message.error;

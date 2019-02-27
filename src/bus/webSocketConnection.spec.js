@@ -65,7 +65,7 @@ describe('Bus/WebSocketConnection', function() {
 
           promise = ws.authorize(token);
 
-          jsonRpcId = ws._jsonRpcId;
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
 
           expectedJsonRpc = JSON.stringify({
             jsonrpc: '2.0',
@@ -122,7 +122,7 @@ describe('Bus/WebSocketConnection', function() {
 
           promise = ws.authorize(token);
 
-          jsonRpcId = ws._jsonRpcId;
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
 
           expectedMessage = {
             jsonrpc: '2.0',
@@ -336,24 +336,9 @@ describe('Bus/WebSocketConnection', function() {
 
       ws = new WebSocketConnection(expectedWebSocket, expectedOrganization.id);
 
-      ws._jsonRpcId = faker.random.uuid();
       ws._messageHandlers = {
         [faker.random.uuid()]: this.sandbox.stub()
       };
-    });
-
-    it('throws an error', function() {
-      expect(function() {
-        ws.onError(expectedError);
-      }).to.throw(expectedError);
-    });
-
-    it('resets the jsonRpcId', function() {
-      try {
-        ws.onError(expectedError);
-      } catch (err) {
-        expect(ws._jsonRpcId).to.be.null;
-      }
     });
 
     it('resets the messageHandlers', function() {
@@ -502,7 +487,7 @@ describe('Bus/WebSocketConnection', function() {
 
           promise = ws.publish(serviceId, channel, message);
 
-          jsonRpcId = ws._jsonRpcId;
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
 
           expectedJsonRpc = JSON.stringify({
             jsonrpc: '2.0',
@@ -563,7 +548,7 @@ describe('Bus/WebSocketConnection', function() {
 
           promise = ws.publish(serviceId, channel, message);
 
-          jsonRpcId = ws._jsonRpcId;
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
 
           expectedMessage = {
             jsonrpc: '2.0',
@@ -676,7 +661,7 @@ describe('Bus/WebSocketConnection', function() {
 
         promise = ws.publish(serviceId, channel, message);
 
-        jsonRpcId = ws._jsonRpcId;
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
       });
 
       it('does not send a message to the message bus', function() {
@@ -726,7 +711,7 @@ describe('Bus/WebSocketConnection', function() {
 
         expectedWebSocket.onclose = () => {
           promise = ws.publish(serviceId, channel, message);
-          jsonRpcId = ws._jsonRpcId;
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
           done();
         };
       });
@@ -776,7 +761,7 @@ describe('Bus/WebSocketConnection', function() {
 
         promise = ws.publish(serviceId, channel, message);
 
-        jsonRpcId = ws._jsonRpcId;
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
       });
 
       it('does not send a message to the message bus', function() {
@@ -824,7 +809,7 @@ describe('Bus/WebSocketConnection', function() {
 
         promise = ws.publish(serviceId, channel, message);
 
-        jsonRpcId = ws._jsonRpcId;
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
       });
 
       it('does not send a message to the message bus', function() {
@@ -870,7 +855,7 @@ describe('Bus/WebSocketConnection', function() {
 
         promise = ws.publish(serviceId, channel, message);
 
-        jsonRpcId = ws._jsonRpcId;
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
       });
 
       it('does not send a message to the message bus', function() {

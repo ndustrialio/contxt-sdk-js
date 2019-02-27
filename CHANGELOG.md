@@ -1,4 +1,4 @@
-## [v0.0.41](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.41) (2019-02-26)
+## [v0.0.41](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.41) (2019-02-27)
 
 **Added**
 
