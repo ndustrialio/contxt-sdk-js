@@ -104,7 +104,6 @@ class WebSocketConnection {
    * Handles WebSocket errors.
    * The `ws` library also closes the socket when an error occurs.
    * Since the socket connection closes, the jsonRpcId and message handlers are cleared
-   *
    */
   onError = (error) => {
     this._jsonRpcId = null;
@@ -115,7 +114,6 @@ class WebSocketConnection {
 
   /**
    * Handles messages sent from the Message Bus WebSocket connection.
-   *
    */
   onMessage = (message) => {
     let messageData;

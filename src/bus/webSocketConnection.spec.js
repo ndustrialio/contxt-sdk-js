@@ -4,7 +4,7 @@ import WebSocketConnection from './webSocketConnection';
 
 const DELAY = 5;
 
-describe.only('Bus/WebSocketConnection', function() {
+describe('Bus/WebSocketConnection', function() {
   let expectedWebSocket;
   let webSocketServer;
   let webSocketUrl;
@@ -96,7 +96,7 @@ describe.only('Bus/WebSocketConnection', function() {
           return expect(promise).to.be.fulfilled;
         });
 
-        it('tears down the on message and on error handlers', function() {
+        it('tears down the on message handler', function() {
           return promise.then(function() {
             expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
           });
@@ -326,55 +326,49 @@ describe.only('Bus/WebSocketConnection', function() {
   });
 
   describe('onError', function() {
-    context('when the websocket throws an error', function() {
-      let expectedOrganization;
-      let onError;
-      let ws;
-      beforeEach(function() {
-        expectedOrganization = fixture.build('organization');
+    let expectedError;
+    let expectedOrganization;
+    let ws;
 
-        ws = new WebSocketConnection(
-          expectedWebSocket,
-          expectedOrganization.id
-        );
+    beforeEach(function() {
+      expectedError = faker.random.words();
+      expectedOrganization = fixture.build('organization');
 
-        ws._jsonRpcId = faker.random.uuid();
-        ws._messageHandlers = {
-          [faker.random.uuid()]: this.sandbox.stub()
-        };
+      ws = new WebSocketConnection(expectedWebSocket, expectedOrganization.id);
 
-        onError = this.sandbox.spy(ws, 'onError');
-      });
+      ws._jsonRpcId = faker.random.uuid();
+      ws._messageHandlers = {
+        [faker.random.uuid()]: this.sandbox.stub()
+      };
+    });
 
-      it('throws an error', function() {
-        try {
-          webSocketServer.emit('error');
-        } catch (err) {
-          expect(onError).to.throw(Error);
-        }
-      });
+    it('throws an error', function() {
+      expect(function() {
+        ws.onError(expectedError);
+      }).to.throw(expectedError);
+    });
 
-      it('resets the jsonRpcId', function() {
-        try {
-          webSocketServer.emit('error');
-        } catch (err) {
-          expect(ws._jsonRpcId).to.be.null;
-        }
-      });
+    it('resets the jsonRpcId', function() {
+      try {
+        ws.onError(expectedError);
+      } catch (err) {
+        expect(ws._jsonRpcId).to.be.null;
+      }
+    });
 
-      it('resets the messageHandlers', function() {
-        try {
-          webSocketServer.emit('error');
-        } catch (err) {
-          expect(ws._messageHandlers).to.be.empty;
-        }
-      });
+    it('resets the messageHandlers', function() {
+      try {
+        ws.onError(expectedError);
+      } catch (err) {
+        expect(ws._messageHandlers).to.be.empty;
+      }
     });
   });
 
   describe('onMessage', function() {
     context('when message handlers exist for the message id', function() {
       context('when the message is a valid json string', function() {
+        let expectedMessage;
         let expectedMessageHandlers;
         let expectedOrganization;
         let expectedUUID;
@@ -383,6 +377,11 @@ describe.only('Bus/WebSocketConnection', function() {
         beforeEach(function() {
           expectedOrganization = fixture.build('organization');
           expectedUUID = faker.random.uuid();
+          expectedMessage = {
+            jsonrpc: '2.0',
+            id: expectedUUID,
+            result: null
+          };
           expectedMessageHandlers = {
             [expectedUUID]: this.sandbox.stub()
           };
@@ -394,34 +393,30 @@ describe.only('Bus/WebSocketConnection', function() {
 
           ws._messageHandlers = expectedMessageHandlers;
 
-          webSocketServer.emit(
-            'message',
-            JSON.stringify({
-              jsonrpc: '2.0',
-              id: expectedUUID,
-              result: null
-            })
-          );
+          ws.onMessage({ data: JSON.stringify(expectedMessage) });
         });
 
         it('calls the onmessage function for the message handler', function() {
-          expect(expectedMessageHandlers[expectedUUID]).to.be.calledOnce;
+          expect(expectedMessageHandlers[expectedUUID]).to.be.calledWith(
+            expectedMessage
+          );
         });
       });
 
       context('when the message is not a valid json string', function() {
+        let expectedMessage;
         let expectedMessageHandlers;
         let expectedOrganization;
-        let expectedUUID;
         let onMessage;
         let ws;
 
         beforeEach(function() {
-          expectedOrganization = fixture.build('organization');
-          expectedUUID = faker.random.uuid();
-          expectedMessageHandlers = {
-            [expectedUUID]: this.sandbox.stub()
+          expectedMessage = {
+            jsonrpc: '2.0',
+            id: faker.random.uuid(),
+            result: null
           };
+          expectedOrganization = fixture.build('organization');
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -433,25 +428,9 @@ describe.only('Bus/WebSocketConnection', function() {
           onMessage = this.sandbox.spy(ws, 'onMessage');
         });
 
-        it('does not call the onmessage function for the message handler', function() {
-          try {
-            webSocketServer.emit('message', {
-              jsonrpc: '2.0',
-              id: expectedUUID,
-              result: null
-            });
-          } catch (err) {
-            expect(expectedMessageHandlers[expectedUUID]).to.not.be.called;
-          }
-        });
-
         it('throws an error', function() {
           try {
-            webSocketServer.emit('message', {
-              jsonrpc: '2.0',
-              id: expectedUUID,
-              result: null
-            });
+            ws.onMessage({ data: expectedMessage });
           } catch (err) {
             expect(onMessage).to.throw('Invalid JSON in message');
           }
@@ -460,12 +439,18 @@ describe.only('Bus/WebSocketConnection', function() {
     });
 
     context("when message handlers don't exist for a message id", function() {
+      let expectedMessage;
       let expectedMessageHandlers;
       let expectedOrganization;
       let expectedUUID;
       let ws;
 
       beforeEach(function() {
+        expectedMessage = {
+          jsonrpc: '2.0',
+          id: faker.random.uuid(),
+          result: null
+        };
         expectedOrganization = fixture.build('organization');
         expectedUUID = faker.random.uuid();
         expectedMessageHandlers = {
@@ -479,14 +464,7 @@ describe.only('Bus/WebSocketConnection', function() {
 
         ws._messageHandlers = expectedMessageHandlers;
 
-        webSocketServer.emit(
-          'message',
-          JSON.stringify({
-            jsonrpc: '2.0',
-            id: faker.random.uuid(),
-            result: null
-          })
-        );
+        ws.onMessage({ data: JSON.stringify(expectedMessage) });
       });
 
       it('does not call the onmessage function for the message handler', function() {
@@ -553,7 +531,7 @@ describe.only('Bus/WebSocketConnection', function() {
           expect(promise).to.be.fulfilled;
         });
 
-        it('tears down the on message and on error handlers', function() {
+        it('tears down the on message handler', function() {
           return promise.then(function() {
             expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
           });
@@ -713,7 +691,7 @@ describe.only('Bus/WebSocketConnection', function() {
         );
       });
 
-      it('does not create the on message or on error handlers', function() {
+      it('does not create the on message handler', function() {
         return promise.catch(function() {
           expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
         });
@@ -765,7 +743,7 @@ describe.only('Bus/WebSocketConnection', function() {
         );
       });
 
-      it('does not create the on message or on error handlers', function() {
+      it('does not create the on message handler', function() {
         return promise.catch(function() {
           expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
         });
@@ -813,7 +791,7 @@ describe.only('Bus/WebSocketConnection', function() {
         );
       });
 
-      it('does not create the on message or on error handlers', function() {
+      it('does not create the on message handler', function() {
         return promise.catch(function() {
           expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
         });
@@ -861,7 +839,7 @@ describe.only('Bus/WebSocketConnection', function() {
         );
       });
 
-      it('does not create the on message or on error handlers', function() {
+      it('does not create the on message handler', function() {
         return promise.catch(function() {
           expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
         });
@@ -907,7 +885,7 @@ describe.only('Bus/WebSocketConnection', function() {
         );
       });
 
-      it('does not create the on message or on error handlers', function() {
+      it('does not create the on message handler', function() {
         return promise.catch(function() {
           expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
         });
