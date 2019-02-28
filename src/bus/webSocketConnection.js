@@ -134,7 +134,7 @@ class WebSocketConnection {
   /**
    * Handles messages sent from the Message Bus WebSocket connection.
    *
-   * @param {WebSocketMessge} message The message event recieved over the WebSocket connection
+   * @param {WebSocketMessage} message The message event recieved over the WebSocket connection
    *
    * @private
    */
