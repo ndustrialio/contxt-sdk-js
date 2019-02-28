@@ -1,6 +1,24 @@
 import uuid from 'uuid/v4';
 
 /**
+ * The WebSocket Error Event
+ *
+ * @typedef {Object} WebSocketError
+ * @property {string} type The event type
+ */
+
+/**
+ * The WebSocket Message Event
+ *
+ * @typedef {Object} WebSocketMessage
+ * @property {Object} data The data sent by the message emitter
+ * @property {string} origin A USVString representing the origin of the message emitter
+ * @property {string} lastEventId A DOMString representing a unique ID for the event
+ * @property {Object} source A MessageEventSource (which can be a WindowProxy, MessagePort, or ServiceWorker object) representing the message emitter
+ * @property {Array} ports  MessagePort objects representing the ports associated with the channel the message is being sent through (where appropriate, e.g. in channel messaging or when sending a message to a shared worker)
+ */
+
+/**
  * Module that wraps the websocket connection to the message bus
  * to provide the developer with a specific set of functionality
  *
@@ -16,8 +34,8 @@ class WebSocketConnection {
     this._webSocket = webSocket;
 
     if (this._webSocket) {
-      this._webSocket.onmessage = this.onMessage;
-      this._webSocket.onerror = this.onError;
+      this._webSocket.onerror = this._onError;
+      this._webSocket.onmessage = this._onMessage;
     }
   }
 
@@ -102,17 +120,25 @@ class WebSocketConnection {
    * Handles WebSocket errors.
    * The `ws` library also closes the socket when an error occurs.
    * Since the socket connection closes, the jsonRpcId and message handlers are cleared
+   *
+   * @param {WebSocketError} error The error event thrown
+   *
+   * @private
    */
-  onError = (error) => {
+  _onError = (error) => {
     this._messageHandlers = {};
 
-    console.log(error);
+    console.log('Message Bus WebSocket Error: ', error);
   };
 
   /**
    * Handles messages sent from the Message Bus WebSocket connection.
+   *
+   * @param {WebSocketMessge} message The message event recieved over the WebSocket connection
+   *
+   * @private
    */
-  onMessage = (message) => {
+  _onMessage = (message) => {
     let messageData;
 
     try {

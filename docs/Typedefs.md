@@ -831,3 +831,31 @@ contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
     })
 });
 ```
+<a name="WebSocketError"></a>
+
+## WebSocketError : <code>Object</code>
+The WebSocket Error Event
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| type | <code>string</code> | The event type |
+
+<a name="WebSocketMessage"></a>
+
+## WebSocketMessage : <code>Object</code>
+The WebSocket Message Event
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| data | <code>Object</code> | The data sent by the message emitter |
+| origin | <code>string</code> | A USVString representing the origin of the message emitter |
+| lastEventId | <code>string</code> | A DOMString representing a unique ID for the event |
+| source | <code>Object</code> | A MessageEventSource (which can be a WindowProxy, MessagePort, or ServiceWorker object) representing the message emitter |
+| ports | <code>Array</code> | MessagePort objects representing the ports associated with the channel the message is being sent through (where appropriate, e.g. in channel messaging or when sending a message to a shared worker) |
+
