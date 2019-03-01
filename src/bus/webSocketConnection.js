@@ -1,3 +1,23 @@
+import uuid from 'uuid/v4';
+
+/**
+ * The WebSocket Error Event
+ *
+ * @typedef {Object} WebSocketError
+ * @property {string} type The event type
+ */
+
+/**
+ * The WebSocket Message Event
+ *
+ * @typedef {Object} WebSocketMessage
+ * @property {Object} data The data sent by the message emitter
+ * @property {string} origin A USVString representing the origin of the message emitter
+ * @property {string} lastEventId A DOMString representing a unique ID for the event
+ * @property {Object} source A MessageEventSource (which can be a WindowProxy, MessagePort, or ServiceWorker object) representing the message emitter
+ * @property {Array} ports  MessagePort objects representing the ports associated with the channel the message is being sent through (where appropriate, e.g. in channel messaging or when sending a message to a shared worker)
+ */
+
 /**
  * Module that wraps the websocket connection to the message bus
  * to provide the developer with a specific set of functionality
@@ -9,9 +29,14 @@ class WebSocketConnection {
    * @param {string} organizationId UUID corresponding with an organization
    */
   constructor(webSocket, organizationId) {
-    this._jsonRpcId = 0;
+    this._messageHandlers = {};
     this._organizationId = organizationId;
     this._webSocket = webSocket;
+
+    if (this._webSocket) {
+      this._webSocket.onerror = this._onError;
+      this._webSocket.onmessage = this._onMessage;
+    }
   }
 
   /**
@@ -41,8 +66,6 @@ class WebSocketConnection {
         return reject(new Error('A token is required for authorization'));
       }
 
-      const messageId = this._jsonRpcId;
-
       if (
         !this._webSocket ||
         this._webSocket.readyState !== this._webSocket.OPEN
@@ -50,30 +73,18 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      this._webSocket.onmessage = (message) => {
-        const messageData = JSON.parse(message.data);
-        const error = messageData.error;
+      const messageId = uuid();
+
+      this._messageHandlers[messageId] = (message) => {
+        const error = message.error;
+
+        delete this._messageHandlers[messageId];
 
         if (error) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
           return reject(error);
         }
 
-        if (parseInt(messageData.id) === messageId) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
-          return resolve();
-        }
-      };
-
-      this._webSocket.onerror = (errorEvent) => {
-        this._webSocket.onmessage = null;
-        this._webSocket.onerror = null;
-
-        return reject(errorEvent);
+        return resolve();
       };
 
       this._webSocket.send(
@@ -83,11 +94,9 @@ class WebSocketConnection {
           params: {
             token
           },
-          id: this._jsonRpcId
+          id: messageId
         })
       );
-
-      this._jsonRpcId++;
     });
   }
 
@@ -106,6 +115,42 @@ class WebSocketConnection {
   close() {
     this._webSocket.close();
   }
+
+  /**
+   * Handles WebSocket errors.
+   * The `ws` library also closes the socket when an error occurs.
+   * Since the socket connection closes, the jsonRpcId and message handlers are cleared
+   *
+   * @param {WebSocketError} error The error event thrown
+   *
+   * @private
+   */
+  _onError = (error) => {
+    this._messageHandlers = {};
+
+    console.log('Message Bus WebSocket Error: ', error);
+  };
+
+  /**
+   * Handles messages sent from the Message Bus WebSocket connection.
+   *
+   * @param {WebSocketMessage} message The message event recieved over the WebSocket connection
+   *
+   * @private
+   */
+  _onMessage = (message) => {
+    let messageData;
+
+    try {
+      messageData = JSON.parse(message.data);
+    } catch (err) {
+      throw new Error('Invalid JSON in message');
+    }
+
+    if (this._messageHandlers[messageData.id]) {
+      this._messageHandlers[messageData.id](messageData);
+    }
+  };
 
   /**
    * Publishes a message to a specific channel on the message bus
@@ -146,8 +191,6 @@ class WebSocketConnection {
         return reject(new Error('A message is required for publishing'));
       }
 
-      const messageId = this._jsonRpcId;
-
       if (
         !this._webSocket ||
         this._webSocket.readyState !== this._webSocket.OPEN
@@ -155,30 +198,17 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      this._webSocket.onmessage = (message) => {
-        const messageData = JSON.parse(message.data);
-        const error = messageData.error;
+      const messageId = uuid();
+
+      this._messageHandlers[messageId] = (message) => {
+        const error = message.error;
+        delete this._messageHandlers[messageId];
 
         if (error) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
           return reject(error);
         }
 
-        if (parseInt(messageData.id) === messageId) {
-          this._webSocket.onmessage = null;
-          this._webSocket.onerror = null;
-
-          return resolve();
-        }
-      };
-
-      this._webSocket.onerror = (errorEvent) => {
-        this._webSocket.onmessage = null;
-        this._webSocket.onerror = null;
-
-        return reject(errorEvent);
+        return resolve();
       };
 
       this._webSocket.send(
@@ -190,11 +220,9 @@ class WebSocketConnection {
             channel,
             message
           },
-          id: this._jsonRpcId
+          id: messageId
         })
       );
-
-      this._jsonRpcId++;
     });
   }
 }

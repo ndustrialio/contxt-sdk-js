@@ -211,5 +211,11 @@ the optional methods are documented below.</p>
 <dt><a href="./Typedefs.md#WebSocketConnection">WebSocketConnection</a> : <code>Object</code></dt>
 <dd><p>A wrapper around the raw WebSocket to provide a finite set of operations</p>
 </dd>
+<dt><a href="./Typedefs.md#WebSocketError">WebSocketError</a> : <code>Object</code></dt>
+<dd><p>The WebSocket Error Event</p>
+</dd>
+<dt><a href="./Typedefs.md#WebSocketMessage">WebSocketMessage</a> : <code>Object</code></dt>
+<dd><p>The WebSocket Message Event</p>
+</dd>
 </dl>
 
