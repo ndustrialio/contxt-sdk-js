@@ -1,3 +1,4 @@
+import axios from 'axios';
 import omit from 'lodash.omit';
 import Files from './index';
 import * as objectUtils from '../utils/objects';
@@ -462,6 +463,109 @@ describe('Files', function() {
       return expect(promise).to.be.fulfilled.and.to.eventually.equal(
         filesFromServerAfterFormat
       );
+    });
+  });
+
+  describe('upload', function() {
+    context('successfully uploading a file', function() {
+      let fileData;
+      let fileInfo;
+      let promise;
+      let put;
+
+      beforeEach(function() {
+        fileData = faker.image.dataUri();
+        fileInfo = fixture.build('file');
+
+        put = this.sandbox.stub(axios, 'put').resolves();
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.upload({
+          data: fileData,
+          headers: fileInfo.uploadInfo.headers,
+          url: fileInfo.uploadInfo.url
+        });
+      });
+
+      it('uploads the file', function() {
+        return promise.then(() => {
+          expect(put).to.be.calledWith(fileInfo.uploadInfo.url, fileData, {
+            headers: fileInfo.uploadInfo.headers
+          });
+        });
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('failure while uploading a file', function() {
+      let expectedError;
+      let promise;
+
+      beforeEach(function() {
+        const fileData = faker.image.dataUri();
+        const fileInfo = fixture.build('file');
+        expectedError = new Error();
+
+        this.sandbox.stub(axios, 'put').rejects(expectedError);
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.upload({
+          data: fileData,
+          headers: fileInfo.uploadInfo.headers,
+          url: fileInfo.uploadInfo.url
+        });
+      });
+
+      it('returns a rejected promise', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    ['data', 'url'].forEach(function(field) {
+      context(`when missing the required ${field}`, function() {
+        let promise;
+        let put;
+
+        beforeEach(function() {
+          const fileData = faker.image.dataUri();
+          const fileInfo = fixture.build('file');
+
+          put = this.sandbox.stub(axios, 'put').resolves();
+
+          const files = new Files(baseSdk, baseRequest);
+          files._baseUrl = expectedHost;
+
+          promise = files.upload(
+            omit(
+              {
+                data: fileData,
+                headers: fileInfo.uploadInfo.headers,
+                url: fileInfo.uploadInfo.url
+              },
+              [field]
+            )
+          );
+        });
+
+        it('does not attempt to upload the file', function() {
+          return promise.then(expect.fail).catch(() => {
+            expect(put).to.not.be.called;
+          });
+        });
+
+        it('returns a rejected promise', function() {
+          return expect(promise).to.be.rejectedWith(
+            `A ${field} is required to upload a file`
+          );
+        });
+      });
     });
   });
 });

@@ -12,6 +12,7 @@ Module that provides access to information about Files
     * [.download(fileId)](#Files+download) ⇒ <code>Promise</code>
     * [.get(fileId)](#Files+get) ⇒ <code>Promise</code>
     * [.getAll([filesFilters])](#Files+getAll) ⇒ <code>Promise</code>
+    * [.upload(fileInfo)](#Files+upload) ⇒ <code>Promise</code>
 
 <a name="new_Files_new"></a>
 
@@ -148,5 +149,42 @@ Method: GET
 contxtSdk.files
   .getAll()
   .then((files) => console.log(files))
+  .catch((err) => console.log(err));
+```
+<a name="Files+upload"></a>
+
+### contxtSdk.files.upload(fileInfo) ⇒ <code>Promise</code>
+Uploads a file to the provided URL. The URL and the headers should be
+sourced from the response when initially creating a File record.
+
+Method: PUT
+
+**Kind**: instance method of [<code>Files</code>](#Files)  
+**Fulfill**: <code>Object</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileInfo | <code>Object</code> |  |
+| fileInfo.data | <code>ArrayBuffer</code> \| <code>Blob</code> \| <code>Buffer</code> \| [<code>File</code>](./Typedefs.md#File) \| <code>Stream</code> | The data to be   uploaded |
+| [fileInfo.headers] | <code>Object.&lt;string, string&gt;</code> | Headers to be appended   to the request. The key is the header name and the value is the included   value |
+| fileInfo.url | <code>String</code> | The URL to use for the request |
+
+**Example**  
+```js
+contxtSdk.files
+  .upload({
+    data: fs.readFileSync(
+      path.join(
+        __dirname,
+        'hawkins_national_labratory-hawkins_energy-october-2019.pdf'
+      )
+    ),
+    headers: {
+      'Content-Type': 'application/pdf'
+    },
+    url:
+      'https://files.ndustrial.example.org/hawkins_national_labratory-hawkins_energy-october-2019.pdf'
+  })
   .catch((err) => console.log(err));
 ```

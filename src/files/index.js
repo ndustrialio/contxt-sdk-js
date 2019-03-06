@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
 import { formatPaginatedDataFromServer } from '../utils/pagination';
 
@@ -238,6 +239,57 @@ class Files {
         params: toSnakeCase(filesFilters)
       })
       .then((assetsData) => formatPaginatedDataFromServer(assetsData));
+  }
+
+  /**
+   * Uploads a file to the provided URL. The URL and the headers should be
+   * sourced from the response when initially creating a File record.
+   *
+   * Method: PUT
+   *
+   * @param {Object} fileInfo
+   * @param {ArrayBuffer|Blob|Buffer|File|Stream} fileInfo.data The data to be
+   *   uploaded
+   * @param {Object.<string, string>} [fileInfo.headers] Headers to be appended
+   *   to the request. The key is the header name and the value is the included
+   *   value
+   * @param {String} fileInfo.url The URL to use for the request
+   *
+   * @returns {Promise}
+   * @fulfill {Object}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.files
+   *   .upload({
+   *     data: fs.readFileSync(
+   *       path.join(
+   *         __dirname,
+   *         'hawkins_national_labratory-hawkins_energy-october-2019.pdf'
+   *       )
+   *     ),
+   *     headers: {
+   *       'Content-Type': 'application/pdf'
+   *     },
+   *     url:
+   *       'https://files.ndustrial.example.org/hawkins_national_labratory-hawkins_energy-october-2019.pdf'
+   *   })
+   *   .catch((err) => console.log(err));
+   */
+  upload(fileInfo) {
+    const requiredFields = ['data', 'url'];
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      if (!fileInfo[requiredFields[i]]) {
+        return Promise.reject(
+          new Error(`A ${requiredFields[i]} is required to upload a file`)
+        );
+      }
+    }
+
+    const { data, headers, url } = fileInfo;
+
+    return axios.put(url, data, { headers });
   }
 }
 
