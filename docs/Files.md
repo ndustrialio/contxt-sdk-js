@@ -12,6 +12,8 @@ Module that provides access to information about Files
     * [.download(fileId)](#Files+download) ⇒ <code>Promise</code>
     * [.get(fileId)](#Files+get) ⇒ <code>Promise</code>
     * [.getAll([filesFilters])](#Files+getAll) ⇒ <code>Promise</code>
+    * [.setUploadComplete(fileId)](#Files+setUploadComplete) ⇒ <code>Promise</code>
+    * [.setUploadFailed(fileId)](#Files+setUploadFailed) ⇒ <code>Promise</code>
     * [.upload(fileInfo)](#Files+upload) ⇒ <code>Promise</code>
 
 <a name="new_Files_new"></a>
@@ -149,6 +151,50 @@ Method: GET
 contxtSdk.files
   .getAll()
   .then((files) => console.log(files))
+  .catch((err) => console.log(err));
+```
+<a name="Files+setUploadComplete"></a>
+
+### contxtSdk.files.setUploadComplete(fileId) ⇒ <code>Promise</code>
+Updates the upload status of a file to indicate the upload is complete.
+
+API Endpoint: '/files/:fileId/complete'
+Method: POST
+
+**Kind**: instance method of [<code>Files</code>](#Files)  
+**Fulfill**: <code>undefined</code>  
+**Rejects**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileId | <code>string</code> | The ID of the file to update |
+
+**Example**  
+```js
+contxtSdk.files
+  .setUploadComplete('ecd0439e-d5be-4529-ad6a-4a9cbfa7202f')
+  .catch((err) => console.log(err));
+```
+<a name="Files+setUploadFailed"></a>
+
+### contxtSdk.files.setUploadFailed(fileId) ⇒ <code>Promise</code>
+Updates the upload status of a file to indicate the upload has failed.
+
+API Endpoint: '/files/:fileId/failed'
+Method: POST
+
+**Kind**: instance method of [<code>Files</code>](#Files)  
+**Fulfill**: <code>undefined</code>  
+**Rejects**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileId | <code>string</code> | The ID of the file to update |
+
+**Example**  
+```js
+contxtSdk.files
+  .setUploadFailed('ecd0439e-d5be-4529-ad6a-4a9cbfa7202f')
   .catch((err) => console.log(err));
 ```
 <a name="Files+upload"></a>

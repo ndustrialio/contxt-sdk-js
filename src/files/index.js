@@ -242,6 +242,60 @@ class Files {
   }
 
   /**
+   * Updates the upload status of a file to indicate the upload is complete.
+   *
+   * API Endpoint: '/files/:fileId/complete'
+   * Method: POST
+   *
+   * @param {string} fileId The ID of the file to update
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.files
+   *   .setUploadComplete('ecd0439e-d5be-4529-ad6a-4a9cbfa7202f')
+   *   .catch((err) => console.log(err));
+   */
+  setUploadComplete(fileId) {
+    if (!fileId) {
+      return Promise.reject(
+        new Error('A file ID is required to mark a file upload as complete')
+      );
+    }
+
+    return this._request.post(`${this._baseUrl}/files/${fileId}/complete`);
+  }
+
+  /**
+   * Updates the upload status of a file to indicate the upload has failed.
+   *
+   * API Endpoint: '/files/:fileId/failed'
+   * Method: POST
+   *
+   * @param {string} fileId The ID of the file to update
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.files
+   *   .setUploadFailed('ecd0439e-d5be-4529-ad6a-4a9cbfa7202f')
+   *   .catch((err) => console.log(err));
+   */
+  setUploadFailed(fileId) {
+    if (!fileId) {
+      return Promise.reject(
+        new Error('A file ID is required to mark a file upload as failed')
+      );
+    }
+
+    return this._request.post(`${this._baseUrl}/files/${fileId}/failed`);
+  }
+
+  /**
    * Uploads a file to the provided URL. The URL and the headers should be
    * sourced from the response when initially creating a File record.
    *

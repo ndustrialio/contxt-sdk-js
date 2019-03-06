@@ -466,6 +466,159 @@ describe('Files', function() {
     });
   });
 
+  describe('setUploadComplete', function() {
+    context('when successfully marking the upload as complete', function() {
+      let createdFileId;
+      let promise;
+
+      beforeEach(function() {
+        createdFileId = fixture.build('file').id;
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.setUploadComplete(createdFileId);
+      });
+
+      it('sets the upload as complete', function() {
+        return promise.then(() => {
+          expect(baseRequest.post).to.be.calledWith(
+            `${expectedHost}/files/${createdFileId}/complete`
+          );
+        });
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context(
+      'when theres is a failure while marking the upload as complete',
+      function() {
+        let expectedError;
+        let promise;
+
+        beforeEach(function() {
+          const createdFileId = fixture.build('file').id;
+          expectedError = new Error();
+
+          const request = {
+            ...baseRequest,
+            post: this.sandbox.stub().rejects(expectedError)
+          };
+
+          const files = new Files(baseSdk, request);
+          files._baseUrl = expectedHost;
+
+          promise = files.setUploadComplete(createdFileId);
+        });
+
+        it('returns a rejected promise', function() {
+          return expect(promise).to.be.rejectedWith(expectedError);
+        });
+      }
+    );
+
+    context('when there is no provided file ID', function() {
+      let promise;
+
+      beforeEach(function() {
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.setUploadComplete();
+      });
+
+      it('does not set the upload as complete', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(baseRequest.post).to.not.be.called;
+        });
+      });
+
+      it('returns a rejected promise', function() {
+        return expect(promise).to.be.rejectedWith(
+          'A file ID is required to mark a file upload as complete'
+        );
+      });
+    });
+  });
+
+  describe('setUploadFailed', function() {
+    context('when successfully marking the upload as failed', function() {
+      let expectedFileId;
+      let promise;
+
+      beforeEach(function() {
+        expectedFileId = fixture.build('file').id;
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.setUploadFailed(expectedFileId);
+      });
+
+      it('sets the upload as failed', function() {
+        return promise.then(() => {
+          expect(baseRequest.post).to.be.calledWith(
+            `${expectedHost}/files/${expectedFileId}/failed`
+          );
+        });
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when there is a failure marking the upload as failed', function() {
+      let expectedError;
+      let promise;
+
+      beforeEach(function() {
+        const createdFileId = fixture.build('file').id;
+        expectedError = new Error();
+
+        const request = {
+          ...baseRequest,
+          post: this.sandbox.stub().rejects(expectedError)
+        };
+
+        const files = new Files(baseSdk, request);
+        files._baseUrl = expectedHost;
+
+        promise = files.setUploadFailed(createdFileId);
+      });
+
+      it('returns a rejected promise', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    context('when there is no provided file ID', function() {
+      let promise;
+
+      beforeEach(function() {
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.setUploadFailed();
+      });
+
+      it('does not set the upload as complete', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(baseRequest.post).to.not.be.called;
+        });
+      });
+
+      it('returns a rejected promise', function() {
+        return expect(promise).to.be.rejectedWith(
+          'A file ID is required to mark a file upload as failed'
+        );
+      });
+    });
+  });
+
   describe('upload', function() {
     context('successfully uploading a file', function() {
       let fileData;
