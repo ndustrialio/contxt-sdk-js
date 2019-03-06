@@ -15,6 +15,30 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} FileWithUploadInformation
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} contentType The MIME type of the file
+ * @property {string} description
+ * @property {string} filename
+ * @property {string} id UUID of the file
+ * @property {string} organizationId UUID of the organization to which the file
+ *   belongs
+ * @property {string} ownerId The ID of the user who owns the file
+ * @property {string} status The status of the File, e.g. "ACTIVE"
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {Object} uploadInfo Information related to the uploading the
+ *   underlying file
+ * @property {string} uploadInfo.expiresAt A ISO 8601 Extended format date/time
+ *   string indicating when the validity of the included URL expires
+ * @property {Object.<string, string>} uploadInfo.headers to be appended to the
+ *   request when uploading the file. The key is the header name and the value
+ *   is the included value.
+ * @property {string} uploadInfo.method The HTTP method to be used when
+ *   uploading the file.
+ * @property {string} uploadInfo.url The URL to be used when uploading the file.
+ */
+
+/**
  * @typedef {Object} FilesFromServer
  * @property {Object} _metadata Metadata about the pagination settings
  * @property {number} _metadata.offset Offset of records in subsequent queries
@@ -44,6 +68,59 @@ class Files {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+  }
+
+  /**
+   * Creates a file record.
+   *
+   * API Endpoint: '/files'
+   * Method: POST
+   *
+   * @param {Object} fileInfo Metadata about the file
+   * @param {string} fileInfo.contentType The MIME type
+   * @param {string} [fileInfo.description] A short description
+   * @param {string} fileInfo.filename The filename
+   * @param {string} fileInfo.organizationId The organization ID to which the
+   *   file belongs
+   *
+   * @returns {Promise}
+   * @fulfill {File}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.files
+   *   .create({
+   *     contentType: 'application/pdf',
+   *     description:
+   *       'Electric Bill from Hawkins National Labratory (October 2018)',
+   *     filename: 'hawkins_national_labratory-hawkins_energy-october-2019.pdf',
+   *     organizationId: '8ba33864-01ff-4388-a4e0-63eebf36fed3'
+   *   })
+   *   .then((file) => console.log(file))
+   *   .catch((err) => console.log(err));
+   */
+  create(fileInfo) {
+    const requiredFields = ['contentType', 'filename', 'organizationId'];
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      if (!fileInfo[requiredFields[i]]) {
+        return Promise.reject(
+          new Error(`A ${requiredFields[i]} is required to create a file`)
+        );
+      }
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/files`, toSnakeCase(fileInfo))
+      .then(({ upload_info, ...createdFile }) => {
+        return {
+          ...toCamelCase(createdFile),
+          uploadInfo: toCamelCase(upload_info, {
+            deep: false,
+            excludeTransform: ['headers']
+          })
+        };
+      });
   }
 
   /**

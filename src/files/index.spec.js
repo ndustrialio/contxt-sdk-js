@@ -1,3 +1,4 @@
+import omit from 'lodash.omit';
 import Files from './index';
 import * as objectUtils from '../utils/objects';
 import * as paginationUtils from '../utils/pagination';
@@ -50,6 +51,149 @@ describe('Files', function() {
 
     it('appends the supplied sdk to the class instance', function() {
       expect(files._sdk).to.deep.equal(baseSdk);
+    });
+  });
+
+  describe('create', function() {
+    context('when successfully creating file', function() {
+      let fileInfoFromServerAfterFormat;
+      let fileInfoFromServerBeforeFormat;
+      let fileInfoToServerAfterFormat;
+      let fileInfoToServerBeforeFormat;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+
+      beforeEach(function() {
+        fileInfoFromServerAfterFormat = fixture.build('file');
+        fileInfoFromServerBeforeFormat = fixture.build(
+          'file',
+          fileInfoFromServerAfterFormat,
+          { fromServer: true }
+        );
+        fileInfoToServerBeforeFormat = fixture.build('file');
+        fileInfoToServerAfterFormat = fixture.build(
+          'file',
+          fileInfoToServerBeforeFormat,
+          { fromServer: true }
+        );
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(fileInfoFromServerBeforeFormat)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .onFirstCall()
+          .returns(omit(fileInfoFromServerAfterFormat, ['uploadInfo']))
+          .onSecondCall()
+          .returns(fileInfoFromServerAfterFormat.uploadInfo);
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(fileInfoToServerAfterFormat);
+
+        const files = new Files(baseSdk, request);
+        files._baseUrl = expectedHost;
+
+        promise = files.create(fileInfoToServerBeforeFormat);
+      });
+
+      it('formats the file info for the API', function() {
+        expect(toSnakeCase).to.be.calledWith(fileInfoToServerBeforeFormat);
+      });
+
+      it('creates the file record', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/files`,
+          fileInfoToServerAfterFormat
+        );
+      });
+
+      it('formats the returned file record', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(
+            omit(fileInfoFromServerBeforeFormat, ['upload_info'])
+          );
+        });
+      });
+
+      it('formats the upload info in a way that does not mangle the headers information', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(
+            fileInfoFromServerBeforeFormat.upload_info,
+            { deep: false, excludeTransform: ['headers'] }
+          );
+        });
+      });
+
+      it('resolves with the newly created and formatted file record', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          fileInfoFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is a failure while creating the file', function() {
+      let expectedError;
+      let promise;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedError = new Error();
+        const fileInfo = fixture.build('file');
+
+        const request = {
+          ...baseRequest,
+          post: this.sandbox.stub().rejects(expectedError)
+        };
+        toCamelCase = this.sandbox.stub(objectUtils, 'toCamelCase');
+        this.sandbox.stub(objectUtils, 'toSnakeCase');
+
+        const files = new Files(baseSdk, request);
+        files._baseUrl = expectedHost;
+
+        promise = files.create(fileInfo);
+      });
+
+      it('does not format the returned file record', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(toCamelCase).to.not.be.called;
+        });
+      });
+
+      it('returns a rejected promise', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    context('when missing required metadata', function() {
+      ['contentType', 'filename', 'organizationId'].forEach(function(field) {
+        context(`when missing the ${field}`, function() {
+          let promise;
+
+          beforeEach(function() {
+            const fileInfo = fixture.build('file');
+
+            const files = new Files(baseSdk, baseRequest);
+            files._baseUrl = expectedHost;
+
+            promise = files.create(omit(fileInfo, [field]));
+          });
+
+          it('does not create the file record', function() {
+            return promise.then(expect.fail).catch(() => {
+              expect(baseRequest.post).to.not.be.called;
+            });
+          });
+
+          it('returns a rejected promise', function() {
+            return expect(promise).to.be.rejectedWith(
+              `A ${field} is required to create a file`
+            );
+          });
+        });
+      });
     });
   });
 

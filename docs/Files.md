@@ -7,6 +7,7 @@ Module that provides access to information about Files
 
 * [Files](#Files)
     * [new Files(sdk, request)](#new_Files_new)
+    * [.create(fileInfo)](#Files+create) ⇒ <code>Promise</code>
     * [.delete(fileId)](#Files+delete) ⇒ <code>Promise</code>
     * [.download(fileId)](#Files+download) ⇒ <code>Promise</code>
     * [.get(fileId)](#Files+get) ⇒ <code>Promise</code>
@@ -21,6 +22,39 @@ Module that provides access to information about Files
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Files+create"></a>
+
+### contxtSdk.files.create(fileInfo) ⇒ <code>Promise</code>
+Creates a file record.
+
+API Endpoint: '/files'
+Method: POST
+
+**Kind**: instance method of [<code>Files</code>](#Files)  
+**Fulfill**: [<code>File</code>](./Typedefs.md#File)  
+**Rejects**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileInfo | <code>Object</code> | Metadata about the file |
+| fileInfo.contentType | <code>string</code> | The MIME type |
+| [fileInfo.description] | <code>string</code> | A short description |
+| fileInfo.filename | <code>string</code> | The filename |
+| fileInfo.organizationId | <code>string</code> | The organization ID to which the   file belongs |
+
+**Example**  
+```js
+contxtSdk.files
+  .create({
+    contentType: 'application/pdf',
+    description:
+      'Electric Bill from Hawkins National Labratory (October 2018)',
+    filename: 'hawkins_national_labratory-hawkins_energy-october-2019.pdf',
+    organizationId: '8ba33864-01ff-4388-a4e0-63eebf36fed3'
+  })
+  .then((file) => console.log(file))
+  .catch((err) => console.log(err));
+```
 <a name="Files+delete"></a>
 
 ### contxtSdk.files.delete(fileId) ⇒ <code>Promise</code>

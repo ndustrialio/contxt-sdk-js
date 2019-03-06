@@ -574,6 +574,29 @@ for authenticating and communicating with an individual API and the external mod
 | expiresAt | <code>string</code> | ISO 8601 Extended Format date/time |
 | temporaryUrl | <code>string</code> | A temporary URL that can be used to download the file |
 
+<a name="FileWithUploadInformation"></a>
+
+## FileWithUploadInformation : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| contentType | <code>string</code> | The MIME type of the file |
+| description | <code>string</code> |  |
+| filename | <code>string</code> |  |
+| id | <code>string</code> | UUID of the file |
+| organizationId | <code>string</code> | UUID of the organization to which the file   belongs |
+| ownerId | <code>string</code> | The ID of the user who owns the file |
+| status | <code>string</code> | The status of the File, e.g. "ACTIVE" |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| uploadInfo | <code>Object</code> | Information related to the uploading the   underlying file |
+| uploadInfo.expiresAt | <code>string</code> | A ISO 8601 Extended format date/time   string indicating when the validity of the included URL expires |
+| uploadInfo.headers | <code>Object.&lt;string, string&gt;</code> | to be appended to the   request when uploading the file. The key is the header name and the value   is the included value. |
+| uploadInfo.method | <code>string</code> | The HTTP method to be used when   uploading the file. |
+| uploadInfo.url | <code>string</code> | The URL to be used when uploading the file. |
+
 <a name="FilesFromServer"></a>
 
 ## FilesFromServer : <code>Object</code>
