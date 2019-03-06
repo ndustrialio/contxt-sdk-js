@@ -54,6 +54,23 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Error} FileError An error returned while creating and uploading an
+ *   individual file
+ * @property {Object} artifacts Records that may have been created while
+ *   creating and uploading a file. Can be used to pick up the process manually
+ *   or clean up before trying again.
+ * @property {Object} [artifacts.file] A created File artifact
+ * @property {Error} originalError The original error object that can be used
+ *   for additional debugging purposes
+ * @property {string} stage A string describing in what stage of the create and
+ *   upload process the failure occurred. Possible choices are:
+ *     - create (failed while creating the initial file record)
+ *     - upload (failed while uploading the actual file for storage)
+ *     - statusUpdate (failed while updating the upload status for the file record)
+ *     - get (failed at the end while getting an updated file record)
+ */
+
+/**
  * Module that provides access to information about Files
  *
  * @typicalname contxtSdk.files
@@ -121,6 +138,121 @@ class Files {
             excludeTransform: ['headers']
           })
         };
+      });
+  }
+
+  /**
+   * A procedural method that takes care of:
+   *   1. Creating a file record
+   *   2. Uploading the file from information returned when creating the file
+   *     record
+   *   3. Updating the file record's status to indicate if the upload was
+   *     successful or a failure
+   *   4. Returning an updated copy of the file record OR an error indicating
+   *     what failed, when it failed, and potentially, why it failed
+   *
+   * @param {Object} fileInfo
+   * @param {ArrayBuffer|Blob|Buffer|File|Stream} fileInfo.data The actual data of the file.
+   * @param {Object} fileInfo.metadata Metadata about the file to be uploaded
+   * @param {string} fileInfo.metadata.contentType The MIME type
+   * @param {string} [fileInfo.metadata.description] A short description
+   * @param {string} fileInfo.metadata.filename The filename
+   * @param {string} fileInfo.metadata.organizationId The organization ID to which the file belongs
+   *
+   * @returns {Promise}
+   * @fulfill {File}
+   * @rejects {FileError}
+   *
+   * @example
+   * contxtSdk
+   *   .createAndUpload({
+   *     data: fs.readFileSync(
+   *       path.join(
+   *         __dirname,
+   *         'hawkins_national_labratory-hawkins_energy-october-2019.pdf'
+   *       )
+   *     ),
+   *     metadata: {
+   *       contentType: 'application/pdf',
+   *       description:
+   *         'Electric Bill from Hawkins National Labratory (October 2018)',
+   *       filename:
+   *         'hawkins_national_labratory-hawkins_energy-october-2019.pdf',
+   *       organizationId: '8ba33864-01ff-4388-a4e0-63eebf36fed3'
+   *     }
+   *   })
+   *   .then((file) => console.log(file))
+   *   .catch((err) => console.log(err));
+   */
+  createAndUpload(fileInfo) {
+    const requiredFields = ['data', 'metadata'];
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      if (!fileInfo[requiredFields[i]]) {
+        return Promise.reject(
+          this._generateError({
+            message: `A \`${
+              requiredFields[i]
+            }\` field is required to create and upload a file`,
+            stage: 'validation'
+          })
+        );
+      }
+    }
+
+    const { data, metadata } = fileInfo;
+
+    return this.create(metadata)
+      .catch((originalError) => {
+        throw this._generateError({
+          originalError,
+          message: 'There was a problem creating the file. Please try again.',
+          stage: 'create'
+        });
+      })
+      .then(({ uploadInfo, ...createdFile }) => {
+        return Promise.resolve()
+          .then(() => {
+            return this.upload({
+              data,
+              headers: uploadInfo.headers,
+              url: uploadInfo.url
+            }).catch((originalError) => {
+              this.setUploadFailed(createdFile.id);
+
+              throw this._generateError({
+                createdFile,
+                originalError,
+                message:
+                  'There was a problem uploading the file. Please try again.',
+                stage: 'upload'
+              });
+            });
+          })
+          .then(() => {
+            return this.setUploadComplete(createdFile.id).catch(
+              (originalError) => {
+                throw this._generateError({
+                  createdFile,
+                  originalError,
+                  message:
+                    'There was a problem updating the file status. Please try again.',
+                  stage: 'statusUpdate'
+                });
+              }
+            );
+          })
+          .then(() => {
+            return this.get(createdFile.id).catch((originalError) => {
+              throw this._generateError({
+                createdFile,
+                originalError,
+                message:
+                  'There was a problem getting updated information about the file. Please try again.',
+                stage: 'get'
+              });
+            });
+          });
       });
   }
 
@@ -344,6 +476,39 @@ class Files {
     const { data, headers, url } = fileInfo;
 
     return axios.put(url, data, { headers });
+  }
+
+  /**
+   * Generates a consistent error message with information needed to debug why
+   * creating and uploading a file may have failed.
+   *
+   * @param {Object} errorInfo
+   * @param {Object} [errorInfo.createdFile] An object containing information
+   *   about a created created by Files#create
+   * @param {string} [errorInfo.message] The message to be applied to the new
+   *   Error
+   * @param {Error} errorInfo.originalError The original error that was thrown
+   *   that will be included in the new Error's body
+   * @param {string} errorInfo.stage A string describing in what stage of the
+   *   create and upload process the failure occurred
+   *
+   * @returns {FileError}
+   *
+   * @private
+   */
+  _generateError({ createdFile, message, originalError, stage }) {
+    const artifacts = {};
+    const errorMsg = message || originalError.message;
+
+    if (createdFile) {
+      artifacts.file = createdFile;
+    }
+
+    return Object.assign(new Error(errorMsg), {
+      artifacts,
+      originalError,
+      stage
+    });
   }
 }
 

@@ -8,6 +8,7 @@ Module that provides access to information about Files
 * [Files](#Files)
     * [new Files(sdk, request)](#new_Files_new)
     * [.create(fileInfo)](#Files+create) ⇒ <code>Promise</code>
+    * [.createAndUpload(fileInfo)](#Files+createAndUpload) ⇒ <code>Promise</code>
     * [.delete(fileId)](#Files+delete) ⇒ <code>Promise</code>
     * [.download(fileId)](#Files+download) ⇒ <code>Promise</code>
     * [.get(fileId)](#Files+get) ⇒ <code>Promise</code>
@@ -54,6 +55,54 @@ contxtSdk.files
       'Electric Bill from Hawkins National Labratory (October 2018)',
     filename: 'hawkins_national_labratory-hawkins_energy-october-2019.pdf',
     organizationId: '8ba33864-01ff-4388-a4e0-63eebf36fed3'
+  })
+  .then((file) => console.log(file))
+  .catch((err) => console.log(err));
+```
+<a name="Files+createAndUpload"></a>
+
+### contxtSdk.files.createAndUpload(fileInfo) ⇒ <code>Promise</code>
+A procedural method that takes care of:
+  1. Creating a file record
+  2. Uploading the file from information returned when creating the file
+    record
+  3. Updating the file record's status to indicate if the upload was
+    successful or a failure
+  4. Returning an updated copy of the file record OR an error indicating
+    what failed, when it failed, and potentially, why it failed
+
+**Kind**: instance method of [<code>Files</code>](#Files)  
+**Fulfill**: [<code>File</code>](./Typedefs.md#File)  
+**Rejects**: [<code>FileError</code>](./Typedefs.md#FileError)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fileInfo | <code>Object</code> |  |
+| fileInfo.data | <code>ArrayBuffer</code> \| <code>Blob</code> \| <code>Buffer</code> \| [<code>File</code>](./Typedefs.md#File) \| <code>Stream</code> | The actual data of the file. |
+| fileInfo.metadata | <code>Object</code> | Metadata about the file to be uploaded |
+| fileInfo.metadata.contentType | <code>string</code> | The MIME type |
+| [fileInfo.metadata.description] | <code>string</code> | A short description |
+| fileInfo.metadata.filename | <code>string</code> | The filename |
+| fileInfo.metadata.organizationId | <code>string</code> | The organization ID to which the file belongs |
+
+**Example**  
+```js
+contxtSdk
+  .createAndUpload({
+    data: fs.readFileSync(
+      path.join(
+        __dirname,
+        'hawkins_national_labratory-hawkins_energy-october-2019.pdf'
+      )
+    ),
+    metadata: {
+      contentType: 'application/pdf',
+      description:
+        'Electric Bill from Hawkins National Labratory (October 2018)',
+      filename:
+        'hawkins_national_labratory-hawkins_energy-october-2019.pdf',
+      organizationId: '8ba33864-01ff-4388-a4e0-63eebf36fed3'
+    }
   })
   .then((file) => console.log(file))
   .catch((err) => console.log(err));

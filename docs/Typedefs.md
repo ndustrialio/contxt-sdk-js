@@ -563,6 +563,22 @@ for authenticating and communicating with an individual API and the external mod
 | status | <code>string</code> | The status of the File, e.g. "ACTIVE" |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="FileError"></a>
+
+## FileError : <code>Error</code>
+An error returned while creating and uploading an
+  individual file
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| artifacts | <code>Object</code> | Records that may have been created while   creating and uploading a file. Can be used to pick up the process manually   or clean up before trying again. |
+| [artifacts.file] | <code>Object</code> | A created File artifact |
+| originalError | <code>Error</code> | The original error object that can be used   for additional debugging purposes |
+| stage | <code>string</code> | A string describing in what stage of the create and   upload process the failure occurred. Possible choices are:     - create (failed while creating the initial file record)     - upload (failed while uploading the actual file for storage)     - statusUpdate (failed while updating the upload status for the file record)     - get (failed at the end while getting an updated file record) |
+
 <a name="FileToDownload"></a>
 
 ## FileToDownload : <code>Object</code>

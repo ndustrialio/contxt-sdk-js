@@ -1,5 +1,6 @@
 import axios from 'axios';
 import omit from 'lodash.omit';
+import pick from 'lodash.pick';
 import Files from './index';
 import * as objectUtils from '../utils/objects';
 import * as paginationUtils from '../utils/pagination';
@@ -192,6 +193,581 @@ describe('Files', function() {
             return expect(promise).to.be.rejectedWith(
               `A ${field} is required to create a file`
             );
+          });
+        });
+      });
+    });
+  });
+
+  describe('createAndUpload', function() {
+    context('successfully creating and uploading a file', function() {
+      let create;
+      let expectedFileData;
+      let fileInfoFromServer;
+      let get;
+      let metadataFromServer;
+      let metadataToServer;
+      let promise;
+      let setUploadComplete;
+      let upload;
+
+      beforeEach(function() {
+        expectedFileData = faker.image.dataUri();
+        fileInfoFromServer = fixture.build('file');
+        metadataToServer = pick(fixture.build('file', fileInfoFromServer), [
+          'contentType',
+          'description',
+          'filename',
+          'organizationId'
+        ]);
+        metadataFromServer = fixture.build('file', metadataToServer);
+
+        create = this.sandbox
+          .stub(Files.prototype, 'create')
+          .resolves(metadataFromServer);
+        get = this.sandbox
+          .stub(Files.prototype, 'get')
+          .resolves(fileInfoFromServer);
+        setUploadComplete = this.sandbox
+          .stub(Files.prototype, 'setUploadComplete')
+          .resolves();
+        upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.createAndUpload({
+          data: expectedFileData,
+          metadata: metadataToServer
+        });
+      });
+
+      it('creates a File record', function() {
+        return promise.then(() => {
+          expect(create).to.be.calledWith(metadataToServer);
+        });
+      });
+
+      it('uploads the file', function() {
+        return promise.then(() => {
+          expect(upload).to.be.calledWith({
+            data: expectedFileData,
+            headers: metadataFromServer.uploadInfo.headers,
+            url: metadataFromServer.uploadInfo.url
+          });
+        });
+      });
+
+      it('marks the upload as complete', function() {
+        return promise.then(() => {
+          expect(setUploadComplete).to.be.calledWith(metadataFromServer.id);
+        });
+      });
+
+      it('gets a copy of the file record that has the newest state', function() {
+        return promise.then(() => {
+          expect(get).to.be.calledWith(metadataFromServer.id);
+        });
+      });
+
+      it('returns a resolved promise with the file record', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          fileInfoFromServer
+        );
+      });
+    });
+
+    context('when there is a failure creating the file record', function() {
+      let create;
+      let expectedError;
+      let expectedFileData;
+      let expectedOriginalError;
+      let generateError;
+      let get;
+      let metadataToServer;
+      let promise;
+      let setUploadComplete;
+      let setUploadFailed;
+      let upload;
+
+      beforeEach(function() {
+        expectedError = new Error(faker.hacker.phrase());
+        expectedOriginalError = new Error(faker.hacker.phrase());
+        expectedFileData = faker.image.dataUri();
+        metadataToServer = pick(fixture.build('file'), [
+          'contentType',
+          'description',
+          'filename',
+          'organizationId'
+        ]);
+
+        create = this.sandbox
+          .stub(Files.prototype, 'create')
+          .rejects(expectedOriginalError);
+        generateError = this.sandbox
+          .stub(Files.prototype, '_generateError')
+          .returns(expectedError);
+        get = this.sandbox.stub(Files.prototype, 'get').resolves();
+        setUploadComplete = this.sandbox
+          .stub(Files.prototype, 'setUploadComplete')
+          .resolves();
+        setUploadFailed = this.sandbox
+          .stub(Files.prototype, 'setUploadFailed')
+          .resolves();
+        upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.createAndUpload({
+          data: expectedFileData,
+          metadata: metadataToServer
+        });
+      });
+
+      it('attempts to create a File record', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(create).to.be.calledWith(metadataToServer);
+        });
+      });
+
+      it('does not upload the file', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(upload).to.not.be.called;
+        });
+      });
+
+      it('does not mark the upload as complete', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(setUploadComplete).to.not.be.called;
+        });
+      });
+
+      it('does not mark the upload as failed', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(setUploadFailed).to.not.be.called;
+        });
+      });
+
+      it('does not get a copy of the file record that has the newest status', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(get).to.not.be.called;
+        });
+      });
+
+      it('generates a descriptive error', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(generateError).to.be.calledWith({
+            message: 'There was a problem creating the file. Please try again.',
+            originalError: expectedOriginalError,
+            stage: 'create'
+          });
+        });
+      });
+
+      it('returns a rejected promise with the error', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    context('when there is a failure uploading the file', function() {
+      let create;
+      let expectedError;
+      let expectedFileData;
+      let expectedOriginalError;
+      let generateError;
+      let metadataFromServer;
+      let metadataToServer;
+      let get;
+      let promise;
+      let setUploadComplete;
+      let setUploadFailed;
+      let upload;
+
+      beforeEach(function() {
+        expectedFileData = faker.image.dataUri();
+        metadataToServer = pick(fixture.build('file'), [
+          'contentType',
+          'description',
+          'filename',
+          'organizationId'
+        ]);
+        metadataFromServer = fixture.build('file', metadataToServer);
+        expectedError = new Error(faker.hacker.phrase());
+        expectedOriginalError = new Error(faker.hacker.phrase());
+
+        create = this.sandbox
+          .stub(Files.prototype, 'create')
+          .resolves(metadataFromServer);
+        generateError = this.sandbox
+          .stub(Files.prototype, '_generateError')
+          .returns(expectedError);
+        get = this.sandbox.stub(Files.prototype, 'get').resolves();
+        setUploadComplete = this.sandbox
+          .stub(Files.prototype, 'setUploadComplete')
+          .resolves();
+        setUploadFailed = this.sandbox
+          .stub(Files.prototype, 'setUploadFailed')
+          .resolves();
+        upload = this.sandbox
+          .stub(Files.prototype, 'upload')
+          .rejects(expectedOriginalError);
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.createAndUpload({
+          data: expectedFileData,
+          metadata: metadataToServer
+        });
+      });
+
+      it('creates a File record', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(create).to.be.calledWith(metadataToServer);
+        });
+      });
+
+      it('attempts to upload the file', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(upload).to.be.calledWith({
+            data: expectedFileData,
+            headers: metadataFromServer.uploadInfo.headers,
+            url: metadataFromServer.uploadInfo.url
+          });
+        });
+      });
+
+      it('does not mark the upload as complete', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(setUploadComplete).to.not.be.called;
+        });
+      });
+
+      it('marks the upload as failed', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(setUploadFailed).to.be.calledWith(metadataFromServer.id);
+        });
+      });
+
+      it('does not get a copy of the file record that has the newest status', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(get).to.not.be.called;
+        });
+      });
+
+      it('generates a descriptive error', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(generateError).to.be.calledWith({
+            createdFile: omit(metadataFromServer, ['uploadInfo']),
+            message:
+              'There was a problem uploading the file. Please try again.',
+            originalError: expectedOriginalError,
+            stage: 'upload'
+          });
+        });
+      });
+
+      it('returns a rejected promise with the error', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    context('when there is a failure marking the file as uploaded', function() {
+      let create;
+      let expectedError;
+      let expectedFileData;
+      let expectedOriginalError;
+      let metadataFromServer;
+      let metadataToServer;
+      let generateError;
+      let get;
+      let promise;
+      let setUploadComplete;
+      let setUploadFailed;
+      let upload;
+
+      beforeEach(function() {
+        expectedFileData = faker.image.dataUri();
+        metadataToServer = pick(fixture.build('file'), [
+          'contentType',
+          'description',
+          'filename',
+          'organizationId'
+        ]);
+        metadataFromServer = fixture.build('file', metadataToServer);
+        expectedError = new Error(faker.hacker.phrase());
+        expectedOriginalError = new Error(faker.hacker.phrase());
+
+        create = this.sandbox
+          .stub(Files.prototype, 'create')
+          .resolves(metadataFromServer);
+        generateError = this.sandbox
+          .stub(Files.prototype, '_generateError')
+          .returns(expectedError);
+        get = this.sandbox.stub(Files.prototype, 'get').resolves();
+        setUploadComplete = this.sandbox
+          .stub(Files.prototype, 'setUploadComplete')
+          .rejects(expectedOriginalError);
+        setUploadFailed = this.sandbox
+          .stub(Files.prototype, 'setUploadFailed')
+          .resolves();
+        upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+
+        const files = new Files(baseSdk, baseRequest);
+        files._baseUrl = expectedHost;
+
+        promise = files.createAndUpload({
+          data: expectedFileData,
+          metadata: metadataToServer
+        });
+      });
+
+      it('creates a File record', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(create).to.be.calledWith(metadataToServer);
+        });
+      });
+
+      it('uploads the file', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(upload).to.be.calledWith({
+            data: expectedFileData,
+            headers: metadataFromServer.uploadInfo.headers,
+            url: metadataFromServer.uploadInfo.url
+          });
+        });
+      });
+
+      it('attempts to mark the upload as complete', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(setUploadComplete).to.be.calledWith(metadataFromServer.id);
+        });
+      });
+
+      it('does not mark the upload as failed', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(setUploadFailed).to.not.be.called;
+        });
+      });
+
+      it('does not get a copy of the file record that has the newest status', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(get).to.not.be.called;
+        });
+      });
+
+      it('generates a descriptive error', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(generateError).to.be.calledWith({
+            createdFile: omit(metadataFromServer, ['uploadInfo']),
+            message:
+              'There was a problem updating the file status. Please try again.',
+            originalError: expectedOriginalError,
+            stage: 'statusUpdate'
+          });
+        });
+      });
+
+      it('returns a rejected promise with the error', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    context(
+      'when there is a failure getting an updated copy of the file record',
+      function() {
+        let create;
+        let expectedError;
+        let expectedFileData;
+        let expectedOriginalError;
+        let metadataFromServer;
+        let metadataToServer;
+        let generateError;
+        let get;
+        let promise;
+        let setUploadComplete;
+        let setUploadFailed;
+        let upload;
+
+        beforeEach(function() {
+          expectedFileData = faker.image.dataUri();
+          metadataToServer = pick(fixture.build('file'), [
+            'contentType',
+            'description',
+            'filename',
+            'organizationId'
+          ]);
+          metadataFromServer = fixture.build('file', metadataToServer);
+          expectedError = new Error(faker.hacker.phrase());
+          expectedOriginalError = new Error(faker.hacker.phrase());
+
+          create = this.sandbox
+            .stub(Files.prototype, 'create')
+            .resolves(metadataFromServer);
+          generateError = this.sandbox
+            .stub(Files.prototype, '_generateError')
+            .returns(expectedError);
+          get = this.sandbox
+            .stub(Files.prototype, 'get')
+            .rejects(expectedOriginalError);
+          setUploadComplete = this.sandbox
+            .stub(Files.prototype, 'setUploadComplete')
+            .resolves();
+          setUploadFailed = this.sandbox
+            .stub(Files.prototype, 'setUploadFailed')
+            .resolves();
+          upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+
+          const files = new Files(baseSdk, baseRequest);
+          files._baseUrl = expectedHost;
+
+          promise = files.createAndUpload({
+            data: expectedFileData,
+            metadata: metadataToServer
+          });
+        });
+
+        it('creates a File record', function() {
+          return promise.then(expect.fail).catch(() => {
+            expect(create).to.be.calledWith(metadataToServer);
+          });
+        });
+
+        it('uploads the file', function() {
+          return promise.then(expect.fail).catch(() => {
+            expect(upload).to.be.calledWith({
+              data: expectedFileData,
+              headers: metadataFromServer.uploadInfo.headers,
+              url: metadataFromServer.uploadInfo.url
+            });
+          });
+        });
+
+        it('marks the upload as complete', function() {
+          return promise.then(expect.fail).catch(() => {
+            expect(setUploadComplete).to.be.calledWith(metadataFromServer.id);
+          });
+        });
+
+        it('does not mark the upload as failed', function() {
+          return promise.then(expect.fail).catch(() => {
+            expect(setUploadFailed).to.not.be.called;
+          });
+        });
+
+        it('attempts to get a copy of the file record that has the newest status', function() {
+          return promise.then(expect.fail).catch(() => {
+            expect(get).to.be.calledWith(metadataFromServer.id);
+          });
+        });
+
+        it('generates a descriptive error', function() {
+          return promise.then(expect.fail).catch(() => {
+            expect(generateError).to.be.calledWith({
+              createdFile: omit(metadataFromServer, ['uploadInfo']),
+              message:
+                'There was a problem getting updated information about the file. Please try again.',
+              originalError: expectedOriginalError,
+              stage: 'get'
+            });
+          });
+        });
+
+        it('returns a rejected promise with the error', function() {
+          return expect(promise).to.be.rejectedWith(expectedError);
+        });
+      }
+    );
+
+    context('when there is missing required information', function() {
+      ['data', 'metadata'].forEach(function(field) {
+        context(`when missing the \`${field}\` field`, function() {
+          let create;
+          let expectedError;
+          let generateError;
+          let get;
+          let promise;
+          let setUploadComplete;
+          let setUploadFailed;
+          let upload;
+
+          beforeEach(function() {
+            expectedError = new Error(faker.hacker.phrase());
+
+            create = this.sandbox.stub(Files.prototype, 'create').resolves();
+            generateError = this.sandbox
+              .stub(Files.prototype, '_generateError')
+              .returns(expectedError);
+            get = this.sandbox.stub(Files.prototype, 'get').resolves();
+            setUploadComplete = this.sandbox
+              .stub(Files.prototype, 'setUploadComplete')
+              .resolves();
+            setUploadFailed = this.sandbox
+              .stub(Files.prototype, 'setUploadFailed')
+              .resolves();
+            upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+
+            const files = new Files(baseSdk, baseRequest);
+            files._baseUrl = expectedHost;
+
+            promise = files.createAndUpload(
+              omit(
+                {
+                  data: faker.image.dataUri(),
+                  metadata: pick(fixture.build('file'), [
+                    'contentType',
+                    'description',
+                    'filename',
+                    'organizationId'
+                  ])
+                },
+                [field]
+              )
+            );
+          });
+
+          it('does not create a File record', function() {
+            return promise.then(expect.fail).catch(() => {
+              expect(create).to.not.be.called;
+            });
+          });
+
+          it('does not upload the file', function() {
+            return promise.then(expect.fail).catch(() => {
+              expect(upload).to.not.be.called;
+            });
+          });
+
+          it('does not mark the upload as complete', function() {
+            return promise.then(expect.fail).catch(() => {
+              expect(setUploadComplete).to.not.be.called;
+            });
+          });
+
+          it('does not mark the upload as failed', function() {
+            return promise.then(expect.fail).catch(() => {
+              expect(setUploadFailed).to.not.be.called;
+            });
+          });
+
+          it('does not get a copy of the file record that has the newest status', function() {
+            return promise.then(expect.fail).catch(() => {
+              expect(get).to.not.be.called;
+            });
+          });
+
+          it('generates a descriptive error', function() {
+            return promise.then(expect.fail).catch(() => {
+              expect(generateError).to.be.calledWith({
+                message: `A \`${field}\` field is required to create and upload a file`,
+                stage: 'validation'
+              });
+            });
+          });
+
+          it('returns a rejected promise with the error', function() {
+            return expect(promise).to.be.rejectedWith(expectedError);
           });
         });
       });
@@ -719,6 +1295,75 @@ describe('Files', function() {
           );
         });
       });
+    });
+  });
+
+  describe('_generateError', function() {
+    let files;
+
+    beforeEach(function() {
+      files = new Files(baseSdk, baseRequest);
+      files._baseUrl = expectedHost;
+    });
+
+    it('generates a new error with a file artifact and a new message', function() {
+      const expectedFileData = faker.image.dataUri();
+      const expectedMessage = faker.hacker.phrase();
+      const expectedOriginalError = new Error();
+      const expectedStage = faker.lorem.word();
+
+      const error = files._generateError({
+        createdFile: expectedFileData,
+        message: expectedMessage,
+        originalError: expectedOriginalError,
+        stage: expectedStage
+      });
+
+      expect(error).to.be.an('error');
+      expect(error.artifacts).to.deep.equal({
+        file: expectedFileData
+      });
+      expect(error.message).to.equal(expectedMessage);
+      expect(error.originalError).to.equal(expectedOriginalError);
+      expect(error.stage).to.equal(expectedStage);
+    });
+
+    it("generates a new error with the original Error's message", function() {
+      const expectedFileData = faker.image.dataUri();
+      const expectedOriginalError = new Error(faker.hacker.phrase());
+      const expectedStage = faker.lorem.word();
+
+      const error = files._generateError({
+        createdFile: expectedFileData,
+        originalError: expectedOriginalError,
+        stage: expectedStage
+      });
+
+      expect(error).to.be.an('error');
+      expect(error.artifacts).to.deep.equal({
+        file: expectedFileData
+      });
+      expect(error.message).to.equal(expectedOriginalError.message);
+      expect(error.originalError).to.equal(expectedOriginalError);
+      expect(error.stage).to.equal(expectedStage);
+    });
+
+    it('generates a new error with no file artifact', function() {
+      const expectedMessage = faker.hacker.phrase();
+      const expectedOriginalError = new Error();
+      const expectedStage = faker.lorem.word();
+
+      const error = files._generateError({
+        message: expectedMessage,
+        originalError: expectedOriginalError,
+        stage: expectedStage
+      });
+
+      expect(error).to.be.an('error');
+      expect(error.artifacts).to.deep.equal({});
+      expect(error.message).to.equal(expectedMessage);
+      expect(error.originalError).to.equal(expectedOriginalError);
+      expect(error.stage).to.equal(expectedStage);
     });
   });
 });
