@@ -1,13 +1,18 @@
-## [v0.0.42](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.40) (2019-xx-xx)
+## [v0.0.42](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.42) (2019-03-xx)
 
 **Added**
 
-- Added Files module with several methods
+- Added Files module to interact with our new Files API. It can help with managing the File records and uploading them to the external service used for actually storing the files.
 
+  - `Files#create` for creating a File record
+  - `Files#createAndUpload` for managing the process of creating a File record, uploading the file to an external service, and updating the File's upload status
   - `Files#delete` for deleting a single File
   - `Files#download` for getting a temporary URL to a File
   - `Files#get` for getting metadata about a File
   - `Files#getAll` for getting a paginated list of Files and their metadata
+  - `Files#setUploadComplete` for updating a File's upload status to indicate it has been uploaded
+  - `Files#setUploadFailed` for updating a File's upload status to indicate the upload failed
+  - `Files#upload` for uploading a File to the external service used for storing files
 
 ## [v0.0.41](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.41) (2019-03-01)
 
