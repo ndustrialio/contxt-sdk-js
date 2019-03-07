@@ -784,3 +784,159 @@ User provided configuration options
 | sub | <code>string</code> | The Subject Claim of the user's JWT |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="WebSocket"></a>
+
+## WebSocket : <code>Object</code>
+The raw WebSocket created by ws
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| addEventListener | <code>function</code> | Register an event listener emulating the EventTarget interface |
+| binaryType | <code>string</code> | A string indicating the type of binary data being transmitted by the connection. This should be one of "nodebuffer", "arraybuffer" or "fragments". Defaults to "nodebuffer". |
+| bufferedAmount | <code>number</code> | The number of bytes of data that have been queued using calls to send() but not yet transmitted to the network. |
+| close | <code>function</code> | Initiate a closing handshake |
+| extensions | <code>Object</code> | An object containing the negotiated extensions |
+| onclose | <code>function</code> | An event listener to be called when connection is closed |
+| onerror | <code>function</code> | An event listener to be called when an error occurs |
+| onmessage | <code>function</code> | An event listener to be called when a message is received from the server |
+| onopen | <code>function</code> | An event listener to be called when the connection is established |
+| ping | <code>function</code> | Send a ping to the WebSocket server |
+| pong | <code>function</code> | Send a pong to the WebSocket server |
+| protocol | <code>string</code> | The subprotocol selected by the server |
+| readyState | <code>number</code> | The current state of the connection |
+| removeEventListener | <code>function</code> | Removes an event listener emulating the EventTarget interface |
+| send | <code>function</code> | Send data through the open WebSocket connection |
+| terminate | <code>function</code> | Forcibly close the connection |
+| url | <code>string</code> | The URL of the WebSocket server |
+
+<a name="WebSocketConnection"></a>
+
+## WebSocketConnection : <code>Object</code>
+A wrapper around the raw WebSocket to provide a finite set of operations
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| close | <code>function</code> | Closes the WebSocket connection to the message bus server |
+| _organizationId | <code>string</code> | The organization id for the open WebSocket connection |
+| _webSocket | [<code>WebSocket</code>](./Typedefs.md#WebSocket) | The raw WebSocket connection to the message bus |
+
+
+* [WebSocketConnection](#WebSocketConnection) : <code>Object</code>
+    * [new WebSocketConnection(webSocket, organizationId)](#new_WebSocketConnection_new)
+    * [.authorize(token)](#WebSocketConnection+authorize) ⇒ <code>Promise</code>
+    * [.close()](#WebSocketConnection+close)
+    * [.publish(serviceClientId, channel, message)](#WebSocketConnection+publish) ⇒ <code>Promise</code>
+
+<a name="new_WebSocketConnection_new"></a>
+
+### new WebSocketConnection(webSocket, organizationId)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| webSocket | [<code>WebSocket</code>](./Typedefs.md#WebSocket) | A WebSocket connection to the message bus |
+| organizationId | <code>string</code> | UUID corresponding with an organization |
+
+<a name="WebSocketConnection+authorize"></a>
+
+### webSocketConnection.authorize(token) ⇒ <code>Promise</code>
+Sends a message to the message bus to authorize a channel
+
+**Kind**: instance method of [<code>WebSocketConnection</code>](#WebSocketConnection)  
+**Fulfill**:   
+**Reject**: <code>error</code> The error event from the WebSocket or the error message from the message bus  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| token | <code>string</code> | JSON Web Signature containing the channel and actions needed for authorization |
+
+**Example**  
+```js
+contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+    .then((webSocket) => {
+      webSocket.authorize(token).then(() => {
+        console.log("authorization successful")
+      })
+      .catch((authError) => {
+        console.log(authError)
+      });
+    })
+});
+```
+<a name="WebSocketConnection+close"></a>
+
+### webSocketConnection.close()
+Closes the websocket connection
+
+**Kind**: instance method of [<code>WebSocketConnection</code>](#WebSocketConnection)  
+**Example**  
+```js
+contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+  .then((webSocket) => {
+    webSocket.close()
+  })
+  .catch((errorEvent) => {
+    console.log(errorEvent);
+  });
+```
+<a name="WebSocketConnection+publish"></a>
+
+### webSocketConnection.publish(serviceClientId, channel, message) ⇒ <code>Promise</code>
+Publishes a message to a specific channel on the message bus
+
+**Kind**: instance method of [<code>WebSocketConnection</code>](#WebSocketConnection)  
+**Fulfill**:   
+**Reject**: <code>error</code> The error event from the WebSocket or the error message from the message bus  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| serviceClientId | <code>string</code> | Client ID of the message bus service |
+| channel | <code>string</code> | Message bus channel the message is being sent to |
+| message | <code>Any</code> | Message being sent to the message bus. Must be valid JSON. |
+
+**Example**  
+```js
+contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+    .then((webSocket) => {
+      webSocket.publish('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', {"example": 1}).then(() => {
+        console.log("publish successful")
+      })
+      .catch((error) => {
+        console.log(error)
+      });
+    })
+});
+```
+<a name="WebSocketError"></a>
+
+## WebSocketError : <code>Object</code>
+The WebSocket Error Event
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| type | <code>string</code> | The event type |
+
+<a name="WebSocketMessage"></a>
+
+## WebSocketMessage : <code>Object</code>
+The WebSocket Message Event
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| data | <code>Object</code> | The data sent by the message emitter |
+| origin | <code>string</code> | A USVString representing the origin of the message emitter |
+| lastEventId | <code>string</code> | A DOMString representing a unique ID for the event |
+| source | <code>Object</code> | A MessageEventSource (which can be a WindowProxy, MessagePort, or ServiceWorker object) representing the message emitter |
+| ports | <code>Array</code> | MessagePort objects representing the ports associated with the channel the message is being sent through (where appropriate, e.g. in channel messaging or when sending a message to a shared worker) |
+

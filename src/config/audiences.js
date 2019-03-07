@@ -2,11 +2,13 @@ export default {
   bus: {
     production: {
       clientId: 'bmoJ2jhfyIP5s4IZx5Ss6xQ9lmkoDixO',
-      host: 'https://bus.ndustrial.io'
+      host: 'https://bus.ndustrial.io',
+      webSocket: 'wss://bus.ndustrial.io'
     },
     staging: {
-      clientId: '1HD1NG1VTBtkqRt2HRRj3E3hdmqmwzoz',
-      host: 'https://bus-staging.ndustrial.io'
+      clientId: 'WLlg0VHqGneLuPNMFKCoJDjUlhocDFEF',
+      host: 'https://bus-staging.ndustrial.io',
+      webSocket: 'wss://bus-staging.ndustrial.io'
     }
   },
   contxtAuth: {
