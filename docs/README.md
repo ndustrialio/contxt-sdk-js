@@ -181,7 +181,13 @@ for authenticating and communicating with an individual API and the external mod
 <dd></dd>
 <dt><a href="./Typedefs.md#File">File</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#FileError">FileError</a> : <code>Error</code></dt>
+<dd><p>An error returned while creating and uploading an
+  individual file</p>
+</dd>
 <dt><a href="./Typedefs.md#FileToDownload">FileToDownload</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#FileWithUploadInformation">FileWithUploadInformation</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FilesFromServer">FilesFromServer</a> : <code>Object</code></dt>
 <dd></dd>

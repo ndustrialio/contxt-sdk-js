@@ -563,6 +563,22 @@ for authenticating and communicating with an individual API and the external mod
 | status | <code>string</code> | The status of the File, e.g. "ACTIVE" |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="FileError"></a>
+
+## FileError : <code>Error</code>
+An error returned while creating and uploading an
+  individual file
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| artifacts | <code>Object</code> | Records that may have been created while   creating and uploading a file. Can be used to pick up the process manually   or clean up before trying again. |
+| [artifacts.file] | <code>Object</code> | A created File artifact |
+| originalError | <code>Error</code> | The original error object that can be used   for additional debugging purposes |
+| stage | <code>string</code> | A string describing in what stage of the create and   upload process the failure occurred. Possible choices are:     - create (failed while creating the initial file record)     - upload (failed while uploading the actual file for storage)     - statusUpdate (failed while updating the upload status for the file record)     - get (failed at the end while getting an updated file record) |
+
 <a name="FileToDownload"></a>
 
 ## FileToDownload : <code>Object</code>
@@ -573,6 +589,29 @@ for authenticating and communicating with an individual API and the external mod
 | --- | --- | --- |
 | expiresAt | <code>string</code> | ISO 8601 Extended Format date/time |
 | temporaryUrl | <code>string</code> | A temporary URL that can be used to download the file |
+
+<a name="FileWithUploadInformation"></a>
+
+## FileWithUploadInformation : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| contentType | <code>string</code> | The MIME type of the file |
+| description | <code>string</code> |  |
+| filename | <code>string</code> |  |
+| id | <code>string</code> | UUID of the file |
+| organizationId | <code>string</code> | UUID of the organization to which the file   belongs |
+| ownerId | <code>string</code> | The ID of the user who owns the file |
+| status | <code>string</code> | The status of the File, e.g. "ACTIVE" |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| uploadInfo | <code>Object</code> | Information related to the uploading the   underlying file |
+| uploadInfo.expiresAt | <code>string</code> | A ISO 8601 Extended format date/time   string indicating when the validity of the included URL expires |
+| uploadInfo.headers | <code>Object.&lt;string, string&gt;</code> | to be appended to the   request when uploading the file. The key is the header name and the value   is the included value. |
+| uploadInfo.method | <code>string</code> | The HTTP method to be used when   uploading the file. |
+| uploadInfo.url | <code>string</code> | The URL to be used when uploading the file. |
 
 <a name="FilesFromServer"></a>
 

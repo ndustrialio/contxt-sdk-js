@@ -16,6 +16,9 @@ factory
     status: () => faker.random.arrayElement(['ACTIVE', 'UPLOADING']),
     updatedAt: () => faker.date.recent().toISOString()
   })
+  .attr('uploadInfo', ['fromServer'], (fromServer, uploadInfo) => {
+    return factory.build('fileUploadInfo', null, { fromServer });
+  })
   .after((file, options) => {
     // If building a file object that comes from the server, transform it to have camel
     // case and capital letters in the right spots
@@ -31,5 +34,8 @@ factory
 
       file.updated_at = file.updatedAt;
       delete file.updatedAt;
+
+      file.upload_info = file.uploadInfo;
+      delete file.uploadInfo;
     }
   });

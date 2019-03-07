@@ -28,6 +28,7 @@ require('./fieldGrouping');
 require('./fieldGroupingField');
 require('./file');
 require('./fileToDownload');
+require('./fileUploadInfo');
 require('./outputField');
 require('./outputFieldData');
 require('./organization');
