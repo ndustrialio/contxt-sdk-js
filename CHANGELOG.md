@@ -14,6 +14,10 @@
   - `Files#setUploadFailed` for updating a File's upload status to indicate the upload failed
   - `Files#upload` for uploading a File to the external service used for storing files
 
+**Fixed**
+
+- There was an issue with requiring v0.0.41 in a browser related to the `uuid` package we were using in the WebSocket module. It's been switched out with `nanoid`.
+
 ## [v0.0.41](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.41) (2019-03-01)
 
 **Added**
