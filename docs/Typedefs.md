@@ -365,10 +365,11 @@ single module.
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | description | <code>string</code> |  |
 | id | <code>string</code> | UUID |
-| isRealtimeEnabled | <code>boolean</code> |  |
+| isOngoingEvent | <code>boolean</code> | Flag for if the event is ongoing/updated frequently |
+| isRealtimeEnabled | <code>boolean</code> | Flag for if the event is real time |
 | level | <code>number</code> | Priority level associated with event type |
 | name | <code>string</code> |  |
-| slug | <code>string</code> |  |
+| slug | <code>string</code> | Unique per clientId to identify the event type |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="EventTypesFromServer"></a>

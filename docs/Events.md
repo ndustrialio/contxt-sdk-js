@@ -200,16 +200,16 @@ Method: POST
 **Fulfill**: [<code>EventType</code>](./Typedefs.md#EventType) Information about the new event type  
 **Reject**: <code>Error</code>  
 
-| Param | Type |
-| --- | --- |
-| eventType | <code>Object</code> | 
-| eventType.name | <code>string</code> | 
-| eventType.description | <code>string</code> | 
-| [eventType.level] | <code>integer</code> | 
-| eventType.clientId | <code>string</code> | 
-| eventType.slug | <code>string</code> | 
-| eventType.isRealtimeEnabled | <code>boolean</code> | 
-| eventType.isOngoingEvent | <code>boolean</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| eventType | <code>Object</code> |  |
+| eventType.name | <code>string</code> |  |
+| eventType.description | <code>string</code> |  |
+| [eventType.level] | <code>number</code> | Priority level associated with event type |
+| eventType.clientId | <code>string</code> | UUID corresponding with the client |
+| eventType.slug | <code>string</code> | Unique per clientId to identify the event type |
+| eventType.isRealtimeEnabled | <code>boolean</code> | Flag for if the event is real time |
+| eventType.isOngoingEvent | <code>boolean</code> | Flag for if the event is ongoing/updated frequently |
 
 **Example**  
 ```js

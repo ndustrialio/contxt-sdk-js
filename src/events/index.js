@@ -52,10 +52,11 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} description
  * @property {string} id UUID
- * @property {boolean} isRealtimeEnabled
+ * @property {boolean} isOngoingEvent Flag for if the event is ongoing/updated frequently
+ * @property {boolean} isRealtimeEnabled Flag for if the event is real time
  * @property {number} level Priority level associated with event type
  * @property {string} name
- * @property {string} slug
+ * @property {string} slug Unique per clientId to identify the event type
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
@@ -327,11 +328,11 @@ class Events {
    * @param {Object} eventType
    * @param {string} eventType.name
    * @param {string} eventType.description
-   * @param {integer} [eventType.level]
-   * @param {string} eventType.clientId
-   * @param {string} eventType.slug
-   * @param {boolean} eventType.isRealtimeEnabled
-   * @param {boolean} eventType.isOngoingEvent
+   * @param {number} [eventType.level] Priority level associated with event type
+   * @param {string} eventType.clientId UUID corresponding with the client
+   * @param {string} eventType.slug Unique per clientId to identify the event type
+   * @param {boolean} eventType.isRealtimeEnabled Flag for if the event is real time
+   * @param {boolean} eventType.isOngoingEvent Flag for if the event is ongoing/updated frequently
    *
    * @returns {Promise}
    * @fulfill {EventType} Information about the new event type
