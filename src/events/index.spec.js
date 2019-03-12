@@ -571,13 +571,11 @@ describe('Events', function() {
       });
 
       it('formats the submitted event type object to send to the server', function() {
-        expect(toSnakeCase).to.be.deep.calledWith(
-          eventTypeToServerBeforeFormat
-        );
+        expect(toSnakeCase).to.be.calledWith(eventTypeToServerBeforeFormat);
       });
 
       it('creates a new event type', function() {
-        expect(request.post).to.be.deep.calledWith(
+        expect(request.post).to.be.calledWith(
           `${expectedHost}/types`,
           eventTypeToServerAfterFormat
         );
@@ -585,14 +583,12 @@ describe('Events', function() {
 
       it('formats the returned object', function() {
         return promise.then(() => {
-          expect(toCamelCase).to.be.deep.calledWith(
-            eventTypeFromServerBeforeFormat
-          );
+          expect(toCamelCase).to.be.calledWith(eventTypeFromServerBeforeFormat);
         });
       });
 
       it('returns a fulfilled promise with the new event type information', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
           eventTypeFromServerAfterFormat
         );
       });
