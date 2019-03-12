@@ -200,16 +200,16 @@ Method: POST
 **Fulfill**: [<code>EventType</code>](./Typedefs.md#EventType) Information about the new event type  
 **Reject**: <code>Error</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| eventType | <code>Object</code> |  |
-| eventType.name | <code>string</code> |  |
-| eventType.description | <code>string</code> | UUID corresponding with an event type |
-| [eventType.level] | <code>integer</code> |  |
-| eventType.clientId | <code>string</code> |  |
-| eventType.slug | <code>string</code> |  |
-| eventType.isRealtimeEnabled | <code>boolean</code> | UUID corresponding with an organization |
-| eventType.isOngoingEvent | <code>boolean</code> |  |
+| Param | Type |
+| --- | --- |
+| eventType | <code>Object</code> | 
+| eventType.name | <code>string</code> | 
+| eventType.description | <code>string</code> | 
+| [eventType.level] | <code>integer</code> | 
+| eventType.clientId | <code>string</code> | 
+| eventType.slug | <code>string</code> | 
+| eventType.isRealtimeEnabled | <code>boolean</code> | 
+| eventType.isOngoingEvent | <code>boolean</code> | 
 
 **Example**  
 ```js

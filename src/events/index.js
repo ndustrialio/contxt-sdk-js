@@ -326,11 +326,11 @@ class Events {
    *
    * @param {Object} eventType
    * @param {string} eventType.name
-   * @param {string} eventType.description UUID corresponding with an event type
+   * @param {string} eventType.description
    * @param {integer} [eventType.level]
    * @param {string} eventType.clientId
    * @param {string} eventType.slug
-   * @param {boolean} eventType.isRealtimeEnabled UUID corresponding with an organization
+   * @param {boolean} eventType.isRealtimeEnabled
    * @param {boolean} eventType.isOngoingEvent
    *
    * @returns {Promise}
