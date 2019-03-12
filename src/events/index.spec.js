@@ -525,4 +525,99 @@ describe('Events', function() {
       }
     );
   });
+
+  describe('createEventType', function() {
+    context('when all required information is supplied', function() {
+      let eventTypeFromServerAfterFormat;
+      let eventTypeFromServerBeforeFormat;
+      let eventTypeToServerAfterFormat;
+      let eventTypeToServerBeforeFormat;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+
+      beforeEach(function() {
+        eventTypeFromServerAfterFormat = fixture.build('eventType');
+        eventTypeFromServerBeforeFormat = fixture.build(
+          'eventType',
+          eventTypeFromServerAfterFormat,
+          { fromServer: true }
+        );
+        eventTypeToServerBeforeFormat = fixture.build('eventType');
+        eventTypeToServerAfterFormat = fixture.build(
+          'eventType',
+          eventTypeToServerBeforeFormat,
+          { fromServer: true }
+        );
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(eventTypeFromServerBeforeFormat)
+        };
+
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(eventTypeFromServerAfterFormat);
+
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(eventTypeToServerAfterFormat);
+
+        const events = new Events(baseSdk, request);
+        events._baseUrl = expectedHost;
+
+        promise = events.createEventType(eventTypeToServerBeforeFormat);
+      });
+
+      it('formats the submitted event type object to send to the server', function() {
+        expect(toSnakeCase).to.be.deep.calledWith(
+          eventTypeToServerBeforeFormat
+        );
+      });
+
+      it('creates a new event type', function() {
+        expect(request.post).to.be.deep.calledWith(
+          `${expectedHost}/types`,
+          eventTypeToServerAfterFormat
+        );
+      });
+
+      it('formats the returned object', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.deep.calledWith(
+            eventTypeFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('returns a fulfilled promise with the new event type information', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          eventTypeFromServerAfterFormat
+        );
+      });
+    });
+
+    context('when there is missing required information', function() {
+      [
+        'name',
+        'description',
+        'clientId',
+        'slug',
+        'isRealtimeEnabled',
+        'isOngoingEvent'
+      ].forEach((field) => {
+        it(`it throws an error when ${field} is missing`, function() {
+          const eventType = fixture.build('eventType');
+
+          const events = new Events(baseSdk, baseRequest);
+          const promise = events.createEventType(omit(eventType, [field]));
+
+          return expect(promise).to.be.rejectedWith(
+            `A ${field} is required to create a new event type.`
+          );
+        });
+      });
+    });
+  });
 });

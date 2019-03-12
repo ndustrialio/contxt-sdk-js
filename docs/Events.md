@@ -14,6 +14,7 @@ of, information about different events
     * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
+    * [.createEventType(eventType)](#Events+createEventType) ⇒ <code>Promise</code>
 
 <a name="new_Events_new"></a>
 
@@ -186,4 +187,42 @@ Method: PUT
 contxtSdk.events.update('875afddd-091c-4385-bc21-0edf38804d27', {
   name: 'Sgt. Pepper's Lonely Hearts Club Band Event'
 });
+```
+<a name="Events+createEventType"></a>
+
+### contxtSdk.events.createEventType(eventType) ⇒ <code>Promise</code>
+Creates a new event type
+
+API Endpoint: '/types'
+Method: POST
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>EventType</code>](./Typedefs.md#EventType) Information about the new event type  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventType | <code>Object</code> |  |
+| eventType.name | <code>string</code> |  |
+| eventType.description | <code>string</code> | UUID corresponding with an event type |
+| [eventType.level] | <code>integer</code> |  |
+| eventType.clientId | <code>string</code> |  |
+| eventType.slug | <code>string</code> |  |
+| eventType.isRealtimeEnabled | <code>boolean</code> | UUID corresponding with an organization |
+| eventType.isOngoingEvent | <code>boolean</code> |  |
+
+**Example**  
+```js
+contxtSdk.events
+  .createEventType({
+    name: 'Example name',
+    description: 'Example description',
+    level: 2,
+    clientId: 'd47e5699-cc17-4631-a2c5-6cefceb7863d',
+    slug: 'example_slug',
+    isRealtimeEnabled: false,
+    isOngoingEvent: false
+  })
+  .then((eventType) => console.log(eventType))
+  .catch((err) => console.log(err));
 ```

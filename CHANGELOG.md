@@ -1,3 +1,9 @@
+## [v0.0.43](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.43) (2019-03-13)
+
+**Added**
+
+- Added `Events#createEventType` for creating an event type
+
 ## [v0.0.42](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.42) (2019-03-08)
 
 **Added**

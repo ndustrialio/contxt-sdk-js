@@ -1,3 +1,4 @@
+import has from 'lodash.has';
 import isPlainObject from 'lodash.isplainobject';
 import { formatEventUpdateToServer } from '../utils/events';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
@@ -315,6 +316,64 @@ class Events {
       `${this._baseUrl}/events/${eventId}`,
       formattedUpdate
     );
+  }
+
+  /**
+   * Creates a new event type
+   *
+   * API Endpoint: '/types'
+   * Method: POST
+   *
+   * @param {Object} eventType
+   * @param {string} eventType.name
+   * @param {string} eventType.description UUID corresponding with an event type
+   * @param {integer} [eventType.level]
+   * @param {string} eventType.clientId
+   * @param {string} eventType.slug
+   * @param {boolean} eventType.isRealtimeEnabled UUID corresponding with an organization
+   * @param {boolean} eventType.isOngoingEvent
+   *
+   * @returns {Promise}
+   * @fulfill {EventType} Information about the new event type
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.events
+   *   .createEventType({
+   *     name: 'Example name',
+   *     description: 'Example description',
+   *     level: 2,
+   *     clientId: 'd47e5699-cc17-4631-a2c5-6cefceb7863d',
+   *     slug: 'example_slug',
+   *     isRealtimeEnabled: false,
+   *     isOngoingEvent: false
+   *   })
+   *   .then((eventType) => console.log(eventType))
+   *   .catch((err) => console.log(err));
+   */
+  createEventType(eventType = {}) {
+    const requiredFields = [
+      'name',
+      'description',
+      'clientId',
+      'slug',
+      'isRealtimeEnabled',
+      'isOngoingEvent'
+    ];
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      const field = requiredFields[i];
+
+      if (!has(eventType, field)) {
+        return Promise.reject(
+          new Error(`A ${field} is required to create a new event type.`)
+        );
+      }
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/types`, toSnakeCase(eventType))
+      .then((response) => toCamelCase(response));
   }
 }
 
