@@ -61,7 +61,7 @@ typings/
 .next
 
 # rollup build output
-es/*
+esm/*
 lib/*
 
 .wercker

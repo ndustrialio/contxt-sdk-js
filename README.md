@@ -88,7 +88,22 @@ export default NewModule;
 
 ### Building the package
 
-[rollup.js](https://rollupjs.org/guide/en) is used to build the source code into CommonJS and ES6 modules that can be used for distribution. These modules are both built by running one command: `npm run build`. If you'd like to continuously create builds as files are changed (i.e. if you are developing new features and have set things up correctly with `npm link` to serve the newly updated files to your app), you can run `npm run watch`.
+[Gulp](https://gulpjs.com/) is used to build the source code in CommonJS and ES Module distributions that can be used across many platforms. These distributions are both built by running one command: `npm run build`. If you'd like to continuously create builds as files are changed (i.e. if you are developing new features and have set things up correctly with `npm link` to serve the newly updated files to your app), you can run `npm run watch`. Currently, the docs are built by a custom script, but may move to Gulp in the future.
+
+If there is a module that needs to be different between browser and Node implementations, this can be achieved by creating a separate file with a file name indicating it is only for a browser (like `module.browser.js`) and adding the source path and replacement path of the files to the `browser` section of the `package.json` (example below). It will need to be added for both the `esm` and `lib` directories to account for whether the end user is using CommonJS or ES modules. When the client application is built, Webpack will pick up the browser version instead of the Node version.
+
+```javascript
+{
+  ... other stuff
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "browser": {
+    "./esm/module.js": "./esm/module.browser.js",
+    "./lib/module.js": "./lib/module.browser.js",
+  }
+  ... other stuff
+}
+```
 
 ### Testing & Code Quality
 
