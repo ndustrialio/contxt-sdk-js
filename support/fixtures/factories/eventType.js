@@ -11,6 +11,7 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
     id: () => faker.random.uuid(),
+    isOngoingEvent: () => faker.random.boolean(),
     isRealtimeEnabled: () => faker.random.boolean(),
     level: () => faker.random.number(),
     name: () => faker.company.companyName(),
@@ -26,6 +27,9 @@ factory
 
       eventType.created_at = eventType.createdAt;
       delete eventType.createdAt;
+
+      eventType.is_ongoing_event = eventType.isOngoingEvent;
+      delete eventType.isOngoingEvent;
 
       eventType.is_realtime_enabled = eventType.isRealtimeEnabled;
       delete eventType.isRealtimeEnabled;
