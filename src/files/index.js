@@ -49,8 +49,19 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} FileToDownload
- * @property {string} expiresAt ISO 8601 Extended Format date/time
- * @property {string} temporaryUrl A temporary URL that can be used to download the file
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} contentType The MIME type of the file
+ * @property {string} description
+ * @property {Object} downloadInfo
+ * @property {string} downloadInfo.attachmentUrl A URL that can be used to download the file from the external storage
+ * @property {string} downloadInfo.expiresAt ISO 8601 Extended Format date/time indicating when the attachement and inline URLs expire
+ * @property {string} downloadInfo.inlineUrl A URL that can be used for embedding the file into a page
+ * @property {string} filename
+ * @property {string} id UUID of the file
+ * @property {string} organizationId UUID of the organization to which the file belongs
+ * @property {string} ownerId The ID of the user who owns the file
+ * @property {string} status The status of the File, e.g. "ACTIVE"
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
 /**
@@ -71,7 +82,9 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
- * Module that provides access to information about Files
+ * Module that provides access to information about Files.
+ * More information about the best way to use this module is available at:
+ * https://contxt.readme.io/reference#files-overview
  *
  * @typicalname contxtSdk.files
  */
@@ -102,7 +115,7 @@ class Files {
    *   file belongs
    *
    * @returns {Promise}
-   * @fulfill {File}
+   * @fulfill {FileWithUploadInformation}
    * @rejects {Error}
    *
    * @example

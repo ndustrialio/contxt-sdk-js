@@ -72,7 +72,9 @@ the relationship between those groupings and facilities</p>
 <dd><p>Module that provides access to field information</p>
 </dd>
 <dt><a href="./Files.md">Files</a></dt>
-<dd><p>Module that provides access to information about Files</p>
+<dd><p>Module that provides access to information about Files.
+More information about the best way to use this module is available at:
+<a href="https://contxt.readme.io/reference#files-overview">https://contxt.readme.io/reference#files-overview</a></p>
 </dd>
 <dt><a href="./Iot.md">Iot</a></dt>
 <dd><p>Module that provides access to real time IOT feeds and fields.</p>

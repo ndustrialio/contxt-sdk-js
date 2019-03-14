@@ -588,8 +588,19 @@ An error returned while creating and uploading an
 
 | Name | Type | Description |
 | --- | --- | --- |
-| expiresAt | <code>string</code> | ISO 8601 Extended Format date/time |
-| temporaryUrl | <code>string</code> | A temporary URL that can be used to download the file |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| contentType | <code>string</code> | The MIME type of the file |
+| description | <code>string</code> |  |
+| downloadInfo | <code>Object</code> |  |
+| downloadInfo.attachmentUrl | <code>string</code> | A URL that can be used to download the file from the external storage |
+| downloadInfo.expiresAt | <code>string</code> | ISO 8601 Extended Format date/time indicating when the attachement and inline URLs expire |
+| downloadInfo.inlineUrl | <code>string</code> | A URL that can be used for embedding the file into a page |
+| filename | <code>string</code> |  |
+| id | <code>string</code> | UUID of the file |
+| organizationId | <code>string</code> | UUID of the organization to which the file belongs |
+| ownerId | <code>string</code> | The ID of the user who owns the file |
+| status | <code>string</code> | The status of the File, e.g. "ACTIVE" |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="FileWithUploadInformation"></a>
 

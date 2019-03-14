@@ -1,7 +1,9 @@
 <a name="Files"></a>
 
 ## Files
-Module that provides access to information about Files
+Module that provides access to information about Files.
+More information about the best way to use this module is available at:
+https://contxt.readme.io/reference#files-overview
 
 **Kind**: global class  
 
@@ -35,7 +37,7 @@ API Endpoint: '/files'
 Method: POST
 
 **Kind**: instance method of [<code>Files</code>](#Files)  
-**Fulfill**: [<code>File</code>](./Typedefs.md#File)  
+**Fulfill**: [<code>FileWithUploadInformation</code>](./Typedefs.md#FileWithUploadInformation)  
 **Rejects**: <code>Error</code>  
 
 | Param | Type | Description |
