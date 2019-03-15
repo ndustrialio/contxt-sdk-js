@@ -36,7 +36,9 @@ import WebSocketConnection from './webSocketConnection';
  */
 
 /**
- * Module that provides access to the message bus
+ * Module that provides access to the message bus. This is for Node
+ * environments. Documentation for browser environments is found under
+ * `BrowserBus`.
  *
  * @typicalname contxtSdk.bus
  */

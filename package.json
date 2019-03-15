@@ -4,6 +4,12 @@
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
+  "browser": {
+    "./esm/bus/index.js": "./esm/bus/index.browser.js",
+    "./lib/bus/index.js": "./lib/bus/index.browser.js",
+    "./esm/bus/webSocketConnection.js": "./esm/bus/webSocketConnection.browser.js",
+    "./lib/bus/webSocketConnection.js": "./lib/bus/webSocketConnection.browser.js"
+  },
   "scripts": {
     "build": "npm run build:js && npm run build:docs",
     "build:docs": "node ./support/docs",

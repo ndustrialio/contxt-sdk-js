@@ -19,9 +19,10 @@ import nanoid from 'nanoid/non-secure';
  */
 
 /**
- * Module that wraps the websocket connection to the message bus
- * to provide the developer with a specific set of functionality
- *
+ * Module that wraps the websocket connection to the message bus to provide the
+ * developer with a specific set of functionality. This is for Node
+ * environments. Documentation for browser environments is found under
+ * `BrowserWebSocketConnection`.
  */
 class WebSocketConnection {
   /**
