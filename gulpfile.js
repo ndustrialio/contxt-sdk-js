@@ -2,7 +2,6 @@ const del = require('del');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const sourcemaps = require('gulp-sourcemaps');
-const isArray = require('lodash.isarray');
 const babelConfig = require('./package.json').babel;
 
 function _build({ destination, moduleType }) {
@@ -12,7 +11,7 @@ function _build({ destination, moduleType }) {
     .pipe(
       babel({
         presets: babelConfig.presets.map((presetConfig) => {
-          const hasOptions = isArray(presetConfig);
+          const hasOptions = Array.isArray(presetConfig);
           const presetName = hasOptions ? presetConfig[0] : presetConfig;
           const presetOptions = hasOptions ? presetConfig[1] : undefined;
 
