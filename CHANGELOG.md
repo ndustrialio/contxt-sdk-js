@@ -1,4 +1,4 @@
-## [v1.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.42) (2019-xx-xx)
+## [v1.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.0.0) (2019-xx-xx)
 
 **Changed**
 
@@ -9,6 +9,7 @@
   - Provides separate CommonJS and ES Module file trees (in `/lib` and `/esm`, respectively) to be used directly by Node, Webpack, or the user's preferred bundling application
   - The directory for the ES modules build has changed. If a project was directly importing the ES module instead of the root package, this will need to be updated (i.e. `import ContxtSdk from 'contxt-sdk/es'` to `import ContxtSdk from 'contxt-sdk/esm'`)
   - **NOTE:** The Babel configuration has been moved from the `.babelrc` file to the `package.json` so that the configuration can be shared with the Gulp build process and testing via Mocha. If upgrading to Babel 7, this should be moved to a `babel.config.js` file (this functionality was added in 7).
+- Added Browser versions of Message Bus related modules that indicate connecting to the Message Bus is not supported in browser environments at the moment.
 
 ## [v0.0.43](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.43) (2019-03-13)
 
