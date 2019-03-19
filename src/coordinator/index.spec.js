@@ -51,6 +51,61 @@ describe('Coordinator', function() {
     });
   });
 
+  describe('getAllApplications', function() {
+    let expectedApplications;
+    let applicationsFromServer;
+    let promise;
+    let request;
+    let toCamelCase;
+
+    beforeEach(function() {
+      const numberOfApplications = faker.random.number({
+        min: 1,
+        max: 10
+      });
+      expectedApplications = fixture.buildList(
+        'contxtApplication',
+        numberOfApplications
+      );
+      applicationsFromServer = expectedApplications.map((app) =>
+        fixture.build('contxtApplication', app, { fromServer: true })
+      );
+
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves(applicationsFromServer)
+      };
+      toCamelCase = this.sandbox
+        .stub(objectUtils, 'toCamelCase')
+        .callsFake((app) =>
+          expectedApplications.find(({ id }) => id === app.id)
+        );
+
+      const coordinator = new Coordinator(baseSdk, request);
+      coordinator._baseUrl = expectedHost;
+      promise = coordinator.getAllApplications();
+    });
+
+    it('gets the list of applications from the server', function() {
+      expect(request.get).to.be.calledWith(`${expectedHost}/applications`);
+    });
+
+    it('formats the list of applications', function() {
+      return promise.then(() => {
+        expect(toCamelCase).to.have.callCount(applicationsFromServer.length);
+        applicationsFromServer.forEach((app) => {
+          expect(toCamelCase).to.be.calledWith(app);
+        });
+      });
+    });
+
+    it('returns a fulfilled promise with the applications', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        expectedApplications
+      );
+    });
+  });
+
   describe('getAllOrganizations', function() {
     let expectedOrganizations;
     let organizationsFromServer;
@@ -293,61 +348,6 @@ describe('Coordinator', function() {
           "A user ID is required for getting information about a user's permissions map"
         );
       });
-    });
-  });
-
-  describe('getAllApplications', function() {
-    let expectedApplications;
-    let applicationsFromServer;
-    let promise;
-    let request;
-    let toCamelCase;
-
-    beforeEach(function() {
-      const numberOfApplications = faker.random.number({
-        min: 1,
-        max: 10
-      });
-      expectedApplications = fixture.buildList(
-        'contxtApplication',
-        numberOfApplications
-      );
-      applicationsFromServer = expectedApplications.map((app) =>
-        fixture.build('contxtApplication', app, { fromServer: true })
-      );
-
-      request = {
-        ...baseRequest,
-        get: this.sandbox.stub().resolves(applicationsFromServer)
-      };
-      toCamelCase = this.sandbox
-        .stub(objectUtils, 'toCamelCase')
-        .callsFake((app) =>
-          expectedApplications.find(({ id }) => id === app.id)
-        );
-
-      const coordinator = new Coordinator(baseSdk, request);
-      coordinator._baseUrl = expectedHost;
-      promise = coordinator.getAllApplications();
-    });
-
-    it('gets the list of applications from the server', function() {
-      expect(request.get).to.be.calledWith(`${expectedHost}/applications`);
-    });
-
-    it('formats the list of applications', function() {
-      return promise.then(() => {
-        expect(toCamelCase).to.have.callCount(applicationsFromServer.length);
-        applicationsFromServer.forEach((app) => {
-          expect(toCamelCase).to.be.calledWith(app);
-        });
-      });
-    });
-
-    it('returns a fulfilled promise with the applications', function() {
-      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-        expectedApplications
-      );
     });
   });
 });

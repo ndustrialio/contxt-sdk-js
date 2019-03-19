@@ -59,6 +59,28 @@ class Coordinator {
   }
 
   /**
+   * Gets information about all contxt applications
+   *
+   * API Endpoint: '/applications'
+   * Method: GET
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtApplication[]} Information about all contxt applications
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getAllApplications()
+   *   .then((apps) => console.log(apps))
+   *   .catch((err) => console.log(err));
+   */
+  getAllApplications() {
+    return this._request
+      .get(`${this._baseUrl}/applications`)
+      .then((apps) => apps.map((app) => toCamelCase(app)));
+  }
+
+  /**
    * Gets information about all contxt organizations
    *
    * API Endpoint: '/organizations'
@@ -175,28 +197,6 @@ class Coordinator {
     // NOTE: This response is not run through the `toCamelCase` method because
     // it could errantly remove underscores from service IDs.
     return this._request.get(`${this._baseUrl}/users/${userId}/permissions`);
-  }
-
-  /**
-   * Gets information about all contxt applications
-   *
-   * API Endpoint: '/applications'
-   * Method: GET
-   *
-   * @returns {Promise}
-   * @fulfill {ContxtApplication[]} Information about all contxt applications
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.coordinator
-   *   .getAllApplications()
-   *   .then((apps) => console.log(apps))
-   *   .catch((err) => console.log(err));
-   */
-  getAllApplications() {
-    return this._request
-      .get(`${this._baseUrl}/applications`)
-      .then((apps) => apps.map((app) => toCamelCase(app)));
   }
 }
 
