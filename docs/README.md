@@ -138,6 +138,8 @@ to provide the developer with a specific set of functionality</p>
 <dd><p>An object of interceptors that get called on every request or response.
 More information at <a href="https://github.com/axios/axios#interceptors">axios Interceptors</a></p>
 </dd>
+<dt><a href="./Typedefs.md#ContxtApplication">ContxtApplication</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#ContxtOrganization">ContxtOrganization</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>

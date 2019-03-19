@@ -218,6 +218,26 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | interceptor.fulfilled | <code>function</code> | A function that is run on every successful request or   response |
 | interceptor.rejected | <code>function</code> | A function that is run on every failed request or response |
 
+<a name="ContxtApplication"></a>
+
+## ContxtApplication : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| clientId | <code>string</code> |  |
+| clientSecret | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| currentVersionId | <code>string</code> |  |
+| description | <code>string</code> |  |
+| iconUrl | <code>string</code> |  |
+| id | <code>number</code> |  |
+| name | <code>string</code> |  |
+| serviceId | <code>number</code> |  |
+| type | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtOrganization"></a>
 
 ## ContxtOrganization : <code>Object</code>
