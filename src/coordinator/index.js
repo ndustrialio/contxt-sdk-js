@@ -24,6 +24,21 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtApplication
+ * @property {string} clientId
+ * @property {string} clientSecret
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} currentVersionId
+ * @property {string} description
+ * @property {string} iconUrl
+ * @property {number} id
+ * @property {string} name
+ * @property {number} serviceId
+ * @property {string} type
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to information about Contxt
  *
  * @typicalname contxtSdk.coordinator
@@ -160,6 +175,28 @@ class Coordinator {
     // NOTE: This response is not run through the `toCamelCase` method because
     // it could errantly remove underscores from service IDs.
     return this._request.get(`${this._baseUrl}/users/${userId}/permissions`);
+  }
+
+  /**
+   * Gets information about all contxt applications
+   *
+   * API Endpoint: '/applications'
+   * Method: GET
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtApplication[]} Information about all contxt applications
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getAllApplications()
+   *   .then((apps) => console.log(apps))
+   *   .catch((err) => console.log(err));
+   */
+  getAllApplications() {
+    return this._request
+      .get(`${this._baseUrl}/applications`)
+      .then((apps) => apps.map((app) => toCamelCase(app)));
   }
 }
 

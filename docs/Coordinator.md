@@ -11,6 +11,7 @@ Module that provides access to information about Contxt
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
+    * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
 
 <a name="new_Coordinator_new"></a>
 
@@ -109,5 +110,23 @@ Method: GET
 contxtSdk.coordinator
   .getUserPermissionsMap('auth0|12345')
   .then((permissionsMap) => console.log(permissionsMap))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+getAllApplications"></a>
+
+### contxtSdk.coordinator.getAllApplications() ⇒ <code>Promise</code>
+Gets information about all contxt applications
+
+API Endpoint: '/applications'
+Method: GET
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>ContxtApplication[]</code> Information about all contxt applications  
+**Reject**: <code>Error</code>  
+**Example**  
+```js
+contxtSdk.coordinator
+  .getAllApplications()
+  .then((apps) => console.log(apps))
   .catch((err) => console.log(err));
 ```
