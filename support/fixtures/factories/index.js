@@ -10,6 +10,7 @@ require('./assetMetricValue');
 require('./assetType');
 require('./audience');
 require('./channel');
+require('./contxtApplication');
 require('./contxtOrganization');
 require('./contxtUser');
 require('./costCenter');

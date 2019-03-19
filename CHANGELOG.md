@@ -13,6 +13,12 @@
 - Added Browser versions of Message Bus related modules that indicate connecting to the Message Bus is not supported in browser environments at the moment.
 - Changed back to using UUIDv4s as IDs for Message Bus subscriptions and publications.
 
+## [v0.0.44](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.44) (2019-03-19)
+
+**Added**
+
+- Added `Coordinator#getAllApplications` for getting a list of all applications
+
 ## [v0.0.43](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.43) (2019-03-13)
 
 **Added**

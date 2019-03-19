@@ -7,6 +7,7 @@ Module that provides access to information about Contxt
 
 * [Coordinator](#Coordinator)
     * [new Coordinator(sdk, request)](#new_Coordinator_new)
+    * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
     * [.getAllOrganizations()](#Coordinator+getAllOrganizations) ⇒ <code>Promise</code>
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
@@ -21,6 +22,24 @@ Module that provides access to information about Contxt
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Coordinator+getAllApplications"></a>
+
+### contxtSdk.coordinator.getAllApplications() ⇒ <code>Promise</code>
+Gets information about all contxt applications
+
+API Endpoint: '/applications'
+Method: GET
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>ContxtApplication[]</code> Information about all contxt applications  
+**Reject**: <code>Error</code>  
+**Example**  
+```js
+contxtSdk.coordinator
+  .getAllApplications()
+  .then((apps) => console.log(apps))
+  .catch((err) => console.log(err));
+```
 <a name="Coordinator+getAllOrganizations"></a>
 
 ### contxtSdk.coordinator.getAllOrganizations() ⇒ <code>Promise</code>
