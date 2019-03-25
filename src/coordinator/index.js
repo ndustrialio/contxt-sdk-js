@@ -2,6 +2,21 @@ import EdgeNodes from './edgeNodes';
 import { toCamelCase } from '../utils/objects';
 
 /**
+ * @typedef {Object} ContxtApplication
+ * @property {string} clientId
+ * @property {string} clientSecret
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} currentVersionId
+ * @property {string} description
+ * @property {string} iconUrl
+ * @property {number} id
+ * @property {string} name
+ * @property {number} serviceId
+ * @property {string} type
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * @typedef {Object} ContxtOrganization
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id UUID formatted ID
@@ -24,18 +39,12 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtApplication
- * @property {string} clientId
- * @property {string} clientSecret
+ * @typedef {Object} ContxtUserFavoriteApplication
+ * @property {number} applicationId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} currentVersionId
- * @property {string} description
- * @property {string} iconUrl
- * @property {number} id
- * @property {string} name
- * @property {number} serviceId
- * @property {string} type
+ * @property {string} id
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {string} userId
  */
 
 /**
@@ -56,6 +65,38 @@ class Coordinator {
     this._sdk = sdk;
 
     this.edgeNodes = new EdgeNodes(sdk, request, baseUrl);
+  }
+
+  /**
+   * Creates an application to a user's favorited applications
+   *
+   * API Endpoint: '/applications/:applicationId/favorites'
+   * Method: POST
+   *
+   * @param {number} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserFavoriteApplication[]} Information about the contxt application favorite
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .createApplicationFavorite(25)
+   *   .then((applicationFavorite) => console.log(applicationFavorite))
+   *   .catch((err) => console.log(err));
+   */
+  createApplicationFavorite(applicationId) {
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An application ID is required for creating a favorite application'
+        )
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/applications/${applicationId}/favorites`)
+      .then((applicationFavorite) => toCamelCase(applicationFavorite));
   }
 
   /**

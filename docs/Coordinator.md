@@ -7,6 +7,7 @@ Module that provides access to information about Contxt
 
 * [Coordinator](#Coordinator)
     * [new Coordinator(sdk, request)](#new_Coordinator_new)
+    * [.createApplicationFavorite(applicationId)](#Coordinator+createApplicationFavorite) ⇒ <code>Promise</code>
     * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
     * [.getAllOrganizations()](#Coordinator+getAllOrganizations) ⇒ <code>Promise</code>
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
@@ -22,6 +23,29 @@ Module that provides access to information about Contxt
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Coordinator+createApplicationFavorite"></a>
+
+### contxtSdk.coordinator.createApplicationFavorite(applicationId) ⇒ <code>Promise</code>
+Creates an application to a user's favorited applications
+
+API Endpoint: '/applications/:applicationId/favorites'
+Method: POST
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>ContxtUserFavoriteApplication[]</code> Information about the contxt application favorite  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>number</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.coordinator
+  .createApplicationFavorite(25)
+  .then((applicationFavorite) => console.log(applicationFavorite))
+  .catch((err) => console.log(err));
+```
 <a name="Coordinator+getAllApplications"></a>
 
 ### contxtSdk.coordinator.getAllApplications() ⇒ <code>Promise</code>
