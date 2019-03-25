@@ -33,7 +33,7 @@ Adds an application to the current user's list of favorited applications
 API Endpoint: '/applications/:applicationId/favorites'
 Method: POST
 
-Note: Only valid for web user's using auth0WebAuth session type
+Note: Only valid for web users using auth0WebAuth session type
 
 **Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
 **Fulfill**: [<code>ContxtUserFavoriteApplication</code>](./Typedefs.md#ContxtUserFavoriteApplication) Information about the contxt application favorite  
@@ -58,7 +58,7 @@ Removes an application from the current user's list of favorited applications
 API Endpoint: '/applications/:applicationId/favorites'
 Method: DELETE
 
-Note: Only valid for web user's using auth0WebAuth session type
+Note: Only valid for web users using auth0WebAuth session type
 
 **Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
 **Fulfill**: <code>undefined</code>  
@@ -118,7 +118,7 @@ Gets the current user's list of favorited applications
 API Endpoint: '/applications/favorites'
 Method: GET
 
-Note: Only valid for web user's using auth0WebAuth session type
+Note: Only valid for web users using auth0WebAuth session type
 
 **Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
 **Fulfill**: <code>ContxtUserFavoriteApplication[]</code> A list of favorited applications  

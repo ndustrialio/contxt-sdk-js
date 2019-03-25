@@ -73,7 +73,7 @@ class Coordinator {
    * API Endpoint: '/applications/:applicationId/favorites'
    * Method: POST
    *
-   * Note: Only valid for web user's using auth0WebAuth session type
+   * Note: Only valid for web users using auth0WebAuth session type
    *
    * @param {number} applicationId The ID of the application
    *
@@ -107,7 +107,7 @@ class Coordinator {
    * API Endpoint: '/applications/:applicationId/favorites'
    * Method: DELETE
    *
-   * Note: Only valid for web user's using auth0WebAuth session type
+   * Note: Only valid for web users using auth0WebAuth session type
    *
    * @param {number} applicationId The ID of the application
    *
@@ -184,7 +184,7 @@ class Coordinator {
    * API Endpoint: '/applications/favorites'
    * Method: GET
    *
-   * Note: Only valid for web user's using auth0WebAuth session type
+   * Note: Only valid for web users using auth0WebAuth session type
    *
    * @returns {Promise}
    * @fulfill {ContxtUserFavoriteApplication[]} A list of favorited applications
