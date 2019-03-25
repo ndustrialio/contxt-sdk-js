@@ -34,7 +34,7 @@ API Endpoint: '/applications/:applicationId/favorites'
 Method: POST
 
 **Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
-**Fulfill**: <code>ContxtUserFavoriteApplication[]</code> Information about the contxt application favorite  
+**Fulfill**: [<code>ContxtUserFavoriteApplication</code>](./Typedefs.md#ContxtUserFavoriteApplication) Information about the contxt application favorite  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |

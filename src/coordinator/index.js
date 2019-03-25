@@ -76,7 +76,7 @@ class Coordinator {
    * @param {number} applicationId The ID of the application
    *
    * @returns {Promise}
-   * @fulfill {ContxtUserFavoriteApplication[]} Information about the contxt application favorite
+   * @fulfill {ContxtUserFavoriteApplication} Information about the contxt application favorite
    * @reject {Error}
    *
    * @example
