@@ -144,6 +144,8 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#ContxtUserFavoriteApplication">ContxtUserFavoriteApplication</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#CostCenter">CostCenter</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#CostCenterFacility">CostCenterFacility</a> : <code>Object</code></dt>

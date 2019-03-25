@@ -1,3 +1,11 @@
+## [v0.0.45](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.45) (2019-03-25)
+
+**Added**
+
+- Added `Coordinator#createFavoriteApplication` for adding an application to the current user's favorite application list
+- Added `Coordinator#deleteFavoriteApplication` for removing an application from the current user's favorite application list
+- Added `Coordinator#getFavoriteApplications` for getting the current user's favorite application list
+
 ## [v0.0.44](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.44) (2019-03-19)
 
 **Added**

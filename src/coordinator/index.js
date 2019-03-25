@@ -2,6 +2,21 @@ import EdgeNodes from './edgeNodes';
 import { toCamelCase } from '../utils/objects';
 
 /**
+ * @typedef {Object} ContxtApplication
+ * @property {string} clientId
+ * @property {string} clientSecret
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} currentVersionId
+ * @property {string} description
+ * @property {string} iconUrl
+ * @property {number} id
+ * @property {string} name
+ * @property {number} serviceId
+ * @property {string} type
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * @typedef {Object} ContxtOrganization
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id UUID formatted ID
@@ -24,18 +39,12 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtApplication
- * @property {string} clientId
- * @property {string} clientSecret
+ * @typedef {Object} ContxtUserFavoriteApplication
+ * @property {number} applicationId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} currentVersionId
- * @property {string} description
- * @property {string} iconUrl
- * @property {number} id
- * @property {string} name
- * @property {number} serviceId
- * @property {string} type
+ * @property {string} id
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {string} userId
  */
 
 /**
@@ -56,6 +65,73 @@ class Coordinator {
     this._sdk = sdk;
 
     this.edgeNodes = new EdgeNodes(sdk, request, baseUrl);
+  }
+
+  /**
+   * Adds an application to the current user's list of favorited applications
+   *
+   * API Endpoint: '/applications/:applicationId/favorites'
+   * Method: POST
+   *
+   * Note: Only valid for web users using auth0WebAuth session type
+   *
+   * @param {number} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserFavoriteApplication} Information about the contxt application favorite
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .createFavoriteApplication(25)
+   *   .then((favoriteApplication) => console.log(favoriteApplication))
+   *   .catch((err) => console.log(err));
+   */
+  createFavoriteApplication(applicationId) {
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An application ID is required for creating a favorite application'
+        )
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/applications/${applicationId}/favorites`)
+      .then((favoriteApplication) => toCamelCase(favoriteApplication));
+  }
+
+  /**
+   * Removes an application from the current user's list of favorited applications
+   *
+   * API Endpoint: '/applications/:applicationId/favorites'
+   * Method: DELETE
+   *
+   * Note: Only valid for web users using auth0WebAuth session type
+   *
+   * @param {number} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .deleteFavoriteApplication(25)
+   *   .catch((err) => console.log(err));
+   */
+  deleteFavoriteApplication(applicationId) {
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An application ID is required for deleting a favorite application'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/applications/${applicationId}/favorites`
+    );
   }
 
   /**
@@ -100,6 +176,30 @@ class Coordinator {
     return this._request
       .get(`${this._baseUrl}/organizations`)
       .then((orgs) => orgs.map((org) => toCamelCase(org)));
+  }
+
+  /**
+   * Gets the current user's list of favorited applications
+   *
+   * API Endpoint: '/applications/favorites'
+   * Method: GET
+   *
+   * Note: Only valid for web users using auth0WebAuth session type
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserFavoriteApplication[]} A list of favorited applications
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getFavoriteApplications()
+   *   .then((favoriteApplications) => console.log(favoriteApplications))
+   *   .catch((err) => console.log(err));
+   */
+  getFavoriteApplications() {
+    return this._request
+      .get(`${this._baseUrl}/applications/favorites`)
+      .then((favoriteApps) => toCamelCase(favoriteApps));
   }
 
   /**
