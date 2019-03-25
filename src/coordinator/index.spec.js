@@ -119,6 +119,43 @@ describe('Coordinator', function() {
     });
   });
 
+  describe('deleteApplicationFavorite', function() {
+    context('when the application ID is provided', function() {
+      let application;
+      let promise;
+
+      beforeEach(function() {
+        application = fixture.build('contxtApplication');
+
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        coordinator._baseUrl = expectedHost;
+
+        promise = coordinator.deleteApplicationFavorite(application.id);
+      });
+
+      it('requests to delete the application favorite', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/applications/${application.id}/favorites`
+        );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the application ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.deleteApplicationFavorite();
+
+        return expect(promise).to.be.rejectedWith(
+          'An application ID is required for deleting a favorite application'
+        );
+      });
+    });
+  });
+
   describe('getAllApplications', function() {
     let expectedApplications;
     let applicationsFromServer;

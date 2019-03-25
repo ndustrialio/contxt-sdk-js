@@ -40,7 +40,7 @@ import { toCamelCase } from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtUserFavoriteApplication
- * @property {number} applicationId
+ * @property {string} applicationId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
@@ -97,6 +97,37 @@ class Coordinator {
     return this._request
       .post(`${this._baseUrl}/applications/${applicationId}/favorites`)
       .then((applicationFavorite) => toCamelCase(applicationFavorite));
+  }
+
+  /**
+   * Deletes an application from a user's favorited applications
+   *
+   * API Endpoint: '/applications/:applicationId/favorites'
+   * Method: DELETE
+   *
+   * @param {number} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .deleteApplicationFavorite(25)
+   *   .catch((err) => console.log(err));
+   */
+  deleteApplicationFavorite(applicationId) {
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An application ID is required for deleting a favorite application'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/applications/${applicationId}/favorites`
+    );
   }
 
   /**

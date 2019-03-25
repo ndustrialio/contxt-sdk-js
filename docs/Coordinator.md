@@ -8,6 +8,7 @@ Module that provides access to information about Contxt
 * [Coordinator](#Coordinator)
     * [new Coordinator(sdk, request)](#new_Coordinator_new)
     * [.createApplicationFavorite(applicationId)](#Coordinator+createApplicationFavorite) ⇒ <code>Promise</code>
+    * [.deleteApplicationFavorite(applicationId)](#Coordinator+deleteApplicationFavorite) ⇒ <code>Promise</code>
     * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
     * [.getAllOrganizations()](#Coordinator+getAllOrganizations) ⇒ <code>Promise</code>
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
@@ -44,6 +45,28 @@ Method: POST
 contxtSdk.coordinator
   .createApplicationFavorite(25)
   .then((applicationFavorite) => console.log(applicationFavorite))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+deleteApplicationFavorite"></a>
+
+### contxtSdk.coordinator.deleteApplicationFavorite(applicationId) ⇒ <code>Promise</code>
+Deletes an application from a user's favorited applications
+
+API Endpoint: '/applications/:applicationId/favorites'
+Method: DELETE
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>number</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.coordinator
+  .deleteApplicationFavorite(25)
   .catch((err) => console.log(err));
 ```
 <a name="Coordinator+getAllApplications"></a>
