@@ -5,11 +5,11 @@ const faker = require('faker');
 
 factory
   .define('contxtUserFavoriteApplication')
-  .sequence('id')
   .option('fromServer', false)
   .attrs({
     applicationId: () => faker.random.number(),
     createdAt: () => faker.date.past().toISOString(),
+    id: () => faker.random.uuid(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => `auth0|${faker.internet.password()}`
   })

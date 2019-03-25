@@ -40,7 +40,7 @@ import { toCamelCase } from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtUserFavoriteApplication
- * @property {string} applicationId
+ * @property {number} applicationId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
@@ -68,10 +68,12 @@ class Coordinator {
   }
 
   /**
-   * Creates an application to a user's favorited applications
+   * Adds an application to the current user's list of favorited applications
    *
    * API Endpoint: '/applications/:applicationId/favorites'
    * Method: POST
+   *
+   * Note: Only valid for web user's using auth0WebAuth session type
    *
    * @param {number} applicationId The ID of the application
    *
@@ -100,10 +102,12 @@ class Coordinator {
   }
 
   /**
-   * Deletes an application from a user's favorited applications
+   * Removes an application from the current user's list of favorited applications
    *
    * API Endpoint: '/applications/:applicationId/favorites'
    * Method: DELETE
+   *
+   * Note: Only valid for web user's using auth0WebAuth session type
    *
    * @param {number} applicationId The ID of the application
    *
@@ -175,11 +179,12 @@ class Coordinator {
   }
 
   /**
-   * Gets a user's list of favorited applications
+   * Gets the current user's list of favorited applications
    *
    * API Endpoint: '/applications/favorites'
    * Method: GET
    *
+   * Note: Only valid for web user's using auth0WebAuth session type
    *
    * @returns {Promise}
    * @fulfill {ContxtUserFavoriteApplication[]} A list of favorited applications
@@ -194,9 +199,7 @@ class Coordinator {
   getFavoriteApplications() {
     return this._request
       .get(`${this._baseUrl}/applications/favorites`)
-      .then((favoriteApps) =>
-        favoriteApps.map((favoriteApp) => toCamelCase(favoriteApp))
-      );
+      .then((favoriteApps) => toCamelCase(favoriteApps));
   }
 
   /**

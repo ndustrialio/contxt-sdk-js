@@ -278,7 +278,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 
 | Name | Type | Description |
 | --- | --- | --- |
-| applicationId | <code>string</code> |  |
+| applicationId | <code>number</code> |  |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |

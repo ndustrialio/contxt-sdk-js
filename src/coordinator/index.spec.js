@@ -53,6 +53,7 @@ describe('Coordinator', function() {
 
   describe('createFavoriteApplication', function() {
     context('when the application ID is provided', function() {
+      let application;
       let expectedApplicationFavorite;
       let applicationFavoriteFromServer;
       let promise;
@@ -60,6 +61,8 @@ describe('Coordinator', function() {
       let toCamelCase;
 
       beforeEach(function() {
+        application = fixture.build('contxtApplication');
+
         expectedApplicationFavorite = fixture.build(
           'contxtUserFavoriteApplication'
         );
@@ -81,16 +84,12 @@ describe('Coordinator', function() {
 
         const coordinator = new Coordinator(baseSdk, request);
         coordinator._baseUrl = expectedHost;
-        promise = coordinator.createFavoriteApplication(
-          expectedApplicationFavorite.applicationId
-        );
+        promise = coordinator.createFavoriteApplication(application.id);
       });
 
       it('posts the new application favorite to the server', function() {
         expect(request.post).to.be.calledWith(
-          `${expectedHost}/applications/${
-            expectedApplicationFavorite.applicationId
-          }/favorites`
+          `${expectedHost}/applications/${application.id}/favorites`
         );
       });
 
@@ -293,9 +292,7 @@ describe('Coordinator', function() {
       };
       toCamelCase = this.sandbox
         .stub(objectUtils, 'toCamelCase')
-        .callsFake((app) =>
-          expectedFavoriteApplications.find(({ id }) => id === app.id)
-        );
+        .returns(expectedFavoriteApplications);
 
       const coordinator = new Coordinator(baseSdk, request);
       coordinator._baseUrl = expectedHost;
@@ -310,10 +307,7 @@ describe('Coordinator', function() {
 
     it('formats the list of favorite applications', function() {
       return promise.then(() => {
-        expect(toCamelCase).to.have.callCount(favoritesFromServer.length);
-        favoritesFromServer.forEach((app) => {
-          expect(toCamelCase).to.be.calledWith(app);
-        });
+        expect(toCamelCase).to.be.calledWith(favoritesFromServer);
       });
     });
 

@@ -28,10 +28,12 @@ Module that provides access to information about Contxt
 <a name="Coordinator+createFavoriteApplication"></a>
 
 ### contxtSdk.coordinator.createFavoriteApplication(applicationId) ⇒ <code>Promise</code>
-Creates an application to a user's favorited applications
+Adds an application to the current user's list of favorited applications
 
 API Endpoint: '/applications/:applicationId/favorites'
 Method: POST
+
+Note: Only valid for web user's using auth0WebAuth session type
 
 **Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
 **Fulfill**: [<code>ContxtUserFavoriteApplication</code>](./Typedefs.md#ContxtUserFavoriteApplication) Information about the contxt application favorite  
@@ -51,10 +53,12 @@ contxtSdk.coordinator
 <a name="Coordinator+deleteFavoriteApplication"></a>
 
 ### contxtSdk.coordinator.deleteFavoriteApplication(applicationId) ⇒ <code>Promise</code>
-Deletes an application from a user's favorited applications
+Removes an application from the current user's list of favorited applications
 
 API Endpoint: '/applications/:applicationId/favorites'
 Method: DELETE
+
+Note: Only valid for web user's using auth0WebAuth session type
 
 **Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
 **Fulfill**: <code>undefined</code>  
@@ -109,10 +113,12 @@ contxtSdk.coordinator
 <a name="Coordinator+getFavoriteApplications"></a>
 
 ### contxtSdk.coordinator.getFavoriteApplications() ⇒ <code>Promise</code>
-Gets a user's list of favorited applications
+Gets the current user's list of favorited applications
 
 API Endpoint: '/applications/favorites'
 Method: GET
+
+Note: Only valid for web user's using auth0WebAuth session type
 
 **Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
 **Fulfill**: <code>ContxtUserFavoriteApplication[]</code> A list of favorited applications  
