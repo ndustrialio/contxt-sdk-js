@@ -7,10 +7,11 @@ Module that provides access to information about Contxt
 
 * [Coordinator](#Coordinator)
     * [new Coordinator(sdk, request)](#new_Coordinator_new)
-    * [.createApplicationFavorite(applicationId)](#Coordinator+createApplicationFavorite) ⇒ <code>Promise</code>
-    * [.deleteApplicationFavorite(applicationId)](#Coordinator+deleteApplicationFavorite) ⇒ <code>Promise</code>
+    * [.createFavoriteApplication(applicationId)](#Coordinator+createFavoriteApplication) ⇒ <code>Promise</code>
+    * [.deleteFavoriteApplication(applicationId)](#Coordinator+deleteFavoriteApplication) ⇒ <code>Promise</code>
     * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
     * [.getAllOrganizations()](#Coordinator+getAllOrganizations) ⇒ <code>Promise</code>
+    * [.getFavoriteApplications()](#Coordinator+getFavoriteApplications) ⇒ <code>Promise</code>
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
@@ -24,9 +25,9 @@ Module that provides access to information about Contxt
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
-<a name="Coordinator+createApplicationFavorite"></a>
+<a name="Coordinator+createFavoriteApplication"></a>
 
-### contxtSdk.coordinator.createApplicationFavorite(applicationId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.createFavoriteApplication(applicationId) ⇒ <code>Promise</code>
 Creates an application to a user's favorited applications
 
 API Endpoint: '/applications/:applicationId/favorites'
@@ -43,13 +44,13 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.coordinator
-  .createApplicationFavorite(25)
-  .then((applicationFavorite) => console.log(applicationFavorite))
+  .createFavoriteApplication(25)
+  .then((favoriteApplication) => console.log(favoriteApplication))
   .catch((err) => console.log(err));
 ```
-<a name="Coordinator+deleteApplicationFavorite"></a>
+<a name="Coordinator+deleteFavoriteApplication"></a>
 
-### contxtSdk.coordinator.deleteApplicationFavorite(applicationId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.deleteFavoriteApplication(applicationId) ⇒ <code>Promise</code>
 Deletes an application from a user's favorited applications
 
 API Endpoint: '/applications/:applicationId/favorites'
@@ -66,7 +67,7 @@ Method: DELETE
 **Example**  
 ```js
 contxtSdk.coordinator
-  .deleteApplicationFavorite(25)
+  .deleteFavoriteApplication(25)
   .catch((err) => console.log(err));
 ```
 <a name="Coordinator+getAllApplications"></a>
@@ -103,6 +104,24 @@ Method: GET
 contxtSdk.coordinator
   .getAllOrganizations()
   .then((orgs) => console.log(orgs))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+getFavoriteApplications"></a>
+
+### contxtSdk.coordinator.getFavoriteApplications() ⇒ <code>Promise</code>
+Gets a user's list of favorited applications
+
+API Endpoint: '/applications/favorites'
+Method: GET
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>ContxtUserFavoriteApplication[]</code> A list of favorited applications  
+**Reject**: <code>Error</code>  
+**Example**  
+```js
+contxtSdk.coordinator
+  .getFavoriteApplications()
+  .then((favoriteApplications) => console.log(favoriteApplications))
   .catch((err) => console.log(err));
 ```
 <a name="Coordinator+getOrganizationById"></a>

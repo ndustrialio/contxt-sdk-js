@@ -51,7 +51,7 @@ describe('Coordinator', function() {
     });
   });
 
-  describe('createApplicationFavorite', function() {
+  describe('createFavoriteApplication', function() {
     context('when the application ID is provided', function() {
       let expectedApplicationFavorite;
       let applicationFavoriteFromServer;
@@ -81,7 +81,7 @@ describe('Coordinator', function() {
 
         const coordinator = new Coordinator(baseSdk, request);
         coordinator._baseUrl = expectedHost;
-        promise = coordinator.createApplicationFavorite(
+        promise = coordinator.createFavoriteApplication(
           expectedApplicationFavorite.applicationId
         );
       });
@@ -110,7 +110,7 @@ describe('Coordinator', function() {
     context('when the application ID is not provided', function() {
       it('throws an error', function() {
         const coordinator = new Coordinator(baseSdk, baseRequest);
-        const promise = coordinator.createApplicationFavorite();
+        const promise = coordinator.createFavoriteApplication();
 
         return expect(promise).to.be.rejectedWith(
           'An application ID is required for creating a favorite application'
@@ -119,7 +119,7 @@ describe('Coordinator', function() {
     });
   });
 
-  describe('deleteApplicationFavorite', function() {
+  describe('deleteFavoriteApplication', function() {
     context('when the application ID is provided', function() {
       let application;
       let promise;
@@ -130,7 +130,7 @@ describe('Coordinator', function() {
         const coordinator = new Coordinator(baseSdk, baseRequest);
         coordinator._baseUrl = expectedHost;
 
-        promise = coordinator.deleteApplicationFavorite(application.id);
+        promise = coordinator.deleteFavoriteApplication(application.id);
       });
 
       it('requests to delete the application favorite', function() {
@@ -147,7 +147,7 @@ describe('Coordinator', function() {
     context('when the application ID is not provided', function() {
       it('throws an error', function() {
         const coordinator = new Coordinator(baseSdk, baseRequest);
-        const promise = coordinator.deleteApplicationFavorite();
+        const promise = coordinator.deleteFavoriteApplication();
 
         return expect(promise).to.be.rejectedWith(
           'An application ID is required for deleting a favorite application'
@@ -262,6 +262,64 @@ describe('Coordinator', function() {
     it('returns a fulfilled promise with the organizations', function() {
       return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
         expectedOrganizations
+      );
+    });
+  });
+
+  describe('getFavoriteApplications', function() {
+    let expectedFavoriteApplications;
+    let favoritesFromServer;
+    let promise;
+    let request;
+    let toCamelCase;
+
+    beforeEach(function() {
+      expectedFavoriteApplications = fixture.buildList(
+        'contxtUserFavoriteApplication',
+        faker.random.number({
+          min: 1,
+          max: 10
+        })
+      );
+      favoritesFromServer = expectedFavoriteApplications.map((app) =>
+        fixture.build('contxtUserFavoriteApplication', app, {
+          fromServer: true
+        })
+      );
+
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves(favoritesFromServer)
+      };
+      toCamelCase = this.sandbox
+        .stub(objectUtils, 'toCamelCase')
+        .callsFake((app) =>
+          expectedFavoriteApplications.find(({ id }) => id === app.id)
+        );
+
+      const coordinator = new Coordinator(baseSdk, request);
+      coordinator._baseUrl = expectedHost;
+      promise = coordinator.getFavoriteApplications();
+    });
+
+    it('gets the list of favorite applications from the server', function() {
+      expect(request.get).to.be.calledWith(
+        `${expectedHost}/applications/favorites`
+      );
+    });
+
+    it('formats the list of favorite applications', function() {
+      return promise.then(() => {
+        expect(toCamelCase).to.have.callCount(favoritesFromServer.length);
+        favoritesFromServer.forEach((app) => {
+          expect(toCamelCase).to.be.calledWith(app);
+        });
+      });
+    });
+
+    it('returns a fulfilled promise with the favorite applications', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        expectedFavoriteApplications
       );
     });
   });

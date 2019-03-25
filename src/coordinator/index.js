@@ -81,11 +81,11 @@ class Coordinator {
    *
    * @example
    * contxtSdk.coordinator
-   *   .createApplicationFavorite(25)
-   *   .then((applicationFavorite) => console.log(applicationFavorite))
+   *   .createFavoriteApplication(25)
+   *   .then((favoriteApplication) => console.log(favoriteApplication))
    *   .catch((err) => console.log(err));
    */
-  createApplicationFavorite(applicationId) {
+  createFavoriteApplication(applicationId) {
     if (!applicationId) {
       return Promise.reject(
         new Error(
@@ -96,7 +96,7 @@ class Coordinator {
 
     return this._request
       .post(`${this._baseUrl}/applications/${applicationId}/favorites`)
-      .then((applicationFavorite) => toCamelCase(applicationFavorite));
+      .then((favoriteApplication) => toCamelCase(favoriteApplication));
   }
 
   /**
@@ -113,10 +113,10 @@ class Coordinator {
    *
    * @example
    * contxtSdk.coordinator
-   *   .deleteApplicationFavorite(25)
+   *   .deleteFavoriteApplication(25)
    *   .catch((err) => console.log(err));
    */
-  deleteApplicationFavorite(applicationId) {
+  deleteFavoriteApplication(applicationId) {
     if (!applicationId) {
       return Promise.reject(
         new Error(
@@ -172,6 +172,31 @@ class Coordinator {
     return this._request
       .get(`${this._baseUrl}/organizations`)
       .then((orgs) => orgs.map((org) => toCamelCase(org)));
+  }
+
+  /**
+   * Gets a user's list of favorited applications
+   *
+   * API Endpoint: '/applications/favorites'
+   * Method: GET
+   *
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserFavoriteApplication[]} A list of favorited applications
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getFavoriteApplications()
+   *   .then((favoriteApplications) => console.log(favoriteApplications))
+   *   .catch((err) => console.log(err));
+   */
+  getFavoriteApplications() {
+    return this._request
+      .get(`${this._baseUrl}/applications/favorites`)
+      .then((favoriteApps) =>
+        favoriteApps.map((favoriteApp) => toCamelCase(favoriteApp))
+      );
   }
 
   /**
