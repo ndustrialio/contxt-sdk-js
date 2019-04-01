@@ -1,3 +1,9 @@
+## [v0.0.47](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.45) (2019-04-02)
+
+**Added**
+
+- Added `Coordinator#getFeaturedApplications` for getting an organization's list of featured applications
+
 ## [v0.0.46](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.46) (2019-04-01)
 
 **Fixed**
