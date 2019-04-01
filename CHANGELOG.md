@@ -13,6 +13,12 @@
 - Added Browser versions of Message Bus related modules that indicate connecting to the Message Bus is not supported in browser environments at the moment.
 - Changed back to using UUIDv4s as IDs for Message Bus subscriptions and publications.
 
+## [v0.0.46](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.46) (2019-04-01)
+
+**Fixed**
+
+- Fixed the client ID used for seeking authorization with the message bus in staging environments.
+
 ## [v0.0.45](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.45) (2019-03-25)
 
 **Added**
