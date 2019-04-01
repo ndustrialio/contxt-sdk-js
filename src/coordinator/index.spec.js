@@ -318,6 +318,78 @@ describe('Coordinator', function() {
     });
   });
 
+  describe('getFeaturedApplications', function() {
+    context('when the organization ID is provided', function() {
+      let expectedFeaturedApplications;
+      let featuredApplicationsFromServer;
+      let expectedOrganizationId;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedOrganizationId = faker.random.uuid();
+        expectedFeaturedApplications = fixture.buildList(
+          'contxtOrganizationFeaturedApplication',
+          faker.random.number({
+            min: 1,
+            max: 10
+          }),
+          {
+            organizationId: expectedOrganizationId
+          }
+        );
+        featuredApplicationsFromServer = expectedFeaturedApplications.map(
+          (app) =>
+            fixture.build('contxtOrganizationFeaturedApplication', app, {
+              fromServer: true
+            })
+        );
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(featuredApplicationsFromServer)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedFeaturedApplications);
+
+        const coordinator = new Coordinator(baseSdk, request);
+        coordinator._baseUrl = expectedHost;
+        promise = coordinator.getFeaturedApplications(expectedOrganizationId);
+      });
+
+      it('gets the list of featured applications from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/applications/featured`
+        );
+      });
+
+      it('formats the list of featured applications', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(featuredApplicationsFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the featured applications', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedFeaturedApplications
+        );
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.getFeaturedApplications();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organization ID is required for getting featured applications for an organization'
+        );
+      });
+    });
+  });
+
   describe('getOrganizationById', function() {
     context('the organization ID is provided', function() {
       let organizationFromServerAfterFormat;
