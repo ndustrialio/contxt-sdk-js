@@ -6,7 +6,7 @@ export default {
       webSocket: 'wss://bus.ndustrial.io'
     },
     staging: {
-      clientId: 'WLlg0VHqGneLuPNMFKCoJDjUlhocDFEF',
+      clientId: '1HD1NG1VTBtkqRt2HRRj3E3hdmqmwzoz',
       host: 'https://bus-staging.ndustrial.io',
       webSocket: 'wss://bus-staging.ndustrial.io'
     }
