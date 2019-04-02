@@ -39,18 +39,6 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtOrganizationUsers
- * @property {string} email
- * @property {string} firstName
- * @property {string} id
- * @property {boolean} isActivated
- * @property {boolean} isSuperuser
- * @property {string} lastName
- * @property {string} [phoneNumber]
- * @property {string} updatedAt ISO 8601 Extended Format date/time string
- */
-
-/**
  * @typedef {Object} ContxtUserFavoriteApplication
  * @property {number} applicationId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
@@ -255,7 +243,7 @@ class Coordinator {
    * @param {string} organizationId The ID of the organization
    *
    * @returns {Promise}
-   * @fulfill {ContxtOrganizationUsers} List of users for a contxt organization
+   * @fulfill {ContxtUser[]} List of users for a contxt organization
    * @reject {Error}
    *
    * @example

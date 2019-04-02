@@ -1,3 +1,9 @@
+## [v0.0.47](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.47) (2019-04-02)
+
+**Added**
+
+- Added `Coordinator#getUsersByOrganization` for getting a list of users for an organization
+
 ## [v0.0.46](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.46) (2019-04-01)
 
 **Fixed**

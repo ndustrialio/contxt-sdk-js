@@ -402,8 +402,7 @@ describe('Coordinator', function() {
 
         expectedOrganizationUsers = fixture.buildList(
           'contxtUser',
-          faker.random.number({ min: 1, max: 10 }),
-          { id: expectedOrganizationId }
+          faker.random.number({ min: 1, max: 10 })
         );
 
         organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
