@@ -142,7 +142,7 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtOrganization">ContxtOrganization</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="./Typedefs.md#ContxtOrganizationUsers">ContxtOrganizationUsers</a> : <code>Object</code></dt>
+<dt><a href="./Typedefs.md#ContxtOrganizationFeaturedApplication">ContxtOrganizationFeaturedApplication</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
 <dd></dd>

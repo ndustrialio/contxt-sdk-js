@@ -26,6 +26,15 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtOrganizationFeaturedApplication
+ * @property {number} applicationId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} id
+ * @property {string} organizationId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * @typedef {Object} ContxtUser
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} email
@@ -200,6 +209,42 @@ class Coordinator {
     return this._request
       .get(`${this._baseUrl}/applications/favorites`)
       .then((favoriteApps) => toCamelCase(favoriteApps));
+  }
+
+  /**
+   * Gets an organization's list of featured applications
+   *
+   * API Endpoint: '/organizations/:organizationId/applications/featured'
+   * Method: GET
+   *
+   * Note: Only valid for web users using auth0WebAuth session type
+   *
+   * @param {string} organizationId The ID of the organization
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtOrganizationFeaturedApplication[]} A list of featured applications
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getFeaturedApplications('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .then((featuredApplications) => console.log(featuredApplications))
+   *   .catch((err) => console.log(err));
+   */
+  getFeaturedApplications(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organization ID is required for getting featured applications for an organization'
+        )
+      );
+    }
+
+    return this._request
+      .get(
+        `${this._baseUrl}/organizations/${organizationId}/applications/featured`
+      )
+      .then((featuredApplications) => toCamelCase(featuredApplications));
   }
 
   /**
