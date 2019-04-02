@@ -39,6 +39,18 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtOrganizationUsers
+ * @property {string} email
+ * @property {string} firstName
+ * @property {string} id
+ * @property {boolean} isActivated
+ * @property {boolean} isSuperuser
+ * @property {string} lastName
+ * @property {string} [phoneNumber]
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * @typedef {Object} ContxtUserFavoriteApplication
  * @property {number} applicationId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
@@ -243,13 +255,13 @@ class Coordinator {
    * @param {string} organizationId The ID of the organization
    *
    * @returns {Promise}
-   * @fulfill {ContxtOrganization} List of users for a contxt organization
+   * @fulfill {ContxtOrganizationUsers} List of users for a contxt organization
    * @reject {Error}
    *
    * @example
    * contxtSdk.coordinator
    *   .getUsersByOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
-   *   .then((org) => console.log(org))
+   *   .then((orgUsers) => console.log(orgUsers))
    *   .catch((err) => console.log(err));
    */
   getUsersByOrganization(organizationId) {
@@ -263,7 +275,7 @@ class Coordinator {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/users`)
-      .then((org) => toCamelCase(org));
+      .then((orgUsers) => toCamelCase(orgUsers));
   }
 
   /**
