@@ -252,6 +252,20 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | name | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtOrganizationFeaturedApplication"></a>
+
+## ContxtOrganizationFeaturedApplication : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>number</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| organizationId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtUser"></a>
 
 ## ContxtUser : <code>Object</code>

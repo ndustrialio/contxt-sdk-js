@@ -12,6 +12,7 @@ require('./audience');
 require('./channel');
 require('./contxtApplication');
 require('./contxtOrganization');
+require('./contxtOrganizationFeaturedApplication');
 require('./contxtUser');
 require('./contxtUserFavoriteApplication');
 require('./costCenter');
