@@ -391,22 +391,33 @@ describe('Coordinator', function() {
   describe('getUsersByOrganization', function() {
     context('the organization ID is provided', function() {
       let expectedOrganizationId;
-      let organizationUsers;
+      let expectedOrganizationUsers;
+      let organizationUsersFromServer;
       let promise;
       let request;
+      let toCamelCase;
 
       beforeEach(function() {
         expectedOrganizationId = faker.random.uuid();
 
-        organizationUsers = fixture.buildList(
+        expectedOrganizationUsers = fixture.buildList(
           'contxtUser',
-          faker.random.number({ min: 1, max: 10 })
+          faker.random.number({ min: 1, max: 10 }),
+          { id: expectedOrganizationId }
+        );
+
+        organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
+          fixture.build('contxtUser', user, { fromServer: true })
         );
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(organizationUsers)
+          get: this.sandbox.stub().resolves(organizationUsersFromServer)
         };
+
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedOrganizationUsers);
 
         const coordinator = new Coordinator(baseSdk, request);
         coordinator._baseUrl = expectedHost;
@@ -420,9 +431,15 @@ describe('Coordinator', function() {
         );
       });
 
+      it('formats the list of organization users', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(organizationUsersFromServer);
+        });
+      });
+
       it('returns the list of users by requested organization', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.have.length(
-          organizationUsers.length
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedOrganizationUsers
         );
       });
     });
