@@ -12,6 +12,7 @@ Module that provides access to information about Contxt
     * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
     * [.getAllOrganizations()](#Coordinator+getAllOrganizations) ⇒ <code>Promise</code>
     * [.getFavoriteApplications()](#Coordinator+getFavoriteApplications) ⇒ <code>Promise</code>
+    * [.getFeaturedApplications(organizationId)](#Coordinator+getFeaturedApplications) ⇒ <code>Promise</code>
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
@@ -128,6 +129,31 @@ Note: Only valid for web users using auth0WebAuth session type
 contxtSdk.coordinator
   .getFavoriteApplications()
   .then((favoriteApplications) => console.log(favoriteApplications))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+getFeaturedApplications"></a>
+
+### contxtSdk.coordinator.getFeaturedApplications(organizationId) ⇒ <code>Promise</code>
+Gets an organization's list of featured applications
+
+API Endpoint: '/organizations/:organizationId/applications/featured'
+Method: GET
+
+Note: Only valid for web users using auth0WebAuth session type
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>ContxtOrganizationFeaturedApplication[]</code> A list of featured applications  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+
+**Example**  
+```js
+contxtSdk.coordinator
+  .getFeaturedApplications('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .then((featuredApplications) => console.log(featuredApplications))
   .catch((err) => console.log(err));
 ```
 <a name="Coordinator+getOrganizationById"></a>
