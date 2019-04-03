@@ -280,6 +280,38 @@ class Coordinator {
   }
 
   /**
+   * Gets a list of users for a contxt organization
+   *
+   * API Endpoint: '/organizations/:organizationId/users'
+   * Method: GET
+   *
+   * @param {string} organizationId The ID of the organization
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUser[]} List of users for a contxt organization
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getUsersByOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .then((orgUsers) => console.log(orgUsers))
+   *   .catch((err) => console.log(err));
+   */
+  getUsersByOrganization(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organization ID is required for getting a list of users for an organization'
+        )
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/organizations/${organizationId}/users`)
+      .then((orgUsers) => toCamelCase(orgUsers));
+  }
+
+  /**
    * Gets information about a contxt user
    *
    * API Endpoint: '/users/:userId'

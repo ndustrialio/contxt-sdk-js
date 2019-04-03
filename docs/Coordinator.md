@@ -14,6 +14,7 @@ Module that provides access to information about Contxt
     * [.getFavoriteApplications()](#Coordinator+getFavoriteApplications) ⇒ <code>Promise</code>
     * [.getFeaturedApplications(organizationId)](#Coordinator+getFeaturedApplications) ⇒ <code>Promise</code>
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
+    * [.getUsersByOrganization(organizationId)](#Coordinator+getUsersByOrganization) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
 
@@ -177,6 +178,29 @@ Method: GET
 contxtSdk.coordinator
   .getOrganizationById('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((org) => console.log(org))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+getUsersByOrganization"></a>
+
+### contxtSdk.coordinator.getUsersByOrganization(organizationId) ⇒ <code>Promise</code>
+Gets a list of users for a contxt organization
+
+API Endpoint: '/organizations/:organizationId/users'
+Method: GET
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>ContxtUser[]</code> List of users for a contxt organization  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+
+**Example**  
+```js
+contxtSdk.coordinator
+  .getUsersByOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .then((orgUsers) => console.log(orgUsers))
   .catch((err) => console.log(err));
 ```
 <a name="Coordinator+getUser"></a>

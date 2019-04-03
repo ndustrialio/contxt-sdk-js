@@ -460,6 +460,73 @@ describe('Coordinator', function() {
     });
   });
 
+  describe('getUsersByOrganization', function() {
+    context('the organization ID is provided', function() {
+      let expectedOrganizationId;
+      let expectedOrganizationUsers;
+      let organizationUsersFromServer;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedOrganizationId = faker.random.uuid();
+
+        expectedOrganizationUsers = fixture.buildList(
+          'contxtUser',
+          faker.random.number({ min: 1, max: 10 })
+        );
+
+        organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
+          fixture.build('contxtUser', user, { fromServer: true })
+        );
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(organizationUsersFromServer)
+        };
+
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedOrganizationUsers);
+
+        const coordinator = new Coordinator(baseSdk, request);
+        coordinator._baseUrl = expectedHost;
+
+        promise = coordinator.getUsersByOrganization(expectedOrganizationId);
+      });
+
+      it('gets the user list from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/users`
+        );
+      });
+
+      it('formats the list of organization users', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(organizationUsersFromServer);
+        });
+      });
+
+      it('returns the list of users by requested organization', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedOrganizationUsers
+        );
+      });
+    });
+
+    context('the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.getOrganizationById();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organization ID is required for getting information about an organization'
+        );
+      });
+    });
+  });
+
   describe('getUser', function() {
     context('the user ID is provided', function() {
       let userFromServerAfterFormat;
