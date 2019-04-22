@@ -489,6 +489,46 @@ class Coordinator {
       )
       .then((response) => toCamelCase(response));
   }
+
+  /**
+   * Removes a user from an organization
+   *
+   * API Endpoint: '/organizations/:organizationId/users/:userId'
+   * Method: DELETE
+   *
+   * @param {string} organizationId The ID of the organization
+   * @param {string} userId The ID of the user
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .removeUserFromOrganization('ed2e8e24-79ef-4404-bf5f-995ef31b2298', '4a577e87-7437-4342-b183-00c18ec26d52')
+   *   .catch((err) => console.log(err));
+   */
+  removeUserFromOrganization(organizationId, userId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organization ID is required for removing a user from an organization'
+        )
+      );
+    }
+
+    if (!userId) {
+      return Promise.reject(
+        new Error(
+          'A user ID is required for removing a user from an organization'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/organizations/${organizationId}/users/${userId}`
+    );
+  }
 }
 
 export default Coordinator;

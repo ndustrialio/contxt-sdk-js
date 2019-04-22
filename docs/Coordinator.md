@@ -19,6 +19,7 @@ Module that provides access to information about Contxt
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
     * [.inviteNewUserToOrganization(organizationId, user)](#Coordinator+inviteNewUserToOrganization) ⇒ <code>Promise</code>
+    * [.removeUserFromOrganization(organizationId, userId)](#Coordinator+removeUserFromOrganization) ⇒ <code>Promise</code>
 
 <a name="new_Coordinator_new"></a>
 
@@ -321,5 +322,28 @@ contxtSdk.coordinator.
     redirectUrl: 'https://contxt.ndustrial.io/activate'
   })
   .then((newUser) => console.log(newUser))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+removeUserFromOrganization"></a>
+
+### contxtSdk.coordinator.removeUserFromOrganization(organizationId, userId) ⇒ <code>Promise</code>
+Removes a user from an organization
+
+API Endpoint: '/organizations/:organizationId/users/:userId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| userId | <code>string</code> | The ID of the user |
+
+**Example**  
+```js
+contxtSdk.coordinator
+  .removeUserFromOrganization('ed2e8e24-79ef-4404-bf5f-995ef31b2298', '4a577e87-7437-4342-b183-00c18ec26d52')
   .catch((err) => console.log(err));
 ```

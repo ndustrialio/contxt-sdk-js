@@ -859,4 +859,63 @@ describe('Coordinator', function() {
       });
     });
   });
+
+  describe('removeUserFromOrganization', function() {
+    context('when all required parameters are provided', function() {
+      let organization;
+      let user;
+      let promise;
+
+      beforeEach(function() {
+        organization = fixture.build('contxtOrganization');
+        user = fixture.build('contxtUser');
+
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        coordinator._baseUrl = expectedHost;
+
+        promise = coordinator.removeUserFromOrganization(
+          organization.id,
+          user.id
+        );
+      });
+
+      it('sends a request to remove the user from the organization', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/organizations/${organization.id}/users/${user.id}`
+        );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.removeUserFromOrganization(
+          null,
+          faker.random.uuid()
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          'An organization ID is required for removing a user from an organization'
+        );
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.removeUserFromOrganization(
+          faker.random.uuid(),
+          null
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for removing a user from an organization'
+        );
+      });
+    });
+  });
 });
