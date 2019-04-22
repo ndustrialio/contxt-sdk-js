@@ -1,5 +1,5 @@
 import EdgeNodes from './edgeNodes';
-import { toCamelCase } from '../utils/objects';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtApplication
@@ -374,6 +374,67 @@ class Coordinator {
     // NOTE: This response is not run through the `toCamelCase` method because
     // it could errantly remove underscores from service IDs.
     return this._request.get(`${this._baseUrl}/users/${userId}/permissions`);
+  }
+
+  /**
+   * Creates a new contxt user, adds them to an organization, and
+   * sends them an email invite link to do final account setup.
+   *
+   * API Endpoint: '/organizations/:organizationId/users'
+   * Method: POST
+   *
+   * Note: Only valid for web users using auth0WebAuth session type
+   *
+   * @param {string} organizationId The ID of the organization
+   * @param {Object} user
+   * @param {string} user.email The email address of the new user
+   * @param {string} user.firstName The first name of the new user
+   * @param {string} user.lastName The last name of the new user
+   * @param {string} user.redirectUrl The url that the user will be redirected
+   * to after using the invite email link. Typically this is an /activate
+   * endpoint that accepts url query params userToken and userId and uses them
+   * to do final activation on the user's account.
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUser} The new user
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.
+   *   .inviteNewUserToOrganization('fdf01507-a26a-4dfe-89a2-bc91861169b8', {
+   *     email: 'bob.sagat56@gmail.com',
+   *     firstName: 'Bob',
+   *     lastName: 'Sagat',
+   *     redirectUrl: 'https://contxt.ndustrial.io/activate'
+   *   })
+   *   .then((newUser) => console.log(newUser))
+   *   .catch((err) => console.log(err));
+   */
+  inviteNewUserToOrganization(organizationId, user = {}) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error('An organization ID is required for inviting a new user')
+      );
+    }
+
+    const requiredFields = ['email', 'firstName', 'lastName', 'redirectUrl'];
+
+    for (let i = 0; requiredFields.length > i; i++) {
+      const field = requiredFields[i];
+
+      if (!user[field]) {
+        return Promise.reject(
+          new Error(`A ${field} is required to create a new user.`)
+        );
+      }
+    }
+
+    return this._request
+      .post(
+        `${this._baseUrl}/organizations/${organizationId}/users`,
+        toSnakeCase(user)
+      )
+      .then((response) => toCamelCase(response));
   }
 }
 

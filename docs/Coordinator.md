@@ -17,6 +17,7 @@ Module that provides access to information about Contxt
     * [.getUsersByOrganization(organizationId)](#Coordinator+getUsersByOrganization) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
+    * [.inviteNewUserToOrganization(organizationId, user)](#Coordinator+inviteNewUserToOrganization) ⇒ <code>Promise</code>
 
 <a name="new_Coordinator_new"></a>
 
@@ -250,5 +251,41 @@ Method: GET
 contxtSdk.coordinator
   .getUserPermissionsMap('auth0|12345')
   .then((permissionsMap) => console.log(permissionsMap))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+inviteNewUserToOrganization"></a>
+
+### contxtSdk.coordinator.inviteNewUserToOrganization(organizationId, user) ⇒ <code>Promise</code>
+Creates a new contxt user, adds them to an organization, and
+sends them an email invite link to do final account setup.
+
+API Endpoint: '/organizations/:organizationId/users'
+Method: POST
+
+Note: Only valid for web users using auth0WebAuth session type
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: [<code>ContxtUser</code>](./Typedefs.md#ContxtUser) The new user  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| user | <code>Object</code> |  |
+| user.email | <code>string</code> | The email address of the new user |
+| user.firstName | <code>string</code> | The first name of the new user |
+| user.lastName | <code>string</code> | The last name of the new user |
+| user.redirectUrl | <code>string</code> | The url that the user will be redirected to after using the invite email link. Typically this is an /activate endpoint that accepts url query params userToken and userId and uses them to do final activation on the user's account. |
+
+**Example**  
+```js
+contxtSdk.coordinator.
+  .inviteNewUserToOrganization('fdf01507-a26a-4dfe-89a2-bc91861169b8', {
+    email: 'bob.sagat56@gmail.com',
+    firstName: 'Bob',
+    lastName: 'Sagat',
+    redirectUrl: 'https://contxt.ndustrial.io/activate'
+  })
+  .then((newUser) => console.log(newUser))
   .catch((err) => console.log(err));
 ```

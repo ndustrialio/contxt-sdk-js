@@ -1,3 +1,5 @@
+import omit from 'lodash.omit';
+
 import Coordinator from './index';
 import * as objectUtils from '../utils/objects';
 
@@ -643,6 +645,124 @@ describe('Coordinator', function() {
         return expect(promise).to.be.rejectedWith(
           "A user ID is required for getting information about a user's permissions map"
         );
+      });
+    });
+  });
+
+  describe('inviteNewUserToOrganization', function() {
+    context('when all the required parameters are provided', function() {
+      let organization;
+      let newUserPayload;
+      let newUserPayloadToServer;
+      let expectedNewUser;
+      let newUserFromServer;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+
+      beforeEach(function() {
+        organization = fixture.build('contxtOrganization');
+
+        expectedNewUser = fixture.build('contxtUser');
+        newUserFromServer = fixture.build('contxtUser', expectedNewUser, {
+          fromServer: true
+        });
+
+        newUserPayload = {
+          email: expectedNewUser.email,
+          firstName: expectedNewUser.firstName,
+          lastName: expectedNewUser.lastName,
+          redirectUrl: faker.internet.url()
+        };
+
+        newUserPayloadToServer = {
+          email: newUserPayload.email,
+          first_name: newUserPayload.firstName,
+          last_name: newUserPayload.lastName,
+          redirect_url: newUserPayload.redirectUrl
+        };
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(newUserFromServer)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .callsFake(() => expectedNewUser);
+
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .callsFake(() => newUserPayloadToServer);
+
+        const coordinator = new Coordinator(baseSdk, request);
+        coordinator._baseUrl = expectedHost;
+
+        promise = coordinator.inviteNewUserToOrganization(
+          organization.id,
+          newUserPayload
+        );
+      });
+
+      it('formats the user payload', function() {
+        return promise.then(() => {
+          expect(toSnakeCase).to.be.calledWith(newUserPayload);
+        });
+      });
+
+      it('posts the new user to the server', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/organizations/${organization.id}/users`,
+          newUserPayloadToServer
+        );
+      });
+
+      it('formats the user response', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(newUserFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the application favorite', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedNewUser
+        );
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.inviteNewUserToOrganization();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organization ID is required for inviting a new user'
+        );
+      });
+    });
+
+    context('when there is missing required user information', function() {
+      const requiredFields = ['email', 'firstName', 'lastName', 'redirectUrl'];
+
+      requiredFields.forEach((field) => {
+        it(`it throws an error when ${field} is missing`, function() {
+          const newUserPayload = {
+            email: faker.internet.email(),
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+            redirectUrl: faker.internet.url()
+          };
+
+          const coordinator = new Coordinator(baseSdk, baseRequest);
+          const promise = coordinator.inviteNewUserToOrganization(
+            faker.random.uuid(),
+            omit(newUserPayload, [field])
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            `A ${field} is required to create a new user.`
+          );
+        });
       });
     });
   });
