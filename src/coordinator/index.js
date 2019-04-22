@@ -77,6 +77,59 @@ class Coordinator {
   }
 
   /**
+   * Activates a new user
+   *
+   * API Endpoint: '/users/:userId/users'
+   * Method: POST
+   *
+   * Note: Only valid for web users using auth0WebAuth session type
+   *
+   * @param {string} userId The ID of the user to activate
+   * @param {Object} user
+   * @param {string} user.email The email address of the user
+   * @param {string} user.password The password to set for the user
+   * @param {string} user.userToken The JWT token provided by the invite link
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.
+   *   .activateNewUser('7bb79bdf-7492-45c2-8640-2dde63535827', {
+   *     email: 'bob.sagat56@gmail.com',
+   *     password: 'ds32jX32jaMM1Nr',
+   *     userToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+   *   })
+   *   .then(() => console.log("User Activated"))
+   *   .catch((err) => console.log(err));
+   */
+  activateNewUser(userId, user = {}) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for activating a user')
+      );
+    }
+
+    const requiredFields = ['email', 'password', 'userToken'];
+
+    for (let i = 0; requiredFields.length > i; i++) {
+      const field = requiredFields[i];
+
+      if (!user[field]) {
+        return Promise.reject(
+          new Error(`A ${field} is required to activate a user.`)
+        );
+      }
+    }
+
+    return this._request.post(
+      `${this._baseUrl}/users/${userId}/activate`,
+      toSnakeCase(user)
+    );
+  }
+
+  /**
    * Adds an application to the current user's list of favorited applications
    *
    * API Endpoint: '/applications/:applicationId/favorites'

@@ -53,6 +53,99 @@ describe('Coordinator', function() {
     });
   });
 
+  describe('activateNewUser', function() {
+    context('when all the required parameters are provided', function() {
+      let user;
+      let userActivationPayload;
+      let userActivationPayloadToServer;
+      let promise;
+      let request;
+      let toSnakeCase;
+
+      beforeEach(function() {
+        user = fixture.build('contxtUser');
+
+        userActivationPayload = {
+          email: user.email,
+          password: faker.internet.password(),
+          userToken: faker.random.uuid()
+        };
+
+        userActivationPayloadToServer = {
+          email: userActivationPayload.email,
+          password: userActivationPayload.password,
+          user_token: userActivationPayload.userToken
+        };
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves()
+        };
+
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .callsFake(() => userActivationPayloadToServer);
+
+        const coordinator = new Coordinator(baseSdk, request);
+        coordinator._baseUrl = expectedHost;
+
+        promise = coordinator.activateNewUser(user.id, userActivationPayload);
+      });
+
+      it('formats the user payload', function() {
+        return promise.then(() => {
+          expect(toSnakeCase).to.be.calledWith(userActivationPayload);
+        });
+      });
+
+      it('posts the new user to the server', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/activate`,
+          userActivationPayloadToServer
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.activateNewUser();
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for activating a user'
+        );
+      });
+    });
+
+    context('when there is missing required user information', function() {
+      const requiredFields = ['email', 'password', 'userToken'];
+
+      requiredFields.forEach((field) => {
+        it(`it throws an error when ${field} is missing`, function() {
+          const payload = {
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+            userToken: faker.random.uuid()
+          };
+
+          const coordinator = new Coordinator(baseSdk, baseRequest);
+          const promise = coordinator.activateNewUser(
+            faker.random.uuid(),
+            omit(payload, [field])
+          );
+
+          return expect(promise).to.be.rejectedWith(
+            `A ${field} is required to activate a user.`
+          );
+        });
+      });
+    });
+  });
+
   describe('createFavoriteApplication', function() {
     context('when the application ID is provided', function() {
       let application;
@@ -723,7 +816,7 @@ describe('Coordinator', function() {
         });
       });
 
-      it('returns a fulfilled promise with the application favorite', function() {
+      it('returns a fulfilled promise with the new user', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
           expectedNewUser
         );

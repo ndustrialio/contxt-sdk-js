@@ -7,6 +7,7 @@ Module that provides access to information about Contxt
 
 * [Coordinator](#Coordinator)
     * [new Coordinator(sdk, request)](#new_Coordinator_new)
+    * [.activateNewUser(userId, user)](#Coordinator+activateNewUser) ⇒ <code>Promise</code>
     * [.createFavoriteApplication(applicationId)](#Coordinator+createFavoriteApplication) ⇒ <code>Promise</code>
     * [.deleteFavoriteApplication(applicationId)](#Coordinator+deleteFavoriteApplication) ⇒ <code>Promise</code>
     * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
@@ -28,6 +29,39 @@ Module that provides access to information about Contxt
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Coordinator+activateNewUser"></a>
+
+### contxtSdk.coordinator.activateNewUser(userId, user) ⇒ <code>Promise</code>
+Activates a new user
+
+API Endpoint: '/users/:userId/users'
+Method: POST
+
+Note: Only valid for web users using auth0WebAuth session type
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user to activate |
+| user | <code>Object</code> |  |
+| user.email | <code>string</code> | The email address of the user |
+| user.password | <code>string</code> | The password to set for the user |
+| user.userToken | <code>string</code> | The JWT token provided by the invite link |
+
+**Example**  
+```js
+contxtSdk.coordinator.
+  .activateNewUser('7bb79bdf-7492-45c2-8640-2dde63535827', {
+    email: 'bob.sagat56@gmail.com',
+    password: 'ds32jX32jaMM1Nr',
+    userToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+  })
+  .then(() => console.log("User Activated"))
+  .catch((err) => console.log(err));
+```
 <a name="Coordinator+createFavoriteApplication"></a>
 
 ### contxtSdk.coordinator.createFavoriteApplication(applicationId) ⇒ <code>Promise</code>
