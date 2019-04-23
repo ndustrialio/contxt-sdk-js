@@ -79,7 +79,7 @@ class Coordinator {
   /**
    * Activates a new user
    *
-   * API Endpoint: '/users/:userId/users'
+   * API Endpoint: '/users/:userId/activate'
    * Method: POST
    *
    * Note: Only valid for web users using auth0WebAuth session type
