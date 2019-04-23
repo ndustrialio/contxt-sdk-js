@@ -13,6 +13,14 @@
 - Added Browser versions of Message Bus related modules that indicate connecting to the Message Bus is not supported in browser environments at the moment.
 - Changed back to using UUIDv4s as IDs for Message Bus subscriptions and publications.
 
+## [v0.0.49](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.49) (2019-04-22)
+
+**Added**
+
+- Added `Coordinator#inviteNewUserToOrganization` for inviting new users to organizations
+- Added `Coordinator#activateNewUser` for activating a user account with an initial password
+- Added `Coordinator#removeUserFromOrganization` for removing a user from an organization
+
 ## [v0.0.48](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.48) (2019-04-02)
 
 **Added**

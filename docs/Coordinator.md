@@ -7,6 +7,7 @@ Module that provides access to information about Contxt
 
 * [Coordinator](#Coordinator)
     * [new Coordinator(sdk, request)](#new_Coordinator_new)
+    * [.activateNewUser(userId, user)](#Coordinator+activateNewUser) ⇒ <code>Promise</code>
     * [.createFavoriteApplication(applicationId)](#Coordinator+createFavoriteApplication) ⇒ <code>Promise</code>
     * [.deleteFavoriteApplication(applicationId)](#Coordinator+deleteFavoriteApplication) ⇒ <code>Promise</code>
     * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
@@ -17,6 +18,8 @@ Module that provides access to information about Contxt
     * [.getUsersByOrganization(organizationId)](#Coordinator+getUsersByOrganization) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
+    * [.inviteNewUserToOrganization(organizationId, user)](#Coordinator+inviteNewUserToOrganization) ⇒ <code>Promise</code>
+    * [.removeUserFromOrganization(organizationId, userId)](#Coordinator+removeUserFromOrganization) ⇒ <code>Promise</code>
 
 <a name="new_Coordinator_new"></a>
 
@@ -27,6 +30,39 @@ Module that provides access to information about Contxt
 | sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 
+<a name="Coordinator+activateNewUser"></a>
+
+### contxtSdk.coordinator.activateNewUser(userId, user) ⇒ <code>Promise</code>
+Activates a new user
+
+API Endpoint: '/users/:userId/activate'
+Method: POST
+
+Note: Only valid for web users using auth0WebAuth session type
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user to activate |
+| user | <code>Object</code> |  |
+| user.email | <code>string</code> | The email address of the user |
+| user.password | <code>string</code> | The password to set for the user |
+| user.userToken | <code>string</code> | The JWT token provided by the invite link |
+
+**Example**  
+```js
+contxtSdk.coordinator.
+  .activateNewUser('7bb79bdf-7492-45c2-8640-2dde63535827', {
+    email: 'bob.sagat56@gmail.com',
+    password: 'ds32jX32jaMM1Nr',
+    userToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+  })
+  .then(() => console.log("User Activated"))
+  .catch((err) => console.log(err));
+```
 <a name="Coordinator+createFavoriteApplication"></a>
 
 ### contxtSdk.coordinator.createFavoriteApplication(applicationId) ⇒ <code>Promise</code>
@@ -250,5 +286,64 @@ Method: GET
 contxtSdk.coordinator
   .getUserPermissionsMap('auth0|12345')
   .then((permissionsMap) => console.log(permissionsMap))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+inviteNewUserToOrganization"></a>
+
+### contxtSdk.coordinator.inviteNewUserToOrganization(organizationId, user) ⇒ <code>Promise</code>
+Creates a new contxt user, adds them to an organization, and
+sends them an email invite link to do final account setup.
+
+API Endpoint: '/organizations/:organizationId/users'
+Method: POST
+
+Note: Only valid for web users using auth0WebAuth session type
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: [<code>ContxtUser</code>](./Typedefs.md#ContxtUser) The new user  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| user | <code>Object</code> |  |
+| user.email | <code>string</code> | The email address of the new user |
+| user.firstName | <code>string</code> | The first name of the new user |
+| user.lastName | <code>string</code> | The last name of the new user |
+| user.redirectUrl | <code>string</code> | The url that the user will be redirected to after using the invite email link. Typically this is an /activate endpoint that accepts url query params userToken and userId and uses them to do final activation on the user's account. |
+
+**Example**  
+```js
+contxtSdk.coordinator.
+  .inviteNewUserToOrganization('fdf01507-a26a-4dfe-89a2-bc91861169b8', {
+    email: 'bob.sagat56@gmail.com',
+    firstName: 'Bob',
+    lastName: 'Sagat',
+    redirectUrl: 'https://contxt.ndustrial.io/activate'
+  })
+  .then((newUser) => console.log(newUser))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+removeUserFromOrganization"></a>
+
+### contxtSdk.coordinator.removeUserFromOrganization(organizationId, userId) ⇒ <code>Promise</code>
+Removes a user from an organization
+
+API Endpoint: '/organizations/:organizationId/users/:userId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| userId | <code>string</code> | The ID of the user |
+
+**Example**  
+```js
+contxtSdk.coordinator
+  .removeUserFromOrganization('ed2e8e24-79ef-4404-bf5f-995ef31b2298', '4a577e87-7437-4342-b183-00c18ec26d52')
   .catch((err) => console.log(err));
 ```
