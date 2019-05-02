@@ -77,6 +77,7 @@ class Auth0WebAuth {
     this._onRedirect =
       this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
     this._sessionInfo = this._getStoredSession();
+    this._tokenPromises = {};
 
     const currentUrl = new URL(window.location);
     currentUrl.set('pathname', this._sdk.config.auth.authorizationPath);
@@ -89,6 +90,10 @@ class Auth0WebAuth {
       responseType: 'token',
       scope: 'profile openid'
     });
+  }
+
+  getCurrentApiToken(audienceName) {
+    return this._getNewApiToken(audienceName);
   }
 
   handleAuthentication() {
@@ -130,6 +135,33 @@ class Auth0WebAuth {
 
   _defaultOnRedirect(pathname) {
     window.location = pathname;
+  }
+
+  _getNewApiToken(audienceName) {
+    const audience = this._sdk.config.audiences[audienceName];
+
+    if (!(audience && audience.clientId)) {
+      return Promise.reject(new Error('No valid audience found'));
+    }
+
+    if (!this._tokenPromises[audienceName]) {
+      this._tokenPromises[audienceName] = axios
+        .post(
+          `${this._sdk.config.audiences.contxtAuth.host}/v1/token`,
+          {
+            audiences: [audience.clientId],
+            nonce: 'nonce'
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this._sessionInfo.accessToken}`
+            }
+          }
+        )
+        .then(({ data }) => data.access_token);
+    }
+
+    return this._tokenPromises[audienceName];
   }
 
   _getRedirectPathname() {
