@@ -78,6 +78,8 @@ class Auth0WebAuth {
       this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
     this._sessionInfo = this._getStoredSession();
     this._tokenPromises = {};
+    this._tokenRenewalTimeout = null;
+    this._updatedSessionPromise = null;
 
     const currentUrl = new URL(window.location);
     currentUrl.set('pathname', this._sdk.config.auth.authorizationPath);
@@ -90,6 +92,10 @@ class Auth0WebAuth {
       responseType: 'token',
       scope: 'profile openid'
     });
+
+    if (this.isAuthenticated()) {
+      this._scheduleSessionRefresh();
+    }
   }
 
   getCurrentApiToken(audienceName) {
@@ -104,9 +110,9 @@ class Auth0WebAuth {
     return this._parseHash()
       .then((authResult) => {
         this._storeSession(authResult);
+        this._scheduleSessionRefresh();
 
         const redirectPathname = this._getRedirectPathname();
-
         this._onRedirect(redirectPathname);
       })
       .catch((err) => {
@@ -120,7 +126,9 @@ class Auth0WebAuth {
 
   isAuthenticated() {
     return (
-      this._sessionInfo.accessToken && this._sessionInfo.expiresAt > Date.now()
+      this._sessionInfo &&
+      this._sessionInfo.accessToken &&
+      this._sessionInfo.expiresAt > Date.now()
     );
   }
 
@@ -130,11 +138,29 @@ class Auth0WebAuth {
 
   logOut() {
     this._sessionInfo = {};
+    this._updatedSessionPromise = null;
+    this._tokenPromises = {};
 
     localStorage.removeItem('access_token');
     localStorage.removeItem('expires_at');
 
+    clearTimeout(this._tokenRenewalTimeout);
+
     this._auth0.logout({ returnTo: window.location.origin });
+  }
+
+  _checkSession(options = {}) {
+    return new Promise((resolve, reject) => {
+      this._auth0.checkSession(options, (err, response) => {
+        if (err || !response) {
+          return reject(
+            err || new Error('No valid tokens returned from auth0')
+          );
+        }
+
+        return resolve(response);
+      });
+    });
   }
 
   _defaultOnRedirect(pathname) {
@@ -182,6 +208,23 @@ class Auth0WebAuth {
     };
   }
 
+  _getUpdatedSession() {
+    if (!this._updatedSessionPromise) {
+      this._updatedSessionPromise = this._checkSession().then((sessionInfo) => {
+        this._storeSession(sessionInfo);
+
+        this._updatedSessionPromise = null;
+        this._tokenPromises = {};
+
+        this._scheduleSessionRefresh();
+
+        return sessionInfo;
+      });
+    }
+
+    return this._updatedSessionPromise;
+  }
+
   _parseHash() {
     return new Promise((resolve, reject) => {
       this._auth0.parseHash((err, authResult) => {
@@ -194,6 +237,22 @@ class Auth0WebAuth {
         return resolve(authResult);
       });
     });
+  }
+
+  _scheduleSessionRefresh() {
+    const tokenExpiresAtBufferMs =
+      this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
+    const bufferedExpiresAt =
+      this._sessionInfo.expiresAt - tokenExpiresAtBufferMs;
+    const delay = bufferedExpiresAt - Date.now();
+
+    if (this._sessionRenewalTimeout) {
+      clearTimeout(this._sessionRenewalTimeout);
+    }
+
+    this._sessionRenewalTimeout = setTimeout(() => {
+      this._getUpdatedSession();
+    }, delay);
   }
 
   _storeSession({ accessToken, expiresIn }) {
