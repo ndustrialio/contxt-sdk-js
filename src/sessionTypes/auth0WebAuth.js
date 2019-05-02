@@ -93,6 +93,10 @@ class Auth0WebAuth {
   }
 
   getCurrentApiToken(audienceName) {
+    if (!this.isAuthenticated()) {
+      return Promise.reject('User is not authenticated');
+    }
+
     return this._getNewApiToken(audienceName);
   }
 
