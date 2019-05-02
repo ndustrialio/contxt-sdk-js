@@ -76,6 +76,7 @@ class Auth0WebAuth {
 
     this._onRedirect =
       this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
+    this._sessionInfo = this._getStoredSession();
 
     const currentUrl = new URL(window.location);
     currentUrl.set('pathname', this._sdk.config.auth.authorizationPath);
@@ -90,12 +91,83 @@ class Auth0WebAuth {
     });
   }
 
+  handleAuthentication() {
+    return this._parseHash()
+      .then((authResult) => {
+        this._storeSession(authResult);
+
+        const redirectPathname = this._getRedirectPathname();
+
+        this._onRedirect(redirectPathname);
+      })
+      .catch((err) => {
+        console.log(`Error while handling authentication: ${err}`);
+
+        this._onRedirect('/');
+
+        throw err;
+      });
+  }
+
+  isAuthenticated() {
+    return (
+      this._sessionInfo.accessToken && this._sessionInfo.expiresAt > Date.now()
+    );
+  }
+
   logIn() {
     this._auth0.authorize();
   }
 
+  logOut() {
+    this._sessionInfo = {};
+
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('expires_at');
+
+    this._auth0.logout({ returnTo: window.location.origin });
+  }
+
   _defaultOnRedirect(pathname) {
     window.location = pathname;
+  }
+
+  _getRedirectPathname() {
+    const redirectPathname = localStorage.getItem('redirect_pathname');
+    localStorage.removeItem('redirect_pathname');
+
+    return redirectPathname || '/';
+  }
+
+  _getStoredSession() {
+    return {
+      accessToken: localStorage.getItem('access_token'),
+      expiresAt: JSON.parse(localStorage.getItem('expires_at'))
+    };
+  }
+
+  _parseHash() {
+    return new Promise((resolve, reject) => {
+      this._auth0.parseHash((err, authResult) => {
+        if (err || !authResult) {
+          return reject(
+            err || new Error('No valid tokens returned from auth0')
+          );
+        }
+
+        return resolve(authResult);
+      });
+    });
+  }
+
+  _storeSession({ accessToken, expiresIn }) {
+    const expiresAt = expiresIn * 1000 + Date.now();
+
+    localStorage.setItem('access_token', accessToken);
+    localStorage.setItem('expires_at', JSON.stringify(expiresAt));
+
+    this._sessionInfo.accessToken = accessToken;
+    this._sessionInfo.expiresAt = expiresAt;
   }
 }
 
