@@ -12,6 +12,7 @@
 
 - Added Browser versions of Message Bus related modules that indicate connecting to the Message Bus is not supported in browser environments at the moment.
 - Changed back to using UUIDv4s as IDs for Message Bus subscriptions and publications.
+- Refactored Auth0WebAuth to better handle access tokens provided by contxt-auth. All changes were internal and end users should not see a difference.
 
 ## [v0.0.49](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.49) (2019-04-22)
 
