@@ -77,9 +77,8 @@ class Auth0WebAuth {
     this._onRedirect =
       this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
     this._sessionInfo = this._getStoredSession();
+    this._sessionRenewalTimeout = null;
     this._tokenPromises = {};
-    this._tokenRenewalTimeout = null;
-    this._updatedSessionPromise = null;
 
     const currentUrl = new URL(window.location);
     currentUrl.set('pathname', this._sdk.config.auth.authorizationPath);
@@ -100,74 +99,9 @@ class Auth0WebAuth {
 
   getCurrentApiToken(audienceName) {
     if (!this.isAuthenticated()) {
-      return Promise.reject('User is not authenticated');
+      return Promise.reject(this._generateUnauthorizedError());
     }
 
-    return this._getNewApiToken(audienceName);
-  }
-
-  handleAuthentication() {
-    return this._parseHash()
-      .then((authResult) => {
-        this._storeSession(authResult);
-        this._scheduleSessionRefresh();
-
-        const redirectPathname = this._getRedirectPathname();
-        this._onRedirect(redirectPathname);
-      })
-      .catch((err) => {
-        console.log(`Error while handling authentication: ${err}`);
-
-        this._onRedirect('/');
-
-        throw err;
-      });
-  }
-
-  isAuthenticated() {
-    return (
-      this._sessionInfo &&
-      this._sessionInfo.accessToken &&
-      this._sessionInfo.expiresAt > Date.now()
-    );
-  }
-
-  logIn() {
-    this._auth0.authorize();
-  }
-
-  logOut() {
-    this._sessionInfo = {};
-    this._updatedSessionPromise = null;
-    this._tokenPromises = {};
-
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('expires_at');
-
-    clearTimeout(this._tokenRenewalTimeout);
-
-    this._auth0.logout({ returnTo: window.location.origin });
-  }
-
-  _checkSession(options = {}) {
-    return new Promise((resolve, reject) => {
-      this._auth0.checkSession(options, (err, response) => {
-        if (err || !response) {
-          return reject(
-            err || new Error('No valid tokens returned from auth0')
-          );
-        }
-
-        return resolve(response);
-      });
-    });
-  }
-
-  _defaultOnRedirect(pathname) {
-    window.location = pathname;
-  }
-
-  _getNewApiToken(audienceName) {
     const audience = this._sdk.config.audiences[audienceName];
 
     if (!(audience && audience.clientId)) {
@@ -194,6 +128,87 @@ class Auth0WebAuth {
     return this._tokenPromises[audienceName];
   }
 
+  getProfile() {
+    return new Promise((resolve, reject) => {
+      this._auth0.client.userInfo(
+        this._sessionInfo.accessToken,
+        (err, profile) => {
+          if (err) {
+            reject(err);
+          }
+
+          const formattedProfile = {
+            ...profile,
+            updatedAt: profile.updated_at
+          };
+          delete formattedProfile.updated_at;
+
+          resolve(formattedProfile);
+        }
+      );
+    });
+  }
+
+  handleAuthentication() {
+    return this._parseHash()
+      .then((authResult) => {
+        this._storeSession(authResult);
+        this._scheduleSessionRefresh();
+
+        const redirectPathname = this._getRedirectPathname();
+        this._onRedirect(redirectPathname);
+      })
+      .catch((err) => {
+        console.log(`Error while handling authentication: ${err}`);
+
+        this._onRedirect('/');
+
+        throw err;
+      });
+  }
+
+  isAuthenticated() {
+    return !!(
+      this._sessionInfo &&
+      this._sessionInfo.accessToken &&
+      this._sessionInfo.expiresAt > Date.now()
+    );
+  }
+
+  logIn() {
+    this._auth0.authorize();
+  }
+
+  logOut() {
+    this._sessionInfo = {};
+    this._tokenPromises = {};
+
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('expires_at');
+
+    clearTimeout(this._sessionRenewalTimeout);
+
+    this._auth0.logout({ returnTo: new URL(window.location).origin });
+  }
+
+  _checkSession(options = {}) {
+    return new Promise((resolve, reject) => {
+      this._auth0.checkSession(options, (err, response) => {
+        if (err || !response) {
+          return reject(
+            err || new Error('No valid tokens returned from auth0')
+          );
+        }
+
+        return resolve(response);
+      });
+    });
+  }
+
+  _defaultOnRedirect(pathname) {
+    window.location = pathname;
+  }
+
   _getRedirectPathname() {
     const redirectPathname = localStorage.getItem('redirect_pathname');
     localStorage.removeItem('redirect_pathname');
@@ -209,20 +224,56 @@ class Auth0WebAuth {
   }
 
   _getUpdatedSession() {
-    if (!this._updatedSessionPromise) {
-      this._updatedSessionPromise = this._checkSession().then((sessionInfo) => {
+    return this._checkSession()
+      .then((sessionInfo) => {
         this._storeSession(sessionInfo);
 
-        this._updatedSessionPromise = null;
         this._tokenPromises = {};
 
         this._scheduleSessionRefresh();
+      })
+      .catch((err) => {
+        let errorToThrow = err;
 
-        return sessionInfo;
+        if (
+          err.error &&
+          [
+            'consent_required',
+            'interaction_required',
+            'login_required'
+          ].indexOf(err.error) > -1
+        ) {
+          errorToThrow = this._generateUnauthorizedError(err);
+
+          this.logOut();
+        } else if (!(err.response && err.response.status)) {
+          errorToThrow = new Error(
+            'There was a problem getting new session info. Please check your configuration settings.'
+          );
+          errorToThrow.fromSdk = true;
+          errorToThrow.originalError = err;
+        }
+
+        throw errorToThrow;
       });
+  }
+
+  _generateUnauthorizedError(err) {
+    const error = new Error('Unauthorized');
+
+    if (!err) {
+      error.fromSdk = true;
     }
 
-    return this._updatedSessionPromise;
+    error.response = {
+      data: {
+        ...err,
+        code: 401
+      },
+      status: 401
+    };
+
+    return error;
   }
 
   _parseHash() {
