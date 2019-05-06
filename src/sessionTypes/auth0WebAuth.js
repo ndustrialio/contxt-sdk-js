@@ -14,7 +14,6 @@ import URL from 'url-parse';
 /**
  * @typedef {Object} Auth0WebAuthSessionInfo
  * @property {string} accessToken
- * @property {string} apiToken
  * @property {number} expiresAt
  */
 
@@ -97,6 +96,12 @@ class Auth0WebAuth {
     }
   }
 
+  /**
+   * Gets the current API token (used to communicate with other Contxt APIs)
+   *
+   * @returns {Promise}
+   * @fulfills {string} apiToken
+   */
   getCurrentApiToken(audienceName) {
     if (!this.isAuthenticated()) {
       return Promise.reject(this._generateUnauthorizedError());
@@ -128,6 +133,13 @@ class Auth0WebAuth {
     return this._tokenPromises[audienceName];
   }
 
+  /**
+   * Gets the current user's profile from Auth0
+   *
+   * @returns {Promise}
+   * @fulfill {UserProfile}
+   * @rejects {Error}
+   */
   getProfile() {
     return new Promise((resolve, reject) => {
       this._auth0.client.userInfo(
@@ -149,6 +161,15 @@ class Auth0WebAuth {
     });
   }
 
+  /**
+   * Routine that takes unparsed information from Auth0, stores it in a way that
+   * can be used for getting access tokens, schedules it's future renewal, and
+   * redirects to the correct page in the application.
+   *
+   * @returns {Promise}
+   * @fulfill {Auth0WebAuthSessionInfo}
+   * @rejects {Error}
+   */
   handleAuthentication() {
     return this._parseHash()
       .then((authResult) => {
@@ -167,6 +188,11 @@ class Auth0WebAuth {
       });
   }
 
+  /**
+   * Tells caller if the current user is authenticated.
+   *
+   * @returns {boolean}
+   */
   isAuthenticated() {
     return !!(
       this._sessionInfo &&
@@ -175,10 +201,17 @@ class Auth0WebAuth {
     );
   }
 
+  /**
+   * Starts the Auth0 log in process
+   */
   logIn() {
     this._auth0.authorize();
   }
 
+  /**
+   * Logs the user out by removing any stored session info, clearing any token
+   * renewal, and redirecting to the root
+   */
   logOut() {
     this._sessionInfo = {};
     this._tokenPromises = {};
@@ -191,6 +224,15 @@ class Auth0WebAuth {
     this._auth0.logout({ returnTo: new URL(window.location).origin });
   }
 
+  /**
+   * Wraps Auth0's `checkSession` method. Will check if the current Auth0
+   * session is valid and get updated information if needed
+   *
+   * @fulfill {Object} sessionResponse Information returned from Auth0
+   * @rejects {Error}
+   *
+   * @private
+   */
   _checkSession(options = {}) {
     return new Promise((resolve, reject) => {
       this._auth0.checkSession(options, (err, response) => {
@@ -205,10 +247,22 @@ class Auth0WebAuth {
     });
   }
 
+  /**
+   * Default method used for redirecting around the web application. Overridden
+   * by `onRedirect` in the auth config
+   *
+   * @private
+   */
   _defaultOnRedirect(pathname) {
     window.location = pathname;
   }
 
+  /**
+   * Grabs a stored redirect pathname that may have been stored in another part
+   * of the web application
+   *
+   * @private
+   */
   _getRedirectPathname() {
     const redirectPathname = localStorage.getItem('redirect_pathname');
     localStorage.removeItem('redirect_pathname');
@@ -216,6 +270,15 @@ class Auth0WebAuth {
     return redirectPathname || '/';
   }
 
+  /**
+   * Loads a saved session from local storage
+   *
+   * @returns {Object} session
+   * @returns {string} session.accessToken
+   * @returns {number} session.expiresAt
+   *
+   * @private
+   */
   _getStoredSession() {
     return {
       accessToken: localStorage.getItem('access_token'),
@@ -223,6 +286,16 @@ class Auth0WebAuth {
     };
   }
 
+  /**
+   * Gets up to date session info. Will get an updated session/tokens if the
+   * previous session has already expired. Will log the user out if an error
+   * from Auth0 indicates the session cannot continue without re-authentication.
+   *
+   * @returns {Promise}
+   * @rejects {Error}
+   *
+   * @private
+   */
   _getUpdatedSession() {
     return this._checkSession()
       .then((sessionInfo) => {
@@ -276,6 +349,16 @@ class Auth0WebAuth {
     return error;
   }
 
+  /**
+   * Wraps Auth0's method for parsing hash information after a successful
+   * authentication.
+   *
+   * @returns {Promise}
+   * @fulfill {Object} hashResponse Information returned from Auth0
+   * @rejects {Error}
+   *
+   * @private
+   */
   _parseHash() {
     return new Promise((resolve, reject) => {
       this._auth0.parseHash((err, authResult) => {
@@ -290,6 +373,11 @@ class Auth0WebAuth {
     });
   }
 
+  /**
+   * Schedules the Access token to renew before they expire
+   *
+   * @private
+   */
   _scheduleSessionRefresh() {
     const tokenExpiresAtBufferMs =
       this._sdk.config.auth.tokenExpiresAtBufferMs || 0;
@@ -306,6 +394,15 @@ class Auth0WebAuth {
     }, delay);
   }
 
+  /**
+   * Saves a session in local storage for future use
+   *
+   * @param {Object} sessionInfo
+   * @param {string} sessionInfo.accessToken
+   * @param {number} sessionInfo.expiresAt
+   *
+   * @private
+   */
   _storeSession({ accessToken, expiresIn }) {
     const expiresAt = expiresIn * 1000 + Date.now();
 
