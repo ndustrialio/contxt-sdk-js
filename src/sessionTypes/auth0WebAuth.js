@@ -97,7 +97,9 @@ class Auth0WebAuth {
   }
 
   /**
-   * Gets the current API token (used to communicate with other Contxt APIs)
+   * Requests an access token from Contxt Auth for the correct audience
+   *
+   * @param audienceName
    *
    * @returns {Promise}
    * @fulfills {string} apiToken

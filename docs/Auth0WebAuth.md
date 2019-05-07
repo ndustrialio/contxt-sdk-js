@@ -20,7 +20,7 @@ enabled in Auth0.
 
 * [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
     * [new Auth0WebAuth(sdk)](#new_Auth0WebAuth_new)
-    * [.getCurrentApiToken()](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
+    * [.getCurrentApiToken(audienceName)](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
     * [.getProfile()](#Auth0WebAuth+getProfile) ⇒ <code>Promise</code>
     * [.handleAuthentication()](#Auth0WebAuth+handleAuthentication) ⇒ <code>Promise</code>
     * [.isAuthenticated()](#Auth0WebAuth+isAuthenticated) ⇒ <code>boolean</code>
@@ -60,11 +60,16 @@ const contxtSdk = new ContxtSDK({
 ```
 <a name="Auth0WebAuth+getCurrentApiToken"></a>
 
-### contxtSdk.auth.getCurrentApiToken() ⇒ <code>Promise</code>
-Gets the current API token (used to communicate with other Contxt APIs)
+### contxtSdk.auth.getCurrentApiToken(audienceName) ⇒ <code>Promise</code>
+Requests an access token from Contxt Auth for the correct audience
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
 **Fulfills**: <code>string</code> apiToken  
+
+| Param |
+| --- |
+| audienceName | 
+
 <a name="Auth0WebAuth+getProfile"></a>
 
 ### contxtSdk.auth.getProfile() ⇒ <code>Promise</code>
