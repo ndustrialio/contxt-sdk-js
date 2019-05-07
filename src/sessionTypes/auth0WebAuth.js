@@ -163,7 +163,7 @@ class Auth0WebAuth {
 
   /**
    * Routine that takes unparsed information from Auth0, stores it in a way that
-   * can be used for getting access tokens, schedules it's future renewal, and
+   * can be used for getting access tokens, schedules its future renewal, and
    * redirects to the correct page in the application.
    *
    * @returns {Promise}
