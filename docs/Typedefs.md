@@ -202,7 +202,6 @@ A single audience used for authenticating and communicating with an individual A
 | Name | Type |
 | --- | --- |
 | accessToken | <code>string</code> | 
-| apiToken | <code>string</code> | 
 | expiresAt | <code>number</code> | 
 
 <a name="AxiosInterceptor"></a>

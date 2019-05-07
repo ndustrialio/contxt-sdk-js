@@ -20,8 +20,7 @@ enabled in Auth0.
 
 * [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
     * [new Auth0WebAuth(sdk)](#new_Auth0WebAuth_new)
-    * [.getCurrentAccessToken()](#Auth0WebAuth+getCurrentAccessToken) ⇒ <code>Promise</code>
-    * [.getCurrentApiToken()](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
+    * [.getCurrentApiToken(audienceName)](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
     * [.getProfile()](#Auth0WebAuth+getProfile) ⇒ <code>Promise</code>
     * [.handleAuthentication()](#Auth0WebAuth+handleAuthentication) ⇒ <code>Promise</code>
     * [.isAuthenticated()](#Auth0WebAuth+isAuthenticated) ⇒ <code>boolean</code>
@@ -59,20 +58,18 @@ const contxtSdk = new ContxtSDK({
   sessionType: 'auth0WebAuth'
 });
 ```
-<a name="Auth0WebAuth+getCurrentAccessToken"></a>
-
-### contxtSdk.auth.getCurrentAccessToken() ⇒ <code>Promise</code>
-Gets the current access token (used to communicate with Auth0 & Contxt Auth)
-
-**Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
-**Fulfills**: <code>string</code> accessToken  
 <a name="Auth0WebAuth+getCurrentApiToken"></a>
 
-### contxtSdk.auth.getCurrentApiToken() ⇒ <code>Promise</code>
-Gets the current API token (used to communicate with other Contxt APIs)
+### contxtSdk.auth.getCurrentApiToken(audienceName) ⇒ <code>Promise</code>
+Requests an access token from Contxt Auth for the correct audience
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
 **Fulfills**: <code>string</code> apiToken  
+
+| Param |
+| --- |
+| audienceName | 
+
 <a name="Auth0WebAuth+getProfile"></a>
 
 ### contxtSdk.auth.getProfile() ⇒ <code>Promise</code>
@@ -84,7 +81,8 @@ Gets the current user's profile from Auth0
 <a name="Auth0WebAuth+handleAuthentication"></a>
 
 ### contxtSdk.auth.handleAuthentication() ⇒ <code>Promise</code>
-Routine that takes unparsed information from Auth0, uses it to get a valid API token, and then
+Routine that takes unparsed information from Auth0, stores it in a way that
+can be used for getting access tokens, schedules its future renewal, and
 redirects to the correct page in the application.
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
@@ -105,7 +103,7 @@ Starts the Auth0 log in process
 <a name="Auth0WebAuth+logOut"></a>
 
 ### contxtSdk.auth.logOut()
-Logs the user out by removing any stored session info, clearing any token renewal, and
-redirecting to the root
+Logs the user out by removing any stored session info, clearing any token
+renewal, and redirecting to the root
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
