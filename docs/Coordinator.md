@@ -19,6 +19,7 @@ Module that provides access to information about Contxt
     * [.getUsersByOrganization(organizationId)](#Coordinator+getUsersByOrganization) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
     * [.getUserPermissionsMap(userId)](#Coordinator+getUserPermissionsMap) ⇒ <code>Promise</code>
+    * [.getUsersPermissionsByOrganization(organizationId)](#Coordinator+getUsersPermissionsByOrganization) ⇒ <code>Promise</code>
     * [.inviteNewUserToOrganization(organizationId, user)](#Coordinator+inviteNewUserToOrganization) ⇒ <code>Promise</code>
     * [.removeUserFromOrganization(organizationId, userId)](#Coordinator+removeUserFromOrganization) ⇒ <code>Promise</code>
 
@@ -310,6 +311,29 @@ Method: GET
 contxtSdk.coordinator
   .getUserPermissionsMap('auth0|12345')
   .then((permissionsMap) => console.log(permissionsMap))
+  .catch((err) => console.log(err));
+```
+<a name="Coordinator+getUsersPermissionsByOrganization"></a>
+
+### contxtSdk.coordinator.getUsersPermissionsByOrganization(organizationId) ⇒ <code>Promise</code>
+Gets a list of user permissions for an organization
+
+API Endpoint: '/organizations/:organizationId/users/permissions'
+Method: GET
+
+**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
+**Fulfill**: <code>ContxtUserPermissions[]</code> A collection of user permissions  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+
+**Example**  
+```js
+contxtSdk.coordinator
+  .getUsersPermissionsByOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .then((usersPermissions) => console.log(usersPermissions))
   .catch((err) => console.log(err));
 ```
 <a name="Coordinator+inviteNewUserToOrganization"></a>

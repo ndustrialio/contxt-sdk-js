@@ -86,6 +86,16 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtUserPermissions
+ * @property {number[]} applicationsExplicit Application ids the user has directly been given access to
+ * @property {number[]} applicationsImplicit Application ids the user has access to from a role or being the owner
+ * @property {string[]} roles Role ids that the user belongs to
+ * @property {number[]} stacksExplicit Stack ids the user has directly been given access to
+ * @property {number[]} stacksImplicit Stack ids the user has access to from a role or being the owner
+ * @property {string} userId
+ */
+
+/**
  * Module that provides access to information about Contxt
  *
  * @typicalname contxtSdk.coordinator
@@ -488,6 +498,38 @@ class Coordinator {
     // NOTE: This response is not run through the `toCamelCase` method because
     // it could errantly remove underscores from service IDs.
     return this._request.get(`${this._baseUrl}/users/${userId}/permissions`);
+  }
+
+  /**
+   * Gets a list of user permissions for an organization
+   *
+   * API Endpoint: '/organizations/:organizationId/users/permissions'
+   * Method: GET
+   *
+   * @param {string} organizationId The ID of the organization
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserPermissions[]} A collection of user permissions
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getUsersPermissionsByOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .then((usersPermissions) => console.log(usersPermissions))
+   *   .catch((err) => console.log(err));
+   */
+  getUsersPermissionsByOrganization(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organization ID is required for getting users permissions for an organization'
+        )
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/organizations/${organizationId}/users/permissions`)
+      .then((userPermissions) => toCamelCase(userPermissions));
   }
 
   /**

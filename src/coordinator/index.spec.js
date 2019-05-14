@@ -813,6 +813,79 @@ describe('Coordinator', function() {
     });
   });
 
+  describe('getUsersPermissionsByOrganization', function() {
+    context('when the organization ID is provided', function() {
+      let expectedUsersPermissions;
+      let userPermissionFromServer;
+      let expectedOrganizationId;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedOrganizationId = faker.random.uuid();
+        expectedUsersPermissions = fixture.buildList(
+          'contxtUserPermissions',
+          faker.random.number({
+            min: 1,
+            max: 10
+          }),
+          {
+            organizationId: expectedOrganizationId
+          }
+        );
+        userPermissionFromServer = expectedUsersPermissions.map((app) =>
+          fixture.build('contxtUserPermissions', app, {
+            fromServer: true
+          })
+        );
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(userPermissionFromServer)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedUsersPermissions);
+
+        const coordinator = new Coordinator(baseSdk, request);
+        coordinator._baseUrl = expectedHost;
+        promise = coordinator.getUsersPermissionsByOrganization(
+          expectedOrganizationId
+        );
+      });
+
+      it('gets the list of users permissions from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/users/permissions`
+        );
+      });
+
+      it('formats the list of users permissions', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(userPermissionFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the users permissions', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedUsersPermissions
+        );
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const coordinator = new Coordinator(baseSdk, baseRequest);
+        const promise = coordinator.getUsersPermissionsByOrganization();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organization ID is required for getting users permissions for an organization'
+        );
+      });
+    });
+  });
+
   describe('inviteNewUserToOrganization', function() {
     context('when all the required parameters are provided', function() {
       let organization;
