@@ -35,6 +35,35 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtRole
+ * @property {ContxtApplication[]} applications
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} description
+ * @property {string} id
+ * @property {string} name
+ * @property {string} organizationId
+ * @property {ContxtStack[]} stacks
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} ContxtStack
+ * @property {string} clientId
+ * @property {string} clusterId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} currentVersionId
+ * @property {string} description
+ * @property {string} documentationUrl
+ * @property {string} icon
+ * @property {number} id
+ * @property {string} name
+ * @property {string} organizationId
+ * @property {string} ownerId
+ * @property {string} type
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * @typedef {Object} ContxtUser
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} email
@@ -298,6 +327,38 @@ class Coordinator {
         `${this._baseUrl}/organizations/${organizationId}/applications/featured`
       )
       .then((featuredApplications) => toCamelCase(featuredApplications));
+  }
+
+  /**
+   * Gets an organization's list of roles
+   *
+   * API Endpoint: '/organizations/:organizationId/roles'
+   * Method: GET
+   *
+   * @param {string} organizationId The ID of the organization
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtRole[]} A list of roles
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator
+   *   .getRolesByOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .then((roles) => console.log(roles))
+   *   .catch((err) => console.log(err));
+   */
+  getRolesByOrganization(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organization ID is required for getting roles for an organization'
+        )
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/organizations/${organizationId}/roles`)
+      .then((roles) => toCamelCase(roles));
   }
 
   /**
