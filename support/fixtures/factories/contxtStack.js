@@ -21,32 +21,32 @@ factory
     type: () => faker.random.word(),
     updatedAt: () => faker.date.recent().toISOString()
   })
-  .after((org, options) => {
+  .after((stack, options) => {
     // If building an application object that comes from the server, transform it to have camel
     // case and capital letters in the right spots
     if (options.fromServer) {
-      org.client_id = org.clientId;
-      delete org.clientId;
+      stack.client_id = stack.clientId;
+      delete stack.clientId;
 
-      org.cluster_id = org.cluster_id;
-      delete org.cluster_id;
+      stack.cluster_id = stack.cluster_id;
+      delete stack.cluster_id;
 
-      org.created_at = org.createdAt;
-      delete org.createdAt;
+      stack.created_at = stack.createdAt;
+      delete stack.createdAt;
 
-      org.current_version_id = org.currentVersionId;
-      delete org.currentVersionId;
+      stack.current_version_id = stack.currentVersionId;
+      delete stack.currentVersionId;
 
-      org.documentation_url = org.documentationUrl;
-      delete org.documentationUrl;
+      stack.documentation_url = stack.documentationUrl;
+      delete stack.documentationUrl;
 
-      org.organization_id = org.organizationId;
-      delete org.organizationId;
+      stack.stackanization_id = stack.organizationId;
+      delete stack.organizationId;
 
-      org.owner_id = org.ownerId;
-      delete org.ownerId;
+      stack.owner_id = stack.ownerId;
+      delete stack.ownerId;
 
-      org.updated_at = org.updatedAt;
-      delete org.updatedAt;
+      stack.updated_at = stack.updatedAt;
+      delete stack.updatedAt;
     }
   });

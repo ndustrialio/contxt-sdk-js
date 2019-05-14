@@ -24,17 +24,17 @@ factory
       ),
     updatedAt: () => faker.date.recent().toISOString()
   })
-  .after((user, options) => {
-    // If building a user object that comes from the server, transform it to have camel
+  .after((role, options) => {
+    // If building a role object that comes from the server, transform it to have camel
     // case and capital letters in the right spots
     if (options.fromServer) {
-      user.created_at = user.createdAt;
-      delete user.createdAt;
+      role.created_at = role.createdAt;
+      delete role.createdAt;
 
-      user.organization_id = user.organizationId;
-      delete user.organizationId;
+      role.organization_id = role.organizationId;
+      delete role.organizationId;
 
-      user.updated_at = user.updatedAt;
-      delete user.updatedAt;
+      role.updated_at = role.updatedAt;
+      delete role.updatedAt;
     }
   });
