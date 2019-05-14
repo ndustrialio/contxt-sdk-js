@@ -1,3 +1,9 @@
+## [v0.0.51](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.51) (2019-05-14)
+
+**Added**
+
+- Added `Coordinator#getUsersPermissionsByOrganization` for getting a list of all user permissions for an organization
+
 ## [v0.0.50](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.50) (2019-05-14)
 
 **Added**
