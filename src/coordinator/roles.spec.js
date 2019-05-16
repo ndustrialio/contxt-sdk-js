@@ -1,7 +1,7 @@
 import Roles from './roles';
 import * as objectUtils from '../utils/objects';
 
-describe('Coordinator.roles', function() {
+describe('Coordinator/Roles', function() {
   let baseRequest;
   let baseSdk;
   let expectedHost;
@@ -59,7 +59,7 @@ describe('Coordinator.roles', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedOrganizationId = faker.random.uuid();
+        expectedOrganizationId = fixture.build('contxtOrganization').id;
         expectedRoles = fixture.buildList(
           'contxtRole',
           faker.random.number({
@@ -70,8 +70,8 @@ describe('Coordinator.roles', function() {
             organizationId: expectedOrganizationId
           }
         );
-        rolesFromTheServer = expectedRoles.map((app) =>
-          fixture.build('contxtRole', app, {
+        rolesFromTheServer = expectedRoles.map((role) =>
+          fixture.build('contxtRole', role, {
             fromServer: true
           })
         );

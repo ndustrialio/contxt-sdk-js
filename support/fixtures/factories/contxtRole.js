@@ -6,7 +6,6 @@ const faker = require('faker');
 factory
   .define('contxtRole')
   .option('fromServer', false)
-  .sequence('id')
   .attrs({
     applications: () =>
       factory.buildList(
@@ -15,8 +14,9 @@ factory
       ),
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
+    id: () => faker.random.uuid(),
     name: () => faker.name.title(),
-    organizationId: () => faker.random.uuid(),
+    organizationId: () => factory.build('contxtOrganization').id,
     stacks: () =>
       factory.buildList(
         'contxtStack',

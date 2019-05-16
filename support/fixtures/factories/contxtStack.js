@@ -7,7 +7,7 @@ factory
   .define('contxtStack')
   .option('fromServer', false)
   .attrs({
-    clientId: () => faker.random.uuid(),
+    clientId: () => faker.internet.password(),
     clusterId: () => faker.random.uuid(),
     createdAt: () => faker.date.past().toISOString(),
     currentVersionId: () => faker.random.uuid(),
@@ -16,8 +16,8 @@ factory
     icon: () => faker.image.imageUrl(),
     id: () => faker.random.number(),
     name: () => faker.name.title(),
-    organizationId: () => faker.random.uuid(),
-    ownerId: () => faker.random.uuid(),
+    organizationId: () => factory.build('contxtOrganization').id,
+    ownerId: () => factory.build('contxtUser').id,
     type: () => faker.random.word(),
     updatedAt: () => faker.date.recent().toISOString()
   })
@@ -28,8 +28,8 @@ factory
       stack.client_id = stack.clientId;
       delete stack.clientId;
 
-      stack.cluster_id = stack.cluster_id;
-      delete stack.cluster_id;
+      stack.cluster_id = stack.clusterId;
+      delete stack.clusterId;
 
       stack.created_at = stack.createdAt;
       delete stack.createdAt;
