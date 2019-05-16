@@ -5,8 +5,11 @@ import sinon from 'sinon';
 import Auth0WebAuth from './auth0WebAuth';
 
 describe('sessionTypes/Auth0WebAuth', function() {
-  let sdk;
+  let getStoredSession;
+  let isAuthenticated;
   let originalWindow;
+  let scheduleSessionRefresh;
+  let sdk;
   let webAuth;
   let webAuthSession;
 
@@ -27,13 +30,24 @@ describe('sessionTypes/Auth0WebAuth', function() {
       }
     };
     webAuthSession = {
-      authorize: this.sandbox.stub()
+      authorize: this.sandbox.stub(),
+      logout: this.sandbox.stub()
     };
     originalWindow = global.window;
     global.window = {
       location: faker.internet.url()
     };
 
+    getStoredSession = this.sandbox
+      .stub(Auth0WebAuth.prototype, '_getStoredSession')
+      .returns({});
+    isAuthenticated = this.sandbox
+      .stub(Auth0WebAuth.prototype, 'isAuthenticated')
+      .returns(true);
+    scheduleSessionRefresh = this.sandbox.stub(
+      Auth0WebAuth.prototype,
+      '_scheduleSessionRefresh'
+    );
     webAuth = this.sandbox.stub(auth0, 'WebAuth').returns(webAuthSession);
   });
 
@@ -46,20 +60,18 @@ describe('sessionTypes/Auth0WebAuth', function() {
     context('with default WebAuth config options', function() {
       let auth0WebAuth;
       let expectedSession;
-      let loadSession;
 
       beforeEach(function() {
+        getStoredSession.restore();
+
         expectedSession = {
           accessToken: faker.internet.url(),
           apiToken: faker.internet.url(),
           expiresAt: faker.date.future().getTime()
         };
 
-        this.sandbox
-          .stub(Auth0WebAuth.prototype, 'isAuthenticated')
-          .returns(false);
-        loadSession = this.sandbox
-          .stub(Auth0WebAuth.prototype, '_loadSession')
+        getStoredSession = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_getStoredSession')
           .returns(expectedSession);
 
         auth0WebAuth = new Auth0WebAuth(sdk);
@@ -76,11 +88,16 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('loads the session from memory', function() {
-        expect(loadSession.calledOnce).to.be.true;
+        expect(getStoredSession.calledOnce).to.be.true;
       });
 
       it('stores the session in the Auth instance', function() {
         expect(auth0WebAuth._sessionInfo).to.equal(expectedSession);
+      });
+
+      it('sets up the default data structures for tokens', function() {
+        expect(auth0WebAuth._sessionRenewalTimeout).to.be.null;
+        expect(auth0WebAuth._tokenPromises).to.deep.equal({});
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
@@ -100,6 +117,14 @@ describe('sessionTypes/Auth0WebAuth', function() {
       it('appends an auth0 WebAuth instance to the class instance', function() {
         expect(auth0WebAuth._auth0).to.equal(webAuthSession);
       });
+
+      it('checks if the user is currently authenticated', function() {
+        expect(isAuthenticated).to.be.calledOnce;
+      });
+
+      it('schedules a future token renewal', function() {
+        expect(scheduleSessionRefresh).to.be.calledOnce;
+      });
     });
 
     context('with custom WebAuth config options', function() {
@@ -112,9 +137,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedOnRedirect = this.sandbox.stub();
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
         sdk.config.auth.onRedirect = expectedOnRedirect;
-
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        this.sandbox.stub(Auth0WebAuth.prototype, '_scheduleTokenRenewal');
 
         auth0WebAuth = new Auth0WebAuth(sdk);
       });
@@ -131,32 +153,22 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
     });
 
-    context('when currently authenticated', function() {
-      let scheduleTokenRenewal;
-
+    context('when the user is not authenticated', function() {
       beforeEach(function() {
+        isAuthenticated.restore();
         this.sandbox
           .stub(Auth0WebAuth.prototype, 'isAuthenticated')
-          .returns(true);
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        scheduleTokenRenewal = this.sandbox.stub(
-          Auth0WebAuth.prototype,
-          '_scheduleTokenRenewal'
-        );
+          .returns(false);
 
         const auth0WebAuth = new Auth0WebAuth(sdk); // eslint-disable-line no-unused-vars
       });
 
-      it('schedules a future token renewal', function() {
-        expect(scheduleTokenRenewal).to.be.calledOnce;
+      it('does not schedule  a future token renewal', function() {
+        expect(scheduleSessionRefresh).to.not.be.called;
       });
     });
 
     context('without required config options', function() {
-      beforeEach(function() {
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-      });
-
       it('throws an error when no clientId is provided', function() {
         delete sdk.config.auth.clientId;
         const fn = () => new Auth0WebAuth(sdk);
@@ -166,32 +178,147 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  ['Access', 'Api'].forEach(function(tokenType) {
-    describe(`getCurrent${tokenType}Token`, function() {
-      let expectedToken;
-      let getCurrentTokenByType;
+  describe('getCurrentApiToken', function() {
+    let expectedAudienceName;
+
+    beforeEach(function() {
+      expectedAudienceName = faker.random.arrayElement(
+        Object.keys(sdk.config.audiences)
+      );
+    });
+
+    context(
+      "when there is no existing request for an audience's token",
+      function() {
+        let auth0WebAuth;
+        let expectedAccessToken;
+        let expectedApiToken;
+        let post;
+        let promise;
+
+        beforeEach(function() {
+          expectedAccessToken = faker.internet.password();
+          expectedApiToken = faker.internet.password();
+
+          post = this.sandbox
+            .stub(axios, 'post')
+            .resolves({ data: { access_token: expectedApiToken } });
+
+          auth0WebAuth = new Auth0WebAuth(sdk);
+          auth0WebAuth._sessionInfo.accessToken = expectedAccessToken;
+
+          promise = auth0WebAuth.getCurrentApiToken(expectedAudienceName);
+        });
+
+        it('requests a token from contxt-auth', function() {
+          expect(post).to.be.calledWith(
+            `${sdk.config.audiences.contxtAuth.host}/v1/token`,
+            {
+              audiences: [sdk.config.audiences[expectedAudienceName].clientId],
+              nonce: 'nonce'
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${expectedAccessToken}`
+              }
+            }
+          );
+        });
+
+        it('resolves with the token', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+            expectedApiToken
+          );
+        });
+      }
+    );
+
+    context(
+      "when there is an existing request for an audience's token",
+      function() {
+        let auth0WebAuth;
+        let expectedPromise;
+        let promise;
+
+        beforeEach(function() {
+          expectedPromise = new Promise(function() {});
+
+          auth0WebAuth = new Auth0WebAuth(sdk);
+          auth0WebAuth._tokenPromises[expectedAudienceName] = expectedPromise;
+
+          promise = auth0WebAuth.getCurrentApiToken(expectedAudienceName);
+        });
+
+        it('returns the existing promise', function() {
+          expect(promise).to.equal(expectedPromise);
+        });
+      }
+    );
+
+    context('when the user is not authenticated', function() {
+      let expectedError;
+      let generateUnauthorizedError;
       let promise;
 
       beforeEach(function() {
-        expectedToken = faker.internet.password();
+        expectedError = new Error(faker.hacker.phrase());
 
-        getCurrentTokenByType = this.sandbox
-          .stub(Auth0WebAuth.prototype, '_getCurrentTokenByType')
-          .resolves(expectedToken);
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
+        generateUnauthorizedError = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_generateUnauthorizedError')
+          .returns(expectedError);
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
-        promise = auth0WebAuth[`getCurrent${tokenType}Token`]();
+
+        isAuthenticated.restore();
+        isAuthenticated = this.sandbox
+          .stub(Auth0WebAuth.prototype, 'isAuthenticated')
+          .returns(false);
+
+        promise = auth0WebAuth.getCurrentApiToken(expectedAudienceName);
       });
 
-      it('gets the current token', function() {
-        expect(getCurrentTokenByType).to.be.calledWith(tokenType.toLowerCase());
+      it('checks if the audience already has a valid token', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(isAuthenticated).to.be.calledOnce;
+        });
       });
 
-      it('returns a promise with the token', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedToken
-        );
+      it('gets a generated `unauthorized` error', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(generateUnauthorizedError).to.be.calledOnce;
+        });
+      });
+
+      it('returns a rejected promise with an error', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+
+    context('when a valid audience is not provided', function() {
+      it('returns a rejected promise with an error when there is no audience with that name', function() {
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+
+        return expect(
+          auth0WebAuth.getCurrentApiToken(faker.hacker.noun())
+        ).to.be.rejectedWith('No valid audience found');
+      });
+
+      it('returns a rejected promise with an error when there is no client ID for the chosen audenice', function() {
+        const invalidAudience = faker.lorem.word();
+        const auth0WebAuth = new Auth0WebAuth({
+          ...sdk,
+          config: {
+            ...sdk.config,
+            audiences: {
+              ...sdk.config.audiences,
+              [invalidAudience]: {}
+            }
+          }
+        });
+
+        return expect(
+          auth0WebAuth.getCurrentApiToken(invalidAudience)
+        ).to.be.rejectedWith('No valid audience found');
       });
     });
   });
@@ -201,7 +328,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let auth0WebAuth;
       let expectedAccessToken;
       let expectedProfile;
-      let getCurrentAccessToken;
       let profile;
       let promise;
 
@@ -212,10 +338,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
           'updated_at'
         ]);
 
-        getCurrentAccessToken = this.sandbox
-          .stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
-          .resolves(expectedAccessToken);
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         webAuthSession.client = {
           userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
             cb(null, profile);
@@ -223,11 +345,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
         };
 
         auth0WebAuth = new Auth0WebAuth(sdk);
-        promise = auth0WebAuth.getProfile();
-      });
+        auth0WebAuth._sessionInfo.accessToken = expectedAccessToken;
 
-      it("gets the user's access token", function() {
-        expect(getCurrentAccessToken).to.be.calledOnce;
+        promise = auth0WebAuth.getProfile();
       });
 
       it("gets the user's profile", function() {
@@ -251,11 +371,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
-
-        this.sandbox
-          .stub(Auth0WebAuth.prototype, 'getCurrentAccessToken')
-          .resolves(faker.internet.password());
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
         webAuthSession.client = {
           userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
             cb(expectedError);
@@ -263,7 +378,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
         };
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
-        auth0WebAuth._sessionInfo = { accessToken: faker.internet.password() };
+        auth0WebAuth._sessionInfo.accessToken = faker.internet.password();
+
         promise = auth0WebAuth.getProfile();
       });
 
@@ -274,60 +390,58 @@ describe('sessionTypes/Auth0WebAuth', function() {
   });
 
   describe('handleAuthentication', function() {
-    context('successfully getting a new api token', function() {
-      let clock;
+    context('when successfully authenticating', function() {
       let expectedHash;
       let expectedRedirectPathname;
-      let expectedSessionInfo;
       let getRedirectPathname;
-      let handleNewSessionInfo;
       let onRedirect;
-      let parseWebAuthHash;
+      let parseHash;
       let promise;
+      let storeSession;
 
       beforeEach(function() {
         const currentDate = new Date();
-        expectedRedirectPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
-        expectedSessionInfo = {
-          accessToken: faker.internet.password(),
-          apiToken: faker.internet.password(),
-          expiresAt: faker.date.future().getTime()
-        };
         expectedHash = {
-          accessToken: expectedSessionInfo.accessToken,
+          accessToken: faker.internet.password(),
           expiresIn:
-            (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
+            (faker.date.future().getTime() - currentDate.getTime()) / 1000
         };
+        expectedRedirectPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
-        clock = sinon.useFakeTimers(currentDate);
         getRedirectPathname = this.sandbox
           .stub(Auth0WebAuth.prototype, '_getRedirectPathname')
           .returns(expectedRedirectPathname);
-        handleNewSessionInfo = this.sandbox
-          .stub(Auth0WebAuth.prototype, '_handleNewSessionInfo')
-          .resolves(expectedSessionInfo);
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        onRedirect = this.sandbox.stub();
-        parseWebAuthHash = this.sandbox
-          .stub(Auth0WebAuth.prototype, '_parseWebAuthHash')
+        parseHash = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_parseHash')
           .resolves(expectedHash);
+        onRedirect = this.sandbox.stub();
+        storeSession = this.sandbox.stub(
+          Auth0WebAuth.prototype,
+          '_storeSession'
+        );
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         auth0WebAuth._onRedirect = onRedirect;
+        scheduleSessionRefresh.reset();
+
         promise = auth0WebAuth.handleAuthentication();
       });
 
-      afterEach(function() {
-        clock.restore();
-      });
-
       it('parses the previously retrieved web auth hash', function() {
-        expect(parseWebAuthHash).to.be.calledOnce;
+        return promise.then(() => {
+          expect(parseHash).to.be.calledOnce;
+        });
       });
 
-      it('handles getting any other needed new session info', function() {
+      it('stores the session', function() {
         return promise.then(() => {
-          expect(handleNewSessionInfo).to.be.calledWith(expectedHash);
+          expect(storeSession).to.be.calledWith(expectedHash);
+        });
+      });
+
+      it('schedules the session to refresh', function() {
+        return promise.then(() => {
+          expect(scheduleSessionRefresh).to.be.calledOnce;
         });
       });
 
@@ -343,38 +457,27 @@ describe('sessionTypes/Auth0WebAuth', function() {
         });
       });
 
-      it('returns a promise that is fulfilled with the web auth info and contxt api token', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          expectedSessionInfo
-        );
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
       });
     });
 
-    context('unsuccessfully getting an api token', function() {
+    context('when there is a problem parsing the hash', function() {
       let expectedError;
       let onRedirect;
       let promise;
 
       beforeEach(function() {
-        expectedError = faker.hacker.phrase();
+        expectedError = new Error(faker.hacker.phrase());
 
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        onRedirect = this.sandbox.stub();
         this.sandbox
-          .stub(Auth0WebAuth.prototype, '_parseWebAuthHash')
-          .rejects(new Error(expectedError));
-        global.window = {
-          _location: `${faker.internet.url()}/${faker.hacker.adjective()}`,
-          get location() {
-            return this._location;
-          },
-          set location(newLocation) {
-            this._location = newLocation;
-          }
-        };
+          .stub(Auth0WebAuth.prototype, '_parseHash')
+          .rejects(expectedError);
+        onRedirect = this.sandbox.stub();
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         auth0WebAuth._onRedirect = onRedirect;
+
         promise = auth0WebAuth.handleAuthentication();
       });
 
@@ -384,7 +487,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         });
       });
 
-      it('returns with a rejected promise', function() {
+      it('returns a rejected promise', function() {
         return expect(promise).to.be.rejectedWith(expectedError);
       });
     });
@@ -394,21 +497,40 @@ describe('sessionTypes/Auth0WebAuth', function() {
     let auth0WebAuth;
 
     beforeEach(function() {
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
       auth0WebAuth = new Auth0WebAuth(sdk);
+      isAuthenticated.restore();
+    });
+
+    it('returns true if the user is authenticated', function() {
+      auth0WebAuth._sessionInfo = {
+        accessToken: faker.internet.url(),
+        expiresAt: faker.date.future().getTime()
+      };
+
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.true;
     });
 
     it('returns false when there is no stored session info', function() {
+      auth0WebAuth._sessionInfo = undefined;
+
       const isAuthenticated = auth0WebAuth.isAuthenticated();
 
       expect(isAuthenticated).to.be.false;
     });
 
     it('returns false when there is no stored access token', function() {
+      auth0WebAuth._sessionInfo = {};
+
+      const isAuthenticated = auth0WebAuth.isAuthenticated();
+
+      expect(isAuthenticated).to.be.false;
+    });
+
+    it('returns false when there is no stored `expiresAt` value', function() {
       auth0WebAuth._sessionInfo = {
-        apiToken: faker.internet.url(),
-        expiresAt: faker.date.past().getTime()
+        accessToken: faker.internet.url()
       };
 
       const isAuthenticated = auth0WebAuth.isAuthenticated();
@@ -416,21 +538,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
       expect(isAuthenticated).to.be.false;
     });
 
-    it('returns false when there is no stored api token', function() {
+    it('returns false when the stored `expiresAt` value is in the past', function() {
       auth0WebAuth._sessionInfo = {
         accessToken: faker.internet.url(),
         expiresAt: faker.date.past().getTime()
-      };
-
-      const isAuthenticated = auth0WebAuth.isAuthenticated();
-
-      expect(isAuthenticated).to.be.false;
-    });
-
-    it('returns false when there is no stored expires at value', function() {
-      auth0WebAuth._sessionInfo = {
-        accessToken: faker.internet.url(),
-        apiToken: faker.internet.url()
       };
 
       const isAuthenticated = auth0WebAuth.isAuthenticated();
@@ -443,8 +554,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
     let auth0WebAuth;
 
     beforeEach(function() {
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
       auth0WebAuth = new Auth0WebAuth(sdk);
       auth0WebAuth.logIn();
     });
@@ -458,58 +567,55 @@ describe('sessionTypes/Auth0WebAuth', function() {
     let auth0WebAuth;
     let clearTimeout;
     let expectedTokenRenewalTimeout;
-    let onRedirect;
     let localStorage;
 
     beforeEach(function() {
       expectedTokenRenewalTimeout = faker.helpers.createTransaction();
 
       clearTimeout = this.sandbox.stub(global, 'clearTimeout');
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
       localStorage = {
         removeItem: this.sandbox.stub()
       };
       global.localStorage = localStorage;
-      onRedirect = this.sandbox.stub();
-      this.sandbox.stub(Auth0WebAuth.prototype, '_scheduleTokenRenewal');
 
       auth0WebAuth = new Auth0WebAuth(sdk);
-      auth0WebAuth._onRedirect = onRedirect;
       auth0WebAuth._sessionInfo = {
         accessToken: faker.internet.password(),
         apiToken: faker.internet.password(),
         expiresAt: faker.date.future().getTime()
       };
-      auth0WebAuth._tokenRenewalTimeout = expectedTokenRenewalTimeout;
+      auth0WebAuth._tokenPromises = {
+        [faker.internet.password()]: Promise.resolve()
+      };
+      auth0WebAuth._sessionRenewalTimeout = expectedTokenRenewalTimeout;
+
       auth0WebAuth.logOut();
     });
 
-    afterEach(function() {
-      delete global.localStorage;
-    });
-
-    it('resets the session info in the auth module instance', function() {
+    it('resets the session info stored in the auth module instance', function() {
       expect(auth0WebAuth._sessionInfo).to.deep.equal({});
     });
 
-    it('deletes the access token from local storage', function() {
+    it('resets any stored API tokens', function() {
+      expect(auth0WebAuth._tokenPromises).to.deep.equal({});
+    });
+
+    it('deletes the `access_token` from local storage', function() {
       expect(localStorage.removeItem).to.be.calledWith('access_token');
     });
 
-    it('deletes the api access token from local storage', function() {
-      expect(localStorage.removeItem).to.be.calledWith('api_token');
-    });
-
-    it('deletes the expires at information from local storage', function() {
+    it('deletes the `expires_at` from local storage', function() {
       expect(localStorage.removeItem).to.be.calledWith('expires_at');
     });
 
-    it('clears the existing token renewal timeout', function() {
+    it('clears the token renewal timeout', function() {
       expect(clearTimeout).to.be.calledWith(expectedTokenRenewalTimeout);
     });
 
-    it("redirects to the browser's location", function() {
-      expect(onRedirect).to.be.calledWith('/');
+    it('logs the user out from Auth0 and redirects to the project root', function() {
+      expect(webAuthSession.logout).to.be.calledWith({
+        returnTo: global.window.location
+      });
     });
   });
 
@@ -523,7 +629,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedOptions = faker.helpers.createTransaction();
         expectedSessionInfo = {
           accessToken: faker.internet.password(),
-          apiToken: faker.internet.password(),
           expiresAt: faker.date.future().getTime()
         };
 
@@ -532,7 +637,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
           .callsFake((options, cb) => {
             cb(null, expectedSessionInfo);
           });
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         promise = auth0WebAuth._checkSession(expectedOptions);
@@ -561,7 +665,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
           .callsFake((options, cb) => {
             cb(expectedError);
           });
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         promise = auth0WebAuth._checkSession();
@@ -579,16 +682,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
     beforeEach(function() {
       expectedPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
-      global.window = {
-        _location: faker.internet.url(),
-        get location() {
-          return this._location;
-        },
-        set location(newLocation) {
-          this._location = newLocation;
-        }
-      };
-
       Auth0WebAuth.prototype._defaultOnRedirect(expectedPathname);
     });
 
@@ -597,202 +690,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  describe('_getApiToken', function() {
-    context('when handling audiences with a client id', function() {
-      let accessToken;
-      let expectedApiToken;
-      let post;
-      let promise;
-
-      beforeEach(function() {
-        accessToken = faker.internet.password();
-        expectedApiToken = faker.internet.password();
-
-        post = this.sandbox.stub(axios, 'post').callsFake(() => {
-          return Promise.resolve({ data: { access_token: expectedApiToken } });
-        });
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
-        const auth0WebAuth = new Auth0WebAuth(sdk);
-        promise = auth0WebAuth._getApiToken(accessToken);
-      });
-
-      it('POSTs to the contxt api to get a token', function() {
-        expect(post).to.be.calledWith(
-          `${sdk.config.audiences.contxtAuth.host}/v1/token`,
-          {
-            audiences: [sdk.config.audiences.facilities.clientId],
-            nonce: 'nonce'
-          },
-          { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
-      });
-
-      it('returns a promise that fulfills with the api access token', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedApiToken
-        );
-      });
-    });
-
-    context('when handing a null audience', function() {
-      let accessToken;
-      let post;
-
-      beforeEach(function() {
-        accessToken = faker.internet.password();
-        post = this.sandbox.stub(axios, 'post').resolves({ data: {} });
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
-        const auth0WebAuth = new Auth0WebAuth({
-          ...sdk,
-          config: {
-            ...sdk.config,
-            audiences: {
-              ...sdk.config.audiences,
-              [faker.hacker.noun()]: {
-                clientId: null,
-                host: faker.internet.url(),
-                module: function() {}
-              }
-            }
-          }
-        });
-        auth0WebAuth._getApiToken(accessToken);
-      });
-
-      it('does not include null values when getting a token from the contxt api', function() {
-        const { audiences } = post.firstCall.args[1];
-        expect(audiences).to.not.include(null);
-      });
-    });
-  });
-
-  describe('_getCurrentTokenByType', function() {
-    context('when there are no existing tokens', function() {
-      context('when successfully getting the requested token', function() {
-        let expectedSessionInfo;
-        let getUpdatedSessionInfo;
-        let promise;
-        let tokenType;
-
-        beforeEach(function() {
-          expectedSessionInfo = {
-            accessToken: faker.internet.password(),
-            apiToken: faker.internet.password()
-          };
-          tokenType = faker.random.arrayElement(
-            Object.keys(expectedSessionInfo)
-          );
-
-          getUpdatedSessionInfo = this.sandbox
-            .stub(Auth0WebAuth.prototype, '_getUpdatedSessionInfo')
-            .resolves(expectedSessionInfo);
-          this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
-          const auth0WebAuth = new Auth0WebAuth(sdk);
-          auth0WebAuth._sessionInfo = {
-            expiresAt: faker.date.past().getTime()
-          };
-          promise = auth0WebAuth._getCurrentTokenByType(
-            tokenType.replace(/Token$/, '')
-          );
-        });
-
-        it('gets updated session info', function() {
-          expect(getUpdatedSessionInfo).to.be.calledOnce;
-        });
-
-        it('resolves with the requested token info', function() {
-          return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-            expectedSessionInfo[tokenType]
-          );
-        });
-      });
-
-      context(
-        'when requesting a token type that does not exist in the session info',
-        function() {
-          let promise;
-          let tokenType;
-
-          beforeEach(function() {
-            tokenType = faker.hacker.adjective();
-
-            this.sandbox
-              .stub(Auth0WebAuth.prototype, '_getUpdatedSessionInfo')
-              .resolves({
-                accessToken: faker.internet.password(),
-                apiToken: faker.internet.password()
-              });
-            this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
-            const auth0WebAuth = new Auth0WebAuth(sdk);
-            auth0WebAuth._sessionInfo = {
-              expiresAt: faker.date.past().getTime()
-            };
-            promise = auth0WebAuth._getCurrentTokenByType(tokenType);
-          });
-
-          it('returns a rejected promise', function() {
-            return expect(promise).to.be.rejectedWith(
-              `No ${tokenType} token found`
-            );
-          });
-        }
-      );
-    });
-
-    context('when there is an existing, non-expired token', function() {
-      let expectedSessionInfo;
-      let getUpdatedSessionInfo;
-      let promise;
-      let tokenType;
-
-      beforeEach(function() {
-        expectedSessionInfo = {
-          accessToken: faker.internet.password(),
-          apiToken: faker.internet.password(),
-          // Add buffer to ensure date is in the future
-          expiresAt:
-            faker.date.future().getTime() +
-            sdk.config.auth.tokenExpiresAtBufferMs
-        };
-        tokenType = faker.random.arrayElement(
-          Object.keys(omit(expectedSessionInfo, ['expiresAt']))
-        );
-
-        getUpdatedSessionInfo = this.sandbox
-          .stub(Auth0WebAuth.prototype, '_getUpdatedSessionInfo')
-          .resolves({});
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
-        const auth0WebAuth = new Auth0WebAuth(sdk);
-        auth0WebAuth._sessionInfo = expectedSessionInfo;
-        promise = auth0WebAuth._getCurrentTokenByType(
-          tokenType.replace(/Token$/, '')
-        );
-      });
-
-      it('does not get updated session info', function() {
-        expect(getUpdatedSessionInfo).to.not.be.called;
-      });
-
-      it('resolves with the requested token info', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-          expectedSessionInfo[tokenType]
-        );
-      });
-    });
-  });
-
   describe('_getRedirectPathname', function() {
-    beforeEach(function() {
-      global.localStorage = {
-        removeItem: this.sandbox.stub()
-      };
-    });
-
     afterEach(function() {
       delete global.localStorage;
     });
@@ -804,10 +702,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        global.localStorage.getItem = this.sandbox
-          .stub()
-          .returns(expectedPathname);
+        global.localStorage = {
+          getItem: this.sandbox.stub().returns(expectedPathname),
+          removeItem: this.sandbox.stub()
+        };
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         pathname = auth0WebAuth._getRedirectPathname();
@@ -834,8 +732,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let pathname;
 
       beforeEach(function() {
-        this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-        global.localStorage.getItem = this.sandbox.stub();
+        global.localStorage = {
+          getItem: this.sandbox.stub(),
+          removeItem: this.sandbox.stub()
+        };
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         pathname = auth0WebAuth._getRedirectPathname();
@@ -847,233 +747,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  describe('_getUpdatedSessionInfo', function() {
-    context('when there is no existing request for session info', function() {
-      context('when successfully updating session info', function() {
-        let auth0WebAuth;
-        let checkSession;
-        let expectedSessionInfo;
-        let handleNewSessionInfo;
-        let promise;
-
-        beforeEach(function() {
-          expectedSessionInfo = {
-            accessToken: faker.internet.password(),
-            apiToken: faker.internet.password(),
-            expiresAt: faker.date.future().getTime()
-          };
-
-          checkSession = this.sandbox
-            .stub(Auth0WebAuth.prototype, '_checkSession')
-            .resolves(expectedSessionInfo);
-          handleNewSessionInfo = this.sandbox
-            .stub(Auth0WebAuth.prototype, '_handleNewSessionInfo')
-            .resolves(expectedSessionInfo);
-          this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
-          auth0WebAuth = new Auth0WebAuth(sdk);
-          promise = auth0WebAuth._getUpdatedSessionInfo();
-        });
-
-        it('sets the stored promise in the class instance', function() {
-          expect(auth0WebAuth._updatedSessionInfoPromise).to.be.a('promise');
-        });
-
-        it('checks the existing session for updated session info', function() {
-          expect(checkSession).to.be.calledOnce;
-        });
-
-        it('handles the new session info', function() {
-          return promise.then(() => {
-            expect(handleNewSessionInfo).to.be.calledWith(expectedSessionInfo);
-          });
-        });
-
-        it('resets the stored promise in the class instance', function() {
-          return promise.then(() => {
-            expect(auth0WebAuth._updatedSessionInfoPromise).to.be.null;
-          });
-        });
-
-        it('resolves with the new session info', function() {
-          return expect(promise).to.be.fulfilled.and.to.eventually.equal(
-            expectedSessionInfo
-          );
-        });
-      });
-
-      context('when there is an error getting the session info', function() {
-        let logOut;
-
-        beforeEach(function() {
-          this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-          logOut = this.sandbox.stub(Auth0WebAuth.prototype, 'logOut');
-        });
-
-        it('throws a 401 and logs the user out if Auth0 requires the session to be re-authenticated', function() {
-          const errorType = faker.random.arrayElement([
-            'consent_required',
-            'interaction_required',
-            'login_required'
-          ]);
-          const originalError = {
-            error: errorType,
-            error_description: {
-              consent_required: 'Consent required',
-              interaction_required: 'Interaction required',
-              login_required: 'Login required'
-            }[errorType]
-          };
-          const expectedError = new Error('Unauthorized');
-          expectedError.response = {
-            data: {
-              code: 401,
-              error: originalError.error,
-              error_description: originalError.error_description
-            },
-            status: 401
-          };
-
-          this.sandbox
-            .stub(Auth0WebAuth.prototype, '_checkSession')
-            .rejects(originalError);
-
-          const auth0WebAuth = new Auth0WebAuth(sdk);
-          const promise = auth0WebAuth._getUpdatedSessionInfo();
-
-          return promise.then(expect.fail).catch((error) => {
-            expect(error.message).to.equal('Unauthorized');
-            expect(error.response).to.deep.equal(expectedError.response);
-
-            expect(logOut).to.be.calledOnce;
-          });
-        });
-
-        it('throws a human readable error when unable to reach the server', function() {
-          const originalError = new Error(faker.hacker.phrase());
-          const expectedError = new Error(
-            'There was a problem getting new session info. Please check your configuration settings.'
-          );
-          expectedError.fromSdk = true;
-          expectedError.originalError = originalError;
-
-          this.sandbox
-            .stub(Auth0WebAuth.prototype, '_checkSession')
-            .rejects(originalError);
-
-          const auth0WebAuth = new Auth0WebAuth(sdk);
-          const promise = auth0WebAuth._getUpdatedSessionInfo();
-
-          return promise.then(expect.fail).catch((err) => {
-            expect(err.message).to.equal(expectedError.message);
-            expect(err.fromSdk).to.equal(expectedError.fromSdk);
-            expect(err.originalError).to.equal(expectedError.originalError);
-          });
-        });
-
-        it('throws the original error if it includes a status code', function() {
-          const expectedError = new Error();
-          expectedError.response = { status: faker.random.number() };
-
-          this.sandbox
-            .stub(Auth0WebAuth.prototype, '_checkSession')
-            .rejects(expectedError);
-
-          const auth0WebAuth = new Auth0WebAuth(sdk);
-          const promise = auth0WebAuth._getUpdatedSessionInfo();
-
-          return expect(promise).to.be.rejectedWith(expectedError);
-        });
-      });
-    });
-
-    context(
-      'when there is an existing request for new session info',
-      function() {
-        let expectedPromise;
-        let promise;
-
-        beforeEach(function() {
-          expectedPromise = new Promise(() => {});
-          this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
-          const auth0WebAuth = new Auth0WebAuth(sdk);
-          auth0WebAuth._updatedSessionInfoPromise = expectedPromise;
-          promise = auth0WebAuth._getUpdatedSessionInfo();
-        });
-
-        it('returns the existing promise', function() {
-          expect(promise).to.equal(expectedPromise);
-        });
-      }
-    );
-  });
-
-  describe('_handleNewSessionInfo', function() {
-    let clock;
-    let expectedSessionInfo;
-    let getApiToken;
-    let promise;
-    let saveSession;
-    let scheduleTokenRenewal;
-
-    beforeEach(function() {
-      const currentDate = new Date();
-      expectedSessionInfo = {
-        accessToken: faker.internet.password(),
-        apiToken: faker.internet.password(),
-        expiresAt: faker.date.future().getTime()
-      };
-
-      clock = sinon.useFakeTimers(currentDate);
-      getApiToken = this.sandbox
-        .stub(Auth0WebAuth.prototype, '_getApiToken')
-        .resolves(expectedSessionInfo.apiToken);
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-      saveSession = this.sandbox.stub(Auth0WebAuth.prototype, '_saveSession');
-      scheduleTokenRenewal = this.sandbox.stub(
-        Auth0WebAuth.prototype,
-        '_scheduleTokenRenewal'
-      );
-
-      const auth0WebAuth = new Auth0WebAuth(sdk);
-      promise = auth0WebAuth._handleNewSessionInfo({
-        accessToken: expectedSessionInfo.accessToken,
-        expiresIn:
-          (expectedSessionInfo.expiresAt - currentDate.getTime()) / 1000
-      });
-    });
-
-    afterEach(function() {
-      clock.restore();
-    });
-
-    it('gets a contxt api token using the web auth access token', function() {
-      return promise.then(() => {
-        expect(getApiToken).to.be.calledWith(expectedSessionInfo.accessToken);
-      });
-    });
-
-    it('saves the updated session info', function() {
-      return promise.then(() => {
-        expect(saveSession).to.be.calledWith(expectedSessionInfo);
-      });
-    });
-
-    it('schedules the next token renewal', function() {
-      return promise.then(() => {
-        expect(scheduleTokenRenewal).to.be.calledOnce;
-      });
-    });
-
-    it('resolves with new session info', function() {
-      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-        expectedSessionInfo
-      );
-    });
-  });
-
-  describe('_loadSession', function() {
+  describe('_getStoredSession', function() {
     let auth0WebAuth;
     let expectedSessionInfo;
     let localStorage;
@@ -1082,20 +756,14 @@ describe('sessionTypes/Auth0WebAuth', function() {
     beforeEach(function() {
       expectedSessionInfo = {
         accessToken: faker.internet.password(),
-        apiToken: faker.internet.password(),
         expiresAt: faker.date.future().getTime()
       };
 
-      this.sandbox
-        .stub(Auth0WebAuth.prototype, 'isAuthenticated')
-        .returns(false);
       localStorage = {
         getItem: this.sandbox.stub().callsFake((key) => {
           switch (key) {
             case 'access_token':
               return expectedSessionInfo.accessToken;
-            case 'api_token':
-              return expectedSessionInfo.apiToken;
             case 'expires_at':
               return `${expectedSessionInfo.expiresAt}`;
           }
@@ -1104,7 +772,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       global.localStorage = localStorage;
 
       auth0WebAuth = new Auth0WebAuth(sdk);
-      session = auth0WebAuth._loadSession();
+      getStoredSession.restore();
+
+      session = auth0WebAuth._getStoredSession();
     });
 
     afterEach(function() {
@@ -1113,10 +783,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     it('gets the access token out of local storage', function() {
       expect(localStorage.getItem).to.be.calledWith('access_token');
-    });
-
-    it('gets the api token out of local storage', function() {
-      expect(localStorage.getItem).to.be.calledWith('api_token');
     });
 
     it('gets the expires at information out of local storage (and coreces it to be a number)', function() {
@@ -1128,16 +794,191 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  describe('_parseWebAuthHash', function() {
+  describe('_getUpdatedSession', function() {
+    context('when successfully updating the session', function() {
+      let auth0WebAuth;
+      let checkSession;
+      let expectedSessionInfo;
+      let storeSession;
+      let promise;
+
+      beforeEach(function() {
+        expectedSessionInfo = {
+          accessToken: faker.internet.password(),
+          expiresAt: faker.date.future().getTime()
+        };
+
+        checkSession = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_checkSession')
+          .resolves(expectedSessionInfo);
+        storeSession = this.sandbox.stub(
+          Auth0WebAuth.prototype,
+          '_storeSession'
+        );
+
+        auth0WebAuth = new Auth0WebAuth(sdk);
+        auth0WebAuth._tokenPromises = {
+          [faker.internet.password()]: Promise.resolve()
+        };
+        scheduleSessionRefresh.reset();
+
+        promise = auth0WebAuth._getUpdatedSession();
+      });
+
+      it('checks the existing session for updated session info', function() {
+        return promise.then(() => {
+          expect(checkSession).to.be.calledOnce;
+        });
+      });
+
+      it('stores the new session info', function() {
+        return promise.then(() => {
+          expect(storeSession).to.be.calledWith(expectedSessionInfo);
+        });
+      });
+
+      it('resets any stored access tokens', function() {
+        return promise.then(() => {
+          expect(auth0WebAuth._tokenPromises).to.deep.equal({});
+        });
+      });
+
+      it('schedules the session to refresh in the future', function() {
+        return promise.then(() => {
+          expect(scheduleSessionRefresh).to.be.calledOnce;
+        });
+      });
+    });
+
+    context('when there is a failure whileupdating the session', function() {
+      let generateUnauthorizedError;
+      let logOut;
+
+      beforeEach(function() {
+        logOut = this.sandbox.stub(Auth0WebAuth.prototype, 'logOut');
+      });
+
+      it('throws a 401 and logs the user out if Auth0 requires the session to be re-authenticated', function() {
+        const errorType = faker.random.arrayElement([
+          'consent_required',
+          'interaction_required',
+          'login_required'
+        ]);
+        const originalError = {
+          error: errorType,
+          error_description: {
+            consent_required: 'Consent required',
+            interaction_required: 'Interaction required',
+            login_required: 'Login required'
+          }[errorType]
+        };
+        const expectedError = new Error('Unauthorized');
+        expectedError.response = {
+          data: {
+            code: 401,
+            error: originalError.error,
+            error_description: originalError.error_description
+          },
+          status: 401
+        };
+
+        this.sandbox
+          .stub(Auth0WebAuth.prototype, '_checkSession')
+          .rejects(originalError);
+        generateUnauthorizedError = this.sandbox
+          .stub(Auth0WebAuth.prototype, '_generateUnauthorizedError')
+          .returns(expectedError);
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        const promise = auth0WebAuth._getUpdatedSession();
+
+        return promise.then(expect.fail).catch((error) => {
+          expect(generateUnauthorizedError).to.be.calledWith(originalError);
+
+          expect(error.message).to.equal('Unauthorized');
+          expect(error.response).to.deep.equal(expectedError.response);
+
+          expect(logOut).to.be.calledOnce;
+        });
+      });
+
+      it('throws a human readable error when unable to reach the server', function() {
+        const originalError = new Error(faker.hacker.phrase());
+        const expectedError = new Error(
+          'There was a problem getting new session info. Please check your configuration settings.'
+        );
+        expectedError.fromSdk = true;
+        expectedError.originalError = originalError;
+
+        this.sandbox
+          .stub(Auth0WebAuth.prototype, '_checkSession')
+          .rejects(originalError);
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        const promise = auth0WebAuth._getUpdatedSession();
+
+        return promise.then(expect.fail).catch((err) => {
+          expect(err.message).to.equal(expectedError.message);
+          expect(err.fromSdk).to.equal(expectedError.fromSdk);
+          expect(err.originalError).to.equal(expectedError.originalError);
+        });
+      });
+
+      it('throws the original error if it includes a status code', function() {
+        const expectedError = new Error();
+        expectedError.response = { status: faker.random.number() };
+
+        this.sandbox
+          .stub(Auth0WebAuth.prototype, '_checkSession')
+          .rejects(expectedError);
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+        const promise = auth0WebAuth._getUpdatedSession();
+
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+  });
+
+  describe('_generateUnauthorizedError', function() {
     let auth0WebAuth;
 
     beforeEach(function() {
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-
       auth0WebAuth = new Auth0WebAuth(sdk);
-      auth0WebAuth.logIn();
     });
 
+    it('returns an error with a 401 status code', function() {
+      const error = auth0WebAuth._generateUnauthorizedError();
+
+      expect(error).to.be.an('error');
+      expect(error).to.deep.include({
+        message: 'Unauthorized',
+        response: {
+          data: {
+            code: 401
+          },
+          status: 401
+        }
+      });
+    });
+
+    it("includes the original error's content if one is provided", function() {
+      const expectedError = new Error(faker.hacker.phrase());
+      expectedError[faker.hacker.noun()] = faker.helpers.createTransaction();
+
+      const error = auth0WebAuth._generateUnauthorizedError(expectedError);
+
+      expect(error.response.data).to.include(expectedError);
+    });
+
+    it('indicates the SDK originated the error if no original error is provided', function() {
+      const error = auth0WebAuth._generateUnauthorizedError();
+
+      expect(error.fromSdk).to.be.true;
+    });
+  });
+
+  describe('_parseHash', function() {
     context('successfully parsing the hash', function() {
       let expectedHash;
       let promise;
@@ -1149,7 +990,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           .callsFake((cb) => cb(null, expectedHash));
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
-        promise = auth0WebAuth._parseWebAuthHash();
+        promise = auth0WebAuth._parseHash();
       });
 
       it('parses the hash using auth0', function() {
@@ -1175,7 +1016,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('returns with a rejected promise', function() {
-        return expect(auth0WebAuth._parseWebAuthHash()).to.be.rejectedWith(
+        return expect(auth0WebAuth._parseHash()).to.be.rejectedWith(
           expectedError
         );
       });
@@ -1193,62 +1034,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('returns with a rejected promise', function() {
-        return expect(auth0WebAuth._parseWebAuthHash()).to.be.rejectedWith(
+        return expect(auth0WebAuth._parseHash()).to.be.rejectedWith(
           'No valid tokens returned from auth0'
         );
       });
-    });
-  });
-
-  describe('_saveSession', function() {
-    let auth0WebAuth;
-    let expectedSessionInfo;
-    let localStorage;
-
-    beforeEach(function() {
-      expectedSessionInfo = {
-        accessToken: faker.internet.password(),
-        apiToken: faker.internet.password(),
-        expiresAt: faker.date.future().getTime()
-      };
-
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-      localStorage = {
-        setItem: this.sandbox.stub()
-      };
-      global.localStorage = localStorage;
-
-      auth0WebAuth = new Auth0WebAuth(sdk);
-      auth0WebAuth._saveSession(expectedSessionInfo);
-    });
-
-    afterEach(function() {
-      delete global.localStorage;
-    });
-
-    it('saves the session info in the auth module instance', function() {
-      expect(auth0WebAuth._sessionInfo).to.equal(expectedSessionInfo);
-    });
-
-    it('saves the access token to local storage', function() {
-      expect(localStorage.setItem).to.be.calledWith(
-        'access_token',
-        expectedSessionInfo.accessToken
-      );
-    });
-
-    it('saves the api access token to local storage', function() {
-      expect(localStorage.setItem).to.be.calledWith(
-        'api_token',
-        expectedSessionInfo.apiToken
-      );
-    });
-
-    it('saves the expires at information to local storage (as a string)', function() {
-      expect(localStorage.setItem).to.be.calledWith(
-        'expires_at',
-        `${expectedSessionInfo.expiresAt}`
-      );
     });
   });
 
@@ -1256,7 +1045,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     let auth0WebAuth;
     let clock;
     let expectedDelay;
-    let getUpdatedSessionInfo;
+    let getUpdatedSession;
     let initialTimeout;
 
     beforeEach(function() {
@@ -1271,17 +1060,18 @@ describe('sessionTypes/Auth0WebAuth', function() {
       initialTimeout = clock.setTimeout(() => {}, 0);
 
       this.sandbox.spy(clock, 'clearTimeout');
-      this.sandbox.stub(Auth0WebAuth.prototype, '_loadSession');
-      getUpdatedSessionInfo = this.sandbox.stub(
+      getUpdatedSession = this.sandbox.stub(
         Auth0WebAuth.prototype,
-        '_getUpdatedSessionInfo'
+        '_getUpdatedSession'
       );
       this.sandbox.spy(clock, 'setTimeout');
 
       auth0WebAuth = new Auth0WebAuth(sdk);
       auth0WebAuth._sessionInfo = { expiresAt };
-      auth0WebAuth._tokenRenewalTimeout = initialTimeout;
-      auth0WebAuth._scheduleTokenRenewal();
+      auth0WebAuth._sessionRenewalTimeout = initialTimeout;
+      scheduleSessionRefresh.restore();
+
+      auth0WebAuth._scheduleSessionRefresh();
     });
 
     afterEach(function() {
@@ -1293,9 +1083,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
 
     it('sets up a renewal timeout', function() {
-      expect(auth0WebAuth._tokenRenewalTimeout).to.not.equal(initialTimeout);
-      expect(auth0WebAuth._tokenRenewalTimeout).to.be.an('object');
-      expect(auth0WebAuth._tokenRenewalTimeout.id).to.be.a('number');
+      expect(auth0WebAuth._sessionRenewalTimeout).to.not.equal(initialTimeout);
+      expect(auth0WebAuth._sessionRenewalTimeout).to.be.an('object');
+      expect(auth0WebAuth._sessionRenewalTimeout.id).to.be.a('number');
 
       expect(clock.setTimeout).to.be.calledOnce;
       const [cb, delay] = clock.setTimeout.firstCall.args;
@@ -1306,7 +1096,62 @@ describe('sessionTypes/Auth0WebAuth', function() {
     it('updates the session info after the delay', function() {
       clock.tick(expectedDelay);
 
-      expect(getUpdatedSessionInfo).to.be.calledOnce;
+      expect(getUpdatedSession).to.be.calledOnce;
+    });
+  });
+
+  describe('_storeSession', function() {
+    let auth0WebAuth;
+    let expectedSessionInfo;
+    let localStorage;
+
+    beforeEach(function() {
+      expectedSessionInfo = {
+        accessToken: faker.internet.password(),
+        expiresAt: faker.date.future().getTime()
+      };
+
+      localStorage = {
+        setItem: this.sandbox.stub()
+      };
+      global.localStorage = localStorage;
+
+      auth0WebAuth = new Auth0WebAuth(sdk);
+
+      auth0WebAuth._storeSession({
+        accessToken: expectedSessionInfo.accessToken,
+        expiresIn: (expectedSessionInfo.expiresAt - Date.now()) / 1000
+      });
+    });
+
+    afterEach(function() {
+      delete global.localStorage;
+    });
+
+    it('saves the access token to local storage', function() {
+      expect(localStorage.setItem).to.be.calledWith(
+        'access_token',
+        expectedSessionInfo.accessToken
+      );
+    });
+
+    it('saves the `expiresAt` information to local storage (as a string)', function() {
+      expect(localStorage.setItem).to.be.calledWith(
+        'expires_at',
+        `${expectedSessionInfo.expiresAt}`
+      );
+    });
+
+    it('saves the access token in the auth module instance', function() {
+      expect(auth0WebAuth._sessionInfo.accessToken).to.equal(
+        expectedSessionInfo.accessToken
+      );
+    });
+
+    it('saves the `expiresAt` information in the auth module instance', function() {
+      expect(auth0WebAuth._sessionInfo.expiresAt).to.equal(
+        expectedSessionInfo.expiresAt
+      );
     });
   });
 });

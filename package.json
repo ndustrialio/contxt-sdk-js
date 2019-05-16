@@ -1,13 +1,19 @@
 {
   "name": "@ndustrial/contxt-sdk",
-  "version": "0.0.49",
+  "version": "1.0.0-beta.7",
   "description": "",
   "main": "lib/index.js",
-  "module": "es/index.js",
+  "module": "esm/index.js",
+  "browser": {
+    "./esm/bus/index.js": "./esm/bus/index.browser.js",
+    "./lib/bus/index.js": "./lib/bus/index.browser.js",
+    "./esm/bus/webSocketConnection.js": "./esm/bus/webSocketConnection.browser.js",
+    "./lib/bus/webSocketConnection.js": "./lib/bus/webSocketConnection.browser.js"
+  },
   "scripts": {
     "build": "npm run build:js && npm run build:docs",
     "build:docs": "node ./support/docs",
-    "build:js": "rollup -c",
+    "build:js": "gulp build",
     "coverage": "nyc npm run test:js",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
     "precommit": "pretty-quick --staged",
@@ -17,7 +23,7 @@
     "test:js": "NODE_ENV=test mocha --opts 'support/mocha.opts' 'src/**/*.spec.js'",
     "test:js:dev": "npm run test:js -- --watch",
     "test:js:inspect": "npm run test:js -- --inspect-brk",
-    "watch": "npm run build:js -- --watch"
+    "watch": "gulp watch"
   },
   "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
   "license": "ISC",
@@ -26,24 +32,52 @@
     "npm": "^5.10.0 ^6.0.0",
     "node": ">=6"
   },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ],
+        "presets": [
+          "env",
+          "stage-2"
+        ]
+      }
+    },
+    "presets": [
+      [
+        "env",
+        {
+          "modules": false,
+          "targets": {
+            "browsers": "> 0.5%, last 2 versions, Firefox ESR, not dead",
+            "node": "6"
+          }
+        }
+      ],
+      "stage-2"
+    ]
+  },
   "dependencies": {
+    "auth0-js": "^9.3.0",
+    "axios": "^0.17.0",
     "change-case": "^3.0.2",
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
-    "nanoid": "^2.0.1",
-    "url-parse": "^1.4.3"
+    "url-parse": "^1.4.3",
+    "uuid": "^3.3.2",
+    "ws": "^6.1.3"
   },
   "devDependencies": {
-    "auth0-js": "^9.3.0",
-    "axios": "~0.17.0",
     "babel-eslint": "^8.2.1",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-istanbul": "^4.1.5",
+    "babel-plugin-istanbul": "^5.1.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "del": "^4.0.0",
     "eslint": "^4.15.0",
     "eslint-config-ndustrial": "^1.0.5",
     "eslint-config-prettier": "^2.9.0",
@@ -51,6 +85,9 @@
     "eslint-plugin-node": "^5.2.1",
     "faker": "^4.1.0",
     "fast-glob": "^2.1.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-sourcemaps": "^2.6.5",
     "husky": "^0.14.3",
     "jsdoc-to-markdown": "^4.0.1",
     "lodash.omit": "^4.5.0",
@@ -63,20 +100,8 @@
     "prettier": "^1.14.3",
     "pretty-quick": "^1.4.1",
     "proxyquire": "^2.1.0",
-    "rollup": "^0.54.1",
-    "rollup-plugin-babel": "^3.0.3",
-    "rollup-plugin-cleanup": "^2.0.0",
-    "rollup-plugin-commonjs": "^8.2.6",
-    "rollup-plugin-node-resolve": "^3.0.2",
-    "rollup-watch": "^4.3.1",
     "rosie": "^1.6.0",
     "sinon": "^4.1.6",
-    "sinon-chai": "^2.14.0",
-    "ws": "~6.1.3"
-  },
-  "peerDependencies": {
-    "auth0-js": "^9.3.0",
-    "axios": "~0.17.0",
-    "ws": "~6.1.3"
+    "sinon-chai": "^2.14.0"
   }
 }

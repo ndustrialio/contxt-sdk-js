@@ -1,4 +1,4 @@
-import nanoid from 'nanoid/non-secure';
+import uuid from 'uuid/v4';
 
 /**
  * The WebSocket Error Event
@@ -19,9 +19,10 @@ import nanoid from 'nanoid/non-secure';
  */
 
 /**
- * Module that wraps the websocket connection to the message bus
- * to provide the developer with a specific set of functionality
- *
+ * Module that wraps the websocket connection to the message bus to provide the
+ * developer with a specific set of functionality. This is for Node
+ * environments. Documentation for browser environments is found under
+ * `BrowserWebSocketConnection`.
  */
 class WebSocketConnection {
   /**
@@ -73,7 +74,7 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      const messageId = nanoid();
+      const messageId = uuid();
 
       this._messageHandlers[messageId] = (message) => {
         const error = message.error;
@@ -198,7 +199,7 @@ class WebSocketConnection {
         return reject(new Error('WebSocket connection not open'));
       }
 
-      const messageId = nanoid();
+      const messageId = uuid();
 
       this._messageHandlers[messageId] = (message) => {
         const error = message.error;

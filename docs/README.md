@@ -28,8 +28,20 @@ enabled in Auth0.</p>
 <p><em>NOTE</em>: The web origin added in auth0 should be something like
 &quot;<a href="http://localhost:5000&quot;">http://localhost:5000&quot;</a>, not &quot;<a href="http://localhost:5000/callback&quot;">http://localhost:5000/callback&quot;</a></p>
 </dd>
+<dt><a href="./BrowserBus.md">BrowserBus</a></dt>
+<dd><p>Module that provides access to the message bus. This is for browser
+environments. Documentation for Node environments is found under <code>Bus</code>.</p>
+</dd>
+<dt><a href="./BrowserWebSocketConnection.md">BrowserWebSocketConnection</a></dt>
+<dd><p>Module that wraps the websocket connection to the message bus to provide the
+developer with a specific set of functionality. This is for browser
+environments. Documentation for Node environments is found under
+<code>WebSocketConnection</code>.</p>
+</dd>
 <dt><a href="./Bus.md">Bus</a></dt>
-<dd><p>Module that provides access to the message bus</p>
+<dd><p>Module that provides access to the message bus. This is for Node
+environments. Documentation for browser environments is found under
+<code>BrowserBus</code>.</p>
 </dd>
 <dt><a href="./Channels.md">Channels</a></dt>
 <dd><p>Module that provides access to message bus channels</p>
@@ -100,8 +112,10 @@ the <code>logIn</code> function from the user to authenticate.</p>
 <dd><p>Module that provides access to contxt roles</p>
 </dd>
 <dt><a href="./WebSocketConnection.md">WebSocketConnection</a></dt>
-<dd><p>Module that wraps the websocket connection to the message bus
-to provide the developer with a specific set of functionality</p>
+<dd><p>Module that wraps the websocket connection to the message bus to provide the
+developer with a specific set of functionality. This is for Node
+environments. Documentation for browser environments is found under
+<code>BrowserWebSocketConnection</code>.</p>
 </dd>
 </dl>
 
