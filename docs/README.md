@@ -108,6 +108,9 @@ the <code>logIn</code> function from the user to authenticate.</p>
 </dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>
+<dt><a href="./Roles.md">Roles</a></dt>
+<dd><p>Module that provides access to contxt roles</p>
+</dd>
 <dt><a href="./WebSocketConnection.md">WebSocketConnection</a></dt>
 <dd><p>Module that wraps the websocket connection to the message bus to provide the
 developer with a specific set of functionality. This is for Node
@@ -157,6 +160,10 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dt><a href="./Typedefs.md#ContxtOrganization">ContxtOrganization</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtOrganizationFeaturedApplication">ContxtOrganizationFeaturedApplication</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtRole">ContxtRole</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtStack">ContxtStack</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
 <dd></dd>
