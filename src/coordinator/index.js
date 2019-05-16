@@ -1,4 +1,5 @@
 import EdgeNodes from './edgeNodes';
+import Roles from './roles';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
@@ -101,6 +102,7 @@ class Coordinator {
     this._sdk = sdk;
 
     this.edgeNodes = new EdgeNodes(sdk, request, baseUrl);
+    this.roles = new Roles(sdk, request, baseUrl);
   }
 
   /**
