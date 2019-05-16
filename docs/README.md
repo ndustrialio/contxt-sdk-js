@@ -96,6 +96,9 @@ the <code>logIn</code> function from the user to authenticate.</p>
 </dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>
+<dt><a href="./Roles.md">Roles</a></dt>
+<dd><p>Module that provides access to contxt roles</p>
+</dd>
 <dt><a href="./WebSocketConnection.md">WebSocketConnection</a></dt>
 <dd><p>Module that wraps the websocket connection to the message bus
 to provide the developer with a specific set of functionality</p>

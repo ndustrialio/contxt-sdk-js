@@ -14,7 +14,6 @@ Module that provides access to information about Contxt
     * [.getAllOrganizations()](#Coordinator+getAllOrganizations) ⇒ <code>Promise</code>
     * [.getFavoriteApplications()](#Coordinator+getFavoriteApplications) ⇒ <code>Promise</code>
     * [.getFeaturedApplications(organizationId)](#Coordinator+getFeaturedApplications) ⇒ <code>Promise</code>
-    * [.getRolesByOrganization(organizationId)](#Coordinator+getRolesByOrganization) ⇒ <code>Promise</code>
     * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
     * [.getUsersByOrganization(organizationId)](#Coordinator+getUsersByOrganization) ⇒ <code>Promise</code>
     * [.getUser(userId)](#Coordinator+getUser) ⇒ <code>Promise</code>
@@ -193,29 +192,6 @@ Note: Only valid for web users using auth0WebAuth session type
 contxtSdk.coordinator
   .getFeaturedApplications('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((featuredApplications) => console.log(featuredApplications))
-  .catch((err) => console.log(err));
-```
-<a name="Coordinator+getRolesByOrganization"></a>
-
-### contxtSdk.coordinator.getRolesByOrganization(organizationId) ⇒ <code>Promise</code>
-Gets an organization's list of roles
-
-API Endpoint: '/organizations/:organizationId/roles'
-Method: GET
-
-**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
-**Fulfill**: <code>ContxtRole[]</code> A list of roles  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
-
-**Example**  
-```js
-contxtSdk.coordinator
-  .getRolesByOrganization('36b8421a-cc4a-4204-b839-1397374fb16b')
-  .then((roles) => console.log(roles))
   .catch((err) => console.log(err));
 ```
 <a name="Coordinator+getOrganizationById"></a>
