@@ -266,6 +266,45 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | organizationId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtRole"></a>
+
+## ContxtRole : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applications | [<code>Array.&lt;ContxtApplication&gt;</code>](#ContxtApplication) |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| description | <code>string</code> |  |
+| id | <code>string</code> |  |
+| name | <code>string</code> |  |
+| organizationId | <code>string</code> |  |
+| stacks | [<code>Array.&lt;ContxtStack&gt;</code>](#ContxtStack) |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="ContxtStack"></a>
+
+## ContxtStack : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| clientId | <code>string</code> |  |
+| clusterId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| currentVersionId | <code>string</code> |  |
+| description | <code>string</code> |  |
+| documentationUrl | <code>string</code> |  |
+| icon | <code>string</code> |  |
+| id | <code>number</code> |  |
+| name | <code>string</code> |  |
+| organizationId | <code>string</code> |  |
+| ownerId | <code>string</code> |  |
+| type | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtUser"></a>
 
 ## ContxtUser : <code>Object</code>

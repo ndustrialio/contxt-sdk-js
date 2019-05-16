@@ -1,3 +1,10 @@
+## [v0.0.50](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.50) (2019-05-14)
+
+**Added**
+
+- Added Roles Module `coordinator.roles`
+- Added `Roles#getByOrganizationId` for getting all roles belonging to an organization
+
 ## [v0.0.49](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.49) (2019-04-22)
 
 **Added**

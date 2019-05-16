@@ -1,4 +1,5 @@
 import EdgeNodes from './edgeNodes';
+import Roles from './roles';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
@@ -31,6 +32,23 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
  * @property {string} organizationId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} ContxtStack
+ * @property {string} clientId
+ * @property {string} clusterId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} currentVersionId
+ * @property {string} description
+ * @property {string} documentationUrl
+ * @property {string} icon
+ * @property {number} id
+ * @property {string} name
+ * @property {string} organizationId
+ * @property {string} ownerId
+ * @property {string} type
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
@@ -74,6 +92,7 @@ class Coordinator {
     this._sdk = sdk;
 
     this.edgeNodes = new EdgeNodes(sdk, request, baseUrl);
+    this.roles = new Roles(sdk, request, baseUrl);
   }
 
   /**
