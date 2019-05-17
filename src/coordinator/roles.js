@@ -13,6 +13,23 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtStack
+ * @property {string} clientId
+ * @property {string} clusterId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} currentVersionId
+ * @property {string} description
+ * @property {string} documentationUrl
+ * @property {string} icon
+ * @property {number} id
+ * @property {string} name
+ * @property {string} organizationId
+ * @property {string} ownerId
+ * @property {string} type
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to contxt roles
  *
  * @typicalname contxtSdk.coordinator.roles

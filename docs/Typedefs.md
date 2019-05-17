@@ -336,6 +336,21 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | userId | <code>string</code> |  |
 
+<a name="ContxtUserPermissions"></a>
+
+## ContxtUserPermissions : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationsExplicit | <code>Array.&lt;number&gt;</code> | Application ids the user has directly been given access to |
+| applicationsImplicit | <code>Array.&lt;number&gt;</code> | Application ids the user has access to from a role or being the owner |
+| roles | <code>Array.&lt;string&gt;</code> | Role ids that the user belongs to |
+| stacksExplicit | <code>Array.&lt;number&gt;</code> | Stack ids the user has directly been given access to |
+| stacksImplicit | <code>Array.&lt;number&gt;</code> | Stack ids the user has access to from a role or being the owner |
+| userId | <code>string</code> |  |
+
 <a name="CostCenter"></a>
 
 ## CostCenter : <code>Object</code>

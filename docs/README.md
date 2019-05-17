@@ -1,6 +1,9 @@
 ## Classes
 
 <dl>
+<dt><a href="./Applications.md">Applications</a></dt>
+<dd><p>Module that provides access to contxt applications</p>
+</dd>
 <dt><a href="./AssetAttributes.md">AssetAttributes</a></dt>
 <dd><p>Module that provides access to, and the manipulation of, information about
 different asset attributes and their values</p>
@@ -96,6 +99,9 @@ More information about the best way to use this module is available at:
 only be used in Node.js applications. This SessionType requires a client id and a client secret,
 which are obtained from Auth0.</p>
 </dd>
+<dt><a href="./Organizations.md">Organizations</a></dt>
+<dd><p>Module that provides access to contxt organizations</p>
+</dd>
 <dt><a href="./Outputs.md">Outputs</a></dt>
 <dd><p>Module that provides access to output information</p>
 </dd>
@@ -106,10 +112,16 @@ utitlizes the password grant type authorization with Auth0. This
 SessionType will expect a username and a password to be passed into
 the <code>logIn</code> function from the user to authenticate.</p>
 </dd>
+<dt><a href="./Permissions.md">Permissions</a></dt>
+<dd><p>Module that provides access to contxt user permissions</p>
+</dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>
 <dt><a href="./Roles.md">Roles</a></dt>
 <dd><p>Module that provides access to contxt roles</p>
+</dd>
+<dt><a href="./Users.md">Users</a></dt>
+<dd><p>Module that provides access to contxt users</p>
 </dd>
 <dt><a href="./WebSocketConnection.md">WebSocketConnection</a></dt>
 <dd><p>Module that wraps the websocket connection to the message bus to provide the
@@ -168,6 +180,8 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUserFavoriteApplication">ContxtUserFavoriteApplication</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtUserPermissions">ContxtUserPermissions</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#CostCenter">CostCenter</a> : <code>Object</code></dt>
 <dd></dd>
