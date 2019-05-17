@@ -505,4 +505,54 @@ describe('Coordinator/Users', function() {
       });
     });
   });
+
+  describe('removeRole', function() {
+    context('when all required parameters are provided', function() {
+      let role;
+      let user;
+      let promise;
+
+      beforeEach(function() {
+        role = fixture.build('contxtRole');
+        user = fixture.build('contxtUser');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        promise = users.removeRole(user.id, role.id);
+      });
+
+      it('sends a request to removeRole the user from the organization', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/roles/${role.id}`
+        );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const role = fixture.build('contxtRole');
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.removeRole(null, role.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for removing a role from a user'
+        );
+      });
+    });
+
+    context('when the role ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.removeRole(user.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'A role ID is required for removing a role from a user'
+        );
+      });
+    });
+  });
 });

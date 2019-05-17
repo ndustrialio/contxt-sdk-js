@@ -13,6 +13,7 @@ Module that provides access to contxt users
     * [.getByOrganizationId(organizationId)](#Users+getByOrganizationId) ⇒ <code>Promise</code>
     * [.invite(organizationId, user)](#Users+invite) ⇒ <code>Promise</code>
     * [.remove(organizationId, userId)](#Users+remove) ⇒ <code>Promise</code>
+    * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
 
 <a name="new_Users_new"></a>
 
@@ -184,5 +185,28 @@ Method: DELETE
 ```js
 contxtSdk.coordinator.users
   .remove('ed2e8e24-79ef-4404-bf5f-995ef31b2298', '4a577e87-7437-4342-b183-00c18ec26d52')
+  .catch((err) => console.log(err));
+```
+<a name="Users+removeRole"></a>
+
+### contxtSdk.coordinator.users.removeRole(userId, roleId) ⇒ <code>Promise</code>
+Removes a role from a user
+
+API Endpoint: '/users/:userId/roles/:roleId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| roleId | <code>string</code> | The ID of the role |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .removeRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```
