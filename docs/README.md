@@ -106,6 +106,9 @@ utitlizes the password grant type authorization with Auth0. This
 SessionType will expect a username and a password to be passed into
 the <code>logIn</code> function from the user to authenticate.</p>
 </dd>
+<dt><a href="./Permissions.md">Permissions</a></dt>
+<dd><p>Module that provides access to contxt user permissions</p>
+</dd>
 <dt><a href="./Request.md">Request</a></dt>
 <dd></dd>
 <dt><a href="./Roles.md">Roles</a></dt>
