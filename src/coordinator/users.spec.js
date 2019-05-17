@@ -142,6 +142,81 @@ describe('Coordinator/Users', function() {
     });
   });
 
+  describe('addRole', function() {
+    context('when all the required parameters are provided', function() {
+      let expectedUserRole;
+      let promise;
+      let request;
+      let role;
+      let user;
+      let userRoleFromServer;
+      let toCamelCase;
+
+      beforeEach(function() {
+        role = fixture.build('contxtRole');
+        user = fixture.build('contxtUser');
+
+        expectedUserRole = fixture.build('contxtUserRole');
+        userRoleFromServer = fixture.build('contxtUserRole', expectedUserRole, {
+          fromServer: true
+        });
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(userRoleFromServer)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .callsFake((app) => expectedUserRole);
+
+        const users = new Users(baseSdk, request, expectedHost);
+        promise = users.addRole(user.id, role.id);
+      });
+
+      it('posts the user role to the server', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/roles/${role.id}`
+        );
+      });
+
+      it('formats the returned user role', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(userRoleFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const role = fixture.build('contxtRole');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addRole(null, role.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for adding a role to a user'
+        );
+      });
+    });
+
+    context('when the role ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addRole(user.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'A role ID is required for adding a role to a user'
+        );
+      });
+    });
+  });
+
   describe('get', function() {
     context('the user ID is provided', function() {
       let userFromServerAfterFormat;

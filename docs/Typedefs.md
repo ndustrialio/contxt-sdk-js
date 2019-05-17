@@ -351,6 +351,21 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | stacksImplicit | <code>Array.&lt;number&gt;</code> | Stack ids the user has access to from a role or being the owner |
 | userId | <code>string</code> |  |
 
+<a name="ContxtUserRole"></a>
+
+## ContxtUserRole : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| mappedFromExternalGroup | <code>boolean</code> |  |
+| userId | <code>string</code> |  |
+| roleId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="CostCenter"></a>
 
 ## CostCenter : <code>Object</code>

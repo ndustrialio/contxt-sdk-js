@@ -8,6 +8,7 @@ Module that provides access to contxt users
 * [Users](#Users)
     * [new Users(sdk, request, baseUrl)](#new_Users_new)
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
+    * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
     * [.get(userId)](#Users+get) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Users+getByOrganizationId) ⇒ <code>Promise</code>
     * [.invite(organizationId, user)](#Users+invite) ⇒ <code>Promise</code>
@@ -54,6 +55,30 @@ contxtSdk.coordinator.users
     userToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
   })
   .then(() => console.log("User Activated"))
+  .catch((err) => console.log(err));
+```
+<a name="Users+addRole"></a>
+
+### contxtSdk.coordinator.users.addRole(userId, roleId) ⇒ <code>Promise</code>
+Adds a role to a user
+
+API Endpoint: '/users/:userId/roles/:roleId'
+Method: GET
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: <code>ContxtUserRole[]</code> The newly created user role  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| roleId | <code>string</code> | The ID of the role |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .addRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((userRole) => console.log(userRole))
   .catch((err) => console.log(err));
 ```
 <a name="Users+get"></a>
