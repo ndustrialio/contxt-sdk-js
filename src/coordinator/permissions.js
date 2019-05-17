@@ -28,7 +28,7 @@ class Permissions {
   }
 
   /**
-   * Gets a list of user permissions for an entire organization
+   * Gets a list of user permissions for each user in an organization
    *
    * API Endpoint: '/organizations/:organizationId/users/permissions'
    * Method: GET

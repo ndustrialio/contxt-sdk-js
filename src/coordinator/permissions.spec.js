@@ -59,7 +59,7 @@ describe('Coordinator/Permissions', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedOrganizationId = faker.random.uuid();
+        expectedOrganizationId = fixture.build('contxtOrganization').id;
         expectedUsersPermissions = fixture.buildList(
           'contxtUserPermissions',
           faker.random.number({
