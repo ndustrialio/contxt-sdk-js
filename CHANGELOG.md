@@ -16,6 +16,35 @@
 
   - If using `Auth#getCurrentApiToken` (especially if not passing in the audience name/API name), pay extra attention to this update. The output has the same format, but the information that should be expected in the token is slightly different (there will be less information).
 
+- Split Coordinator module into multiple submodules
+
+```js
+//Applications Module
+coordinator.createFavoriteApplication()	-> coordinator.applications.addFavorite()
+coordinator.getAllApplications() -> coordinator.applications.getAll()
+coordinator.getFavoriteApplications() -> coordinator.applications.getFavorites()
+coordinator.getFeaturedApplications() -> coordinator.applications.getFeatured()
+coordinator.deleteFavoriteApplication()	-> coordinator.applications.removeFavorite()
+
+//Organizations Module
+coordinator.getOrganizationById() -> coordinator.organizations.get()
+coordinator.getAllOrganizations() -> coordinator.organizations.getAll()
+
+//Permissions Module
+coordinator.getUserPermissionsMap()	-> coordinator.permissions.getByUserId()
+
+//Users Module
+coordinator.activateNewUser() -> coordinator.users.activate()
+coordinator.getUser() -> coordinator.users.get()
+coordinator.getUsersByOrganization() -> coordinator.users.getByOrganizationId()
+coordinator.inviteNewUserToOrganization() -> coordinator.users.invite()
+coordinator.removeUserFromOrganization() -> coordinator.users.remove()
+```
+
+**Added**
+
+- Added `Permissions#getByOrganizationId` for fetching all user permissions for an entire organization.
+
 ## [v0.0.50](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.50) (2019-05-14)
 
 **Added**
