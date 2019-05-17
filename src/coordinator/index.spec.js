@@ -210,61 +210,6 @@ describe('Coordinator', function() {
     });
   });
 
-  describe('getAllOrganizations', function() {
-    let expectedOrganizations;
-    let organizationsFromServer;
-    let promise;
-    let request;
-    let toCamelCase;
-
-    beforeEach(function() {
-      const numberOfOrganizations = faker.random.number({
-        min: 1,
-        max: 10
-      });
-      expectedOrganizations = fixture.buildList(
-        'contxtOrganization',
-        numberOfOrganizations
-      );
-      organizationsFromServer = expectedOrganizations.map((org) =>
-        fixture.build('contxtOrganization', org, { fromServer: true })
-      );
-
-      request = {
-        ...baseRequest,
-        get: this.sandbox.stub().resolves(organizationsFromServer)
-      };
-      toCamelCase = this.sandbox
-        .stub(objectUtils, 'toCamelCase')
-        .callsFake(
-          (org) => expectedOrganizations.filter(({ id }) => id === org.id)[0]
-        );
-
-      const coordinator = new Coordinator(baseSdk, request);
-      coordinator._baseUrl = expectedHost;
-      promise = coordinator.getAllOrganizations();
-    });
-
-    it('gets the list of organizations from the server', function() {
-      expect(request.get).to.be.calledWith(`${expectedHost}/organizations`);
-    });
-
-    it('formats the list of organizations', function() {
-      return promise.then(() => {
-        expect(toCamelCase).to.have.callCount(organizationsFromServer.length);
-        organizationsFromServer.forEach((org) => {
-          expect(toCamelCase).to.be.calledWith(org);
-        });
-      });
-    });
-
-    it('returns a fulfilled promise with the organizations', function() {
-      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-        expectedOrganizations
-      );
-    });
-  });
-
   describe('getFavoriteApplications', function() {
     let expectedFavoriteApplications;
     let favoritesFromServer;
@@ -385,76 +330,6 @@ describe('Coordinator', function() {
 
         return expect(promise).to.be.rejectedWith(
           'An organization ID is required for getting featured applications for an organization'
-        );
-      });
-    });
-  });
-
-  describe('getOrganizationById', function() {
-    context('the organization ID is provided', function() {
-      let organizationFromServerAfterFormat;
-      let organizationFromServerBeforeFormat;
-      let expectedOrganizationId;
-      let promise;
-      let request;
-      let toCamelCase;
-
-      beforeEach(function() {
-        expectedOrganizationId = faker.random.uuid();
-        organizationFromServerAfterFormat = fixture.build(
-          'contxtOrganization',
-          {
-            id: expectedOrganizationId
-          }
-        );
-        organizationFromServerBeforeFormat = fixture.build(
-          'event',
-          { id: expectedOrganizationId },
-          { fromServer: true }
-        );
-
-        request = {
-          ...baseRequest,
-          get: this.sandbox.stub().resolves(organizationFromServerBeforeFormat)
-        };
-        toCamelCase = this.sandbox
-          .stub(objectUtils, 'toCamelCase')
-          .returns(organizationFromServerAfterFormat);
-
-        const coordinator = new Coordinator(baseSdk, request);
-        coordinator._baseUrl = expectedHost;
-
-        promise = coordinator.getOrganizationById(expectedOrganizationId);
-      });
-
-      it('gets the organization from the server', function() {
-        expect(request.get).to.be.calledWith(
-          `${expectedHost}/organizations/${expectedOrganizationId}`
-        );
-      });
-
-      it('formats the organization object', function() {
-        return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(
-            organizationFromServerBeforeFormat
-          );
-        });
-      });
-
-      it('returns the requested organization', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          organizationFromServerAfterFormat
-        );
-      });
-    });
-
-    context('the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const coordinator = new Coordinator(baseSdk, baseRequest);
-        const promise = coordinator.getOrganizationById();
-
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for getting information about an organization'
         );
       });
     });

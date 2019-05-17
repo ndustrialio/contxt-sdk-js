@@ -10,10 +10,8 @@ Module that provides access to information about Contxt
     * [.createFavoriteApplication(applicationId)](#Coordinator+createFavoriteApplication) ⇒ <code>Promise</code>
     * [.deleteFavoriteApplication(applicationId)](#Coordinator+deleteFavoriteApplication) ⇒ <code>Promise</code>
     * [.getAllApplications()](#Coordinator+getAllApplications) ⇒ <code>Promise</code>
-    * [.getAllOrganizations()](#Coordinator+getAllOrganizations) ⇒ <code>Promise</code>
     * [.getFavoriteApplications()](#Coordinator+getFavoriteApplications) ⇒ <code>Promise</code>
     * [.getFeaturedApplications(organizationId)](#Coordinator+getFeaturedApplications) ⇒ <code>Promise</code>
-    * [.getOrganizationById(organizationId)](#Coordinator+getOrganizationById) ⇒ <code>Promise</code>
 
 <a name="new_Coordinator_new"></a>
 
@@ -91,24 +89,6 @@ contxtSdk.coordinator
   .then((apps) => console.log(apps))
   .catch((err) => console.log(err));
 ```
-<a name="Coordinator+getAllOrganizations"></a>
-
-### contxtSdk.coordinator.getAllOrganizations() ⇒ <code>Promise</code>
-Gets information about all contxt organizations
-
-API Endpoint: '/organizations'
-Method: GET
-
-**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
-**Fulfill**: <code>ContxtOrganization[]</code> Information about all contxt organizations  
-**Reject**: <code>Error</code>  
-**Example**  
-```js
-contxtSdk.coordinator
-  .getAllOrganizations()
-  .then((orgs) => console.log(orgs))
-  .catch((err) => console.log(err));
-```
 <a name="Coordinator+getFavoriteApplications"></a>
 
 ### contxtSdk.coordinator.getFavoriteApplications() ⇒ <code>Promise</code>
@@ -152,28 +132,5 @@ Note: Only valid for web users using auth0WebAuth session type
 contxtSdk.coordinator
   .getFeaturedApplications('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((featuredApplications) => console.log(featuredApplications))
-  .catch((err) => console.log(err));
-```
-<a name="Coordinator+getOrganizationById"></a>
-
-### contxtSdk.coordinator.getOrganizationById(organizationId) ⇒ <code>Promise</code>
-Gets information about a contxt organization
-
-API Endpoint: '/organizations/:organizationId'
-Method: GET
-
-**Kind**: instance method of [<code>Coordinator</code>](#Coordinator)  
-**Fulfill**: [<code>ContxtOrganization</code>](./Typedefs.md#ContxtOrganization) Information about a contxt organization  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
-
-**Example**  
-```js
-contxtSdk.coordinator
-  .getOrganizationById('36b8421a-cc4a-4204-b839-1397374fb16b')
-  .then((org) => console.log(org))
   .catch((err) => console.log(err));
 ```

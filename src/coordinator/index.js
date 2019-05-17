@@ -1,5 +1,6 @@
 import EdgeNodes from './edgeNodes';
 import Roles from './roles';
+import Organizations from './organizations';
 import Users from './users';
 import { toCamelCase } from '../utils/objects';
 
@@ -15,15 +16,6 @@ import { toCamelCase } from '../utils/objects';
  * @property {string} name
  * @property {number} serviceId
  * @property {string} type
- * @property {string} updatedAt ISO 8601 Extended Format date/time string
- */
-
-/**
- * @typedef {Object} ContxtOrganization
- * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} id UUID formatted ID
- * @property {number} legacyOrganizationId
- * @property {string} name
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
@@ -80,6 +72,7 @@ class Coordinator {
     this._sdk = sdk;
 
     this.edgeNodes = new EdgeNodes(sdk, request, baseUrl);
+    this.organizations = new Organizations(sdk, request, baseUrl);
     this.roles = new Roles(sdk, request, baseUrl);
     this.users = new Users(sdk, request, baseUrl);
   }
@@ -174,28 +167,6 @@ class Coordinator {
   }
 
   /**
-   * Gets information about all contxt organizations
-   *
-   * API Endpoint: '/organizations'
-   * Method: GET
-   *
-   * @returns {Promise}
-   * @fulfill {ContxtOrganization[]} Information about all contxt organizations
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.coordinator
-   *   .getAllOrganizations()
-   *   .then((orgs) => console.log(orgs))
-   *   .catch((err) => console.log(err));
-   */
-  getAllOrganizations() {
-    return this._request
-      .get(`${this._baseUrl}/organizations`)
-      .then((orgs) => orgs.map((org) => toCamelCase(org)));
-  }
-
-  /**
    * Gets the current user's list of favorited applications
    *
    * API Endpoint: '/applications/favorites'
@@ -253,38 +224,6 @@ class Coordinator {
         `${this._baseUrl}/organizations/${organizationId}/applications/featured`
       )
       .then((featuredApplications) => toCamelCase(featuredApplications));
-  }
-
-  /**
-   * Gets information about a contxt organization
-   *
-   * API Endpoint: '/organizations/:organizationId'
-   * Method: GET
-   *
-   * @param {string} organizationId The ID of the organization
-   *
-   * @returns {Promise}
-   * @fulfill {ContxtOrganization} Information about a contxt organization
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.coordinator
-   *   .getOrganizationById('36b8421a-cc4a-4204-b839-1397374fb16b')
-   *   .then((org) => console.log(org))
-   *   .catch((err) => console.log(err));
-   */
-  getOrganizationById(organizationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error(
-          'An organization ID is required for getting information about an organization'
-        )
-      );
-    }
-
-    return this._request
-      .get(`${this._baseUrl}/organizations/${organizationId}`)
-      .then((org) => toCamelCase(org));
   }
 }
 

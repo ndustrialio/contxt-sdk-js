@@ -96,6 +96,9 @@ More information about the best way to use this module is available at:
 only be used in Node.js applications. This SessionType requires a client id and a client secret,
 which are obtained from Auth0.</p>
 </dd>
+<dt><a href="./Organizations.md">Organizations</a></dt>
+<dd><p>Module that provides access to contxt organizations</p>
+</dd>
 <dt><a href="./Outputs.md">Outputs</a></dt>
 <dd><p>Module that provides access to output information</p>
 </dd>
