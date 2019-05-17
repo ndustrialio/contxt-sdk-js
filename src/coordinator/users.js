@@ -14,6 +14,16 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtUserRole
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} id
+ * @property {boolean} mappedFromExternalGroup
+ * @property {string} userId
+ * @property {string} roleId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to contxt users
  *
  * @typicalname contxtSdk.coordinator.users
@@ -81,6 +91,43 @@ class Users {
       `${this._baseUrl}/users/${userId}/activate`,
       toSnakeCase(user)
     );
+  }
+
+  /**
+   * Adds a role to a user
+   *
+   * API Endpoint: '/users/:userId/roles/:roleId'
+   * Method: GET
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} roleId The ID of the role
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserRole} The newly created user role
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.users
+   *   .addRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .then((userRole) => console.log(userRole))
+   *   .catch((err) => console.log(err));
+   */
+  addRole(userId, roleId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for adding a role to a user')
+      );
+    }
+
+    if (!roleId) {
+      return Promise.reject(
+        new Error('A role ID is required for adding a role to a user')
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/users/${userId}/roles/${roleId}`)
+      .then((response) => toCamelCase(response));
   }
 
   /**
@@ -243,6 +290,42 @@ class Users {
 
     return this._request.delete(
       `${this._baseUrl}/organizations/${organizationId}/users/${userId}`
+    );
+  }
+
+  /**
+   * Removes a role from a user
+   *
+   * API Endpoint: '/users/:userId/roles/:roleId'
+   * Method: DELETE
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} roleId The ID of the role
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.users
+   *   .removeRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .catch((err) => console.log(err));
+   */
+  removeRole(userId, roleId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for removing a role from a user')
+      );
+    }
+
+    if (!roleId) {
+      return Promise.reject(
+        new Error('A role ID is required for removing a role from a user')
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/users/${userId}/roles/${roleId}`
     );
   }
 }
