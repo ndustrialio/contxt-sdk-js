@@ -1,8 +1,9 @@
-import Coordinator from './index';
 import Applications from './applications';
+import Coordinator from './index';
 import EdgeNodes from './edgeNodes';
-import Roles from './roles';
 import Organizations from './organizations';
+import Permissions from './permissions';
+import Roles from './roles';
 import Users from './users';
 
 describe('Coordinator', function() {
@@ -60,12 +61,16 @@ describe('Coordinator', function() {
       expect(coordinator.edgeNodes).to.be.an.instanceof(EdgeNodes);
     });
 
-    it('appends an instance of Roles to the class instance', function() {
-      expect(coordinator.roles).to.be.an.instanceof(Roles);
-    });
-
     it('appends an instance of Organizations to the class instance', function() {
       expect(coordinator.organizations).to.be.an.instanceof(Organizations);
+    });
+
+    it('appends an instance of Permissions to the class instance', function() {
+      expect(coordinator.permissions).to.be.an.instanceof(Permissions);
+    });
+
+    it('appends an instance of Roles to the class instance', function() {
+      expect(coordinator.roles).to.be.an.instanceof(Roles);
     });
 
     it('appends an instance of Users to the class instance', function() {
