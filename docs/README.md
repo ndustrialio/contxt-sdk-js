@@ -1,6 +1,9 @@
 ## Classes
 
 <dl>
+<dt><a href="./Applications.md">Applications</a></dt>
+<dd><p>Module that provides access to contxt applications</p>
+</dd>
 <dt><a href="./AssetAttributes.md">AssetAttributes</a></dt>
 <dd><p>Module that provides access to, and the manipulation of, information about
 different asset attributes and their values</p>
