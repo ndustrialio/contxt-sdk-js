@@ -1,7 +1,8 @@
 import Applications from './applications';
 import EdgeNodes from './edgeNodes';
-import Roles from './roles';
 import Organizations from './organizations';
+import Permissions from './permissions';
+import Roles from './roles';
 import Users from './users';
 
 /**
@@ -24,6 +25,7 @@ class Coordinator {
     this.applications = new Applications(sdk, request, baseUrl);
     this.edgeNodes = new EdgeNodes(sdk, request, baseUrl);
     this.organizations = new Organizations(sdk, request, baseUrl);
+    this.permissions = new Permissions(sdk, request, baseUrl);
     this.roles = new Roles(sdk, request, baseUrl);
     this.users = new Users(sdk, request, baseUrl);
   }
