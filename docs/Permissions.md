@@ -23,7 +23,7 @@ Module that provides access to contxt user permissions
 <a name="Permissions+getByOrganizationId"></a>
 
 ### contxtSdk.coordinator.permissions.getByOrganizationId(organizationId) ⇒ <code>Promise</code>
-Gets a list of user permissions for an entire organization
+Gets a list of user permissions for each user in an organization
 
 API Endpoint: '/organizations/:organizationId/users/permissions'
 Method: GET

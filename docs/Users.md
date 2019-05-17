@@ -67,7 +67,7 @@ API Endpoint: '/users/:userId/roles/:roleId'
 Method: GET
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
-**Fulfill**: <code>ContxtUserRole[]</code> The newly created user role  
+**Fulfill**: [<code>ContxtUserRole</code>](./Typedefs.md#ContxtUserRole) The newly created user role  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |

@@ -103,7 +103,7 @@ class Users {
    * @param {string} roleId The ID of the role
    *
    * @returns {Promise}
-   * @fulfill {ContxtUserRole[]} The newly created user role
+   * @fulfill {ContxtUserRole} The newly created user role
    * @reject {Error}
    *
    * @example
