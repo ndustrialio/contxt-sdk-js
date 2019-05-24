@@ -46,6 +46,8 @@ coordinator.removeUserFromOrganization() -> coordinator.users.remove()
 - Added `Permissions#getByOrganizationId` for fetching all user permissions for an entire organization.
 - Added `Users#addRole` for adding a role to a user
 - Added `Users#removeRole` for removing a role from a user
+- Added `Users#addApplication` for adding an application to a user
+- Added `Users#removeApplication` for removing an application from a user
 
 ## [v0.0.50](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.50) (2019-05-14)
 
