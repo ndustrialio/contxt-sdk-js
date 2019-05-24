@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import { toSnakeCase, toCamelCase } from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtRole
@@ -76,6 +76,50 @@ class Roles {
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/roles`)
       .then((roles) => toCamelCase(roles));
+  }
+
+  /**
+   * Create a new role for an organization
+   *
+   * @param {string} organizationId What organization this role is for
+   * @param {Object} role
+   * @param {string} role.name The name of the new role
+   * @param {string} role.description Some text describing the purpose of the role
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtRole} The newly created role
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.roles
+   *   .create('36b8421a-cc4a-4204-b839-1397374fb16b', {
+   *     name: 'view-myapp',
+   *     description: 'Give this role for viewing myapp'
+   *    })
+   *   .then((role) => console.log(role))
+   *   .catch((err) => console.log(err));
+   */
+  create(organizationId, role) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organization ID is required for getting roles for an organization'
+        )
+      );
+    }
+
+    if (!role.name) {
+      return Promise.reject(
+        new Error(`A name is required to create a new role.`)
+      );
+    }
+
+    return this._request
+      .post(
+        `${this._baseUrl}/organizations/${organizationId}/roles`,
+        toSnakeCase(role)
+      )
+      .then((response) => toCamelCase(response));
   }
 }
 
