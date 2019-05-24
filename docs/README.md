@@ -179,6 +179,8 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#ContxtUserApplication">ContxtUserApplication</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#ContxtUserFavoriteApplication">ContxtUserFavoriteApplication</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUserPermissions">ContxtUserPermissions</a> : <code>Object</code></dt>

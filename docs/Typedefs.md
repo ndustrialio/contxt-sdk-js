@@ -322,6 +322,20 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | [phoneNumber] | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtUserApplication"></a>
+
+## ContxtUserApplication : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtUserFavoriteApplication"></a>
 
 ## ContxtUserFavoriteApplication : <code>Object</code>
