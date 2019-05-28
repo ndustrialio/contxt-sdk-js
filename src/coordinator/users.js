@@ -14,6 +14,15 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtUserApplication
+ * @property {string} applicationId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} id
+ * @property {string} userId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * @typedef {Object} ContxtUserRole
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
@@ -101,6 +110,45 @@ class Users {
       `${this._baseUrl}/users/${userId}/activate`,
       toSnakeCase(user)
     );
+  }
+
+  /**
+   * Adds a application to a user
+   *
+   * API Endpoint: '/users/:userId/applications/:applicationId'
+   * Method: GET
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserApplication} The newly created user application
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.users
+   *   .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .then((userApplication) => console.log(userApplication))
+   *   .catch((err) => console.log(err));
+   */
+  addApplication(userId, applicationId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for adding a application to a user')
+      );
+    }
+
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An application ID is required for adding a application to a user'
+        )
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/users/${userId}/applications/${applicationId}`)
+      .then((response) => toCamelCase(response));
   }
 
   /**
@@ -348,6 +396,46 @@ class Users {
 
     return this._request.delete(
       `${this._baseUrl}/organizations/${organizationId}/users/${userId}`
+    );
+  }
+
+  /**
+   * Removes a application from a user
+   *
+   * API Endpoint: '/users/:userId/applications/:applicationId'
+   * Method: DELETE
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.users
+   *   .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .catch((err) => console.log(err));
+   */
+  removeApplication(userId, applicationId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error(
+          'A user ID is required for removing a application from a user'
+        )
+      );
+    }
+
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An application ID is required for removing a application from a user'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/users/${userId}/applications/${applicationId}`
     );
   }
 

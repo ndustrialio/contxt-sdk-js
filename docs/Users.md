@@ -8,12 +8,14 @@ Module that provides access to contxt users
 * [Users](#Users)
     * [new Users(sdk, request, baseUrl)](#new_Users_new)
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
+    * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
     * [.addStack(userId, stackId, accessType)](#Users+addStack) ⇒ <code>Promise</code>
     * [.get(userId)](#Users+get) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Users+getByOrganizationId) ⇒ <code>Promise</code>
     * [.invite(organizationId, user)](#Users+invite) ⇒ <code>Promise</code>
     * [.remove(organizationId, userId)](#Users+remove) ⇒ <code>Promise</code>
+    * [.removeApplication(userId, applicationId)](#Users+removeApplication) ⇒ <code>Promise</code>
     * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
     * [.removeStack(userId, stackId)](#Users+removeStack) ⇒ <code>Promise</code>
 
@@ -58,6 +60,30 @@ contxtSdk.coordinator.users
     userToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
   })
   .then(() => console.log("User Activated"))
+  .catch((err) => console.log(err));
+```
+<a name="Users+addApplication"></a>
+
+### contxtSdk.coordinator.users.addApplication(userId, applicationId) ⇒ <code>Promise</code>
+Adds a application to a user
+
+API Endpoint: '/users/:userId/applications/:applicationId'
+Method: GET
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: [<code>ContxtUserApplication</code>](./Typedefs.md#ContxtUserApplication) The newly created user application  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| applicationId | <code>string</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((userApplication) => console.log(userApplication))
   .catch((err) => console.log(err));
 ```
 <a name="Users+addRole"></a>
@@ -212,6 +238,29 @@ Method: DELETE
 ```js
 contxtSdk.coordinator.users
   .remove('ed2e8e24-79ef-4404-bf5f-995ef31b2298', '4a577e87-7437-4342-b183-00c18ec26d52')
+  .catch((err) => console.log(err));
+```
+<a name="Users+removeApplication"></a>
+
+### contxtSdk.coordinator.users.removeApplication(userId, applicationId) ⇒ <code>Promise</code>
+Removes a application from a user
+
+API Endpoint: '/users/:userId/applications/:applicationId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| applicationId | <code>string</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```
 <a name="Users+removeRole"></a>

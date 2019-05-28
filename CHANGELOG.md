@@ -46,6 +46,8 @@ coordinator.removeUserFromOrganization() -> coordinator.users.remove()
 - Added `Permissions#getByOrganizationId` for fetching all user permissions for an entire organization.
 - Added `Users#addRole` for adding a role to a user
 - Added `Users#removeRole` for removing a role from a user
+- Added `Users#addApplication` for adding an application to a user
+- Added `Users#removeApplication` for removing an application from a user
 - Added `Users#addStack` for adding a stack to a user
 - Added `Users#removeStack` for removing a stack from a user
 

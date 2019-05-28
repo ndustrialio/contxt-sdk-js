@@ -142,6 +142,85 @@ describe('Coordinator/Users', function() {
     });
   });
 
+  describe('addApplication', function() {
+    context('when all the required parameters are provided', function() {
+      let expectedUserApplication;
+      let promise;
+      let request;
+      let application;
+      let user;
+      let userApplicationFromServer;
+      let toCamelCase;
+
+      beforeEach(function() {
+        application = fixture.build('contxtApplication');
+        user = fixture.build('contxtUser');
+
+        expectedUserApplication = fixture.build('contxtUserApplication');
+        userApplicationFromServer = fixture.build(
+          'contxtUserApplication',
+          expectedUserApplication,
+          {
+            fromServer: true
+          }
+        );
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(userApplicationFromServer)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .callsFake((app) => expectedUserApplication);
+
+        const users = new Users(baseSdk, request, expectedHost);
+        promise = users.addApplication(user.id, application.id);
+      });
+
+      it('posts the user application to the server', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/applications/${application.id}`
+        );
+      });
+
+      it('formats the returned user application', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(userApplicationFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const application = fixture.build('contxtApplication');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addApplication(null, application.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for adding a application to a user'
+        );
+      });
+    });
+
+    context('when the application ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addApplication(user.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'An application ID is required for adding a application to a user'
+        );
+      });
+    });
+  });
+
   describe('addRole', function() {
     context('when all the required parameters are provided', function() {
       let expectedUserRole;
@@ -619,6 +698,56 @@ describe('Coordinator/Users', function() {
 
         return expect(promise).to.be.rejectedWith(
           'A user ID is required for removing a user from an organization'
+        );
+      });
+    });
+  });
+
+  describe('removeApplication', function() {
+    context('when all required parameters are provided', function() {
+      let application;
+      let user;
+      let promise;
+
+      beforeEach(function() {
+        application = fixture.build('contxtApplication');
+        user = fixture.build('contxtUser');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        promise = users.removeApplication(user.id, application.id);
+      });
+
+      it('sends a request to removeApplication the user from the organization', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/applications/${application.id}`
+        );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const application = fixture.build('contxtApplication');
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.removeApplication(null, application.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for removing a application from a user'
+        );
+      });
+    });
+
+    context('when the application ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.removeApplication(user.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'An application ID is required for removing a application from a user'
         );
       });
     });

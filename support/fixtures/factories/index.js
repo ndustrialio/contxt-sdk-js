@@ -16,6 +16,7 @@ require('./contxtOrganizationFeaturedApplication');
 require('./contxtRole');
 require('./contxtStack');
 require('./contxtUser');
+require('./contxtUserApplication');
 require('./contxtUserFavoriteApplication');
 require('./contxtUserPermissions');
 require('./contxtUserRole');
