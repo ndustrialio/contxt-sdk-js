@@ -9,6 +9,7 @@ Module that provides access to contxt roles
     * [new Roles(sdk, request, baseUrl)](#new_Roles_new)
     * [.getByOrganizationId(organizationId)](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
     * [.create(organizationId, role)](#Roles+create) ⇒ <code>Promise</code>
+    * [.remove(organizationId, roleId)](#Roles+remove) ⇒ <code>Promise</code>
 
 <a name="new_Roles_new"></a>
 
@@ -54,7 +55,7 @@ Create a new role for an organization
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | What organization this role is for |
+| organizationId | <code>string</code> | The ID of the organization |
 | role | <code>Object</code> |  |
 | role.name | <code>string</code> | The name of the new role |
 | role.description | <code>string</code> | Some text describing the purpose of the role |
@@ -68,4 +69,25 @@ contxtSdk.coordinator.roles
    })
   .then((role) => console.log(role))
   .catch((err) => console.log(err));
+```
+<a name="Roles+remove"></a>
+
+### contxtSdk.coordinator.roles.remove(organizationId, roleId) ⇒ <code>Promise</code>
+Deletes a role from an organization
+
+API Endpoint: '/organizations/:organizationId/roles/:roleId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Roles</code>](#Roles)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| roleId | <code>string</code> | The UUID formatted ID of the role |
+
+**Example**  
+```js
+contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
 ```
