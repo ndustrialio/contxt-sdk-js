@@ -33,6 +33,16 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtUserStack
+ * @property {string} accessType Access Type of the user for this stack with options "reader", "collaborator", "owner"
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} id
+ * @property {string} userId
+ * @property {string} stackId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to contxt users
  *
  * @typicalname contxtSdk.coordinator.users
@@ -145,7 +155,7 @@ class Users {
    * Adds a role to a user
    *
    * API Endpoint: '/users/:userId/roles/:roleId'
-   * Method: GET
+   * Method: POST
    *
    * @param {string} userId The ID of the user
    * @param {string} roleId The ID of the role
@@ -175,6 +185,54 @@ class Users {
 
     return this._request
       .post(`${this._baseUrl}/users/${userId}/roles/${roleId}`)
+      .then((response) => toCamelCase(response));
+  }
+
+  /**
+   * Adds a stack to a user
+   *
+   * API Endpoint: '/users/:userId/stacks/:stackId'
+   * Method: POST
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} stackId The ID of the stack
+   * @param {'reader' | 'collaborator' | 'owner'} accessType The level of access for the user
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserStack} The newly created user stack
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.users
+   *   .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58', 'collaborator')
+   *   .then((userStack) => console.log(userStack))
+   *   .catch((err) => console.log(err));
+   */
+  addStack(userId, stackId, accessType) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for adding a stack to a user')
+      );
+    }
+
+    if (!stackId) {
+      return Promise.reject(
+        new Error('A stack ID is required for adding a stack to a user')
+      );
+    }
+
+    if (['reader', 'collaborator', 'owner'].indexOf(accessType) === -1) {
+      return Promise.reject(
+        new Error(
+          'An access type of "reader", "collaborator", or "owner" is required for adding a stack to a user'
+        )
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/users/${userId}/stacks/${stackId}`, {
+        access_type: accessType
+      })
       .then((response) => toCamelCase(response));
   }
 
@@ -414,6 +472,42 @@ class Users {
 
     return this._request.delete(
       `${this._baseUrl}/users/${userId}/roles/${roleId}`
+    );
+  }
+
+  /**
+   * Removes a stack from a user
+   *
+   * API Endpoint: '/users/:userId/stacks/:stackId'
+   * Method: DELETE
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} stackId The ID of the stack
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.users
+   *   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .catch((err) => console.log(err));
+   */
+  removeStack(userId, stackId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for removing a stack from a user')
+      );
+    }
+
+    if (!stackId) {
+      return Promise.reject(
+        new Error('A stack ID is required for removing a stack from a user')
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/users/${userId}/stacks/${stackId}`
     );
   }
 }

@@ -48,6 +48,8 @@ coordinator.removeUserFromOrganization() -> coordinator.users.remove()
 - Added `Users#removeRole` for removing a role from a user
 - Added `Users#addApplication` for adding an application to a user
 - Added `Users#removeApplication` for removing an application from a user
+- Added `Users#addStack` for adding a stack to a user
+- Added `Users#removeStack` for removing a stack from a user
 
 ## [v0.0.50](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.50) (2019-05-14)
 

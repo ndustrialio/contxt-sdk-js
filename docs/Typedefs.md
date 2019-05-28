@@ -380,6 +380,21 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | roleId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtUserStack"></a>
+
+## ContxtUserStack : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| accessType | <code>string</code> | Access Type of the user for this stack with options "reader", "collaborator", "owner" |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| stackId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="CostCenter"></a>
 
 ## CostCenter : <code>Object</code>
