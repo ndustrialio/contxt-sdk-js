@@ -19,6 +19,7 @@ require('./contxtUser');
 require('./contxtUserFavoriteApplication');
 require('./contxtUserPermissions');
 require('./contxtUserRole');
+require('./contxtUserStack');
 require('./costCenter');
 require('./costCenterFacility');
 require('./defaultAudiences');

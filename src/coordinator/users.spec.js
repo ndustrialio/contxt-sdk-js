@@ -217,6 +217,124 @@ describe('Coordinator/Users', function() {
     });
   });
 
+  describe('addStack', function() {
+    context(
+      'when all the required parameters are provided and valid',
+      function() {
+        let expectedUserStack;
+        let promise;
+        let request;
+        let stack;
+        let user;
+        let userStackFromServer;
+        let toCamelCase;
+
+        beforeEach(function() {
+          stack = fixture.build('contxtStack');
+          user = fixture.build('contxtUser');
+
+          expectedUserStack = fixture.build('contxtUserStack');
+          userStackFromServer = fixture.build(
+            'contxtUserStack',
+            expectedUserStack,
+            {
+              fromServer: true
+            }
+          );
+
+          request = {
+            ...baseRequest,
+            post: this.sandbox.stub().resolves(userStackFromServer)
+          };
+          toCamelCase = this.sandbox
+            .stub(objectUtils, 'toCamelCase')
+            .callsFake((app) => expectedUserStack);
+
+          const users = new Users(baseSdk, request, expectedHost);
+          promise = users.addStack(
+            user.id,
+            stack.id,
+            expectedUserStack.accessType
+          );
+        });
+
+        it('posts the user stack to the server', function() {
+          expect(request.post).to.be.calledWith(
+            `${expectedHost}/users/${user.id}/stacks/${stack.id}`,
+            {
+              access_type: expectedUserStack.accessType
+            }
+          );
+        });
+
+        it('formats the returned user stack', function() {
+          return promise.then(() => {
+            expect(toCamelCase).to.be.calledWith(userStackFromServer);
+          });
+        });
+
+        it('returns a fulfilled promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      }
+    );
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const stack = fixture.build('contxtStack');
+        const userStack = fixture.build('contxtUserStack');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addStack(null, stack.id, userStack.accessType);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for adding a stack to a user'
+        );
+      });
+    });
+
+    context('when the stack ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const userStack = fixture.build('contxtUserStack');
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addStack(user.id, null, userStack.accessType);
+
+        return expect(promise).to.be.rejectedWith(
+          'A stack ID is required for adding a stack to a user'
+        );
+      });
+    });
+
+    context('when the access type is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const stack = fixture.build('contxtStack');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addStack(user.id, stack.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'An access type of "reader", "collaborator", or "owner" is required for adding a stack to a user'
+        );
+      });
+    });
+
+    context('when the access type is not a valid value', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const stack = fixture.build('contxtStack');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.addStack(user.id, stack.id, faker.random.word());
+
+        return expect(promise).to.be.rejectedWith(
+          'An access type of "reader", "collaborator", or "owner" is required for adding a stack to a user'
+        );
+      });
+    });
+  });
+
   describe('get', function() {
     context('the user ID is provided', function() {
       let userFromServerAfterFormat;
@@ -551,6 +669,56 @@ describe('Coordinator/Users', function() {
 
         return expect(promise).to.be.rejectedWith(
           'A role ID is required for removing a role from a user'
+        );
+      });
+    });
+  });
+
+  describe('removeStack', function() {
+    context('when all required parameters are provided', function() {
+      let stack;
+      let user;
+      let promise;
+
+      beforeEach(function() {
+        stack = fixture.build('contxtStack');
+        user = fixture.build('contxtUser');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        promise = users.removeStack(user.id, stack.id);
+      });
+
+      it('sends a request to removeStack the user from the organization', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/stacks/${stack.id}`
+        );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const stack = fixture.build('contxtStack');
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.removeStack(null, stack.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for removing a stack from a user'
+        );
+      });
+    });
+
+    context('when the stack ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.removeStack(user.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'A stack ID is required for removing a stack from a user'
         );
       });
     });
