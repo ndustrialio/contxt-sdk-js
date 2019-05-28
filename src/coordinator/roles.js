@@ -81,7 +81,7 @@ class Roles {
   /**
    * Create a new role for an organization
    *
-   * @param {string} organizationId What organization this role is for
+   * @param {string} organizationId The ID of the organization
    * @param {Object} role
    * @param {string} role.name The name of the new role
    * @param {string} role.description Some text describing the purpose of the role
@@ -120,6 +120,40 @@ class Roles {
         toSnakeCase(role)
       )
       .then((response) => toCamelCase(response));
+  }
+
+  /**
+   * Deletes a role from an organization
+   *
+   * API Endpoint: '/organizations/:organizationId/roles/:roleId'
+   * Method: DELETE
+   *
+   * @param {string} organizationId The ID of the organization
+   * @param {string} roleId The UUID formatted ID of the role
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+   */
+  remove(organizationId, roleId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error('An organizationId is required for deleting a role.')
+      );
+    }
+
+    if (!roleId) {
+      return Promise.reject(
+        new Error('A roleID is required for deleting an asset metric.')
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/organizations/${organizationId}/roles/${roleId}`
+    );
   }
 }
 
