@@ -99,11 +99,11 @@ class Roles {
    *   .then((role) => console.log(role))
    *   .catch((err) => console.log(err));
    */
-  create(organizationId, role) {
+  create(organizationId, role = {}) {
     if (!organizationId) {
       return Promise.reject(
         new Error(
-          'An organization ID is required for getting roles for an organization'
+          'An organization ID is required for creating roles for an organization'
         )
       );
     }

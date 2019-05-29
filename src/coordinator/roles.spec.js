@@ -108,12 +108,157 @@ describe('Coordinator/Roles', function() {
     });
 
     context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
+      it('returns a rejected promise', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.getByOrganizationId();
 
         return expect(promise).to.be.rejectedWith(
           'An organization ID is required for getting roles for an organization'
+        );
+      });
+    });
+  });
+
+  describe('create', function() {
+    context('when the organization ID is provided', function() {
+      let roles;
+      let organization;
+      let expectedRole;
+      let expectedRoleFromServer;
+      let newRolePayload;
+      let newRolePayloadToServer;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+
+      beforeEach(function() {
+        organization = fixture.build('contxtOrganization');
+        expectedRole = fixture.build('contxtRole');
+        expectedRoleFromServer = fixture.build('contxtRole', expectedRole, {
+          fromServer: true
+        });
+        newRolePayload = {
+          name: expectedRole.name,
+          description: expectedRole.description
+        };
+
+        newRolePayloadToServer = {
+          name: newRolePayload.name,
+          description: newRolePayload.description
+        };
+
+        request = {
+          ...baseRequest,
+          post: this.sandbox.stub().resolves(expectedRoleFromServer)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .callsFake(() => expectedRole);
+
+        toSnakeCase = this.sandbox
+          .stub(objectUtils, 'toSnakeCase')
+          .callsFake(() => newRolePayloadToServer);
+
+        roles = new Roles(baseSdk, request, expectedHost);
+        promise = roles.create(organization.id, newRolePayload);
+      });
+
+      it('formats the role payload', function() {
+        return promise.then(() => {
+          expect(toSnakeCase).to.be.calledWith(newRolePayload);
+        });
+      });
+
+      it('posts the role to the server', function() {
+        expect(request.post).to.be.calledOnce;
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/organizations/${organization.id}/roles`,
+          newRolePayloadToServer
+        );
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedRole
+        );
+      });
+
+      it('formats the role response', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(expectedRoleFromServer);
+        });
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('returns a rejected promise', function() {
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        const promise = roles.create();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organization ID is required for creating roles for an organization'
+        );
+      });
+    });
+
+    context('when the role does not have a name', function() {
+      it('returns a rejected promise', function() {
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        const organization = fixture.build('contxtOrganization');
+        const promise = roles.create(organization.id, {});
+
+        return expect(promise).to.be.rejectedWith(
+          `A name is required to create a new role.`
+        );
+      });
+    });
+  });
+
+  describe('remove', function() {
+    context('when the organization ID is provided', function() {
+      let role;
+      let organization;
+      let promise;
+
+      beforeEach(function() {
+        organization = fixture.build('contxtOrganization');
+        role = fixture.build('contxtRole');
+
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        promise = roles.remove(organization.id, role.id);
+      });
+
+      it('returns a fulfilled promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+
+      it('sends a delete request to remove the role', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/organizations/${organization.id}/roles/${role.id}`
+        );
+      });
+    });
+
+    context('when the role ID is NOT provided', function() {
+      it('returns rejected promise', function() {
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        const organization = fixture.build('contxtOrganization');
+        const promise = roles.remove(organization.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'A roleID is required for deleting an asset metric.'
+        );
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('returns rejected promise', function() {
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        const promise = roles.remove();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organizationId is required for deleting a role'
         );
       });
     });
