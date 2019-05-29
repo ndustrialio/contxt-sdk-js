@@ -127,12 +127,12 @@ Method: GET
 
 | Param | Type |
 | --- | --- |
-| applicationId | <code>string</code> | 
+| applicationId | <code>number</code> | 
 
 **Example**  
 ```js
 contxtSdk.coordinator.applications
-  .getGroupings('31b52932-e25c-42d6-9c60-2f82d38d1e9c')
+  .getGroupings(31)
   .then((applicationGroupings) => console.log(applicationGroupings))
   .catch((err) => console.log(err));
 ```

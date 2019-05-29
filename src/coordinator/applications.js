@@ -17,7 +17,7 @@ import { toCamelCase } from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtApplicationGrouping
- * @property {string} applicationId
+ * @property {number} applicationId
  * @property {ContxtApplicationModule[]} applicationModules
  * @property {string} id
  * @property {number} index The position of the grouping within the list of all
@@ -35,7 +35,8 @@ import { toCamelCase } from '../utils/objects';
  * @property {number} index The position of the module within the list of all
  *   modules of a the parent application grouping
  * @property {string} label
- * @property {string} slug
+ * @property {string} slug String that corresponds with a front-end package
+ *   name (e.g. the `@ndustrial/nsight-example` example application)
  */
 
 /**
@@ -196,7 +197,7 @@ class Applications {
    * API Endpoint: '/applications/:applicationId/groupings'
    * Method: GET
    *
-   * @param {string} applicationId
+   * @param {number} applicationId
    *
    * @returns {Promise}
    * @fulfill {ContxtApplicationGrouping[]}
@@ -204,7 +205,7 @@ class Applications {
    *
    * @example
    * contxtSdk.coordinator.applications
-   *   .getGroupings('31b52932-e25c-42d6-9c60-2f82d38d1e9c')
+   *   .getGroupings(31)
    *   .then((applicationGroupings) => console.log(applicationGroupings))
    *   .catch((err) => console.log(err));
    */

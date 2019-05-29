@@ -245,7 +245,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 
 | Name | Type | Description |
 | --- | --- | --- |
-| applicationId | <code>string</code> |  |
+| applicationId | <code>number</code> |  |
 | applicationModules | [<code>Array.&lt;ContxtApplicationModule&gt;</code>](#ContxtApplicationModule) |  |
 | id | <code>string</code> |  |
 | index | <code>number</code> | The position of the grouping within the list of all   groupings of a the parent application |
@@ -265,7 +265,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | id | <code>string</code> |  |
 | index | <code>number</code> | The position of the module within the list of all   modules of a the parent application grouping |
 | label | <code>string</code> |  |
-| slug | <code>string</code> |  |
+| slug | <code>string</code> | String that corresponds with a front-end package   name (e.g. the `@ndustrial/nsight-example` example application) |
 
 <a name="ContxtOrganization"></a>
 

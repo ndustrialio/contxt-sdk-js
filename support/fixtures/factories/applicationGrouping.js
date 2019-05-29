@@ -6,7 +6,7 @@ const faker = require('faker');
 factory
   .define('applicationGrouping')
   .attrs({
-    applicationId: () => faker.random.uuid(),
+    applicationId: () => faker.random.number(),
     id: () => faker.random.uuid(),
     index: () => faker.random.number(),
     label: () => faker.random.words()
