@@ -169,6 +169,10 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 </dd>
 <dt><a href="./Typedefs.md#ContxtApplication">ContxtApplication</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#ContxtApplicationGrouping">ContxtApplicationGrouping</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtApplicationModule">ContxtApplicationModule</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#ContxtOrganization">ContxtOrganization</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtOrganizationFeaturedApplication">ContxtOrganizationFeaturedApplication</a> : <code>Object</code></dt>
@@ -282,4 +286,3 @@ the optional methods are documented below.</p>
 <dd><p>The WebSocket Message Event</p>
 </dd>
 </dl>
-
