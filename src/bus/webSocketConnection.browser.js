@@ -7,6 +7,9 @@
  * @alias BrowserWebSocketConnection
  */
 class WebSocketConnection {
+  /**
+   * @alias BrowserWebSocketConnection
+   */
   constructor(webSocket, organizationId) {
     throw new Error(
       'The Message Bus is not currently supported in browser environments'

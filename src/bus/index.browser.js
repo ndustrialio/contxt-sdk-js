@@ -9,6 +9,8 @@ import Channels from './channels';
  */
 class Bus {
   /**
+   * @alias BrowserBus
+   *
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    */
