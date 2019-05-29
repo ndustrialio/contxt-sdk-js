@@ -2,6 +2,8 @@
 
 const factory = require('rosie').Factory;
 
+require('./applicationGrouping');
+require('./applicationModule');
 require('./asset');
 require('./assetAttribute');
 require('./assetAttributeValue');

@@ -11,6 +11,7 @@ Module that provides access to contxt applications
     * [.getAll()](#Applications+getAll) ⇒ <code>Promise</code>
     * [.getFavorites()](#Applications+getFavorites) ⇒ <code>Promise</code>
     * [.getFeatured(organizationId)](#Applications+getFeatured) ⇒ <code>Promise</code>
+    * [.getGroupings(applicationId)](#Applications+getGroupings) ⇒ <code>Promise</code>
     * [.removeFavorite(applicationId)](#Applications+removeFavorite) ⇒ <code>Promise</code>
 
 <a name="new_Applications_new"></a>
@@ -109,6 +110,30 @@ Note: Only valid for web users using auth0WebAuth session type
 contxtSdk.coordinator.applications
   .getFeatured('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((featuredApplications) => console.log(featuredApplications))
+  .catch((err) => console.log(err));
+```
+<a name="Applications+getGroupings"></a>
+
+### contxtSdk.coordinator.applications.getGroupings(applicationId) ⇒ <code>Promise</code>
+Gets the application groupings (and application modules) of an application
+that are available to the currently authenticated user.
+
+API Endpoint: '/applications/:applicationId/groupings'
+Method: GET
+
+**Kind**: instance method of [<code>Applications</code>](#Applications)  
+**Fulfill**: <code>ContxtApplicationGrouping[]</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type |
+| --- | --- |
+| applicationId | <code>string</code> | 
+
+**Example**  
+```js
+contxtSdk.coordinator.applications
+  .getGroupings('31b52932-e25c-42d6-9c60-2f82d38d1e9c')
+  .then((applicationGroupings) => console.log(applicationGroupings))
   .catch((err) => console.log(err));
 ```
 <a name="Applications+removeFavorite"></a>

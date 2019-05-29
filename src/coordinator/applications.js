@@ -16,6 +16,29 @@ import { toCamelCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtApplicationGrouping
+ * @property {string} applicationId
+ * @property {ContxtApplicationModule[]} applicationModules
+ * @property {string} id
+ * @property {number} index The position of the grouping within the list of all
+ *   groupings of a the parent application
+ * @property {string} label
+ */
+
+/**
+ * @typedef {Object} ContxtApplicationModule
+ * @property {string} applicationGroupingId
+ * @property {string} [externalLink] A URI pointing to an external application
+ * @property {string} [iconUrl] A URI pointing to an icon/image representing the
+ *   application module
+ * @property {string} id
+ * @property {number} index The position of the module within the list of all
+ *   modules of a the parent application grouping
+ * @property {string} label
+ * @property {string} slug
+ */
+
+/**
  * @typedef {Object} ContxtOrganizationFeaturedApplication
  * @property {number} applicationId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
@@ -164,6 +187,31 @@ class Applications {
         `${this._baseUrl}/organizations/${organizationId}/applications/featured`
       )
       .then((featuredApplications) => toCamelCase(featuredApplications));
+  }
+
+  /**
+   * Gets the application groupings (and application modules) of an application
+   * that are available to the currently authenticated user.
+   *
+   * API Endpoint: '/applications/:applicationId/groupings'
+   * Method: GET
+   *
+   * @param {string} applicationId
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtApplicationGrouping[]}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.applications
+   *   .getGroupings('31b52932-e25c-42d6-9c60-2f82d38d1e9c')
+   *   .then((applicationGroupings) => console.log(applicationGroupings))
+   *   .catch((err) => console.log(err));
+   */
+  getGroupings(applicationId) {
+    return this._request
+      .get(`${this._baseUrl}/applications/${applicationId}/groupings`)
+      .then((groupings) => toCamelCase(groupings));
   }
 
   /**

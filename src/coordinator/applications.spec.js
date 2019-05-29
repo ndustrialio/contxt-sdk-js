@@ -225,6 +225,55 @@ describe('Coordinator/Applications', function() {
     });
   });
 
+  describe('getGroupings', function() {
+    let expectedApplicationId;
+    let expectedGroupings;
+    let groupingsFromServer;
+    let promise;
+    let request;
+    let toCamelCase;
+
+    beforeEach(function() {
+      expectedApplicationId = faker.random.uuid();
+      expectedGroupings = fixture.buildList(
+        'applicationGrouping',
+        faker.random.number({ min: 1, max: 10 })
+      );
+      groupingsFromServer = expectedGroupings.map((grouping) =>
+        fixture.build('applicationGrouping', grouping, { fromServer: true })
+      );
+
+      request = {
+        ...baseRequest,
+        get: this.sandbox.stub().resolves(groupingsFromServer)
+      };
+      toCamelCase = this.sandbox
+        .stub(objectUtils, 'toCamelCase')
+        .returns(expectedGroupings);
+
+      const applications = new Applications(baseSdk, request, expectedHost);
+      promise = applications.getGroupings(expectedApplicationId);
+    });
+
+    it('gets the list of application groupings', function() {
+      expect(request.get).to.be.calledWith(
+        `${expectedHost}/applications/${expectedApplicationId}/groupings`
+      );
+    });
+
+    it('formats the list of application groupings', function() {
+      return promise.then(() => {
+        expect(toCamelCase).to.be.calledWith(groupingsFromServer);
+      });
+    });
+
+    it('returns a fulfilled promise with the application groupings', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        expectedGroupings
+      );
+    });
+  });
+
   describe('getFeatured', function() {
     context('when the organization ID is provided', function() {
       let expectedFeaturedApplications;

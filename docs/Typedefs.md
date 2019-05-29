@@ -237,6 +237,36 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | type | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtApplicationGrouping"></a>
+
+## ContxtApplicationGrouping : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>string</code> |  |
+| applicationModules | [<code>Array.&lt;ContxtApplicationModule&gt;</code>](#ContxtApplicationModule) |  |
+| id | <code>string</code> |  |
+| index | <code>number</code> | The position of the grouping within the list of all   groupings of a the parent application |
+| label | <code>string</code> |  |
+
+<a name="ContxtApplicationModule"></a>
+
+## ContxtApplicationModule : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationGroupingId | <code>string</code> |  |
+| [externalLink] | <code>string</code> | A URI pointing to an external application |
+| [iconUrl] | <code>string</code> | A URI pointing to an icon/image representing the   application module |
+| id | <code>string</code> |  |
+| index | <code>number</code> | The position of the module within the list of all   modules of a the parent application grouping |
+| label | <code>string</code> |  |
+| slug | <code>string</code> |  |
+
 <a name="ContxtOrganization"></a>
 
 ## ContxtOrganization : <code>Object</code>

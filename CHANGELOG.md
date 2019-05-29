@@ -1,3 +1,9 @@
+## [v1.1.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.1.0) (2019-05-29)
+
+**Added**
+
+- Added `Coordinator.applications#getGroupings` for getting all application groupings and modules for an application that a user has access to
+
 ## [v1.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.0.0) (2019-05-28)
 
 **Changed**
