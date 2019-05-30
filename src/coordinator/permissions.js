@@ -41,11 +41,11 @@ class Permissions {
    *
    * @example
    * contxtSdk.coordinator.permissions
-   *   .getByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .getAllByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
    *   .then((usersPermissions) => console.log(usersPermissions))
    *   .catch((err) => console.log(err));
    */
-  getByOrganizationId(organizationId) {
+  getAllByOrganizationId(organizationId) {
     if (!organizationId) {
       return Promise.reject(
         new Error(
@@ -56,6 +56,51 @@ class Permissions {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/users/permissions`)
+      .then((userPermissions) => toCamelCase(userPermissions));
+  }
+
+  /**
+   * Gets a single user's permissions within an organization
+   *
+   * API Endpoint: '/organizations/:organizationId/users/:userId/permissions'
+   * Method: GET
+   *
+   * @param {string} organizationId The ID of the organization
+   * @param {string} userId The ID of the user
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUserPermissions} A single user's permissions
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.permissions
+   *   .getOneByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b', 'auth0|12345')
+   *   .then((usersPermissions) => console.log(usersPermissions))
+   *   .catch((err) => console.log(err));
+   */
+  getOneByOrganizationId(organizationId, userId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          "An organization ID is required for getting a user's permissions for an organization"
+        )
+      );
+    }
+
+    if (!userId) {
+      return Promise.reject(
+        new Error(
+          "An user ID is required for getting a user's permissions for an organization"
+        )
+      );
+    }
+
+    return this._request
+      .get(
+        `${
+          this._baseUrl
+        }/organizations/${organizationId}/users/${userId}/permissions`
+      )
       .then((userPermissions) => toCamelCase(userPermissions));
   }
 
