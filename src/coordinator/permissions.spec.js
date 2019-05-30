@@ -203,7 +203,7 @@ describe('Coordinator/Permissions', function() {
         );
 
         return expect(promise).to.be.rejectedWith(
-          "An user ID is required for getting a user's permissions for an organization"
+          "A user ID is required for getting a user's permissions for an organization"
         );
       });
     });

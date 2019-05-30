@@ -90,7 +90,7 @@ class Permissions {
     if (!userId) {
       return Promise.reject(
         new Error(
-          "An user ID is required for getting a user's permissions for an organization"
+          "A user ID is required for getting a user's permissions for an organization"
         )
       );
     }
