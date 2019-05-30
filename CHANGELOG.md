@@ -1,3 +1,10 @@
+## [v1.2.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.1) (2019-05-30)
+
+**Added**
+
+- Added `Coordinator.roles#create` for adding a new role within an organization
+- Added `Coordinator.roles#delete` for deleting a role within an organization
+
 ## [v1.2.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.0) (2019-05-30)
 
 **Added**
