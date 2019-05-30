@@ -47,38 +47,6 @@ class Roles {
   }
 
   /**
-   * Gets an organization's list of roles
-   *
-   * API Endpoint: '/organizations/:organizationId/roles'
-   * Method: GET
-   *
-   * @param {string} organizationId The ID of the organization
-   *
-   * @returns {Promise}
-   * @fulfill {ContxtRole[]} A list of roles
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.coordinator.roles
-   *   .getByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
-   *   .then((roles) => console.log(roles))
-   *   .catch((err) => console.log(err));
-   */
-  getByOrganizationId(organizationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error(
-          'An organization ID is required for getting roles for an organization'
-        )
-      );
-    }
-
-    return this._request
-      .get(`${this._baseUrl}/organizations/${organizationId}/roles`)
-      .then((roles) => toCamelCase(roles));
-  }
-
-  /**
    * Create a new role for an organization
    *
    * @param {string} organizationId The ID of the organization
@@ -103,7 +71,7 @@ class Roles {
     if (!organizationId) {
       return Promise.reject(
         new Error(
-          'An organization ID is required for creating roles for an organization'
+          'An organizationId is required for creating roles for an organization.'
         )
       );
     }
@@ -111,6 +79,12 @@ class Roles {
     if (!role.name) {
       return Promise.reject(
         new Error(`A name is required to create a new role.`)
+      );
+    }
+
+    if (!role.description) {
+      return Promise.reject(
+        new Error(`A description is required to create a new role.`)
       );
     }
 
@@ -138,7 +112,7 @@ class Roles {
    * @example
    * contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
    */
-  remove(organizationId, roleId) {
+  delete(organizationId, roleId) {
     if (!organizationId) {
       return Promise.reject(
         new Error('An organizationId is required for deleting a role.')
@@ -147,13 +121,45 @@ class Roles {
 
     if (!roleId) {
       return Promise.reject(
-        new Error('A roleID is required for deleting an asset metric.')
+        new Error('A roleId is required for deleting a role.')
       );
     }
 
     return this._request.delete(
       `${this._baseUrl}/organizations/${organizationId}/roles/${roleId}`
     );
+  }
+
+  /**
+   * Gets an organization's list of roles
+   *
+   * API Endpoint: '/organizations/:organizationId/roles'
+   * Method: GET
+   *
+   * @param {string} organizationId The ID of the organization
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtRole[]} A list of roles
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.roles
+   *   .getByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .then((roles) => console.log(roles))
+   *   .catch((err) => console.log(err));
+   */
+  getByOrganizationId(organizationId) {
+    if (!organizationId) {
+      return Promise.reject(
+        new Error(
+          'An organizationId is required for getting roles for an organization.'
+        )
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/organizations/${organizationId}/roles`)
+      .then((roles) => toCamelCase(roles));
   }
 }
 
