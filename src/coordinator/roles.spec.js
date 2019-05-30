@@ -157,7 +157,7 @@ describe('Coordinator/Roles', function() {
   });
 
   describe('delete', function() {
-    context('when the organizationId is provided', function() {
+    context('when the required information is provided', function() {
       let role;
       let organization;
       let promise;
@@ -181,7 +181,7 @@ describe('Coordinator/Roles', function() {
       });
     });
 
-    context('when the roleId is NOT provided', function() {
+    context('when the roleId is not provided', function() {
       it('returns rejected promise', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const organization = fixture.build('contxtOrganization');
