@@ -7,7 +7,8 @@ Module that provides access to contxt user permissions
 
 * [Permissions](#Permissions)
     * [new Permissions(sdk, request, baseUrl)](#new_Permissions_new)
-    * [.getByOrganizationId(organizationId)](#Permissions+getByOrganizationId) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId)](#Permissions+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.getOneByOrganizationId(organizationId, userId)](#Permissions+getOneByOrganizationId) ⇒ <code>Promise</code>
     * [.getByUserId(userId)](#Permissions+getByUserId) ⇒ <code>Promise</code>
 
 <a name="new_Permissions_new"></a>
@@ -20,9 +21,9 @@ Module that provides access to contxt user permissions
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 | baseUrl | <code>string</code> | The base URL provided by the parent module |
 
-<a name="Permissions+getByOrganizationId"></a>
+<a name="Permissions+getAllByOrganizationId"></a>
 
-### contxtSdk.coordinator.permissions.getByOrganizationId(organizationId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.permissions.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
 Gets a list of user permissions for each user in an organization
 
 API Endpoint: '/organizations/:organizationId/users/permissions'
@@ -39,7 +40,31 @@ Method: GET
 **Example**  
 ```js
 contxtSdk.coordinator.permissions
-  .getByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .getAllByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .then((usersPermissions) => console.log(usersPermissions))
+  .catch((err) => console.log(err));
+```
+<a name="Permissions+getOneByOrganizationId"></a>
+
+### contxtSdk.coordinator.permissions.getOneByOrganizationId(organizationId, userId) ⇒ <code>Promise</code>
+Gets a single user's permissions within an organization
+
+API Endpoint: '/organizations/:organizationId/users/:userId/permissions'
+Method: GET
+
+**Kind**: instance method of [<code>Permissions</code>](#Permissions)  
+**Fulfill**: [<code>ContxtUserPermissions</code>](./Typedefs.md#ContxtUserPermissions) A single user's permissions  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| userId | <code>string</code> | The ID of the user |
+
+**Example**  
+```js
+contxtSdk.coordinator.permissions
+  .getOneByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b', 'auth0|12345')
   .then((usersPermissions) => console.log(usersPermissions))
   .catch((err) => console.log(err));
 ```
