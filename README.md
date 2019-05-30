@@ -135,7 +135,7 @@ There are certain steps that should be taken when contributing and publishing a 
 
 ### Contributing
 
-We use [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) for documentation which should be committed to source control. The docs are set up to build on a pre-commit hook using [husky](https://github.com/typicode/husky) so you shouldn't need to run an additional command to build the docs before submitting a pull request.
+We use [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) for documentation which should be committed to source control. The docs are set up to build and be added to git on a pre-commit hook using [husky](https://github.com/typicode/husky) so you shouldn't need to run an additional command to build the docs before submitting a pull request.
 
 ### Publishing
 

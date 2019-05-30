@@ -11,6 +11,7 @@
     "./lib/bus/webSocketConnection.js": "./lib/bus/webSocketConnection.browser.js"
   },
   "scripts": {
+    "add:docs": "git add docs/",
     "build": "npm run build:js && npm run build:docs",
     "build:docs": "node ./support/docs",
     "build:js": "gulp build",
