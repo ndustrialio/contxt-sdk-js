@@ -7,9 +7,9 @@ Module that provides access to contxt roles
 
 * [Roles](#Roles)
     * [new Roles(sdk, request, baseUrl)](#new_Roles_new)
-    * [.getByOrganizationId(organizationId)](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
     * [.create(organizationId, role)](#Roles+create) ⇒ <code>Promise</code>
-    * [.remove(organizationId, roleId)](#Roles+remove) ⇒ <code>Promise</code>
+    * [.delete(organizationId, roleId)](#Roles+delete) ⇒ <code>Promise</code>
+    * [.getByOrganizationId(organizationId)](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
 
 <a name="new_Roles_new"></a>
 
@@ -21,29 +21,6 @@ Module that provides access to contxt roles
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 | baseUrl | <code>string</code> | The base URL provided by the parent module |
 
-<a name="Roles+getByOrganizationId"></a>
-
-### contxtSdk.coordinator.roles.getByOrganizationId(organizationId) ⇒ <code>Promise</code>
-Gets an organization's list of roles
-
-API Endpoint: '/organizations/:organizationId/roles'
-Method: GET
-
-**Kind**: instance method of [<code>Roles</code>](#Roles)  
-**Fulfill**: <code>ContxtRole[]</code> A list of roles  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
-
-**Example**  
-```js
-contxtSdk.coordinator.roles
-  .getByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
-  .then((roles) => console.log(roles))
-  .catch((err) => console.log(err));
-```
 <a name="Roles+create"></a>
 
 ### contxtSdk.coordinator.roles.create(organizationId, role) ⇒ <code>Promise</code>
@@ -70,9 +47,9 @@ contxtSdk.coordinator.roles
   .then((role) => console.log(role))
   .catch((err) => console.log(err));
 ```
-<a name="Roles+remove"></a>
+<a name="Roles+delete"></a>
 
-### contxtSdk.coordinator.roles.remove(organizationId, roleId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.roles.delete(organizationId, roleId) ⇒ <code>Promise</code>
 Deletes a role from an organization
 
 API Endpoint: '/organizations/:organizationId/roles/:roleId'
@@ -90,4 +67,27 @@ Method: DELETE
 **Example**  
 ```js
 contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+```
+<a name="Roles+getByOrganizationId"></a>
+
+### contxtSdk.coordinator.roles.getByOrganizationId(organizationId) ⇒ <code>Promise</code>
+Gets an organization's list of roles
+
+API Endpoint: '/organizations/:organizationId/roles'
+Method: GET
+
+**Kind**: instance method of [<code>Roles</code>](#Roles)  
+**Fulfill**: <code>ContxtRole[]</code> A list of roles  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+
+**Example**  
+```js
+contxtSdk.coordinator.roles
+  .getByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .then((roles) => console.log(roles))
+  .catch((err) => console.log(err));
 ```
