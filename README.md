@@ -119,6 +119,7 @@ Some tools used for testing and ensuring code quality include:
 - [eslint-config-ndustrial](https://github.com/ndustrialio/eslint-config-ndustrial)
 - [faker.js](https://github.com/marak/Faker.js/)
 - [Mocha](https://mochajs.org/)
+- [Prettier](https://prettier.io/)
 - [Sinon.JS](http://sinonjs.org/)
 - [sinon-chai](http://chaijs.com/plugins/sinon-chai/)
 
@@ -134,9 +135,7 @@ There are certain steps that should be taken when contributing and publishing a 
 
 ### Contributing
 
-Before submitting a pull request for code review, be sure to run `npm run build:docs`. This command will autogenerate
-the documentation, utilizing [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown), which should be
-committed to source control.
+We use [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) for documentation which should be committed to source control. The docs are set up to build and be added to git on a pre-commit hook using [husky](https://github.com/typicode/husky) so you shouldn't need to run an additional command to build the docs before submitting a pull request.
 
 ### Publishing
 

@@ -11,12 +11,12 @@
     "./lib/bus/webSocketConnection.js": "./lib/bus/webSocketConnection.browser.js"
   },
   "scripts": {
+    "add:docs": "git add docs/",
     "build": "npm run build:js && npm run build:docs",
     "build:docs": "node ./support/docs",
     "build:js": "gulp build",
     "coverage": "nyc npm run test:js",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
-    "precommit": "pretty-quick --staged",
     "prepare": "npm run build",
     "report": "nyc report",
     "test": "npm run lint && npm run coverage",
@@ -88,7 +88,7 @@
     "gulp": "^4.0.0",
     "gulp-babel": "^7.0.1",
     "gulp-sourcemaps": "^2.6.5",
-    "husky": "^0.14.3",
+    "husky": "^2.3.0",
     "jsdoc-to-markdown": "^5.0.0",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
