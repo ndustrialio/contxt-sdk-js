@@ -237,6 +237,36 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | type | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtApplicationGrouping"></a>
+
+## ContxtApplicationGrouping : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>number</code> |  |
+| applicationModules | [<code>Array.&lt;ContxtApplicationModule&gt;</code>](#ContxtApplicationModule) |  |
+| id | <code>string</code> |  |
+| index | <code>number</code> | The position of the grouping within the list of all   groupings of a the parent application |
+| label | <code>string</code> |  |
+
+<a name="ContxtApplicationModule"></a>
+
+## ContxtApplicationModule : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationGroupingId | <code>string</code> |  |
+| [externalLink] | <code>string</code> | A URI pointing to an external application |
+| [iconUrl] | <code>string</code> | A URI pointing to an icon/image representing the   application module |
+| id | <code>string</code> |  |
+| index | <code>number</code> | The position of the module within the list of all   modules of a the parent application grouping |
+| label | <code>string</code> |  |
+| slug | <code>string</code> | String that corresponds with a front-end package   name (e.g. the `@ndustrial/nsight-example` example application) |
+
 <a name="ContxtOrganization"></a>
 
 ## ContxtOrganization : <code>Object</code>
@@ -322,6 +352,20 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | [phoneNumber] | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtUserApplication"></a>
+
+## ContxtUserApplication : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtUserFavoriteApplication"></a>
 
 ## ContxtUserFavoriteApplication : <code>Object</code>
@@ -364,6 +408,21 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | mappedFromExternalGroup | <code>boolean</code> |  |
 | userId | <code>string</code> |  |
 | roleId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="ContxtUserStack"></a>
+
+## ContxtUserStack : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| accessType | <code>string</code> | Access Type of the user for this stack with options "reader", "collaborator", "owner" |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| stackId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="CostCenter"></a>

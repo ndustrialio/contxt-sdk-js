@@ -1,4 +1,20 @@
-## [v1.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.0.0) (2019-xx-xx)
+## [v1.2.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.0) (2019-05-30)
+
+**Added**
+
+- Added `Coordinator.permissions#getOneByOrganizationId` for getting a single user's permissions within an organization
+
+**Changed**
+
+- Renamed `Coordinator.permissions#getByOrganizationId` to `Coordinator.permissions#getAllByOrganizationId` for getting every user's permissions within an organization.
+
+## [v1.1.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.1.0) (2019-05-29)
+
+**Added**
+
+- Added `Coordinator.applications#getGroupings` for getting all application groupings and modules for an application that a user has access to
+
+## [v1.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.0.0) (2019-05-28)
 
 **Changed**
 
@@ -46,6 +62,10 @@ coordinator.removeUserFromOrganization() -> coordinator.users.remove()
 - Added `Permissions#getByOrganizationId` for fetching all user permissions for an entire organization.
 - Added `Users#addRole` for adding a role to a user
 - Added `Users#removeRole` for removing a role from a user
+- Added `Users#addApplication` for adding an application to a user
+- Added `Users#removeApplication` for removing an application from a user
+- Added `Users#addStack` for adding a stack to a user
+- Added `Users#removeStack` for removing a stack from a user
 
 ## [v0.0.50](http://github.com/ndustrialio/contxt-sdk-js/tree/v0.0.50) (2019-05-14)
 

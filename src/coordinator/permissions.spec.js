@@ -49,7 +49,7 @@ describe('Coordinator/Permissions', function() {
     });
   });
 
-  describe('getByOrganizationId', function() {
+  describe('getAllByOrganizationId', function() {
     context('when the organization ID is provided', function() {
       let expectedUsersPermissions;
       let userPermissionFromServer;
@@ -85,7 +85,7 @@ describe('Coordinator/Permissions', function() {
           .returns(expectedUsersPermissions);
 
         const permissions = new Permissions(baseSdk, request, expectedHost);
-        promise = permissions.getByOrganizationId(expectedOrganizationId);
+        promise = permissions.getAllByOrganizationId(expectedOrganizationId);
       });
 
       it('gets the list of users permissions from the server', function() {
@@ -110,10 +110,100 @@ describe('Coordinator/Permissions', function() {
     context('when the organization ID is not provided', function() {
       it('throws an error', function() {
         const permissions = new Permissions(baseSdk, baseRequest, expectedHost);
-        const promise = permissions.getByOrganizationId();
+        const promise = permissions.getAllByOrganizationId();
 
         return expect(promise).to.be.rejectedWith(
           'An organization ID is required for getting users permissions for an organization'
+        );
+      });
+    });
+  });
+
+  describe('getOneByOrganizationId', function() {
+    context('when the organization ID is provided', function() {
+      let expectedUserPermissions;
+      let userPermissionFromServer;
+      let expectedOrganizationId;
+      let expectedUserId;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedOrganizationId = fixture.build('contxtOrganization').id;
+        expectedUserId = fixture.build('contxtUser').id;
+        expectedUserPermissions = fixture.build('contxtUserPermissions', {
+          organizationId: expectedOrganizationId
+        });
+
+        userPermissionFromServer = fixture.build(
+          'contxtUserPermissions',
+          expectedUserPermissions,
+          {
+            fromServer: true
+          }
+        );
+
+        request = {
+          ...baseRequest,
+          get: this.sandbox.stub().resolves(userPermissionFromServer)
+        };
+        toCamelCase = this.sandbox
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedUserPermissions);
+
+        const permissions = new Permissions(baseSdk, request, expectedHost);
+        promise = permissions.getOneByOrganizationId(
+          expectedOrganizationId,
+          expectedUserId
+        );
+      });
+
+      it('gets the user permissions from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/users/${expectedUserId}/permissions`
+        );
+      });
+
+      it('formats the of user permissions', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(userPermissionFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the users permissions', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedUserPermissions
+        );
+      });
+    });
+
+    context('when the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const expectedUserId = fixture.build('contxtUser').id;
+        const permissions = new Permissions(baseSdk, baseRequest, expectedHost);
+        const promise = permissions.getOneByOrganizationId(
+          null,
+          expectedUserId
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          "An organization ID is required for getting a user's permissions for an organization"
+        );
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const expectedOrganizationId = fixture.build('contxtOrganization').id;
+        const permissions = new Permissions(baseSdk, baseRequest, expectedHost);
+        const promise = permissions.getOneByOrganizationId(
+          expectedOrganizationId,
+          null
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          "A user ID is required for getting a user's permissions for an organization"
         );
       });
     });

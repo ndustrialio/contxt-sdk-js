@@ -8,12 +8,16 @@ Module that provides access to contxt users
 * [Users](#Users)
     * [new Users(sdk, request, baseUrl)](#new_Users_new)
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
+    * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
+    * [.addStack(userId, stackId, accessType)](#Users+addStack) ⇒ <code>Promise</code>
     * [.get(userId)](#Users+get) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Users+getByOrganizationId) ⇒ <code>Promise</code>
     * [.invite(organizationId, user)](#Users+invite) ⇒ <code>Promise</code>
     * [.remove(organizationId, userId)](#Users+remove) ⇒ <code>Promise</code>
+    * [.removeApplication(userId, applicationId)](#Users+removeApplication) ⇒ <code>Promise</code>
     * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
+    * [.removeStack(userId, stackId)](#Users+removeStack) ⇒ <code>Promise</code>
 
 <a name="new_Users_new"></a>
 
@@ -58,13 +62,37 @@ contxtSdk.coordinator.users
   .then(() => console.log("User Activated"))
   .catch((err) => console.log(err));
 ```
+<a name="Users+addApplication"></a>
+
+### contxtSdk.coordinator.users.addApplication(userId, applicationId) ⇒ <code>Promise</code>
+Adds a application to a user
+
+API Endpoint: '/users/:userId/applications/:applicationId'
+Method: GET
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: [<code>ContxtUserApplication</code>](./Typedefs.md#ContxtUserApplication) The newly created user application  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| applicationId | <code>string</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((userApplication) => console.log(userApplication))
+  .catch((err) => console.log(err));
+```
 <a name="Users+addRole"></a>
 
 ### contxtSdk.coordinator.users.addRole(userId, roleId) ⇒ <code>Promise</code>
 Adds a role to a user
 
 API Endpoint: '/users/:userId/roles/:roleId'
-Method: GET
+Method: POST
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
 **Fulfill**: [<code>ContxtUserRole</code>](./Typedefs.md#ContxtUserRole) The newly created user role  
@@ -80,6 +108,31 @@ Method: GET
 contxtSdk.coordinator.users
   .addRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .then((userRole) => console.log(userRole))
+  .catch((err) => console.log(err));
+```
+<a name="Users+addStack"></a>
+
+### contxtSdk.coordinator.users.addStack(userId, stackId, accessType) ⇒ <code>Promise</code>
+Adds a stack to a user
+
+API Endpoint: '/users/:userId/stacks/:stackId'
+Method: POST
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: [<code>ContxtUserStack</code>](./Typedefs.md#ContxtUserStack) The newly created user stack  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| stackId | <code>string</code> | The ID of the stack |
+| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;collaborator&#x27;</code> \| <code>&#x27;owner&#x27;</code> | The level of access for the user |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58', 'collaborator')
+  .then((userStack) => console.log(userStack))
   .catch((err) => console.log(err));
 ```
 <a name="Users+get"></a>
@@ -187,6 +240,29 @@ contxtSdk.coordinator.users
   .remove('ed2e8e24-79ef-4404-bf5f-995ef31b2298', '4a577e87-7437-4342-b183-00c18ec26d52')
   .catch((err) => console.log(err));
 ```
+<a name="Users+removeApplication"></a>
+
+### contxtSdk.coordinator.users.removeApplication(userId, applicationId) ⇒ <code>Promise</code>
+Removes a application from a user
+
+API Endpoint: '/users/:userId/applications/:applicationId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| applicationId | <code>string</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .catch((err) => console.log(err));
+```
 <a name="Users+removeRole"></a>
 
 ### contxtSdk.coordinator.users.removeRole(userId, roleId) ⇒ <code>Promise</code>
@@ -208,5 +284,28 @@ Method: DELETE
 ```js
 contxtSdk.coordinator.users
   .removeRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .catch((err) => console.log(err));
+```
+<a name="Users+removeStack"></a>
+
+### contxtSdk.coordinator.users.removeStack(userId, stackId) ⇒ <code>Promise</code>
+Removes a stack from a user
+
+API Endpoint: '/users/:userId/stacks/:stackId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| stackId | <code>string</code> | The ID of the stack |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```

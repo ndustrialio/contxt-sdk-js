@@ -1,47 +1,18 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const factory = require('rosie').Factory;
 
-require('./asset');
-require('./assetAttribute');
-require('./assetAttributeValue');
-require('./assetMetric');
-require('./assetMetricValue');
-require('./assetType');
-require('./audience');
-require('./channel');
-require('./contxtApplication');
-require('./contxtOrganization');
-require('./contxtOrganizationFeaturedApplication');
-require('./contxtRole');
-require('./contxtStack');
-require('./contxtUser');
-require('./contxtUserFavoriteApplication');
-require('./contxtUserPermissions');
-require('./contxtUserRole');
-require('./costCenter');
-require('./costCenterFacility');
-require('./defaultAudiences');
-require('./edgeNode');
-require('./event');
-require('./eventType');
-require('./facility');
-require('./facilityGrouping');
-require('./facilityGroupingFacility');
-require('./facilityInfo');
-require('./facilityTag');
-require('./fieldCategory');
-require('./fieldGrouping');
-require('./fieldGroupingField');
-require('./file');
-require('./fileToDownload');
-require('./fileUploadInfo');
-require('./outputField');
-require('./outputFieldData');
-require('./organization');
-require('./owner');
-require('./paginationMetadata');
-require('./userPermissionsMap');
-require('./userProfile');
+const basename = path.basename(__filename);
+
+fs.readdirSync(__dirname)
+  .filter(
+    (filename) =>
+      filename.indexOf('.') !== 0 &&
+      filename !== basename &&
+      filename.slice(-3) === '.js'
+  )
+  .forEach((filename) => require(`./${filename}`));
 
 module.exports = factory;

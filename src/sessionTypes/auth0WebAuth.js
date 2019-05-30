@@ -148,7 +148,7 @@ class Auth0WebAuth {
         this._sessionInfo.accessToken,
         (err, profile) => {
           if (err) {
-            reject(err);
+            return reject(err);
           }
 
           const formattedProfile = {
