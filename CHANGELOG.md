@@ -1,3 +1,13 @@
+## [v1.2.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.0) (2019-05-30)
+
+**Added**
+
+- Added `Coordinator.permissions#getOneByOrganizationId` for getting a single user's permissions within an organization
+
+**Changed**
+
+- Renamed `Coordinator.permissions#getByOrganizationId` to `Coordinator.permissions#getAllByOrganizationId` for getting every user's permissions within an organization.
+
 ## [v1.1.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.1.0) (2019-05-29)
 
 **Added**
