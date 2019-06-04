@@ -2,6 +2,7 @@
 
 const factory = require('rosie').Factory;
 const faker = require('faker');
+const times = require('lodash.times');
 
 factory
   .define('contxtUserPermissions')
@@ -13,26 +14,32 @@ factory
           'contxtApplication',
           faker.random.number({ min: 0, max: 15 })
         )
-        .map(({ id }) => id),
+        .map(({ id }) => ({ id })),
     applicationsImplicit: () =>
       factory
         .buildList(
           'contxtApplication',
           faker.random.number({ min: 0, max: 15 })
         )
-        .map(({ id }) => id),
+        .map(({ id }) => ({ id })),
     roles: () =>
       factory
         .buildList('contxtRole', faker.random.number({ min: 0, max: 15 }))
-        .map(({ id }) => id),
+        .map(({ id }) => ({ id })),
     stacksExplicit: () =>
-      factory
-        .buildList('contxtStack', faker.random.number({ min: 0, max: 15 }))
-        .map(({ id }) => id),
+      times(faker.random.number({ min: 0, max: 15 }), () => {
+        return {
+          id: factory.build('contxtStack').id,
+          accessType: factory.build('contxtUserStack').accessType
+        };
+      }),
     stacksImplicit: () =>
-      factory
-        .buildList('contxtStack', faker.random.number({ min: 0, max: 15 }))
-        .map(({ id }) => id),
+      times(faker.random.number({ min: 0, max: 15 }), () => {
+        return {
+          id: factory.build('contxtStack').id,
+          accessType: factory.build('contxtUserStack').accessType
+        };
+      }),
     userId: () => factory.build('contxtUser').id
   })
   .after((permission, options) => {
@@ -45,10 +52,16 @@ factory
       permission.applications_implicit = permission.applicationsImplicit;
       delete permission.applicationsImplicit;
 
-      permission.stacks_explicit = permission.stacksExplicit;
+      permission.stacks_explicit = permission.stacksExplicit.map((s) => ({
+        id: s.id,
+        access_type: s.accessType
+      }));
       delete permission.stacksExplicit;
 
-      permission.stacks_implicit = permission.stacksImplicit;
+      permission.stacks_implicit = permission.stacksImplicit.map((s) => ({
+        id: s.id,
+        access_type: s.accessType
+      }));
       delete permission.stacksImplicit;
 
       permission.user_id = permission.userId;
