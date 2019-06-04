@@ -2,6 +2,7 @@
 
 const factory = require('rosie').Factory;
 const faker = require('faker');
+const times = require('lodash.times');
 
 factory
   .define('contxtUserPermissions')
@@ -26,13 +27,19 @@ factory
         .buildList('contxtRole', faker.random.number({ min: 0, max: 15 }))
         .map(({ id }) => ({ id })),
     stacksExplicit: () =>
-      factory
-        .buildList('contxtUserStack', faker.random.number({ min: 0, max: 15 }))
-        .map(({ stackId, accessType }) => ({ id: stackId, accessType })),
+      times(faker.random.number({ min: 0, max: 15 }), () => {
+        return {
+          id: factory.build('contxtStack').id,
+          accessType: factory.build('contxtUserStack').accessType
+        };
+      }),
     stacksImplicit: () =>
-      factory
-        .buildList('contxtUserStack', faker.random.number({ min: 0, max: 15 }))
-        .map(({ stackId, accessType }) => ({ id: stackId, accessType })),
+      times(faker.random.number({ min: 0, max: 15 }), () => {
+        return {
+          id: factory.build('contxtStack').id,
+          accessType: factory.build('contxtUserStack').accessType
+        };
+      }),
     userId: () => factory.build('contxtUser').id
   })
   .after((permission, options) => {
