@@ -99,7 +99,7 @@ class Roles {
    * @param {string} organizationId The ID of the organization
    * @param {string} roleId The UUID formatted ID of the role
    * @param {string} stackId The UUID formatted ID of the stack
-   * @param {'reader' | 'collaborator' | 'owner'} [accessType='reader'] The level of access for the role
+   * @param {'reader' | 'collaborator' | 'owner'} accessType The level of access for the role
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -131,7 +131,11 @@ class Roles {
     }
 
     if (['reader', 'collaborator', 'owner'].indexOf(accessType) === -1) {
-      accessType = 'reader';
+      return Promise.reject(
+        new Error(
+          'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
+        )
+      );
     }
 
     return this._request

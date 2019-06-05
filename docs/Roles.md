@@ -8,7 +8,7 @@ Module that provides access to contxt roles
 * [Roles](#Roles)
     * [new Roles(sdk, request, baseUrl)](#new_Roles_new)
     * [.addApplication(organizationId, roleId, applicationId)](#Roles+addApplication) ⇒ <code>Promise</code>
-    * [.addStack(organizationId, roleId, stackId, [accessType])](#Roles+addStack) ⇒ <code>Promise</code>
+    * [.addStack(organizationId, roleId, stackId, accessType)](#Roles+addStack) ⇒ <code>Promise</code>
     * [.create(organizationId, role)](#Roles+create) ⇒ <code>Promise</code>
     * [.delete(organizationId, roleId)](#Roles+delete) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
@@ -46,13 +46,13 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.roles
-  .addApplication('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58', 'collaborator')
-  .then((roleStack) => console.log(roleStack))
+  .addApplication('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((roleApplication) => console.log(roleApplication))
   .catch((err) => console.log(err));
 ```
 <a name="Roles+addStack"></a>
 
-### contxtSdk.coordinator.roles.addStack(organizationId, roleId, stackId, [accessType]) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.roles.addStack(organizationId, roleId, stackId, accessType) ⇒ <code>Promise</code>
 Add a stack to a role
 
 API Endpoint: '/applications/:applications_id/stacks/:stackId'
@@ -62,12 +62,12 @@ Method: POST
 **Fulfill**: <code>undefined</code>  
 **Reject**: <code>Error</code>  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| organizationId | <code>string</code> |  | The ID of the organization |
-| roleId | <code>string</code> |  | The UUID formatted ID of the role |
-| stackId | <code>string</code> |  | The UUID formatted ID of the stack |
-| [accessType] | <code>&#x27;reader&#x27;</code> \| <code>&#x27;collaborator&#x27;</code> \| <code>&#x27;owner&#x27;</code> | <code>&#x27;reader&#x27;</code> | The level of access for the role |
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| roleId | <code>string</code> | The UUID formatted ID of the role |
+| stackId | <code>string</code> | The UUID formatted ID of the stack |
+| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;collaborator&#x27;</code> \| <code>&#x27;owner&#x27;</code> | The level of access for the role |
 
 **Example**  
 ```js
@@ -166,7 +166,10 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+contxtSdk.roles
+  .removeApplication('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((roleApplication) => console.log(roleApplication))
+  .catch((err) => console.log(err));
 ```
 <a name="Roles+removeStack"></a>
 
@@ -188,5 +191,8 @@ Method: DELETE
 
 **Example**  
 ```js
-contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+contxtSdk.roles
+  .removeStack('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((roleStack) => console.log(roleStack))
+  .catch((err) => console.log(err));
 ```

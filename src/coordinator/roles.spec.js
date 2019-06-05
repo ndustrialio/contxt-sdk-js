@@ -191,6 +191,21 @@ describe('Coordinator/Roles', function() {
       }
     );
 
+    context('when the organization ID is not provided', function() {
+      it('throws an error', function() {
+        const role = fixture.build('contxtRole')
+        const stack = fixture.build('contxtStack');
+        const roleStack = fixture.build('contxtRoleStack');
+
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        const promise = roles.addStack(null, role.id, stack.id, roleStack.accessType);
+
+        return expect(promise).to.be.rejectedWith(
+          'An organizationId is required for adding a stack to a role.'
+        );
+      });
+    });
+
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
         const organization = fixture.build('contxtOrganization')
@@ -216,6 +231,36 @@ describe('Coordinator/Roles', function() {
 
         return expect(promise).to.be.rejectedWith(
           'A stackId is required for adding a stack to a role.'
+        );
+      });
+    });
+
+    context('when the access type is not provided', function() {
+      it('throws an error', function() {
+        const organization = fixture.build('contxtOrganization');
+        const role = fixture.build('contxtRole');
+        const stack = fixture.build('contxtStack');
+
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        const promise = roles.addStack(organization.id, role.id, stack.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
+        );
+      });
+    });
+
+    context('when the access type is not a valid value', function() {
+      it('throws an error', function() {
+        const organization = fixture.build('contxtOrganization');
+        const role = fixture.build('contxtRole');
+        const stack = fixture.build('contxtStack');
+
+        const roles = new Roles(baseSdk, baseRequest, expectedHost);
+        const promise = roles.addStack(organization.id, role.id, stack.id, faker.random.word());
+
+        return expect(promise).to.be.rejectedWith(
+          'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
         );
       });
     });
