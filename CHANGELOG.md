@@ -1,3 +1,9 @@
+## [v1.2.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.2) (2019-06-03)
+
+**Fixed**
+
+- v1.2.1 was published without the changes introduced in 1.1.0. Republishing to re-add this code.
+
 ## [v1.2.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.1) (2019-05-30)
 
 **Added**
