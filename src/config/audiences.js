@@ -24,11 +24,11 @@ export default {
   coordinator: {
     production: {
       clientId: '8qY2xJob1JAxhmVhIDLCNnGriTM9bct8',
-      host: 'https://contxt.api.ndustrial.io'
+      host: 'http://localhost:3000'
     },
     staging: {
       clientId: '8qY2xJob1JAxhmVhIDLCNnGriTM9bct8',
-      host: 'https://contxt-staging.api.ndustrial.io'
+      host: 'http://localhost:3000'
     }
   },
   events: {
