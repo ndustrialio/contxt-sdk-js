@@ -62,8 +62,8 @@ class Roles {
    *
    * @example
    * contxtSdk.roles
-   *   .addApplication('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58', 'collaborator')
-   *   .then((roleStack) => console.log(roleStack))
+   *   .addApplication('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .then((roleApplication) => console.log(roleApplication))
    *   .catch((err) => console.log(err));
    */
   addApplication(organizationId, roleId, applicationId) {
@@ -273,7 +273,10 @@ class Roles {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+   * contxtSdk.roles
+   *   .removeApplication('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .then((roleApplication) => console.log(roleApplication))
+   *   .catch((err) => console.log(err));
    */
   removeApplication(organizationId, roleId, applicationId) {
     if (!organizationId) {
@@ -314,7 +317,10 @@ class Roles {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+   * contxtSdk.roles
+   *   .removeStack('4f0e51c6-728b-4892-9863-6d002e61204d', '36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .then((roleStack) => console.log(roleStack))
+   *   .catch((err) => console.log(err));
    */
   removeStack(organizationId, roleId, stackId) {
     if (!organizationId) {
