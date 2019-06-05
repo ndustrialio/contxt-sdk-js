@@ -1,3 +1,9 @@
+## [v1.2.3](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.3) (2019-06-05)
+
+**Fixed**
+
+- Updated internal config builder to include `webSocket` key
+
 ## [v1.2.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.2) (2019-06-03)
 
 **Fixed**
