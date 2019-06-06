@@ -119,6 +119,69 @@ describe('Config', function() {
       }
     );
 
+    context(
+      'when providing a custom host, clientId, and webSocket for a module',
+      function() {
+        let audiences;
+        let expectedAudience;
+
+        beforeEach(function() {
+          const env = faker.hacker.adjective();
+          expectedAudience = fixture.build('audience', {
+            webSocket: faker.internet.url()
+          });
+          const config = { ...expectedAudience, env };
+          const initialAudiences = {
+            [env]: fixture.build('audience'),
+            [faker.hacker.verb()]: fixture.build('audience')
+          };
+
+          audiences = Config.prototype._getAudienceFromCustomConfig(
+            config,
+            initialAudiences
+          );
+        });
+
+        it('provides audience information that matches the custom information provided', function() {
+          expect(audiences).to.deep.equal(expectedAudience);
+          expect(audiences).to.have.property('webSocket');
+        });
+      }
+    );
+
+    context(
+      'when providing a custom host and clientId with a property we do not use',
+      function() {
+        let audiences;
+        let expectedAudience;
+        let invalidPropertyName;
+
+        beforeEach(function() {
+          const env = faker.hacker.adjective();
+          invalidPropertyName = 'invalid';
+          expectedAudience = fixture.build('audience', {
+            [invalidPropertyName]: faker.internet.url()
+          });
+          const config = { ...expectedAudience, env };
+          const initialAudiences = {
+            [env]: fixture.build('audience'),
+            [faker.hacker.verb()]: fixture.build('audience')
+          };
+
+          audiences = Config.prototype._getAudienceFromCustomConfig(
+            config,
+            initialAudiences
+          );
+        });
+
+        it('provides audience information that has the host and clientId but no unused property', function() {
+          expect(audiences.host).to.equal(expectedAudience.host);
+          expect(audiences.clientId).to.equal(expectedAudience.clientId);
+          expect(audiences).to.not.have.property(invalidPropertyName);
+        });
+      }
+    );
+
     context('when providing an environment for a module', function() {
       let audiences;
       let expectedAudience;

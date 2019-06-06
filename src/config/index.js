@@ -8,6 +8,7 @@ import defaultConfigs from './defaults';
  * @param {string} config.clientId Client Id provided by Auth0 for the environment you are
  *   trying to communicate with
  * @param {string} config.host Hostname for the API that corresponds with the clientId provided
+ * @param {string} [config.webSocket] WebSocket URL for the API that corresponds with the clientId provided
  */
 
 /**
@@ -20,6 +21,7 @@ import defaultConfigs from './defaults';
  *   trying to communicate with
  * @param {string} [config.env] The SDK provided environment name you are trying to reach
  * @param {string} [config.host] Hostname for the API that corresponds with the clientId provided
+ * @param {string} [config.webSocket] WebSocket URL for the API that corresponds with the clientId provided
  */
 
 /**
@@ -114,6 +116,7 @@ class Config {
    * clientId and host, or an environment that matches a default audience/environment.
    *
    * @param {CustomAudience} config A custom audience configuration to parse
+   * @param {Object.<string, Audience>} audiences An object with keys for environment names and values of Audience information
    *
    * @returns {Audience}
    * @throws {Error}
@@ -122,10 +125,16 @@ class Config {
    */
   _getAudienceFromCustomConfig(config, audiences) {
     if (config.clientId && config.host) {
-      return {
+      const audience = {
         clientId: config.clientId,
         host: config.host
       };
+
+      if (config.webSocket) {
+        audience.webSocket = config.webSocket;
+      }
+
+      return audience;
     } else if (config.env) {
       return audiences[config.env];
     } else {

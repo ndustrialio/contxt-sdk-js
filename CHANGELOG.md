@@ -1,4 +1,4 @@
-## [v1.2.3](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.3) (2019-06-05)
+## [v1.2.4](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.4) (2019-06-06)
 
 **Added**
 
@@ -6,6 +6,12 @@
 - Added `Coordinator.roles#addStack` for adding a stack to a role
 - Added `Coordinator.roles#removeApplication` for removing an application from a role
 - Added `Coordinator.roles#removeStack` for removing a stack from a role
+
+## [v1.2.3](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.3) (2019-06-05)
+
+**Fixed**
+
+- Updated internal config builder to include `webSocket` key
 
 ## [v1.2.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.2) (2019-06-03)
 

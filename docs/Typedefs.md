@@ -192,6 +192,7 @@ A single audience used for authenticating and communicating with an individual A
 | --- | --- | --- |
 | config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with |
 | config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
+| [config.webSocket] | <code>string</code> | WebSocket URL for the API that corresponds with the clientId provided |
 
 <a name="Auth0WebAuthSessionInfo"></a>
 
@@ -495,6 +496,7 @@ custom environment.
 | [config.clientId] | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with |
 | [config.env] | <code>string</code> | The SDK provided environment name you are trying to reach |
 | [config.host] | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
+| [config.webSocket] | <code>string</code> | WebSocket URL for the API that corresponds with the clientId provided |
 
 <a name="EdgeNode"></a>
 
