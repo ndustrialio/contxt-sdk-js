@@ -92,7 +92,9 @@ class Roles {
 
     if (!applicationId) {
       return Promise.reject(
-        new Error('An applicationId is required for adding an application to a role.')
+        new Error(
+          'An applicationId is required for adding an application to a role.'
+        )
       );
     }
 
@@ -143,10 +145,9 @@ class Roles {
     }
 
     return this._request
-      .post(
-        `${this._baseUrl}/stacks/${stackId}/roles/${roleId}`,
-        {access_type: accessType}
-      )
+      .post(`${this._baseUrl}/stacks/${stackId}/roles/${roleId}`, {
+        access_type: accessType
+      })
       .then((response) => toCamelCase(response));
   }
 
@@ -287,13 +288,17 @@ class Roles {
   removeApplication(roleId, applicationId) {
     if (!roleId) {
       return Promise.reject(
-        new Error('A roleId is required for removing an application from a role.')
+        new Error(
+          'A roleId is required for removing an application from a role.'
+        )
       );
     }
 
     if (!applicationId) {
       return Promise.reject(
-        new Error('An applicationId is required for removing an application from a role.')
+        new Error(
+          'An applicationId is required for removing an application from a role.'
+        )
       );
     }
 

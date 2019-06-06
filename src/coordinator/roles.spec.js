@@ -77,8 +77,9 @@ describe('Coordinator/Roles', function() {
       });
 
       it('returns a fulfilled promise', function() {
-        return expect(promise).to.be.fulfilled
-          .and.to.eventually.deep.equal(expectedRoleApplication);
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedRoleApplication
+        );
       });
     });
 
@@ -166,8 +167,9 @@ describe('Coordinator/Roles', function() {
         });
 
         it('returns a fulfilled promise', function() {
-          return expect(promise).to.be.fulfilled
-            .and.to.eventually.deep.equal(expectedRoleStack);
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            expectedRoleStack
+          );
         });
       }
     );
@@ -226,9 +228,7 @@ describe('Coordinator/Roles', function() {
         );
       });
     });
-
   });
-
 
   describe('constructor', function() {
     let roles;
