@@ -35,13 +35,11 @@ describe('Coordinator/Roles', function() {
       let promise;
       let request;
       let application;
-      let organization;
       let role;
       let roleApplicationFromServer;
       let toCamelCase;
 
       beforeEach(function() {
-        organization = fixture.build('contxtOrganization');
         application = fixture.build('contxtApplication');
         role = fixture.build('contxtRole');
 
@@ -63,7 +61,7 @@ describe('Coordinator/Roles', function() {
           .callsFake((app) => expectedRoleApplication);
 
         const roles = new Roles(baseSdk, request, expectedHost);
-        promise = roles.addApplication(organization.id, role.id, application.id);
+        promise = roles.addApplication(role.id, application.id);
       });
 
       it('posts the role application to the server', function() {
@@ -83,27 +81,12 @@ describe('Coordinator/Roles', function() {
       });
     });
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const role = fixture.build('contxtRole');
-        const application = fixture.build('contxtApplication');
-
-        const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addApplication(null, role.id, application.id);
-
-        return expect(promise).to.be.rejectedWith(
-          'An organizationId is required for adding an application to a role'
-        );
-      });
-    });
-
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const application = fixture.build('contxtApplication');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addApplication(organization.id, null, application.id);
+        const promise = roles.addApplication(null, application.id);
 
         return expect(promise).to.be.rejectedWith(
           'A roleId is required for adding an application to a role'
@@ -113,11 +96,10 @@ describe('Coordinator/Roles', function() {
 
     context('when the application ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const role = fixture.build('contxtRole');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addApplication(organization.id, role.id, null);
+        const promise = roles.addApplication(role.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'An applicationId is required for adding an application to a role'
@@ -134,13 +116,11 @@ describe('Coordinator/Roles', function() {
         let promise;
         let request;
         let stack;
-        let organization;
         let role;
         let roleStackFromServer;
         let toCamelCase;
 
         beforeEach(function() {
-          organization = fixture.build('contxtOrganization');
           stack = fixture.build('contxtStack');
           role = fixture.build('contxtRole');
 
@@ -163,7 +143,6 @@ describe('Coordinator/Roles', function() {
 
           const roles = new Roles(baseSdk, request, expectedHost);
           promise = roles.addStack(
-            organization.id,
             role.id,
             stack.id,
             expectedRoleStack.accessType
@@ -191,29 +170,13 @@ describe('Coordinator/Roles', function() {
       }
     );
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const role = fixture.build('contxtRole')
-        const stack = fixture.build('contxtStack');
-        const roleStack = fixture.build('contxtRoleStack');
-
-        const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(null, role.id, stack.id, roleStack.accessType);
-
-        return expect(promise).to.be.rejectedWith(
-          'An organizationId is required for adding a stack to a role.'
-        );
-      });
-    });
-
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization')
         const stack = fixture.build('contxtStack');
         const roleStack = fixture.build('contxtRoleStack');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(organization.id, null, stack.id, roleStack.accessType);
+        const promise = roles.addStack(null, stack.id, roleStack.accessType);
 
         return expect(promise).to.be.rejectedWith(
           'A roleId is required for adding a stack to a role.'
@@ -223,11 +186,10 @@ describe('Coordinator/Roles', function() {
 
     context('when the stack ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization')
         const role = fixture.build('contxtRole');
         const roleStack = fixture.build('contxtRoleStack');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(organization.id, role.id, null, roleStack.accessType);
+        const promise = roles.addStack(role.id, null, roleStack.accessType);
 
         return expect(promise).to.be.rejectedWith(
           'A stackId is required for adding a stack to a role.'
@@ -237,12 +199,11 @@ describe('Coordinator/Roles', function() {
 
     context('when the access type is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const role = fixture.build('contxtRole');
         const stack = fixture.build('contxtStack');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(organization.id, role.id, stack.id, null);
+        const promise = roles.addStack(role.id, stack.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
@@ -252,12 +213,11 @@ describe('Coordinator/Roles', function() {
 
     context('when the access type is not a valid value', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const role = fixture.build('contxtRole');
         const stack = fixture.build('contxtStack');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(organization.id, role.id, stack.id, faker.random.word());
+        const promise = roles.addStack(role.id, stack.id, faker.random.word());
 
         return expect(promise).to.be.rejectedWith(
           'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
@@ -516,21 +476,19 @@ describe('Coordinator/Roles', function() {
 
   describe('removeApplication', function() {
     context('when all required parameters are provided', function() {
-      let organization;
       let application;
       let role;
       let promise;
 
       beforeEach(function() {
-        organization = fixture.build('contxtOrganization');
         application = fixture.build('contxtApplication');
         role = fixture.build('contxtRole');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        promise = roles.removeApplication(organization.id, role.id, application.id);
+        promise = roles.removeApplication(role.id, application.id);
       });
 
-      it('sends a request to removeApplication the role from the organization', function() {
+      it('sends a request to removeApplication from the role', function() {
         expect(baseRequest.delete).to.be.calledWith(
           `${expectedHost}/applications/${application.id}/roles/${role.id}`
         );
@@ -541,25 +499,11 @@ describe('Coordinator/Roles', function() {
       });
     });
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const role = fixture.build('contxtRole');
-        const application = fixture.build('contxtApplication');
-        const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeApplication(null, role.id, application.id);
-
-        return expect(promise).to.be.rejectedWith(
-          'An organizationId is required for removing an application from a role.'
-        );
-      });
-    });
-
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const application = fixture.build('contxtApplication');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeApplication(organization.id, null, application.id);
+        const promise = roles.removeApplication(null, application.id);
 
         return expect(promise).to.be.rejectedWith(
           'A roleId is required for removing an application from a role.'
@@ -569,10 +513,9 @@ describe('Coordinator/Roles', function() {
 
     context('when the application ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const role = fixture.build('contxtRole');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeApplication(organization.id, role.id, null);
+        const promise = roles.removeApplication(role.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'An applicationId is required for removing an application from a role.'
@@ -583,18 +526,16 @@ describe('Coordinator/Roles', function() {
 
   describe('removeStack', function() {
     context('when all required parameters are provided', function() {
-      let organization;
       let stack;
       let role;
       let promise;
 
       beforeEach(function() {
-        organization = fixture.build('contxtOrganization');
         stack = fixture.build('contxtStack');
         role = fixture.build('contxtRole');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        promise = roles.removeStack(organization.id, role.id, stack.id);
+        promise = roles.removeStack(role.id, stack.id);
       });
 
       it('sends a request to removeStack the role from the organization', function() {
@@ -608,25 +549,11 @@ describe('Coordinator/Roles', function() {
       });
     });
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const role = fixture.build('contxtRole');
-        const stack = fixture.build('contxtStack');
-        const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeStack(null, role.id, stack.id);
-
-        return expect(promise).to.be.rejectedWith(
-          'An organizationId is required for removing a stack from a role.'
-        );
-      });
-    });
-
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const stack = fixture.build('contxtStack');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeStack(organization.id, null, stack.id);
+        const promise = roles.removeStack(null, stack.id);
 
         return expect(promise).to.be.rejectedWith(
           'A roleId is required for removing a stack from a role.'
@@ -636,10 +563,9 @@ describe('Coordinator/Roles', function() {
 
     context('when the stack ID is not provided', function() {
       it('throws an error', function() {
-        const organization = fixture.build('contxtOrganization');
         const role = fixture.build('contxtRole');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeStack(organization.id, role.id, null);
+        const promise = roles.removeStack(role.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'A stackId is required for removing a stack from a role.'
