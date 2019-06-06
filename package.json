@@ -17,7 +17,6 @@
     "build:js": "gulp build",
     "coverage": "nyc npm run test:js",
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
-    "precommit": "pretty-quick --staged",
     "prepare": "npm run build",
     "report": "nyc report",
     "test": "npm run lint && npm run coverage",
