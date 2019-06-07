@@ -45,7 +45,7 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.roles
-  .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '58')
+  .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
   .then((roleApplication) => console.log(roleApplication))
   .catch((err) => console.log(err));
 ```
@@ -70,7 +70,7 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.roles
-  .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', '58', 'collaborator')
+  .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42, 'collaborator')
   .then((roleStack) => console.log(roleStack))
   .catch((err) => console.log(err));
 ```
@@ -164,7 +164,7 @@ Method: DELETE
 **Example**  
 ```js
 contxtSdk.roles
-  .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '58')
+  .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
   .catch((err) => console.log(err));
 ```
 <a name="Roles+removeStack"></a>
@@ -187,6 +187,6 @@ Method: DELETE
 **Example**  
 ```js
 contxtSdk.roles
-  .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '58')
+  .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
   .catch((err) => console.log(err));
 ```

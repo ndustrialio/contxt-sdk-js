@@ -79,7 +79,7 @@ class Roles {
    *
    * @example
    * contxtSdk.roles
-   *   .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '58')
+   *   .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
    *   .then((roleApplication) => console.log(roleApplication))
    *   .catch((err) => console.log(err));
    */
@@ -119,7 +119,7 @@ class Roles {
    *
    * @example
    * contxtSdk.roles
-   *   .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', '58', 'collaborator')
+   *   .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42, 'collaborator')
    *   .then((roleStack) => console.log(roleStack))
    *   .catch((err) => console.log(err));
    */
@@ -282,7 +282,7 @@ class Roles {
    *
    * @example
    * contxtSdk.roles
-   *   .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', '58')
+   *   .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
    *   .catch((err) => console.log(err));
    */
   removeApplication(roleId, applicationId) {
@@ -322,7 +322,7 @@ class Roles {
    *
    * @example
    * contxtSdk.roles
-   *   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '58')
+   *   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
    *   .catch((err) => console.log(err));
    */
   removeStack(roleId, stackId) {
