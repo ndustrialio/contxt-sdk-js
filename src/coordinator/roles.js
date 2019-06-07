@@ -11,6 +11,24 @@ import { toSnakeCase, toCamelCase } from '../utils/objects';
  * @property {ContxtStack[]} stacks
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
+/**
+ * @typedef {Object} ContxtRoleApplication
+ * @property {number} applicationId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {number} id
+ * @property {string} roleId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} ContxtRoleStack
+ * @property {string} accessType Access Type of the user for this stack with options "reader", "collaborator", "owner"
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {number} id
+ * @property {string} userId
+ * @property {number} stackId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
 
 /**
  * @typedef {Object} ContxtStack
@@ -44,6 +62,93 @@ class Roles {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+  }
+
+  /**
+   * Add an application to a role
+   *
+   * API Endpoint: '/applications/:applications_id/roles/:roleId'
+   * Method: POST
+   *
+   * @param {string} roleId The UUID formatted ID of the role
+   * @param {number} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtRoleApplication}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.roles
+   *   .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
+   *   .then((roleApplication) => console.log(roleApplication))
+   *   .catch((err) => console.log(err));
+   */
+  addApplication(roleId, applicationId) {
+    if (!roleId) {
+      return Promise.reject(
+        new Error('A roleId is required for adding an application to a role.')
+      );
+    }
+
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An applicationId is required for adding an application to a role.'
+        )
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/applications/${applicationId}/roles/${roleId}`)
+      .then((response) => toCamelCase(response));
+  }
+
+  /**
+   * Add a stack to a role
+   *
+   * API Endpoint: '/applications/:applications_id/stacks/:stackId'
+   * Method: POST
+   *
+   * @param {string} roleId The UUID formatted ID of the role
+   * @param {number} stackId The ID of the stack
+   * @param {'reader' | 'collaborator' | 'owner'} accessType The level of access for the role
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtRoleStack}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.roles
+   *   .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42, 'collaborator')
+   *   .then((roleStack) => console.log(roleStack))
+   *   .catch((err) => console.log(err));
+   */
+  addStack(roleId, stackId, accessType) {
+    if (!roleId) {
+      return Promise.reject(
+        new Error('A roleId is required for adding a stack to a role.')
+      );
+    }
+
+    if (!stackId) {
+      return Promise.reject(
+        new Error('A stackId is required for adding a stack to a role.')
+      );
+    }
+
+    if (['reader', 'collaborator', 'owner'].indexOf(accessType) === -1) {
+      return Promise.reject(
+        new Error(
+          'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
+        )
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/stacks/${stackId}/roles/${roleId}`, {
+        access_type: accessType
+      })
+      .then((response) => toCamelCase(response));
   }
 
   /**
@@ -160,6 +265,82 @@ class Roles {
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/roles`)
       .then((roles) => toCamelCase(roles));
+  }
+
+  /**
+   * Remove an application from a role
+   *
+   * API Endpoint: '/applications/:applications_id/roles/:roleId'
+   * Method: DELETE
+   *
+   * @param {string} roleId The UUID formatted ID of the role
+   * @param {number} applicationId The ID of the application
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.roles
+   *   .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
+   *   .catch((err) => console.log(err));
+   */
+  removeApplication(roleId, applicationId) {
+    if (!roleId) {
+      return Promise.reject(
+        new Error(
+          'A roleId is required for removing an application from a role.'
+        )
+      );
+    }
+
+    if (!applicationId) {
+      return Promise.reject(
+        new Error(
+          'An applicationId is required for removing an application from a role.'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/applications/${applicationId}/roles/${roleId}`
+    );
+  }
+
+  /**
+   * Remove an stack from a role
+   *
+   * API Endpoint: '/stacks/:stacks_id/roles/:roleId'
+   * Method: DELETE
+   *
+   * @param {string} roleId The UUID formatted ID of the role
+   * @param {number} stackId The ID of the stack
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.roles
+   *   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
+   *   .catch((err) => console.log(err));
+   */
+  removeStack(roleId, stackId) {
+    if (!roleId) {
+      return Promise.reject(
+        new Error('A roleId is required for removing a stack from a role.')
+      );
+    }
+
+    if (!stackId) {
+      return Promise.reject(
+        new Error('A stackId is required for removing a stack from a role.')
+      );
+    }
+
+    return this._request.delete(
+      `${this._baseUrl}/stacks/${stackId}/roles/${roleId}`
+    );
   }
 }
 

@@ -7,9 +7,13 @@ Module that provides access to contxt roles
 
 * [Roles](#Roles)
     * [new Roles(sdk, request, baseUrl)](#new_Roles_new)
+    * [.addApplication(roleId, applicationId)](#Roles+addApplication) ⇒ <code>Promise</code>
+    * [.addStack(roleId, stackId, accessType)](#Roles+addStack) ⇒ <code>Promise</code>
     * [.create(organizationId, role)](#Roles+create) ⇒ <code>Promise</code>
     * [.delete(organizationId, roleId)](#Roles+delete) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
+    * [.removeApplication(roleId, applicationId)](#Roles+removeApplication) ⇒ <code>Promise</code>
+    * [.removeStack(roleId, stackId)](#Roles+removeStack) ⇒ <code>Promise</code>
 
 <a name="new_Roles_new"></a>
 
@@ -21,6 +25,55 @@ Module that provides access to contxt roles
 | request | <code>Object</code> | An instance of the request module tied to this module's audience. |
 | baseUrl | <code>string</code> | The base URL provided by the parent module |
 
+<a name="Roles+addApplication"></a>
+
+### contxtSdk.coordinator.roles.addApplication(roleId, applicationId) ⇒ <code>Promise</code>
+Add an application to a role
+
+API Endpoint: '/applications/:applications_id/roles/:roleId'
+Method: POST
+
+**Kind**: instance method of [<code>Roles</code>](#Roles)  
+**Fulfill**: [<code>ContxtRoleApplication</code>](./Typedefs.md#ContxtRoleApplication)  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| roleId | <code>string</code> | The UUID formatted ID of the role |
+| applicationId | <code>number</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.roles
+  .addApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
+  .then((roleApplication) => console.log(roleApplication))
+  .catch((err) => console.log(err));
+```
+<a name="Roles+addStack"></a>
+
+### contxtSdk.coordinator.roles.addStack(roleId, stackId, accessType) ⇒ <code>Promise</code>
+Add a stack to a role
+
+API Endpoint: '/applications/:applications_id/stacks/:stackId'
+Method: POST
+
+**Kind**: instance method of [<code>Roles</code>](#Roles)  
+**Fulfill**: [<code>ContxtRoleStack</code>](./Typedefs.md#ContxtRoleStack)  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| roleId | <code>string</code> | The UUID formatted ID of the role |
+| stackId | <code>number</code> | The ID of the stack |
+| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;collaborator&#x27;</code> \| <code>&#x27;owner&#x27;</code> | The level of access for the role |
+
+**Example**  
+```js
+contxtSdk.roles
+  .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42, 'collaborator')
+  .then((roleStack) => console.log(roleStack))
+  .catch((err) => console.log(err));
+```
 <a name="Roles+create"></a>
 
 ### contxtSdk.coordinator.roles.create(organizationId, role) ⇒ <code>Promise</code>
@@ -89,5 +142,51 @@ Method: GET
 contxtSdk.coordinator.roles
   .getByOrganizationId('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((roles) => console.log(roles))
+  .catch((err) => console.log(err));
+```
+<a name="Roles+removeApplication"></a>
+
+### contxtSdk.coordinator.roles.removeApplication(roleId, applicationId) ⇒ <code>Promise</code>
+Remove an application from a role
+
+API Endpoint: '/applications/:applications_id/roles/:roleId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Roles</code>](#Roles)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| roleId | <code>string</code> | The UUID formatted ID of the role |
+| applicationId | <code>number</code> | The ID of the application |
+
+**Example**  
+```js
+contxtSdk.roles
+  .removeApplication('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
+  .catch((err) => console.log(err));
+```
+<a name="Roles+removeStack"></a>
+
+### contxtSdk.coordinator.roles.removeStack(roleId, stackId) ⇒ <code>Promise</code>
+Remove an stack from a role
+
+API Endpoint: '/stacks/:stacks_id/roles/:roleId'
+Method: DELETE
+
+**Kind**: instance method of [<code>Roles</code>](#Roles)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| roleId | <code>string</code> | The UUID formatted ID of the role |
+| stackId | <code>number</code> | The ID of the stack |
+
+**Example**  
+```js
+contxtSdk.roles
+  .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
   .catch((err) => console.log(err));
 ```

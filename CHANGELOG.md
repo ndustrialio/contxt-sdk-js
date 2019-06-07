@@ -1,3 +1,12 @@
+## [v1.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.3.0) (2019-06-07)
+
+**Added**
+
+- Added `Coordinator.roles#addApplication` for adding an application to a role
+- Added `Coordinator.roles#addStack` for adding a stack to a role
+- Added `Coordinator.roles#removeApplication` for removing an application from a role
+- Added `Coordinator.roles#removeStack` for removing a stack from a role
+
 ## [v1.2.3](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.2.3) (2019-06-05)
 
 **Fixed**

@@ -313,6 +313,35 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | stacks | [<code>Array.&lt;ContxtStack&gt;</code>](#ContxtStack) |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtRoleApplication"></a>
+
+## ContxtRoleApplication : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>number</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>number</code> |  |
+| roleId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="ContxtRoleStack"></a>
+
+## ContxtRoleStack : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| accessType | <code>string</code> | Access Type of the user for this stack with options "reader", "collaborator", "owner" |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>number</code> |  |
+| userId | <code>string</code> |  |
+| stackId | <code>number</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtStack"></a>
 
 ## ContxtStack : <code>Object</code>
