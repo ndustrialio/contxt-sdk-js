@@ -175,13 +175,25 @@ class WebSocketConnection {
   }
 
   /**
-   * Subscribes to a specific channel on the message bus and handles messages as they are received
+   * Subscribes to a specific channel on the message bus and handles messages as they are received. When the handler is
+   * called, the message is automatically acknowledged after the message completes except whenever an Error is thrown.
+   * The user can also programmatically control when the message is acknowledged by calling `ack` at any time.
    *
    * @param {string} serviceClientId Client ID of the message bus service
    * @param {string} channel Message bus channel the message is being sent to
    * @param {string} [group] A unique identifier for the subscriber that can be shared between connections
    * @param {function} handler A function that gets invoked with every received message
    * @param {function} errorHandler A function that gets invoked with every error
+   *
+   * @example
+   *   contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *     .then((webSocket) => {
+   *       webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', 'test-sub', (message) => {
+   *         console.log('Message received: ', message);
+   *       }, (error) => {
+   *         console.log('Error received: ', error);
+   *       });
+   *     });
    *
    * @example
    *   contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
