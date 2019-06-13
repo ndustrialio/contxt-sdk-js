@@ -232,6 +232,12 @@ class WebSocketConnection {
    *     });
    */
   subscribe(serviceClientId, channel, group, handler, errorHandler) {
+    if (typeof group === 'function') {
+      errorHandler = handler;
+      handler = group;
+      group = null;
+    }
+
     if (!serviceClientId) {
       return Promise.reject(
         new Error('A service client id is required for subscribing')
@@ -240,12 +246,6 @@ class WebSocketConnection {
 
     if (!channel) {
       return Promise.reject(new Error('A channel is required for subscribing'));
-    }
-
-    if (typeof group === 'function') {
-      errorHandler = handler;
-      handler = group;
-      group = null;
     }
 
     if (!handler) {
