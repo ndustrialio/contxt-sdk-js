@@ -1050,6 +1050,7 @@ A wrapper around the raw WebSocket to provide a finite set of operations
     * [.authorize(token)](#WebSocketConnection+authorize) ⇒ <code>Promise</code>
     * [.close()](#WebSocketConnection+close)
     * [.publish(serviceClientId, channel, message)](#WebSocketConnection+publish) ⇒ <code>Promise</code>
+    * [.subscribe(serviceClientId, channel, [group], handler, errorHandler)](#WebSocketConnection+subscribe)
 
 <a name="new_WebSocketConnection_new"></a>
 
@@ -1127,8 +1128,74 @@ contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
       .catch((error) => {
         console.log(error)
       });
-    })
-});
+    });
+```
+<a name="WebSocketConnection+subscribe"></a>
+
+### webSocketConnection.subscribe(serviceClientId, channel, [group], handler, errorHandler)
+Subscribes to a specific channel on the message bus and handles messages as they are received. When the handler is
+called, the message is automatically acknowledged after the message completes except whenever an Error is thrown.
+The user can also programmatically control when the message is acknowledged by calling `ack` at any time.
+
+**Kind**: instance method of [<code>WebSocketConnection</code>](#WebSocketConnection)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| serviceClientId | <code>string</code> | Client ID of the message bus service |
+| channel | <code>string</code> | Message bus channel the message is being sent to |
+| [group] | <code>string</code> | A unique identifier for the subscriber that can be shared between connections |
+| handler | <code>function</code> | A function that gets invoked with every received message |
+| errorHandler | <code>function</code> | A function that gets invoked with every error |
+
+**Example**  
+```js
+contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+    .then((webSocket) => {
+      webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', 'test-sub', (message) => {
+        console.log('Message received: ', message);
+      }, (error) => {
+        console.log('Error received: ', error);
+      });
+    });
+```
+**Example**  
+```js
+contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+    .then((webSocket) => {
+      webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', 'test-sub', (message, ack) => {
+        console.log('Message received: ', message);
+
+        ack();
+      }, (error) => {
+        console.log('Error received: ', error);
+      });
+    });
+```
+**Example**  
+```js
+contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+    .then((webSocket) => {
+      webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', (message) => {
+        return db.save(message);
+      }, (error) => {
+        console.log('Error received: ', error);
+      });
+    });
+```
+**Example**  
+```js
+contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+    .then((webSocket) => {
+      webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', (message, ack) => {
+        return db.save(message)
+          .then(ack)
+          .then(() => {
+            // additional processing
+          });
+      }, (error) => {
+        console.log('Error received: ', error);
+      });
+    });
 ```
 <a name="WebSocketError"></a>
 
