@@ -1,3 +1,9 @@
+## [v1.4.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.1) (2019-06-13)
+
+**Fixed**
+
+- Update Axios and Mocha dependencies to fix potential vulnerabilities
+
 ## [v1.4.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.0) (2019-06-13)
 
 **Added**
