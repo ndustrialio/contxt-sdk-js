@@ -1,3 +1,9 @@
+## [v1.4.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.0) (2019-06-13)
+
+**Added**
+
+- Added `WebSocketConnection#subscribe` for subscribing to a Message Bus channel
+
 ## [v1.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.3.0) (2019-06-07)
 
 **Added**
