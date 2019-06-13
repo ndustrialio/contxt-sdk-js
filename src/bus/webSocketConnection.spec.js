@@ -831,4 +831,1412 @@ describe('Bus/WebSocketConnection', function() {
       });
     });
   });
+
+  describe('subscribe', function() {
+    context(
+      'when there is a serviceClientId, channel, group, and the websocket connection is open',
+      function() {
+        let channel;
+        let expectedOrganization;
+        let expectedJsonRpc;
+        let group;
+        let jsonRpcId;
+        let promise;
+        let send;
+        let serviceId;
+        let ws;
+
+        beforeEach(function() {
+          channel = faker.random.word();
+          group = faker.random.word();
+          expectedOrganization = fixture.build('organization');
+          send = this.sandbox.spy(expectedWebSocket, 'send');
+          serviceId = faker.random.uuid();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          promise = ws.subscribe(serviceId, channel, group, () => {}, () => {});
+
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+          expectedJsonRpc = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'MessageBus.Subscribe',
+            params: {
+              service_id: serviceId,
+              channel,
+              group
+            },
+            id: jsonRpcId
+          });
+        });
+
+        it('sends a message to the message bus', function() {
+          expect(send).to.be.calledWith(expectedJsonRpc);
+        });
+
+        it('creates an onmessage handler', function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.a('function');
+        });
+
+        context('on a successful message', function() {
+          context('when subscribe succeeds', function() {
+            let subscription;
+
+            beforeEach(function() {
+              subscription = faker.random.uuid();
+              ws._messageHandlers[jsonRpcId]({
+                jsonrpc: '2.0',
+                id: jsonRpcId,
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('fulfills the promise', function() {
+              expect(promise).to.be.fulfilled;
+            });
+
+            it('tears down the on message handler', function() {
+              return promise.then(function() {
+                expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+              });
+            });
+
+            it('creates a handler for the subscription', function() {
+              return promise.then(function() {
+                expect(ws._messageHandlers[subscription]).to.be.a('function');
+              });
+            });
+          });
+
+          context('when subscribe fails', function() {
+            let expectedMessage;
+
+            beforeEach(function() {
+              expectedMessage = {
+                jsonrpc: '2.0',
+                id: jsonRpcId,
+                error: {
+                  status: 500,
+                  message: 'subscribe failed'
+                }
+              };
+
+              ws._messageHandlers[jsonRpcId](expectedMessage);
+            });
+
+            it('rejects the promise with the subscription error', function() {
+              return expect(promise).to.be.rejectedWith(expectedMessage.error);
+            });
+
+            it('tears down the on message handler', function() {
+              return promise.catch(function() {
+                expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+              });
+            });
+          });
+
+          context(
+            'when receiving a different message than the expected message (i.e. the message does not have a matching jsonRpcId)',
+            function() {
+              let clock;
+              let resolvedIndicator;
+              let subscription;
+              let waitTime;
+
+              beforeEach(function() {
+                clock = sinon.useFakeTimers();
+                subscription = faker.random.uuid();
+                resolvedIndicator = Symbol(faker.hacker.noun());
+                serviceId = faker.random.uuid();
+                waitTime = 1 * 60 * 1000; // 1 minute
+
+                promise = Promise.race([
+                  ws.subscribe(serviceId, channel, group, () => {}, () => {}),
+                  new Promise((resolve, reject) => {
+                    setTimeout(resolve, waitTime, resolvedIndicator);
+                  })
+                ]);
+
+                ws._messageHandlers[jsonRpcId]({
+                  jsonrpc: '2.0',
+                  id: faker.random.uuid(),
+                  result: {
+                    subscription
+                  }
+                });
+              });
+
+              afterEach(function() {
+                clock.restore();
+              });
+
+              it('does not resolve or reject the promise within 1 minute', function() {
+                clock.tick(waitTime);
+
+                return promise.then(
+                  (value) => {
+                    expect(value).to.equal(
+                      resolvedIndicator,
+                      'Promise should not have been resolved'
+                    );
+                  },
+                  () => {
+                    throw new Error('Promise should not have been rejected');
+                  }
+                );
+              });
+            }
+          );
+        });
+      }
+    );
+
+    context('when the websocket is null', function() {
+      let channel;
+      let expectedOrganization;
+      let group;
+      let jsonRpcId;
+      let promise;
+      let send;
+      let serviceId;
+      let ws;
+
+      beforeEach(function() {
+        channel = faker.random.word();
+        expectedOrganization = fixture.build('organization');
+        group = faker.random.word();
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        serviceId = faker.random.uuid();
+
+        ws = new WebSocketConnection(null, expectedOrganization.id);
+
+        promise = ws.subscribe(serviceId, channel, group, () => {}, () => {});
+
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
+      });
+
+      it('does not send a message to the message bus', function() {
+        return promise.catch(function() {
+          expect(send).to.not.be.called;
+        });
+      });
+
+      it('rejects the promise', function() {
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
+      });
+
+      it('does not create the on message handler', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
+      });
+    });
+
+    context('when the websocket is not open', function() {
+      let channel;
+      let expectedOrganization;
+      let group;
+      let jsonRpcId;
+      let promise;
+      let send;
+      let serviceId;
+      let ws;
+
+      beforeEach(function(done) {
+        channel = faker.random.word();
+        expectedOrganization = fixture.build('organization');
+        group = faker.random.word();
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        serviceId = faker.random.uuid();
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        ws.close();
+
+        expectedWebSocket.onclose = () => {
+          promise = ws.subscribe(serviceId, channel, group, () => {}, () => {});
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
+          done();
+        };
+      });
+
+      it('does not send a message to the message bus', function() {
+        return promise.catch(function() {
+          expect(send).to.not.be.called;
+        });
+      });
+
+      it('rejects the promise', function() {
+        return expect(promise).to.be.rejectedWith(
+          'WebSocket connection not open'
+        );
+      });
+
+      it('does not create the on message handler', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
+      });
+    });
+
+    context('when there is not a service id sent', function() {
+      let channel;
+      let expectedOrganization;
+      let group;
+      let jsonRpcId;
+      let promise;
+      let send;
+      let serviceId;
+      let ws;
+
+      beforeEach(function() {
+        channel = faker.random.word();
+        expectedOrganization = fixture.build('organization');
+        group = faker.random.word();
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        serviceId = null;
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        promise = ws.subscribe(serviceId, channel, group, () => {}, () => {});
+
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
+      });
+
+      it('does not send a message to the message bus', function() {
+        return promise.catch(function() {
+          expect(send).to.not.be.called;
+        });
+      });
+
+      it('rejects the promise', function() {
+        return expect(promise).to.be.rejectedWith(
+          'A service client id is required for subscribing'
+        );
+      });
+
+      it('does not create the on message handler', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
+      });
+    });
+
+    context('when there is not a channel sent', function() {
+      let channel;
+      let expectedOrganization;
+      let group;
+      let jsonRpcId;
+      let promise;
+      let send;
+      let serviceId;
+      let ws;
+
+      beforeEach(function() {
+        channel = null;
+        expectedOrganization = fixture.build('organization');
+        group = faker.random.word();
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        serviceId = faker.random.uuid();
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        promise = ws.subscribe(serviceId, channel, group, () => {}, () => {});
+
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
+      });
+
+      it('does not send a message to the message bus', function() {
+        return promise.catch(function() {
+          expect(send).to.not.be.called;
+        });
+      });
+
+      it('rejects the promise', function() {
+        return expect(promise).to.be.rejectedWith(
+          'A channel is required for subscribing'
+        );
+      });
+
+      it('does not create the on message handler', function() {
+        return promise.catch(function() {
+          expect(ws._messageHandlers[jsonRpcId]).to.be.undefined;
+        });
+      });
+    });
+
+    context('when there is not a group', function() {
+      let channel;
+      let expectedJsonRpc;
+      let expectedOrganization;
+      let group;
+      let jsonRpcId;
+      let send;
+      let serviceId;
+      let ws;
+
+      beforeEach(function() {
+        channel = faker.random.word();
+        expectedOrganization = fixture.build('organization');
+        group = null;
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        serviceId = faker.random.uuid();
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        ws.subscribe(serviceId, channel, group, () => {}, () => {});
+
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+        expectedJsonRpc = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'MessageBus.Subscribe',
+          params: {
+            service_id: serviceId,
+            channel
+          },
+          id: jsonRpcId
+        });
+      });
+
+      it('sends a message to the message bus', function() {
+        expect(send).to.be.calledWith(expectedJsonRpc);
+      });
+    });
+
+    context('when there is not a message handler', function() {
+      let channel;
+      let expectedOrganization;
+      let group;
+      let promise;
+      let serviceId;
+      let ws;
+
+      context('with a group', function() {
+        beforeEach(function() {
+          channel = faker.random.word();
+          expectedOrganization = fixture.build('organization');
+          group = null;
+          serviceId = faker.random.uuid();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          promise = ws.subscribe(serviceId, channel, group);
+        });
+
+        it('rejects with a missing error handler message', function() {
+          expect(promise).to.be.rejectedWith(
+            'A message handler is required for subscribing'
+          );
+        });
+      });
+
+      context('without a group', function() {
+        beforeEach(function() {
+          channel = faker.random.word();
+          expectedOrganization = fixture.build('organization');
+          group = null;
+          serviceId = faker.random.uuid();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          promise = ws.subscribe(serviceId, channel);
+        });
+
+        it('rejects with a missing error handler message', function() {
+          expect(promise).to.be.rejectedWith(
+            'A message handler is required for subscribing'
+          );
+        });
+      });
+    });
+
+    context('when there is not an error handler', function() {
+      let channel;
+      let expectedOrganization;
+      let group;
+      let promise;
+      let serviceId;
+      let ws;
+
+      context('with a group', function() {
+        beforeEach(function() {
+          channel = faker.random.word();
+          expectedOrganization = fixture.build('organization');
+          group = null;
+          serviceId = faker.random.uuid();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          promise = ws.subscribe(serviceId, channel, group, () => {});
+        });
+
+        it('rejects with a missing error handler message', function() {
+          expect(promise).to.be.rejectedWith(
+            'An error handler is required for subscribing'
+          );
+        });
+      });
+
+      context('without a group', function() {
+        beforeEach(function() {
+          channel = faker.random.word();
+          expectedOrganization = fixture.build('organization');
+          group = null;
+          serviceId = faker.random.uuid();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          promise = ws.subscribe(serviceId, channel, () => {});
+        });
+
+        it('rejects with a missing error handler message', function() {
+          expect(promise).to.be.rejectedWith(
+            'An error handler is required for subscribing'
+          );
+        });
+      });
+    });
+
+    context('when a message is received', function() {
+      let acknowledge;
+      let channel;
+      let expectedOrganization;
+      let group;
+      let handler;
+      let jsonRpcId;
+      let message;
+      let promise;
+      let serviceId;
+      let subscription;
+      let ws;
+
+      beforeEach(function() {
+        channel = faker.random.word();
+        expectedOrganization = fixture.build('organization');
+        group = null;
+        handler = this.sandbox.stub().returns(null);
+        serviceId = faker.random.uuid();
+        message = faker.random.word();
+        subscription = faker.random.uuid();
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+        acknowledge = this.sandbox.stub(ws, '_acknowledge').resolves();
+      });
+
+      context('with a group', function() {
+        context(
+          'and the handler completes successfully inline without calling the ack',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().returns(null);
+
+              promise = ws.subscribe(
+                serviceId,
+                channel,
+                group,
+                handler,
+                () => {}
+              );
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls the handler with the message', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(handler).to.be.calledWith(message);
+                });
+            });
+
+            it('calls acknowledge automatically', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler completes successfully inline while calling the ack',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                a();
+              });
+
+              promise = ws.subscribe(
+                serviceId,
+                channel,
+                group,
+                handler,
+                () => {}
+              );
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler completes successfully as a promise',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                return Promise.resolve(null);
+              });
+
+              promise = ws.subscribe(
+                serviceId,
+                channel,
+                group,
+                handler,
+                () => {}
+              );
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge automatically', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler completes successfully as a promise while calling the ack',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                return new Promise((resolve, reject) => {
+                  a();
+
+                  resolve();
+                });
+              });
+
+              promise = ws.subscribe(
+                serviceId,
+                channel,
+                group,
+                handler,
+                () => {}
+              );
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context('and the handler throws an error', function() {
+          beforeEach(function() {
+            handler = this.sandbox.stub().callsFake(function(m, a) {
+              throw Error();
+            });
+
+            promise = ws.subscribe(
+              serviceId,
+              channel,
+              group,
+              handler,
+              () => {}
+            );
+
+            jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+            ws._messageHandlers[jsonRpcId]({
+              result: {
+                subscription
+              }
+            });
+          });
+
+          it('does not call acknowledge', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  result: {
+                    body: message
+                  }
+                });
+              })
+              .catch(() => {
+                expect(acknowledge).to.not.be.calledOnce;
+              });
+          });
+        });
+
+        context('and the handler throws an error in a promise', function() {
+          beforeEach(function() {
+            handler = this.sandbox.stub().callsFake(function(m, a) {
+              return new Promise((resolve, reject) => {
+                reject(Error());
+              });
+            });
+
+            promise = ws.subscribe(
+              serviceId,
+              channel,
+              group,
+              handler,
+              () => {}
+            );
+
+            jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+            ws._messageHandlers[jsonRpcId]({
+              result: {
+                subscription
+              }
+            });
+          });
+
+          it('does not call acknowledge', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  result: {
+                    body: message
+                  }
+                });
+              })
+              .catch(() => {
+                expect(acknowledge).to.not.be.calledOnce;
+              });
+          });
+        });
+
+        context(
+          'and the handler throws an error but acknowledges before it',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                a();
+
+                throw Error();
+              });
+
+              promise = ws.subscribe(
+                serviceId,
+                channel,
+                group,
+                handler,
+                () => {}
+              );
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .catch(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler throws an error in a promise but acknowledges before it',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                return new Promise((resolve, reject) => {
+                  a();
+                  reject(Error());
+                });
+              });
+
+              promise = ws.subscribe(
+                serviceId,
+                channel,
+                group,
+                handler,
+                () => {}
+              );
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .catch(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context('and the message is an error', function() {
+          let errorHandler;
+
+          beforeEach(function() {
+            handler = this.sandbox.stub().returns(null);
+            errorHandler = this.sandbox.stub().returns(null);
+
+            promise = ws.subscribe(
+              serviceId,
+              channel,
+              group,
+              handler,
+              errorHandler
+            );
+
+            jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+            ws._messageHandlers[jsonRpcId]({
+              result: {
+                subscription
+              }
+            });
+          });
+
+          it('calls the error handler', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  result: {
+                    error: message
+                  }
+                });
+              })
+              .catch(() => {
+                expect(errorHandler).to.be.calledOnce;
+              });
+          });
+
+          it('does not automatically call acknowledge', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  result: {
+                    error: message
+                  }
+                });
+              })
+              .catch(() => {
+                expect(acknowledge).to.not.be.called;
+              });
+          });
+        });
+      });
+
+      context('without a group', function() {
+        context(
+          'and the handler completes successfully inline without calling the ack',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().returns(null);
+
+              promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls the handler with the message', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(handler).to.be.calledWith(message);
+                });
+            });
+
+            it('calls acknowledge automatically', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler completes successfully inline while calling the ack',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                a();
+              });
+
+              promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler completes successfully as a promise',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                return Promise.resolve(null);
+              });
+
+              promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge automatically', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler completes successfully as a promise while calling the ack',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                return new Promise((resolve, reject) => {
+                  a();
+
+                  resolve();
+                });
+              });
+
+              promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .then(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context('and the handler throws an error', function() {
+          beforeEach(function() {
+            handler = this.sandbox.stub().callsFake(function(m, a) {
+              throw Error();
+            });
+
+            promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+            jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+            ws._messageHandlers[jsonRpcId]({
+              result: {
+                subscription
+              }
+            });
+          });
+
+          it('does not call acknowledge', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  result: {
+                    body: message
+                  }
+                });
+              })
+              .catch(() => {
+                expect(acknowledge).to.not.be.calledOnce;
+              });
+          });
+        });
+
+        context('and the handler throws an error in a promise', function() {
+          beforeEach(function() {
+            handler = this.sandbox.stub().callsFake(function(m, a) {
+              return new Promise((resolve, reject) => {
+                reject(Error());
+              });
+            });
+
+            promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+            jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+            ws._messageHandlers[jsonRpcId]({
+              result: {
+                subscription
+              }
+            });
+          });
+
+          it('does not call acknowledge', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  result: {
+                    body: message
+                  }
+                });
+              })
+              .catch(() => {
+                expect(acknowledge).to.not.be.calledOnce;
+              });
+          });
+        });
+
+        context(
+          'and the handler throws an error but acknowledges before it',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                a();
+
+                throw Error();
+              });
+
+              promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .catch(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context(
+          'and the handler throws an error in a promise but acknowledges before it',
+          function() {
+            beforeEach(function() {
+              handler = this.sandbox.stub().callsFake(function(m, a) {
+                return new Promise((resolve, reject) => {
+                  a();
+                  reject(Error());
+                });
+              });
+
+              promise = ws.subscribe(serviceId, channel, handler, () => {});
+
+              jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+              ws._messageHandlers[jsonRpcId]({
+                result: {
+                  subscription
+                }
+              });
+            });
+
+            it('calls acknowledge once', function() {
+              return promise
+                .then(() => {
+                  return ws._messageHandlers[subscription]({
+                    result: {
+                      body: message
+                    }
+                  });
+                })
+                .catch(() => {
+                  expect(acknowledge).to.be.calledOnce;
+                });
+            });
+          }
+        );
+
+        context('and the message is an error', function() {
+          let errorHandler;
+
+          beforeEach(function() {
+            handler = this.sandbox.stub().returns(null);
+            errorHandler = this.sandbox.stub().returns(null);
+
+            promise = ws.subscribe(serviceId, channel, handler, errorHandler);
+
+            jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+            ws._messageHandlers[jsonRpcId]({
+              result: {
+                subscription
+              }
+            });
+          });
+
+          it('is fulfilled', function() {
+            expect(
+              promise.then(() => {
+                return ws._messageHandlers[subscription]({
+                  error: message
+                });
+              })
+            ).to.be.fulfilled;
+          });
+
+          it('resolves with the results of the error handler', function() {
+            expect(
+              promise.then(() => {
+                return ws._messageHandlers[subscription]({
+                  error: message
+                });
+              })
+            ).to.eventually.equal(errorHandler(message));
+          });
+
+          it('calls the error handler', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  error: message
+                });
+              })
+              .catch(() => {
+                expect(errorHandler).to.be.calledOnce;
+              });
+          });
+
+          it('does not automatically call acknowledge', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  error: message
+                });
+              })
+              .catch(() => {
+                expect(acknowledge).to.not.be.called;
+              });
+          });
+        });
+      });
+    });
+  });
+
+  describe('acknowledge', function() {
+    context(
+      'when there is a messageId and the websocket connection is open',
+      function() {
+        let expectedOrganization;
+        let expectedJsonRpc;
+        let jsonRpcId;
+        let messageId;
+        let send;
+        let ws;
+
+        beforeEach(function() {
+          expectedOrganization = fixture.build('organization');
+          send = this.sandbox.spy(expectedWebSocket, 'send');
+          messageId = faker.random.uuid();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+
+          ws._acknowledge(messageId);
+
+          jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+          expectedJsonRpc = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'MessageBus.Acknowledge',
+            params: {
+              message_id: messageId
+            },
+            id: jsonRpcId
+          });
+        });
+
+        it('sends a message to the message bus', function() {
+          expect(send).to.be.calledWith(expectedJsonRpc);
+        });
+      }
+    );
+
+    context(
+      'when there is a messageId and the websocket connection is closed',
+      function() {
+        let expectedOrganization;
+        let messageId;
+        let promise;
+        let send;
+        let ws;
+
+        beforeEach(function() {
+          expectedOrganization = fixture.build('organization');
+          send = this.sandbox.spy(expectedWebSocket, 'send');
+          messageId = faker.random.uuid();
+
+          ws = new WebSocketConnection(
+            expectedWebSocket,
+            expectedOrganization.id
+          );
+          this.sandbox.stub(ws, '_isConnected').returns(false);
+
+          promise = ws._acknowledge(messageId);
+        });
+
+        it('does not send a message to the message bus', function() {
+          return promise.catch(function() {
+            expect(send).to.not.be.called;
+          });
+        });
+
+        it('rejects with an error', function() {
+          return expect(promise).to.be.rejectedWith(
+            'WebSocket connection not open'
+          );
+        });
+      }
+    );
+
+    context('when the websocket returns an error', function() {
+      let expectedOrganization;
+      let jsonRpcId;
+      let messageId;
+      let promise;
+      let send;
+      let ws;
+
+      beforeEach(function() {
+        expectedOrganization = fixture.build('organization');
+        send = this.sandbox.spy(expectedWebSocket, 'send');
+        messageId = faker.random.uuid();
+
+        ws = new WebSocketConnection(
+          expectedWebSocket,
+          expectedOrganization.id
+        );
+
+        promise = ws._acknowledge(messageId);
+
+        jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+        ws._messageHandlers[jsonRpcId]({
+          error: 'message not acknowledged'
+        });
+      });
+
+      it('sends a message to the message bus', function() {
+        return promise.catch(function() {
+          expect(send).to.be.calledOnce;
+        });
+      });
+
+      it('rejects with an error', function() {
+        return expect(promise).to.be.rejectedWith('message not acknowledged');
+      });
+    });
+  });
 });

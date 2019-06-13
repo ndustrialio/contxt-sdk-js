@@ -1,4 +1,5 @@
 import uuid from 'uuid/v4';
+import once from 'lodash.once';
 
 /**
  * The WebSocket Error Event
@@ -62,43 +63,15 @@ class WebSocketConnection {
    * });
    */
   authorize(token) {
-    return new Promise((resolve, reject) => {
-      if (!token) {
-        return reject(new Error('A token is required for authorization'));
-      }
+    if (!token) {
+      return Promise.reject(new Error('A token is required for authorization'));
+    }
 
-      if (
-        !this._webSocket ||
-        this._webSocket.readyState !== this._webSocket.OPEN
-      ) {
-        return reject(new Error('WebSocket connection not open'));
-      }
+    if (!this._isConnected()) {
+      return Promise.reject(new Error('WebSocket connection not open'));
+    }
 
-      const messageId = uuid();
-
-      this._messageHandlers[messageId] = (message) => {
-        const error = message.error;
-
-        delete this._messageHandlers[messageId];
-
-        if (error) {
-          return reject(error);
-        }
-
-        return resolve();
-      };
-
-      this._webSocket.send(
-        JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'MessageBus.Authorize',
-          params: {
-            token
-          },
-          id: messageId
-        })
-      );
-    });
+    return this._registerSingleMessageHandler('Authorize', { token });
   }
 
   /**
@@ -173,32 +146,184 @@ class WebSocketConnection {
    *       .catch((error) => {
    *         console.log(error)
    *       });
-   *     })
-   * });
+   *     });
    */
   publish(serviceClientId, channel, message) {
+    if (!serviceClientId) {
+      return Promise.reject(
+        new Error('A service client id is required for publishing')
+      );
+    }
+
+    if (!channel) {
+      return Promise.reject(new Error('A channel is required for publishing'));
+    }
+
+    if (!message) {
+      return Promise.reject(new Error('A message is required for publishing'));
+    }
+
+    if (!this._isConnected()) {
+      return Promise.reject(new Error('WebSocket connection not open'));
+    }
+
+    return this._registerSingleMessageHandler('Publish', {
+      service_id: serviceClientId,
+      channel,
+      message
+    });
+  }
+
+  /**
+   * Subscribes to a specific channel on the message bus and handles messages as they are received
+   *
+   * @param {string} serviceClientId Client ID of the message bus service
+   * @param {string} channel Message bus channel the message is being sent to
+   * @param {string} [group] A unique identifier for the subscriber that can be shared between connections
+   * @param {function} handler A function that gets invoked with every received message
+   * @param {function} errorHandler A function that gets invoked with every error
+   *
+   * @example
+   *   contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *     .then((webSocket) => {
+   *       webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', 'test-sub', (message, ack) => {
+   *         console.log('Message received: ', message);
+   *
+   *         ack();
+   *       }, (error) => {
+   *         console.log('Error received: ', error);
+   *       });
+   *     });
+   *
+   * @example
+   *   contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *     .then((webSocket) => {
+   *       webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', (message) => {
+   *         return db.save(message);
+   *       }, (error) => {
+   *         console.log('Error received: ', error);
+   *       });
+   *     });
+   *
+   * @example
+   *   contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+   *     .then((webSocket) => {
+   *       webSocket.subscribe('GCXd2bwE9fgvqxygrx2J7TkDJ3ef', 'feed:1', (message, ack) => {
+   *         return db.save(message)
+   *           .then(ack)
+   *           .then(() => {
+   *             // additional processing
+   *           });
+   *       }, (error) => {
+   *         console.log('Error received: ', error);
+   *       });
+   *     });
+   */
+  subscribe(serviceClientId, channel, group, handler, errorHandler) {
+    if (!serviceClientId) {
+      return Promise.reject(
+        new Error('A service client id is required for subscribing')
+      );
+    }
+
+    if (!channel) {
+      return Promise.reject(new Error('A channel is required for subscribing'));
+    }
+
+    if (typeof group === 'function') {
+      errorHandler = handler;
+      handler = group;
+      group = null;
+    }
+
+    if (!handler) {
+      return Promise.reject(
+        new Error('A message handler is required for subscribing')
+      );
+    }
+
+    if (!errorHandler) {
+      return Promise.reject(
+        new Error('An error handler is required for subscribing')
+      );
+    }
+
+    if (!this._isConnected()) {
+      return Promise.reject(new Error('WebSocket connection not open'));
+    }
+
+    const params = {
+      service_id: serviceClientId,
+      channel
+    };
+
+    if (group) {
+      params.group = group;
+    }
+
+    return this._registerSingleMessageHandler('Subscribe', params).then(
+      (result) => {
+        this._messageHandlers[result.subscription] = (subscriptionMessage) => {
+          return new Promise((resolve, reject) => {
+            const error = subscriptionMessage.error;
+            const result = subscriptionMessage.result;
+
+            if (error) {
+              return resolve(errorHandler(error));
+            } else {
+              try {
+                const ack = once(() => {
+                  return this._acknowledge(result.id);
+                });
+
+                return resolve(
+                  Promise.resolve(handler(result.body, ack)).then((res) => {
+                    return ack().then(() => res);
+                  })
+                );
+              } catch (throwable) {
+                return reject(throwable);
+              }
+            }
+          });
+        };
+
+        return result;
+      }
+    );
+  }
+
+  /**
+   * Acknowledges a Message ID has been received and processed
+   *
+   * @returns {Promise}
+   * @param acknowledgedMessageId {string} The Message ID that has been received
+   * @fulfill
+   * @reject {error} The error event from the WebSocket or the error message from the message bus
+   *
+   * @private
+   */
+  _acknowledge(acknowledgedMessageId) {
+    if (!this._isConnected()) {
+      return Promise.reject(new Error('WebSocket connection not open'));
+    }
+
+    return this._registerSingleMessageHandler('Acknowledge', {
+      message_id: acknowledgedMessageId
+    });
+  }
+
+  /**
+   * Registers a JSON RPC message handler that expects only one response.
+   *
+   * @returns {Promise}
+   * @fulfill
+   * @reject {error} The error event from the WebSocket or the error message from the message bus
+   *
+   * @private
+   */
+  _registerSingleMessageHandler(method, params) {
     return new Promise((resolve, reject) => {
-      if (!serviceClientId) {
-        return reject(
-          new Error('A service client id is required for publishing')
-        );
-      }
-
-      if (!channel) {
-        return reject(new Error('A channel is required for publishing'));
-      }
-
-      if (!message) {
-        return reject(new Error('A message is required for publishing'));
-      }
-
-      if (
-        !this._webSocket ||
-        this._webSocket.readyState !== this._webSocket.OPEN
-      ) {
-        return reject(new Error('WebSocket connection not open'));
-      }
-
       const messageId = uuid();
 
       this._messageHandlers[messageId] = (message) => {
@@ -209,22 +334,31 @@ class WebSocketConnection {
           return reject(error);
         }
 
-        return resolve();
+        return resolve(message.result);
       };
 
       this._webSocket.send(
         JSON.stringify({
           jsonrpc: '2.0',
-          method: 'MessageBus.Publish',
-          params: {
-            service_id: serviceClientId,
-            channel,
-            message
-          },
+          method: `MessageBus.${method}`,
+          params,
           id: messageId
         })
       );
     });
+  }
+
+  /**
+   * Checks whether the current WebSocket is connected to the Message Bus service.
+   *
+   * @returns {boolean} Whether the WebSocket is connected to the Message Bus service
+   *
+   * @private
+   */
+  _isConnected() {
+    return (
+      this._webSocket && this._webSocket.readyState === this._webSocket.OPEN
+    );
   }
 }
 
