@@ -7,13 +7,11 @@ describe('Coordinator/Applications', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -26,7 +24,7 @@ describe('Coordinator/Applications', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -74,9 +72,9 @@ describe('Coordinator/Applications', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(applicationFavoriteFromServer)
+          post: sinon.stub().resolves(applicationFavoriteFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .callsFake((app) => expectedApplicationFavorite);
 
@@ -141,9 +139,9 @@ describe('Coordinator/Applications', function() {
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(applicationsFromServer)
+        get: sinon.stub().resolves(applicationsFromServer)
       };
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .callsFake((app) =>
           expectedApplications.find(({ id }) => id === app.id)
@@ -196,9 +194,9 @@ describe('Coordinator/Applications', function() {
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(favoritesFromServer)
+        get: sinon.stub().resolves(favoritesFromServer)
       };
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .returns(expectedFavoriteApplications);
 
@@ -245,9 +243,9 @@ describe('Coordinator/Applications', function() {
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(groupingsFromServer)
+        get: sinon.stub().resolves(groupingsFromServer)
       };
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .returns(expectedGroupings);
 
@@ -304,9 +302,9 @@ describe('Coordinator/Applications', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(featuredApplicationsFromServer)
+          get: sinon.stub().resolves(featuredApplicationsFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedFeaturedApplications);
 

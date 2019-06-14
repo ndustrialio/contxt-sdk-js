@@ -3,12 +3,8 @@ import * as objectUtils from '../objects';
 import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
 
 describe('utils/pagination/formatPaginatedDataFromServer', function() {
-  beforeEach(function() {
-    this.sandbox = sandbox.create();
-  });
-
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   context('when a record formatter is provided', function() {
@@ -30,10 +26,10 @@ describe('utils/pagination/formatPaginatedDataFromServer', function() {
         faker.helpers.createTransaction()
       );
 
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .returns(expectedMetadata);
-      recordFormatter = this.sandbox
+      recordFormatter = sinon
         .stub()
         .callsFake((value, index) => expectedRecords[index]);
 
@@ -80,7 +76,7 @@ describe('utils/pagination/formatPaginatedDataFromServer', function() {
         fixture.build('organization', record, { fromServer: true })
       );
 
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .callsFake(
           (record) => expectedRecords.filter(({ id }) => id === record.id)[0]

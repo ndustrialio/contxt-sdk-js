@@ -11,13 +11,11 @@ describe('Files', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
 
     baseSdk = {
@@ -31,7 +29,7 @@ describe('Files', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -83,15 +81,15 @@ describe('Files', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(fileInfoFromServerBeforeFormat)
+          post: sinon.stub().resolves(fileInfoFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .onFirstCall()
           .returns(omit(fileInfoFromServerAfterFormat, ['uploadInfo']))
           .onSecondCall()
           .returns(fileInfoFromServerAfterFormat.uploadInfo);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(fileInfoToServerAfterFormat);
 
@@ -147,10 +145,10 @@ describe('Files', function() {
 
         const request = {
           ...baseRequest,
-          post: this.sandbox.stub().rejects(expectedError)
+          post: sinon.stub().rejects(expectedError)
         };
-        toCamelCase = this.sandbox.stub(objectUtils, 'toCamelCase');
-        this.sandbox.stub(objectUtils, 'toSnakeCase');
+        toCamelCase = sinon.stub(objectUtils, 'toCamelCase');
+        sinon.stub(objectUtils, 'toSnakeCase');
 
         const files = new Files(baseSdk, request);
         files._baseUrl = expectedHost;
@@ -222,16 +220,14 @@ describe('Files', function() {
         ]);
         metadataFromServer = fixture.build('file', metadataToServer);
 
-        create = this.sandbox
+        create = sinon
           .stub(Files.prototype, 'create')
           .resolves(metadataFromServer);
-        get = this.sandbox
-          .stub(Files.prototype, 'get')
-          .resolves(fileInfoFromServer);
-        setUploadComplete = this.sandbox
+        get = sinon.stub(Files.prototype, 'get').resolves(fileInfoFromServer);
+        setUploadComplete = sinon
           .stub(Files.prototype, 'setUploadComplete')
           .resolves();
-        upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+        upload = sinon.stub(Files.prototype, 'upload').resolves();
 
         const files = new Files(baseSdk, baseRequest);
         files._baseUrl = expectedHost;
@@ -301,20 +297,20 @@ describe('Files', function() {
           'organizationId'
         ]);
 
-        create = this.sandbox
+        create = sinon
           .stub(Files.prototype, 'create')
           .rejects(expectedOriginalError);
-        generateError = this.sandbox
+        generateError = sinon
           .stub(Files.prototype, '_generateError')
           .returns(expectedError);
-        get = this.sandbox.stub(Files.prototype, 'get').resolves();
-        setUploadComplete = this.sandbox
+        get = sinon.stub(Files.prototype, 'get').resolves();
+        setUploadComplete = sinon
           .stub(Files.prototype, 'setUploadComplete')
           .resolves();
-        setUploadFailed = this.sandbox
+        setUploadFailed = sinon
           .stub(Files.prototype, 'setUploadFailed')
           .resolves();
-        upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+        upload = sinon.stub(Files.prototype, 'upload').resolves();
 
         const files = new Files(baseSdk, baseRequest);
         files._baseUrl = expectedHost;
@@ -396,20 +392,20 @@ describe('Files', function() {
         expectedError = new Error(faker.hacker.phrase());
         expectedOriginalError = new Error(faker.hacker.phrase());
 
-        create = this.sandbox
+        create = sinon
           .stub(Files.prototype, 'create')
           .resolves(metadataFromServer);
-        generateError = this.sandbox
+        generateError = sinon
           .stub(Files.prototype, '_generateError')
           .returns(expectedError);
-        get = this.sandbox.stub(Files.prototype, 'get').resolves();
-        setUploadComplete = this.sandbox
+        get = sinon.stub(Files.prototype, 'get').resolves();
+        setUploadComplete = sinon
           .stub(Files.prototype, 'setUploadComplete')
           .resolves();
-        setUploadFailed = this.sandbox
+        setUploadFailed = sinon
           .stub(Files.prototype, 'setUploadFailed')
           .resolves();
-        upload = this.sandbox
+        upload = sinon
           .stub(Files.prototype, 'upload')
           .rejects(expectedOriginalError);
 
@@ -499,20 +495,20 @@ describe('Files', function() {
         expectedError = new Error(faker.hacker.phrase());
         expectedOriginalError = new Error(faker.hacker.phrase());
 
-        create = this.sandbox
+        create = sinon
           .stub(Files.prototype, 'create')
           .resolves(metadataFromServer);
-        generateError = this.sandbox
+        generateError = sinon
           .stub(Files.prototype, '_generateError')
           .returns(expectedError);
-        get = this.sandbox.stub(Files.prototype, 'get').resolves();
-        setUploadComplete = this.sandbox
+        get = sinon.stub(Files.prototype, 'get').resolves();
+        setUploadComplete = sinon
           .stub(Files.prototype, 'setUploadComplete')
           .rejects(expectedOriginalError);
-        setUploadFailed = this.sandbox
+        setUploadFailed = sinon
           .stub(Files.prototype, 'setUploadFailed')
           .resolves();
-        upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+        upload = sinon.stub(Files.prototype, 'upload').resolves();
 
         const files = new Files(baseSdk, baseRequest);
         files._baseUrl = expectedHost;
@@ -602,22 +598,22 @@ describe('Files', function() {
           expectedError = new Error(faker.hacker.phrase());
           expectedOriginalError = new Error(faker.hacker.phrase());
 
-          create = this.sandbox
+          create = sinon
             .stub(Files.prototype, 'create')
             .resolves(metadataFromServer);
-          generateError = this.sandbox
+          generateError = sinon
             .stub(Files.prototype, '_generateError')
             .returns(expectedError);
-          get = this.sandbox
+          get = sinon
             .stub(Files.prototype, 'get')
             .rejects(expectedOriginalError);
-          setUploadComplete = this.sandbox
+          setUploadComplete = sinon
             .stub(Files.prototype, 'setUploadComplete')
             .resolves();
-          setUploadFailed = this.sandbox
+          setUploadFailed = sinon
             .stub(Files.prototype, 'setUploadFailed')
             .resolves();
-          upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+          upload = sinon.stub(Files.prototype, 'upload').resolves();
 
           const files = new Files(baseSdk, baseRequest);
           files._baseUrl = expectedHost;
@@ -695,18 +691,18 @@ describe('Files', function() {
           beforeEach(function() {
             expectedError = new Error(faker.hacker.phrase());
 
-            create = this.sandbox.stub(Files.prototype, 'create').resolves();
-            generateError = this.sandbox
+            create = sinon.stub(Files.prototype, 'create').resolves();
+            generateError = sinon
               .stub(Files.prototype, '_generateError')
               .returns(expectedError);
-            get = this.sandbox.stub(Files.prototype, 'get').resolves();
-            setUploadComplete = this.sandbox
+            get = sinon.stub(Files.prototype, 'get').resolves();
+            setUploadComplete = sinon
               .stub(Files.prototype, 'setUploadComplete')
               .resolves();
-            setUploadFailed = this.sandbox
+            setUploadFailed = sinon
               .stub(Files.prototype, 'setUploadFailed')
               .resolves();
-            upload = this.sandbox.stub(Files.prototype, 'upload').resolves();
+            upload = sinon.stub(Files.prototype, 'upload').resolves();
 
             const files = new Files(baseSdk, baseRequest);
             files._baseUrl = expectedHost;
@@ -785,7 +781,7 @@ describe('Files', function() {
 
         request = {
           ...baseRequest,
-          delete: this.sandbox.stub().resolves()
+          delete: sinon.stub().resolves()
         };
 
         const files = new Files(baseSdk, request);
@@ -840,10 +836,10 @@ describe('Files', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(fileFromServerBeforeFormat)
+          get: sinon.stub().resolves(fileFromServerBeforeFormat)
         };
 
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(fileFromServerAfterFormat);
 
@@ -907,10 +903,10 @@ describe('Files', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(fileFromServerBeforeFormat)
+          get: sinon.stub().resolves(fileFromServerBeforeFormat)
         };
 
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(fileFromServerAfterFormat);
 
@@ -996,14 +992,14 @@ describe('Files', function() {
         ...filesFiltersBeforeFormat
       };
 
-      formatPaginatedDataFromServer = this.sandbox
+      formatPaginatedDataFromServer = sinon
         .stub(paginationUtils, 'formatPaginatedDataFromServer')
         .returns(filesFromServerAfterFormat);
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(filesFromServerBeforeFormat)
+        get: sinon.stub().resolves(filesFromServerBeforeFormat)
       };
-      toSnakeCase = this.sandbox
+      toSnakeCase = sinon
         .stub(objectUtils, 'toSnakeCase')
         .returns(filesFiltersAfterFormat);
 
@@ -1081,7 +1077,7 @@ describe('Files', function() {
 
           const request = {
             ...baseRequest,
-            post: this.sandbox.stub().rejects(expectedError)
+            post: sinon.stub().rejects(expectedError)
           };
 
           const files = new Files(baseSdk, request);
@@ -1157,7 +1153,7 @@ describe('Files', function() {
 
         const request = {
           ...baseRequest,
-          post: this.sandbox.stub().rejects(expectedError)
+          post: sinon.stub().rejects(expectedError)
         };
 
         const files = new Files(baseSdk, request);
@@ -1206,7 +1202,7 @@ describe('Files', function() {
         fileData = faker.image.dataUri();
         fileInfo = fixture.build('file');
 
-        put = this.sandbox.stub(axios, 'put').resolves();
+        put = sinon.stub(axios, 'put').resolves();
 
         const files = new Files(baseSdk, baseRequest);
         files._baseUrl = expectedHost;
@@ -1240,7 +1236,7 @@ describe('Files', function() {
         const fileInfo = fixture.build('file');
         expectedError = new Error();
 
-        this.sandbox.stub(axios, 'put').rejects(expectedError);
+        sinon.stub(axios, 'put').rejects(expectedError);
 
         const files = new Files(baseSdk, baseRequest);
         files._baseUrl = expectedHost;
@@ -1266,7 +1262,7 @@ describe('Files', function() {
           const fileData = faker.image.dataUri();
           const fileInfo = fixture.build('file');
 
-          put = this.sandbox.stub(axios, 'put').resolves();
+          put = sinon.stub(axios, 'put').resolves();
 
           const files = new Files(baseSdk, baseRequest);
           files._baseUrl = expectedHost;

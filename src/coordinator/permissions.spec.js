@@ -7,13 +7,11 @@ describe('Coordinator/Permissions', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -26,7 +24,7 @@ describe('Coordinator/Permissions', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -78,9 +76,9 @@ describe('Coordinator/Permissions', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(userPermissionFromServer)
+          get: sinon.stub().resolves(userPermissionFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedUsersPermissions);
 
@@ -146,9 +144,9 @@ describe('Coordinator/Permissions', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(userPermissionFromServer)
+          get: sinon.stub().resolves(userPermissionFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedUserPermissions);
 
@@ -223,9 +221,9 @@ describe('Coordinator/Permissions', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(expectedPermissionsMap)
+          get: sinon.stub().resolves(expectedPermissionsMap)
         };
-        toCamelCase = this.sandbox.stub(objectUtils, 'toCamelCase');
+        toCamelCase = sinon.stub(objectUtils, 'toCamelCase');
 
         const permissions = new Permissions(baseSdk, request, expectedHost);
         promise = permissions.getByUserId(expectedUserId);

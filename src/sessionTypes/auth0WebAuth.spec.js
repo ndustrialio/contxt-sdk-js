@@ -1,7 +1,6 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
 import omit from 'lodash.omit';
-import sinon from 'sinon';
 import Auth0WebAuth from './auth0WebAuth';
 
 describe('sessionTypes/Auth0WebAuth', function() {
@@ -14,8 +13,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
   let webAuthSession;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     sdk = {
       config: {
         audiences: {
@@ -30,30 +27,30 @@ describe('sessionTypes/Auth0WebAuth', function() {
       }
     };
     webAuthSession = {
-      authorize: this.sandbox.stub(),
-      logout: this.sandbox.stub()
+      authorize: sinon.stub(),
+      logout: sinon.stub()
     };
     originalWindow = global.window;
     global.window = {
       location: faker.internet.url()
     };
 
-    getStoredSession = this.sandbox
+    getStoredSession = sinon
       .stub(Auth0WebAuth.prototype, '_getStoredSession')
       .returns({});
-    isAuthenticated = this.sandbox
+    isAuthenticated = sinon
       .stub(Auth0WebAuth.prototype, 'isAuthenticated')
       .returns(true);
-    scheduleSessionRefresh = this.sandbox.stub(
+    scheduleSessionRefresh = sinon.stub(
       Auth0WebAuth.prototype,
       '_scheduleSessionRefresh'
     );
-    webAuth = this.sandbox.stub(auth0, 'WebAuth').returns(webAuthSession);
+    webAuth = sinon.stub(auth0, 'WebAuth').returns(webAuthSession);
   });
 
   afterEach(function() {
     global.window = originalWindow;
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -70,7 +67,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           expiresAt: faker.date.future().getTime()
         };
 
-        getStoredSession = this.sandbox
+        getStoredSession = sinon
           .stub(Auth0WebAuth.prototype, '_getStoredSession')
           .returns(expectedSession);
 
@@ -134,7 +131,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedAuthorizationPath = faker.hacker.adjective();
-        expectedOnRedirect = this.sandbox.stub();
+        expectedOnRedirect = sinon.stub();
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
         sdk.config.auth.onRedirect = expectedOnRedirect;
 
@@ -156,9 +153,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     context('when the user is not authenticated', function() {
       beforeEach(function() {
         isAuthenticated.restore();
-        this.sandbox
-          .stub(Auth0WebAuth.prototype, 'isAuthenticated')
-          .returns(false);
+        sinon.stub(Auth0WebAuth.prototype, 'isAuthenticated').returns(false);
 
         const auth0WebAuth = new Auth0WebAuth(sdk); // eslint-disable-line no-unused-vars
       });
@@ -200,7 +195,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           expectedAccessToken = faker.internet.password();
           expectedApiToken = faker.internet.password();
 
-          post = this.sandbox
+          post = sinon
             .stub(axios, 'post')
             .resolves({ data: { access_token: expectedApiToken } });
 
@@ -263,14 +258,14 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
 
-        generateUnauthorizedError = this.sandbox
+        generateUnauthorizedError = sinon
           .stub(Auth0WebAuth.prototype, '_generateUnauthorizedError')
           .returns(expectedError);
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
 
         isAuthenticated.restore();
-        isAuthenticated = this.sandbox
+        isAuthenticated = sinon
           .stub(Auth0WebAuth.prototype, 'isAuthenticated')
           .returns(false);
 
@@ -339,7 +334,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         ]);
 
         webAuthSession.client = {
-          userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
+          userInfo: sinon.stub().callsFake((accessToken, cb) => {
             cb(null, profile);
           })
         };
@@ -372,7 +367,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
         webAuthSession.client = {
-          userInfo: this.sandbox.stub().callsFake((accessToken, cb) => {
+          userInfo: sinon.stub().callsFake((accessToken, cb) => {
             cb(expectedError);
           })
         };
@@ -408,17 +403,14 @@ describe('sessionTypes/Auth0WebAuth', function() {
         };
         expectedRedirectPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
-        getRedirectPathname = this.sandbox
+        getRedirectPathname = sinon
           .stub(Auth0WebAuth.prototype, '_getRedirectPathname')
           .returns(expectedRedirectPathname);
-        parseHash = this.sandbox
+        parseHash = sinon
           .stub(Auth0WebAuth.prototype, '_parseHash')
           .resolves(expectedHash);
-        onRedirect = this.sandbox.stub();
-        storeSession = this.sandbox.stub(
-          Auth0WebAuth.prototype,
-          '_storeSession'
-        );
+        onRedirect = sinon.stub();
+        storeSession = sinon.stub(Auth0WebAuth.prototype, '_storeSession');
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         auth0WebAuth._onRedirect = onRedirect;
@@ -470,10 +462,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
 
-        this.sandbox
-          .stub(Auth0WebAuth.prototype, '_parseHash')
-          .rejects(expectedError);
-        onRedirect = this.sandbox.stub();
+        sinon.stub(Auth0WebAuth.prototype, '_parseHash').rejects(expectedError);
+        onRedirect = sinon.stub();
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         auth0WebAuth._onRedirect = onRedirect;
@@ -572,9 +562,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
     beforeEach(function() {
       expectedTokenRenewalTimeout = faker.helpers.createTransaction();
 
-      clearTimeout = this.sandbox.stub(global, 'clearTimeout');
+      clearTimeout = sinon.stub(global, 'clearTimeout');
       localStorage = {
-        removeItem: this.sandbox.stub()
+        removeItem: sinon.stub()
       };
       global.localStorage = localStorage;
 
@@ -632,11 +622,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
           expiresAt: faker.date.future().getTime()
         };
 
-        webAuthSession.checkSession = this.sandbox
-          .stub()
-          .callsFake((options, cb) => {
-            cb(null, expectedSessionInfo);
-          });
+        webAuthSession.checkSession = sinon.stub().callsFake((options, cb) => {
+          cb(null, expectedSessionInfo);
+        });
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         promise = auth0WebAuth._checkSession(expectedOptions);
@@ -660,11 +648,9 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
 
-        webAuthSession.checkSession = this.sandbox
-          .stub()
-          .callsFake((options, cb) => {
-            cb(expectedError);
-          });
+        webAuthSession.checkSession = sinon.stub().callsFake((options, cb) => {
+          cb(expectedError);
+        });
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
         promise = auth0WebAuth._checkSession();
@@ -703,8 +689,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
         global.localStorage = {
-          getItem: this.sandbox.stub().returns(expectedPathname),
-          removeItem: this.sandbox.stub()
+          getItem: sinon.stub().returns(expectedPathname),
+          removeItem: sinon.stub()
         };
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
@@ -733,8 +719,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         global.localStorage = {
-          getItem: this.sandbox.stub(),
-          removeItem: this.sandbox.stub()
+          getItem: sinon.stub(),
+          removeItem: sinon.stub()
         };
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
@@ -760,7 +746,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       };
 
       localStorage = {
-        getItem: this.sandbox.stub().callsFake((key) => {
+        getItem: sinon.stub().callsFake((key) => {
           switch (key) {
             case 'access_token':
               return expectedSessionInfo.accessToken;
@@ -808,13 +794,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
           expiresAt: faker.date.future().getTime()
         };
 
-        checkSession = this.sandbox
+        checkSession = sinon
           .stub(Auth0WebAuth.prototype, '_checkSession')
           .resolves(expectedSessionInfo);
-        storeSession = this.sandbox.stub(
-          Auth0WebAuth.prototype,
-          '_storeSession'
-        );
+        storeSession = sinon.stub(Auth0WebAuth.prototype, '_storeSession');
 
         auth0WebAuth = new Auth0WebAuth(sdk);
         auth0WebAuth._tokenPromises = {
@@ -855,7 +838,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let logOut;
 
       beforeEach(function() {
-        logOut = this.sandbox.stub(Auth0WebAuth.prototype, 'logOut');
+        logOut = sinon.stub(Auth0WebAuth.prototype, 'logOut');
       });
 
       it('throws a 401 and logs the user out if Auth0 requires the session to be re-authenticated', function() {
@@ -882,10 +865,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
           status: 401
         };
 
-        this.sandbox
+        sinon
           .stub(Auth0WebAuth.prototype, '_checkSession')
           .rejects(originalError);
-        generateUnauthorizedError = this.sandbox
+        generateUnauthorizedError = sinon
           .stub(Auth0WebAuth.prototype, '_generateUnauthorizedError')
           .returns(expectedError);
 
@@ -910,7 +893,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedError.fromSdk = true;
         expectedError.originalError = originalError;
 
-        this.sandbox
+        sinon
           .stub(Auth0WebAuth.prototype, '_checkSession')
           .rejects(originalError);
 
@@ -928,7 +911,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         const expectedError = new Error();
         expectedError.response = { status: faker.random.number() };
 
-        this.sandbox
+        sinon
           .stub(Auth0WebAuth.prototype, '_checkSession')
           .rejects(expectedError);
 
@@ -985,7 +968,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedHash = faker.helpers.createTransaction();
-        webAuthSession.parseHash = this.sandbox
+        webAuthSession.parseHash = sinon
           .stub()
           .callsFake((cb) => cb(null, expectedHash));
 
@@ -1008,7 +991,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
-        webAuthSession.parseHash = this.sandbox
+        webAuthSession.parseHash = sinon
           .stub()
           .callsFake((cb) => cb(expectedError));
 
@@ -1026,7 +1009,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let auth0WebAuth;
 
       beforeEach(function() {
-        webAuthSession.parseHash = this.sandbox
+        webAuthSession.parseHash = sinon
           .stub()
           .callsFake((cb) => cb(null, null));
 
@@ -1059,12 +1042,12 @@ describe('sessionTypes/Auth0WebAuth', function() {
         currentDate.getTime();
       initialTimeout = clock.setTimeout(() => {}, 0);
 
-      this.sandbox.spy(clock, 'clearTimeout');
-      getUpdatedSession = this.sandbox.stub(
+      sinon.spy(clock, 'clearTimeout');
+      getUpdatedSession = sinon.stub(
         Auth0WebAuth.prototype,
         '_getUpdatedSession'
       );
-      this.sandbox.spy(clock, 'setTimeout');
+      sinon.spy(clock, 'setTimeout');
 
       auth0WebAuth = new Auth0WebAuth(sdk);
       auth0WebAuth._sessionInfo = { expiresAt };
@@ -1112,7 +1095,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       };
 
       localStorage = {
-        setItem: this.sandbox.stub()
+        setItem: sinon.stub()
       };
       global.localStorage = localStorage;
 

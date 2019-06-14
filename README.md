@@ -127,7 +127,7 @@ Additionally, some globals have been added to the testing environment to streaml
 
 - `expect` - Corresponds with `require('chai').expect`. [Info](http://chaijs.com/api/bdd/)
 - `faker` - Corresponds with `require('faker')`. [Info](https://github.com/marak/Faker.js/)
-- `sandbox` - Corresponds with `require('sinon').sandbox`. Should be used anytime when wanting to create a `sinon.spy` or `sinon.stub` as it can be easily used to reset/restore multiple spys and stubs. [Info](http://sinonjs.org/releases/v4.1.6/sandbox/)
+- `sinon` - Corresponds with `require('sinon')`. Should be used anytime when wanting to create a `sinon.spy` or `sinon.stub` as it can be easily used to reset/restore multiple spies and stubs. [Info](https://sinonjs.org/releases/v7.3.2/sandbox/)
 
 ## Contributing/Publishing
 

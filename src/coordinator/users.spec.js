@@ -9,13 +9,11 @@ describe('Coordinator/Users', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -28,7 +26,7 @@ describe('Coordinator/Users', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -77,10 +75,10 @@ describe('Coordinator/Users', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves()
+          post: sinon.stub().resolves()
         };
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .callsFake(() => userActivationPayloadToServer);
 
@@ -167,9 +165,9 @@ describe('Coordinator/Users', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(userApplicationFromServer)
+          post: sinon.stub().resolves(userApplicationFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .callsFake((app) => expectedUserApplication);
 
@@ -242,9 +240,9 @@ describe('Coordinator/Users', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(userRoleFromServer)
+          post: sinon.stub().resolves(userRoleFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .callsFake((app) => expectedUserRole);
 
@@ -323,9 +321,9 @@ describe('Coordinator/Users', function() {
 
           request = {
             ...baseRequest,
-            post: this.sandbox.stub().resolves(userStackFromServer)
+            post: sinon.stub().resolves(userStackFromServer)
           };
-          toCamelCase = this.sandbox
+          toCamelCase = sinon
             .stub(objectUtils, 'toCamelCase')
             .callsFake((app) => expectedUserStack);
 
@@ -436,9 +434,9 @@ describe('Coordinator/Users', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(userFromServerBeforeFormat)
+          get: sinon.stub().resolves(userFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(userFromServerAfterFormat);
 
@@ -500,10 +498,10 @@ describe('Coordinator/Users', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(organizationUsersFromServer)
+          get: sinon.stub().resolves(organizationUsersFromServer)
         };
 
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedOrganizationUsers);
 
@@ -578,13 +576,13 @@ describe('Coordinator/Users', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(newUserFromServer)
+          post: sinon.stub().resolves(newUserFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .callsFake(() => expectedNewUser);
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .callsFake(() => newUserPayloadToServer);
 

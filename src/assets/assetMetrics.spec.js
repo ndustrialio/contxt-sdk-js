@@ -9,13 +9,11 @@ describe('Assets/Metrics', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -28,7 +26,7 @@ describe('Assets/Metrics', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -77,12 +75,12 @@ describe('Assets/Metrics', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(assetMetricFromServerBeforeFormat)
+          post: sinon.stub().resolves(assetMetricFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(assetMetricFromServerAfterFormat);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(assetMetricToServerAfterFormat);
 
@@ -226,9 +224,9 @@ describe('Assets/Metrics', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(assetMetricFromServerBeforeFormat)
+          get: sinon.stub().resolves(assetMetricFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(assetMetricFromServerAfterFormat);
 
@@ -311,14 +309,14 @@ describe('Assets/Metrics', function() {
           )
         };
 
-        formatPaginatedDataFromServer = this.sandbox
+        formatPaginatedDataFromServer = sinon
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(valuesFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+          get: sinon.stub().resolves(valuesFromServerBeforeFormat)
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(metricsFiltersAfterFormat);
 
@@ -413,14 +411,14 @@ describe('Assets/Metrics', function() {
           )
         };
 
-        formatPaginatedDataFromServer = this.sandbox
+        formatPaginatedDataFromServer = sinon
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(valuesFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+          get: sinon.stub().resolves(valuesFromServerBeforeFormat)
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(metricsFiltersAfterFormat);
 
@@ -491,7 +489,7 @@ describe('Assets/Metrics', function() {
         });
         assetMetricToServerBeforeFormat = fixture.build('assetMetric');
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(assetMetricToServerAfterFormat);
 
@@ -608,12 +606,12 @@ describe('Assets/Metrics', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(valueFromServerBeforeFormat)
+          post: sinon.stub().resolves(valueFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(valueFromServerAfterFormat);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(valueToServerAfterFormat);
 
@@ -768,14 +766,14 @@ describe('Assets/Metrics', function() {
           )
         };
 
-        formatPaginatedDataFromServer = this.sandbox
+        formatPaginatedDataFromServer = sinon
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(valuesFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+          get: sinon.stub().resolves(valuesFromServerBeforeFormat)
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(metricValuesFiltersAfterFormat);
 
@@ -870,14 +868,14 @@ describe('Assets/Metrics', function() {
           )
         };
 
-        formatPaginatedDataFromServer = this.sandbox
+        formatPaginatedDataFromServer = sinon
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(valuesFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(valuesFromServerBeforeFormat)
+          get: sinon.stub().resolves(valuesFromServerBeforeFormat)
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(metricValuesFiltersAfterFormat);
 
@@ -965,7 +963,7 @@ describe('Assets/Metrics', function() {
           { fromServer: true }
         );
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(valueToServerAfterFormat);
 

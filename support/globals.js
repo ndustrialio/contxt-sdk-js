@@ -8,4 +8,4 @@ const fixtureFactories = require('./fixtures/factories');
 global.expect = chai.expect;
 global.fixture = fixtureFactories;
 global.faker = faker;
-global.sandbox = sinon.sandbox;
+global.sinon = sinon;

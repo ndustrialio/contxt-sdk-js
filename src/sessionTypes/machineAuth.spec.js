@@ -1,14 +1,11 @@
 import axios from 'axios';
 import times from 'lodash.times';
-import sinon from 'sinon';
 import MachineAuth from './machineAuth';
 
 describe('sessionTypes/MachineAuth', function() {
   let sdk;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     sdk = {
       config: {
         audiences: {
@@ -23,7 +20,7 @@ describe('sessionTypes/MachineAuth', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -79,14 +76,14 @@ describe('sessionTypes/MachineAuth', function() {
         expiresAt: faker.date.future().getTime()
       };
 
-      getNewSessionInfo = this.sandbox
+      getNewSessionInfo = sinon
         .stub(MachineAuth.prototype, '_getNewSessionInfo')
         .resolves(expectedSessionInfo);
     });
 
     context('when getting a new token', function() {
       beforeEach(function() {
-        isAuthenticated = this.sandbox
+        isAuthenticated = sinon
           .stub(MachineAuth.prototype, 'isAuthenticated')
           .returns(false);
 
@@ -111,7 +108,7 @@ describe('sessionTypes/MachineAuth', function() {
 
     context('when using a previously acquired token', function() {
       beforeEach(function() {
-        isAuthenticated = this.sandbox
+        isAuthenticated = sinon
           .stub(MachineAuth.prototype, 'isAuthenticated')
           .returns(true);
 
@@ -248,10 +245,8 @@ describe('sessionTypes/MachineAuth', function() {
             expires_in: expiresInMs / 1000
           }
         });
-        post = this.sandbox
-          .stub(axios, 'post')
-          .callsFake(() => expectedPromise);
-        saveSession = this.sandbox.stub(MachineAuth.prototype, '_saveSession');
+        post = sinon.stub(axios, 'post').callsFake(() => expectedPromise);
+        saveSession = sinon.stub(MachineAuth.prototype, '_saveSession');
 
         machineAuth = new MachineAuth(sdk);
         promise = machineAuth._getNewSessionInfo(audienceName);
@@ -362,7 +357,7 @@ describe('sessionTypes/MachineAuth', function() {
         beforeEach(function() {
           const audienceName = faker.hacker.adjective();
 
-          this.sandbox.stub(axios, 'post');
+          sinon.stub(axios, 'post');
 
           const machineAuth = new MachineAuth(sdk);
           promise = machineAuth._getNewSessionInfo(audienceName);
@@ -379,7 +374,7 @@ describe('sessionTypes/MachineAuth', function() {
         const audienceName = faker.hacker.adjective();
         sdk.config.audiences[audienceName] = fixture.build('audience');
 
-        this.sandbox.stub(axios, 'post').rejects(new Error());
+        sinon.stub(axios, 'post').rejects(new Error());
 
         const machineAuth = new MachineAuth(sdk);
         const promise = machineAuth._getNewSessionInfo(audienceName);
@@ -395,7 +390,7 @@ describe('sessionTypes/MachineAuth', function() {
         const expectedError = new Error();
         expectedError.response = { status: faker.random.number() };
 
-        this.sandbox.stub(axios, 'post').rejects(expectedError);
+        sinon.stub(axios, 'post').rejects(expectedError);
 
         const machineAuth = new MachineAuth(sdk);
         const promise = machineAuth._getNewSessionInfo(audienceName);

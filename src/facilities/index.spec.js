@@ -9,13 +9,11 @@ describe('Facilities', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -28,7 +26,7 @@ describe('Facilities', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -78,12 +76,12 @@ describe('Facilities', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(rawFacility)
+          post: sinon.stub().resolves(rawFacility)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedFacility);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedFacility);
 
@@ -268,12 +266,12 @@ describe('Facilities', function() {
           id: rawFacility.id
         });
 
-        formatFacilityWithInfoFromServer = this.sandbox
+        formatFacilityWithInfoFromServer = sinon
           .stub(facilitiesUtils, 'formatFacilityWithInfoFromServer')
           .returns(formattedFacility);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawFacility)
+          get: sinon.stub().resolves(rawFacility)
         };
 
         const facilities = new Facilities(baseSdk, request);
@@ -332,7 +330,7 @@ describe('Facilities', function() {
         fromServer: true
       });
 
-      formatFacilityWithInfoFromServer = this.sandbox
+      formatFacilityWithInfoFromServer = sinon
         .stub(facilitiesUtils, 'formatFacilityWithInfoFromServer')
         .callsFake((facility) => {
           const index = rawFacilities.indexOf(facility);
@@ -340,7 +338,7 @@ describe('Facilities', function() {
         });
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(rawFacilities)
+        get: sinon.stub().resolves(rawFacilities)
       };
 
       const facilities = new Facilities(baseSdk, request);
@@ -402,7 +400,7 @@ describe('Facilities', function() {
         initialOptions = faker.helpers.createTransaction();
         rawFacilityOptions = faker.helpers.createTransaction();
 
-        formatFacilityWithInfoFromServer = this.sandbox
+        formatFacilityWithInfoFromServer = sinon
           .stub(facilitiesUtils, 'formatFacilityWithInfoFromServer')
           .callsFake((facility) => {
             const index = rawFacilities.indexOf(facility);
@@ -410,9 +408,9 @@ describe('Facilities', function() {
           });
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawFacilities)
+          get: sinon.stub().resolves(rawFacilities)
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(rawFacilityOptions);
 
@@ -482,7 +480,7 @@ describe('Facilities', function() {
           fromServer: true
         });
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedFacility);
 

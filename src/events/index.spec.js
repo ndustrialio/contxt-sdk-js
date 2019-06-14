@@ -10,13 +10,11 @@ describe('Events', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
 
     baseSdk = {
@@ -30,7 +28,7 @@ describe('Events', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -82,14 +80,14 @@ describe('Events', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
+          post: sinon.stub().resolves(eventFromServerBeforeFormat)
         };
 
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(eventFromServerAfterFormat);
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(eventToServerAfterFormat);
 
@@ -201,10 +199,10 @@ describe('Events', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(eventFromServerBeforeFormat)
+          get: sinon.stub().resolves(eventFromServerBeforeFormat)
         };
 
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(eventFromServerAfterFormat);
 
@@ -280,14 +278,14 @@ describe('Events', function() {
           ...paginationOptionsBeforeFormat
         };
 
-        formatPaginatedDataFromServer = this.sandbox
+        formatPaginatedDataFromServer = sinon
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(eventTypeFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(eventTypeFromServerBeforeFormat)
+          get: sinon.stub().resolves(eventTypeFromServerBeforeFormat)
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(paginationOptionsAfterFormat);
 
@@ -377,15 +375,15 @@ describe('Events', function() {
           )
         };
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(eventsFiltersAfterFormat);
-        formatPaginatedDataFromServer = this.sandbox
+        formatPaginatedDataFromServer = sinon
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(eventsFromServerAfterFormat);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(eventsFromServerBeforeFormat)
+          get: sinon.stub().resolves(eventsFromServerBeforeFormat)
         };
 
         events = new Events(baseSdk, request);
@@ -451,13 +449,13 @@ describe('Events', function() {
         );
         eventToServerBeforeFormat = fixture.build('event');
 
-        formatEventUpdateToServer = this.sandbox
+        formatEventUpdateToServer = sinon
           .stub(eventsUtils, 'formatEventUpdateToServer')
           .returns(eventToServerAfterFormat);
 
         request = {
           ...baseRequest,
-          put: this.sandbox.stub().resolves()
+          put: sinon.stub().resolves()
         };
 
         const events = new Events(baseSdk, request);
@@ -553,14 +551,14 @@ describe('Events', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(eventTypeFromServerBeforeFormat)
+          post: sinon.stub().resolves(eventTypeFromServerBeforeFormat)
         };
 
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(eventTypeFromServerAfterFormat);
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(eventTypeToServerAfterFormat);
 

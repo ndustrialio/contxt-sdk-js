@@ -14,15 +14,13 @@ describe('ContxtSdk', function() {
   let baseConfig;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
-
     baseConfig = {
       auth: {}
     };
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -41,18 +39,18 @@ describe('ContxtSdk', function() {
         const moduleName = faker.hacker.verb();
         memo[moduleName] = {
           ...fixture.build('audience'),
-          module: this.sandbox.stub()
+          module: sinon.stub()
         };
         return memo;
       }, {});
       expectedAuthSession = faker.helpers.createTransaction();
       expectedAuthSessionType = faker.hacker.verb();
 
-      createAuthSession = this.sandbox
+      createAuthSession = sinon
         .stub(ContxtSdk.prototype, '_createAuthSession')
         .returns(expectedAuthSession);
-      createRequest = this.sandbox.stub(ContxtSdk.prototype, '_createRequest');
-      decorate = this.sandbox.stub(ContxtSdk.prototype, '_decorate');
+      createRequest = sinon.stub(ContxtSdk.prototype, '_createRequest');
+      decorate = sinon.stub(ContxtSdk.prototype, '_decorate');
 
       contxtSdk = new ContxtSdk({
         config: baseConfig,
@@ -128,7 +126,7 @@ describe('ContxtSdk', function() {
         const instance = { config: baseConfig };
         const expectedSession = faker.helpers.createTransaction();
 
-        const authSessionStub = this.sandbox
+        const authSessionStub = sinon
           .stub(sessionTypes, authSessionConfig.moduleName)
           .returns(expectedSession);
 
@@ -198,13 +196,13 @@ describe('ContxtSdk', function() {
       externalModules = times(faker.random.number({ min: 1, max: 5 })).reduce(
         (memo) => {
           const moduleName = faker.hacker.verb();
-          memo[moduleName] = { module: this.sandbox.stub() };
+          memo[moduleName] = { module: sinon.stub() };
           return memo;
         },
         {}
       );
       instance = {
-        _createRequest: this.sandbox
+        _createRequest: sinon
           .stub()
           .callsFake((moduleName) => `request module for: ${moduleName}`)
       };

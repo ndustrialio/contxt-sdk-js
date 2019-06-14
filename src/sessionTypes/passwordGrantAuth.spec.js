@@ -7,12 +7,8 @@ describe('sessionTypes/passwordGrantAuth', function() {
   let authenticationSession;
   let sdk;
 
-  beforeEach(function() {
-    this.sandbox = sandbox.create();
-  });
-
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -30,7 +26,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
           }
         }
       };
-      authentication = this.sandbox.stub(auth0, 'Authentication').returns({});
+      authentication = sinon.stub(auth0, 'Authentication').returns({});
 
       passwordGrantAuth = new PasswordGrantAuth(sdk);
     });
@@ -70,7 +66,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
           }
         }
       };
-      this.sandbox.stub(auth0, 'Authentication').returns({});
+      sinon.stub(auth0, 'Authentication').returns({});
 
       expectedApiToken = faker.internet.password();
 
@@ -113,7 +109,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
           }
         }
       };
-      this.sandbox.stub(auth0, 'Authentication').returns({});
+      sinon.stub(auth0, 'Authentication').returns({});
 
       passwordGrantAuth = new PasswordGrantAuth(sdk);
     });
@@ -168,15 +164,11 @@ describe('sessionTypes/passwordGrantAuth', function() {
         };
 
         authenticationSession = {
-          loginWithDefaultDirectory: this.sandbox
-            .stub()
-            .yields(null, expectedResponse)
+          loginWithDefaultDirectory: sinon.stub().yields(null, expectedResponse)
         };
-        this.sandbox
-          .stub(auth0, 'Authentication')
-          .returns(authenticationSession);
+        sinon.stub(auth0, 'Authentication').returns(authenticationSession);
 
-        getApiToken = this.sandbox
+        getApiToken = sinon
           .stub(PasswordGrantAuth.prototype, '_getApiToken')
           .resolves(apiToken);
 
@@ -235,13 +227,11 @@ describe('sessionTypes/passwordGrantAuth', function() {
         expectedErrorMessage = faker.lorem.sentence();
 
         authenticationSession = {
-          loginWithDefaultDirectory: this.sandbox
+          loginWithDefaultDirectory: sinon
             .stub()
             .yields({ description: expectedErrorMessage })
         };
-        this.sandbox
-          .stub(auth0, 'Authentication')
-          .returns(authenticationSession);
+        sinon.stub(auth0, 'Authentication').returns(authenticationSession);
 
         passwordGrantAuth = new PasswordGrantAuth(sdk);
 
@@ -273,9 +263,9 @@ describe('sessionTypes/passwordGrantAuth', function() {
         }
       };
       authenticationSession = {
-        loginWithDefaultDirectory: this.sandbox.stub()
+        loginWithDefaultDirectory: sinon.stub()
       };
-      authentication = this.sandbox.stub(auth0, 'Authentication');
+      authentication = sinon.stub(auth0, 'Authentication');
 
       passwordGrantAuth = new PasswordGrantAuth(sdk);
 
@@ -308,9 +298,9 @@ describe('sessionTypes/passwordGrantAuth', function() {
         }
       };
       authenticationSession = {
-        loginWithDefaultDirectory: this.sandbox.stub()
+        loginWithDefaultDirectory: sinon.stub()
       };
-      authentication = this.sandbox.stub(auth0, 'Authentication');
+      authentication = sinon.stub(auth0, 'Authentication');
     });
 
     context('a successful request', function() {
@@ -325,14 +315,11 @@ describe('sessionTypes/passwordGrantAuth', function() {
           accessToken = faker.internet.password();
           expectedApiToken = faker.internet.password();
 
-          post = this.sandbox.stub(axios, 'post').resolves({
+          post = sinon.stub(axios, 'post').resolves({
             data: { access_token: expectedApiToken }
           });
 
-          saveSession = this.sandbox.stub(
-            PasswordGrantAuth.prototype,
-            '_saveSession'
-          );
+          saveSession = sinon.stub(PasswordGrantAuth.prototype, '_saveSession');
 
           const passwordGrantAuth = new PasswordGrantAuth(sdk);
 
@@ -371,8 +358,8 @@ describe('sessionTypes/passwordGrantAuth', function() {
 
         beforeEach(function() {
           accessToken = faker.internet.password();
-          post = this.sandbox.stub(axios, 'post').resolves({ data: {} });
-          this.sandbox.stub(PasswordGrantAuth.prototype, '_saveSession');
+          post = sinon.stub(axios, 'post').resolves({ data: {} });
+          sinon.stub(PasswordGrantAuth.prototype, '_saveSession');
 
           const passwordGrantAuth = new PasswordGrantAuth({
             ...sdk,
@@ -408,7 +395,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
         accessToken = faker.internet.password();
         errorMsg = faker.lorem.sentence();
 
-        this.sandbox.stub(axios, 'post').rejects(new Error(errorMsg));
+        sinon.stub(axios, 'post').rejects(new Error(errorMsg));
 
         const passwordGrantAuth = new PasswordGrantAuth(sdk);
 
@@ -438,9 +425,9 @@ describe('sessionTypes/passwordGrantAuth', function() {
         }
       };
       authenticationSession = {
-        loginWithDefaultDirectory: this.sandbox.stub()
+        loginWithDefaultDirectory: sinon.stub()
       };
-      authentication = this.sandbox.stub(auth0, 'Authentication');
+      authentication = sinon.stub(auth0, 'Authentication');
 
       expectedSessionInfo = {
         accessToken: faker.internet.password()
