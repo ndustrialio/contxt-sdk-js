@@ -4,12 +4,10 @@ import defaultAudiences from './audiences';
 import defaultConfigs from './defaults';
 
 describe('Config', function() {
-  beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-  });
+  beforeEach(function() {});
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -48,7 +46,7 @@ describe('Config', function() {
         ]
       };
 
-      getAudiences = this.sandbox
+      getAudiences = sinon
         .stub(Config.prototype, '_getAudiences')
         .returns(expectedAudiences);
 
@@ -290,10 +288,10 @@ describe('Config', function() {
       };
       expectedInternalAudiences = fixture.build('defaultAudiences');
 
-      getExternalAudiences = this.sandbox
+      getExternalAudiences = sinon
         .stub(Config.prototype, '_getExternalAudiences')
         .returns(expectedExternalAudiences);
-      getInternalAudiences = this.sandbox
+      getInternalAudiences = sinon
         .stub(Config.prototype, '_getInternalAudiences')
         .returns(expectedInternalAudiences);
     });
@@ -531,7 +529,7 @@ describe('Config', function() {
         expectedModuleAudiences = initialAudiences.facilities;
         expectedFacilitiesConfig = { env: facilitiesEnv };
 
-        getAudienceFromCustomConfig = this.sandbox
+        getAudienceFromCustomConfig = sinon
           .stub(Config.prototype, '_getAudienceFromCustomConfig')
           .returns(expectedAudiences.facilities);
 

@@ -7,13 +7,11 @@ describe('Coordinator/Roles', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -26,7 +24,7 @@ describe('Coordinator/Roles', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('addApplication', function() {
@@ -54,9 +52,9 @@ describe('Coordinator/Roles', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(roleApplicationFromServer)
+          post: sinon.stub().resolves(roleApplicationFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .callsFake((app) => expectedRoleApplication);
 
@@ -137,9 +135,9 @@ describe('Coordinator/Roles', function() {
 
           request = {
             ...baseRequest,
-            post: this.sandbox.stub().resolves(roleStackFromServer)
+            post: sinon.stub().resolves(roleStackFromServer)
           };
-          toCamelCase = this.sandbox
+          toCamelCase = sinon
             .stub(objectUtils, 'toCamelCase')
             .callsFake((app) => expectedRoleStack);
 
@@ -281,13 +279,13 @@ describe('Coordinator/Roles', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(expectedRoleFromServer)
+          post: sinon.stub().resolves(expectedRoleFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .callsFake(() => expectedRole);
 
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .callsFake(() => newRolePayloadToServer);
 
@@ -435,9 +433,9 @@ describe('Coordinator/Roles', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rolesFromTheServer)
+          get: sinon.stub().resolves(rolesFromTheServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedRoles);
 

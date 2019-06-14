@@ -9,7 +9,6 @@ describe('Bus/WebSocketConnection', function() {
   let webSocketUrl;
 
   beforeEach(function(done) {
-    this.sandbox = sinon.createSandbox();
     webSocketUrl = `wss://${faker.internet.domainName()}`;
     webSocketServer = new Server(webSocketUrl);
     expectedWebSocket = new WebSocket(webSocketUrl);
@@ -19,7 +18,7 @@ describe('Bus/WebSocketConnection', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
     webSocketServer.close();
   });
 
@@ -55,7 +54,7 @@ describe('Bus/WebSocketConnection', function() {
 
         beforeEach(function() {
           expectedOrganization = fixture.build('organization');
-          send = this.sandbox.spy(expectedWebSocket, 'send');
+          send = sinon.spy(expectedWebSocket, 'send');
           token = faker.internet.password();
 
           ws = new WebSocketConnection(
@@ -196,7 +195,7 @@ describe('Bus/WebSocketConnection', function() {
 
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         token = faker.internet.password();
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
@@ -226,7 +225,7 @@ describe('Bus/WebSocketConnection', function() {
 
       beforeEach(function(done) {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         token = faker.internet.password();
 
         ws = new WebSocketConnection(
@@ -263,7 +262,7 @@ describe('Bus/WebSocketConnection', function() {
 
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -295,7 +294,7 @@ describe('Bus/WebSocketConnection', function() {
     beforeEach(function() {
       expectedOrganization = fixture.build('organization');
 
-      close = this.sandbox.stub(expectedWebSocket, 'close');
+      close = sinon.stub(expectedWebSocket, 'close');
 
       ws = new WebSocketConnection(expectedWebSocket, expectedOrganization.id);
 
@@ -319,7 +318,7 @@ describe('Bus/WebSocketConnection', function() {
       ws = new WebSocketConnection(expectedWebSocket, expectedOrganization.id);
 
       ws._messageHandlers = {
-        [faker.random.uuid()]: this.sandbox.stub()
+        [faker.random.uuid()]: sinon.stub()
       };
 
       ws._onError(expectedError);
@@ -348,7 +347,7 @@ describe('Bus/WebSocketConnection', function() {
             result: null
           };
           expectedMessageHandlers = {
-            [expectedUUID]: this.sandbox.stub()
+            [expectedUUID]: sinon.stub()
           };
 
           ws = new WebSocketConnection(
@@ -414,7 +413,7 @@ describe('Bus/WebSocketConnection', function() {
         expectedOrganization = fixture.build('organization');
         expectedUUID = faker.random.uuid();
         expectedMessageHandlers = {
-          [expectedUUID]: this.sandbox.stub()
+          [expectedUUID]: sinon.stub()
         };
 
         ws = new WebSocketConnection(
@@ -453,7 +452,7 @@ describe('Bus/WebSocketConnection', function() {
           message = {
             example: 1
           };
-          send = this.sandbox.spy(expectedWebSocket, 'send');
+          send = sinon.spy(expectedWebSocket, 'send');
           serviceId = faker.random.uuid();
 
           ws = new WebSocketConnection(
@@ -607,7 +606,7 @@ describe('Bus/WebSocketConnection', function() {
         message = {
           example: 1
         };
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
@@ -652,7 +651,7 @@ describe('Bus/WebSocketConnection', function() {
         message = {
           example: 1
         };
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(
@@ -704,7 +703,7 @@ describe('Bus/WebSocketConnection', function() {
         message = {
           example: 1
         };
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = null;
 
         ws = new WebSocketConnection(
@@ -752,7 +751,7 @@ describe('Bus/WebSocketConnection', function() {
         message = {
           example: 1
         };
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(
@@ -798,7 +797,7 @@ describe('Bus/WebSocketConnection', function() {
         channel = faker.random.word();
         expectedOrganization = fixture.build('organization');
         message = null;
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(
@@ -849,7 +848,7 @@ describe('Bus/WebSocketConnection', function() {
           channel = faker.random.word();
           group = faker.random.word();
           expectedOrganization = fixture.build('organization');
-          send = this.sandbox.spy(expectedWebSocket, 'send');
+          send = sinon.spy(expectedWebSocket, 'send');
           serviceId = faker.random.uuid();
 
           ws = new WebSocketConnection(
@@ -1010,7 +1009,7 @@ describe('Bus/WebSocketConnection', function() {
         channel = faker.random.word();
         expectedOrganization = fixture.build('organization');
         group = faker.random.word();
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
@@ -1053,7 +1052,7 @@ describe('Bus/WebSocketConnection', function() {
         channel = faker.random.word();
         expectedOrganization = fixture.build('organization');
         group = faker.random.word();
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(
@@ -1103,7 +1102,7 @@ describe('Bus/WebSocketConnection', function() {
         channel = faker.random.word();
         expectedOrganization = fixture.build('organization');
         group = faker.random.word();
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = null;
 
         ws = new WebSocketConnection(
@@ -1149,7 +1148,7 @@ describe('Bus/WebSocketConnection', function() {
         channel = null;
         expectedOrganization = fixture.build('organization');
         group = faker.random.word();
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(
@@ -1195,7 +1194,7 @@ describe('Bus/WebSocketConnection', function() {
         channel = faker.random.word();
         expectedOrganization = fixture.build('organization');
         group = null;
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         serviceId = faker.random.uuid();
 
         ws = new WebSocketConnection(
@@ -1346,7 +1345,7 @@ describe('Bus/WebSocketConnection', function() {
         channel = faker.random.word();
         expectedOrganization = fixture.build('organization');
         group = null;
-        handler = this.sandbox.stub().returns(null);
+        handler = sinon.stub().returns(null);
         serviceId = faker.random.uuid();
         message = faker.random.word();
         subscription = faker.random.uuid();
@@ -1355,7 +1354,7 @@ describe('Bus/WebSocketConnection', function() {
           expectedWebSocket,
           expectedOrganization.id
         );
-        acknowledge = this.sandbox.stub(ws, '_acknowledge').resolves();
+        acknowledge = sinon.stub(ws, '_acknowledge').resolves();
       });
 
       context('with a group', function() {
@@ -1363,7 +1362,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully inline without calling the ack',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().returns(null);
+              handler = sinon.stub().returns(null);
 
               promise = ws.subscribe(
                 serviceId,
@@ -1416,7 +1415,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully inline while calling the ack',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 a();
               });
 
@@ -1457,7 +1456,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully as a promise',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 return Promise.resolve(null);
               });
 
@@ -1498,7 +1497,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully as a promise while calling the ack',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 return new Promise((resolve, reject) => {
                   a();
 
@@ -1541,7 +1540,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error', function() {
           beforeEach(function() {
-            handler = this.sandbox.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) {
               throw Error();
             });
 
@@ -1579,7 +1578,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error in a promise', function() {
           beforeEach(function() {
-            handler = this.sandbox.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) {
               return new Promise((resolve, reject) => {
                 reject(Error());
               });
@@ -1621,7 +1620,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler throws an error but acknowledges before it',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 a();
 
                 throw Error();
@@ -1664,7 +1663,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler throws an error in a promise but acknowledges before it',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 return new Promise((resolve, reject) => {
                   a();
                   reject(Error());
@@ -1708,8 +1707,8 @@ describe('Bus/WebSocketConnection', function() {
           let errorHandler;
 
           beforeEach(function() {
-            handler = this.sandbox.stub().returns(null);
-            errorHandler = this.sandbox.stub().returns(null);
+            handler = sinon.stub().returns(null);
+            errorHandler = sinon.stub().returns(null);
 
             promise = ws.subscribe(
               serviceId,
@@ -1763,7 +1762,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully inline without calling the ack',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().returns(null);
+              handler = sinon.stub().returns(null);
 
               promise = ws.subscribe(serviceId, channel, handler, () => {});
 
@@ -1810,7 +1809,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully inline while calling the ack',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 a();
               });
 
@@ -1845,7 +1844,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully as a promise',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 return Promise.resolve(null);
               });
 
@@ -1880,7 +1879,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully as a promise while calling the ack',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 return new Promise((resolve, reject) => {
                   a();
 
@@ -1917,7 +1916,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error', function() {
           beforeEach(function() {
-            handler = this.sandbox.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) {
               throw Error();
             });
 
@@ -1949,7 +1948,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error in a promise', function() {
           beforeEach(function() {
-            handler = this.sandbox.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) {
               return new Promise((resolve, reject) => {
                 reject(Error());
               });
@@ -1985,7 +1984,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler throws an error but acknowledges before it',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 a();
 
                 throw Error();
@@ -2022,7 +2021,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler throws an error in a promise but acknowledges before it',
           function() {
             beforeEach(function() {
-              handler = this.sandbox.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) {
                 return new Promise((resolve, reject) => {
                   a();
                   reject(Error());
@@ -2060,8 +2059,8 @@ describe('Bus/WebSocketConnection', function() {
           let errorHandler;
 
           beforeEach(function() {
-            handler = this.sandbox.stub().returns(null);
-            errorHandler = this.sandbox.stub().returns(null);
+            handler = sinon.stub().returns(null);
+            errorHandler = sinon.stub().returns(null);
 
             promise = ws.subscribe(serviceId, channel, handler, errorHandler);
 
@@ -2135,7 +2134,7 @@ describe('Bus/WebSocketConnection', function() {
 
         beforeEach(function() {
           expectedOrganization = fixture.build('organization');
-          send = this.sandbox.spy(expectedWebSocket, 'send');
+          send = sinon.spy(expectedWebSocket, 'send');
           messageId = faker.random.uuid();
 
           ws = new WebSocketConnection(
@@ -2174,14 +2173,14 @@ describe('Bus/WebSocketConnection', function() {
 
         beforeEach(function() {
           expectedOrganization = fixture.build('organization');
-          send = this.sandbox.spy(expectedWebSocket, 'send');
+          send = sinon.spy(expectedWebSocket, 'send');
           messageId = faker.random.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
             expectedOrganization.id
           );
-          this.sandbox.stub(ws, '_isConnected').returns(false);
+          sinon.stub(ws, '_isConnected').returns(false);
 
           promise = ws._acknowledge(messageId);
         });
@@ -2210,7 +2209,7 @@ describe('Bus/WebSocketConnection', function() {
 
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
-        send = this.sandbox.spy(expectedWebSocket, 'send');
+        send = sinon.spy(expectedWebSocket, 'send');
         messageId = faker.random.uuid();
 
         ws = new WebSocketConnection(

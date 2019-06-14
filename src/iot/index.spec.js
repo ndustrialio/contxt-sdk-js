@@ -7,13 +7,11 @@ describe('Iot', function() {
   let baseSdk;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -25,7 +23,7 @@ describe('Iot', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {

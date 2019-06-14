@@ -8,13 +8,11 @@ describe('Facilities/Groupings', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -27,7 +25,7 @@ describe('Facilities/Groupings', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -74,9 +72,9 @@ describe('Facilities/Groupings', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(rawGroupingFacility)
+          post: sinon.stub().resolves(rawGroupingFacility)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedGroupingFacility);
 
@@ -160,12 +158,12 @@ describe('Facilities/Groupings', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(formattedGroupingFromServer)
+          post: sinon.stub().resolves(formattedGroupingFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedGrouping);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedGroupingToServer);
 
@@ -286,9 +284,9 @@ describe('Facilities/Groupings', function() {
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(groupingsFromServer)
+        get: sinon.stub().resolves(groupingsFromServer)
       };
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .returns(expectedGrouping);
 
@@ -340,9 +338,9 @@ describe('Facilities/Groupings', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(groupingsFromServer)
+          get: sinon.stub().resolves(groupingsFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedGrouping);
 
@@ -480,12 +478,12 @@ describe('Facilities/Groupings', function() {
 
         request = {
           ...baseRequest,
-          put: this.sandbox.stub().resolves(groupingFromServer)
+          put: sinon.stub().resolves(groupingFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(formattedGroupingFromServer);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedUpdateToServer);
 

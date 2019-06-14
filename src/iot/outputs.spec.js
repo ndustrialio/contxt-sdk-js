@@ -7,13 +7,11 @@ describe('Iot/Outputs', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -26,7 +24,7 @@ describe('Iot/Outputs', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -83,12 +81,12 @@ describe('Iot/Outputs', function() {
           )
         };
 
-        formatOutputFieldDataFromServer = this.sandbox
+        formatOutputFieldDataFromServer = sinon
           .stub(iotUtils, 'formatOutputFieldDataFromServer')
           .returns(expectedOutputFieldData);
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawOutputFieldData)
+          get: sinon.stub().resolves(rawOutputFieldData)
         };
         const outputs = new Outputs(baseSdk, request);
         outputs._baseUrl = expectedHost;

@@ -7,15 +7,13 @@ describe('Request', function() {
   let baseSdk;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseAxiosInstance = {
       interceptors: {
         request: {
-          use: this.sandbox.stub()
+          use: sinon.stub()
         },
         response: {
-          use: this.sandbox.stub()
+          use: sinon.stub()
         }
       }
     };
@@ -30,7 +28,7 @@ describe('Request', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -42,11 +40,8 @@ describe('Request', function() {
     beforeEach(function() {
       expectedAudienceName = faker.hacker.noun();
 
-      attachInterceptors = this.sandbox.stub(
-        Request.prototype,
-        '_attachInterceptors'
-      );
-      create = this.sandbox.stub(axios, 'create').returns(baseAxiosInstance);
+      attachInterceptors = sinon.stub(Request.prototype, '_attachInterceptors');
+      create = sinon.stub(axios, 'create').returns(baseAxiosInstance);
 
       request = new Request(baseSdk, expectedAudienceName);
     });
@@ -96,12 +91,12 @@ describe('Request', function() {
         expectedResponse = faker.hacker.phrase();
         axiosInstance = {
           ...baseAxiosInstance,
-          [method]: this.sandbox
+          [method]: sinon
             .stub()
             .callsFake(() => Promise.resolve({ data: expectedResponse }))
         };
 
-        this.sandbox.stub(axios, 'create').returns(axiosInstance);
+        sinon.stub(axios, 'create').returns(axiosInstance);
 
         const request = new Request(baseSdk);
         response = request[method].apply(request, expectedArgs);
@@ -130,8 +125,8 @@ describe('Request', function() {
         faker.random.number({ min: 0, max: 10 }),
         () => {
           return {
-            fulfilled: this.sandbox.stub(),
-            rejected: this.sandbox.stub()
+            fulfilled: sinon.stub(),
+            rejected: sinon.stub()
           };
         }
       );
@@ -139,8 +134,8 @@ describe('Request', function() {
         faker.random.number({ min: 0, max: 10 }),
         () => {
           return {
-            fulfilled: this.sandbox.stub(),
-            rejected: this.sandbox.stub()
+            fulfilled: sinon.stub(),
+            rejected: sinon.stub()
           };
         }
       );
@@ -149,8 +144,8 @@ describe('Request', function() {
       ].concat(requestInterceptors);
       expectedResponseInterceptors = responseInterceptors;
 
-      requestUse = this.sandbox.stub();
-      responseUse = this.sandbox.stub();
+      requestUse = sinon.stub();
+      responseUse = sinon.stub();
 
       Request.prototype._attachInterceptors.call({
         _axios: {
@@ -202,7 +197,7 @@ describe('Request', function() {
       sdk = {
         ...baseSdk,
         auth: {
-          getCurrentApiToken: this.sandbox.stub().resolves(expectedToken)
+          getCurrentApiToken: sinon.stub().resolves(expectedToken)
         }
       };
 

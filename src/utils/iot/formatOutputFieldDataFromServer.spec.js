@@ -15,8 +15,6 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let toCamelCase;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     expectedOutputFieldMetadata = {
       count: faker.random.number(),
       hasMore: faker.random.boolean(),
@@ -53,23 +51,21 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
         omit({ ...record, event_time: record.eventTime }, ['eventTime'])
     );
 
-    parseOutputFieldNextPageUrlMetadata = this.sandbox
+    parseOutputFieldNextPageUrlMetadata = sinon
       .stub(iotUtils, 'parseOutputFieldNextPageUrlMetadata')
       .returns(expectedOutputFieldParsedMetadata);
-    toCamelCase = this.sandbox
-      .stub(objectUtils, 'toCamelCase')
-      .callsFake((input) => {
-        switch (input) {
-          case initialOutputFieldMetadata:
-            return expectedOutputFieldMetadata;
+    toCamelCase = sinon.stub(objectUtils, 'toCamelCase').callsFake((input) => {
+      switch (input) {
+        case initialOutputFieldMetadata:
+          return expectedOutputFieldMetadata;
 
-          case initialOutputFieldDataRecords:
-            return expectedOutputFieldDataRecords;
+        case initialOutputFieldDataRecords:
+          return expectedOutputFieldDataRecords;
 
-          default:
-            return null;
-        }
-      });
+        default:
+          return null;
+      }
+    });
 
     formattedOutputFieldData = formatOutputFieldDataFromServer({
       meta: initialOutputFieldMetadata,
@@ -78,7 +74,7 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   it('transforms the regular metadata keys to camel case', function() {

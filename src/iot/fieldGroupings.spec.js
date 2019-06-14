@@ -9,13 +9,11 @@ describe('Iot/FieldGroupings', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -28,7 +26,7 @@ describe('Iot/FieldGroupings', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -75,9 +73,9 @@ describe('Iot/FieldGroupings', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(fieldGroupingFieldFromServer)
+          post: sinon.stub().resolves(fieldGroupingFieldFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(fieldGroupingFieldToServer);
 
@@ -161,12 +159,12 @@ describe('Iot/FieldGroupings', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(formattedGroupingFromServer)
+          post: sinon.stub().resolves(formattedGroupingFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedGrouping);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedGroupingToServer);
 
@@ -251,7 +249,7 @@ describe('Iot/FieldGroupings', function() {
 
         request = {
           ...baseRequest,
-          delete: this.sandbox.stub().resolves()
+          delete: sinon.stub().resolves()
         };
 
         const fieldGroupings = new FieldGroupings(baseSdk, request);
@@ -303,9 +301,9 @@ describe('Iot/FieldGroupings', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(fieldGroupingFromServer)
+          get: sinon.stub().resolves(fieldGroupingFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(fieldGroupingToServer);
 
@@ -381,15 +379,15 @@ describe('Iot/FieldGroupings', function() {
           ...paginationOptionsBeforeFormat
         };
 
-        formatPaginatedDataFromServer = this.sandbox
+        formatPaginatedDataFromServer = sinon
           .stub(paginationUtils, 'formatPaginatedDataFromServer')
           .returns(fieldGroupingFromServerAfterFormat);
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(fieldGroupingFromServerBeforeFormat)
+          get: sinon.stub().resolves(fieldGroupingFromServerBeforeFormat)
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(paginationOptionsAfterFormat);
 
@@ -532,12 +530,12 @@ describe('Iot/FieldGroupings', function() {
 
         request = {
           ...baseRequest,
-          put: this.sandbox.stub().resolves(groupingFromServer)
+          put: sinon.stub().resolves(groupingFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(formattedGroupingFromServer);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedUpdateToServer);
 

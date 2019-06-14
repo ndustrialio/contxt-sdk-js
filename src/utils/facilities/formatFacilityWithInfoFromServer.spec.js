@@ -2,12 +2,10 @@ import formatFacilityWithInfoFromServer from './formatFacilityWithInfoFromServer
 import * as objectUtils from '../objects';
 
 describe('utils/facilities/formatFacilityWithInfoFromServer', function() {
-  beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-  });
+  beforeEach(function() {});
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   context('when there is facility info attached', function() {
@@ -22,7 +20,7 @@ describe('utils/facilities/formatFacilityWithInfoFromServer', function() {
         fromServer: true
       });
 
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .returns(facilityAfterFormat);
 
@@ -55,7 +53,7 @@ describe('utils/facilities/formatFacilityWithInfoFromServer', function() {
         fromServer: true
       });
 
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .returns(facilityAfterFormat);
 

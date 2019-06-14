@@ -7,13 +7,11 @@ describe('Iot/Fields', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -26,7 +24,7 @@ describe('Iot/Fields', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -65,9 +63,9 @@ describe('Iot/Fields', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawOutputField)
+          get: sinon.stub().resolves(rawOutputField)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedOutputField);
 

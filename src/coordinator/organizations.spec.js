@@ -7,13 +7,11 @@ describe('Coordinator/Organizations', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -26,7 +24,7 @@ describe('Coordinator/Organizations', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -74,9 +72,9 @@ describe('Coordinator/Organizations', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(organizationFromServerBeforeFormat)
+          get: sinon.stub().resolves(organizationFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(organizationFromServerAfterFormat);
 
@@ -143,9 +141,9 @@ describe('Coordinator/Organizations', function() {
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(organizationsFromServer)
+        get: sinon.stub().resolves(organizationsFromServer)
       };
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .callsFake(
           (org) => expectedOrganizations.filter(({ id }) => id === org.id)[0]

@@ -9,13 +9,11 @@ describe('Iot/FieldCategories', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -28,7 +26,7 @@ describe('Iot/FieldCategories', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -76,12 +74,12 @@ describe('Iot/FieldCategories', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(formattedCategoryFromServer)
+          post: sinon.stub().resolves(formattedCategoryFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedCategory);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedCategoryToServer);
 
@@ -148,7 +146,7 @@ describe('Iot/FieldCategories', function() {
 
         request = {
           ...baseRequest,
-          delete: this.sandbox.stub().resolves()
+          delete: sinon.stub().resolves()
         };
 
         const fieldCategories = new FieldCategories(baseSdk, request);
@@ -200,9 +198,9 @@ describe('Iot/FieldCategories', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(fieldCategoryFromServer)
+          get: sinon.stub().resolves(fieldCategoryFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(fieldCategoryToServer);
 
@@ -275,16 +273,16 @@ describe('Iot/FieldCategories', function() {
         ...paginationOptionsBeforeFormat
       };
 
-      formatPaginatedDataFromServer = this.sandbox
+      formatPaginatedDataFromServer = sinon
         .stub(paginationUtils, 'formatPaginatedDataFromServer')
         .returns(fieldCategoriesFromServerAfterFormat);
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(fieldCategoriesFromServerBeforeFormat)
+        get: sinon.stub().resolves(fieldCategoriesFromServerBeforeFormat)
       };
 
-      toSnakeCase = this.sandbox
+      toSnakeCase = sinon
         .stub(objectUtils, 'toSnakeCase')
         .returns(paginationOptionsAfterFormat);
 
@@ -339,9 +337,9 @@ describe('Iot/FieldCategories', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(rawFieldCategory)
+          get: sinon.stub().resolves(rawFieldCategory)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedFieldCategory);
 
@@ -415,12 +413,12 @@ describe('Iot/FieldCategories', function() {
 
         request = {
           ...baseRequest,
-          put: this.sandbox.stub().resolves(categoryFromServer)
+          put: sinon.stub().resolves(categoryFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(formattedCategoryFromServer);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedUpdateToServer);
 

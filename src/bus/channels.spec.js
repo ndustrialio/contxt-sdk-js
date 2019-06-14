@@ -8,13 +8,11 @@ describe('Bus/Channels', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -27,7 +25,7 @@ describe('Bus/Channels', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -77,12 +75,12 @@ describe('Bus/Channels', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(channelFromServerBeforeFormat)
+          post: sinon.stub().resolves(channelFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(channelFromServerAfterFormat);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(channelToServerAfterFormat);
 
@@ -223,9 +221,9 @@ describe('Bus/Channels', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(channelFromServerBeforeFormat)
+          get: sinon.stub().resolves(channelFromServerBeforeFormat)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(channelFromServerAfterFormat);
 
@@ -310,9 +308,9 @@ describe('Bus/Channels', function() {
 
         request = {
           ...baseRequest,
-          put: this.sandbox.stub().resolves()
+          put: sinon.stub().resolves()
         };
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(channelToServerAfterFormat);
 

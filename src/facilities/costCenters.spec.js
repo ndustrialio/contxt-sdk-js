@@ -8,13 +8,11 @@ describe('Facilities/CostCenters', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sinon.createSandbox();
-
     baseRequest = {
-      delete: this.sandbox.stub().resolves(),
-      get: this.sandbox.stub().resolves(),
-      post: this.sandbox.stub().resolves(),
-      put: this.sandbox.stub().resolves()
+      delete: sinon.stub().resolves(),
+      get: sinon.stub().resolves(),
+      post: sinon.stub().resolves(),
+      put: sinon.stub().resolves()
     };
     baseSdk = {
       config: {
@@ -27,7 +25,7 @@ describe('Facilities/CostCenters', function() {
   });
 
   afterEach(function() {
-    this.sandbox.restore();
+    sinon.restore();
   });
 
   describe('constructor', function() {
@@ -70,9 +68,9 @@ describe('Facilities/CostCenters', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(rawCostCenterFacility)
+          post: sinon.stub().resolves(rawCostCenterFacility)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedCostCenterFacility);
         const costCenters = new CostCenters(baseSdk, request, expectedHost);
@@ -145,12 +143,12 @@ describe('Facilities/CostCenters', function() {
 
         request = {
           ...baseRequest,
-          post: this.sandbox.stub().resolves(formattedCostCenterFromServer)
+          post: sinon.stub().resolves(formattedCostCenterFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(formattedCostCenterFromServer);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedCostCenterToServer);
 
@@ -265,9 +263,9 @@ describe('Facilities/CostCenters', function() {
 
       request = {
         ...baseRequest,
-        get: this.sandbox.stub().resolves(costCentersFromServer)
+        get: sinon.stub().resolves(costCentersFromServer)
       };
-      toCamelCase = this.sandbox
+      toCamelCase = sinon
         .stub(objectUtils, 'toCamelCase')
         .returns(expectedCostCenters);
 
@@ -326,9 +324,9 @@ describe('Facilities/CostCenters', function() {
 
         request = {
           ...baseRequest,
-          get: this.sandbox.stub().resolves(costCentersFromServer)
+          get: sinon.stub().resolves(costCentersFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedCostCenters);
 
@@ -451,12 +449,12 @@ describe('Facilities/CostCenters', function() {
 
         request = {
           ...baseRequest,
-          put: this.sandbox.stub().resolves(costCenterFromServer)
+          put: sinon.stub().resolves(costCenterFromServer)
         };
-        toCamelCase = this.sandbox
+        toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(formattedCostCenterFromServer);
-        toSnakeCase = this.sandbox
+        toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .returns(formattedUpdateToServer);
 
