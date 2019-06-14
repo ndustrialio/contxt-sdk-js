@@ -1,3 +1,9 @@
+## [v1.4.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.2) (2019-06-14)
+
+**Fixed**
+
+- Update Sinon and Sinon-Chai dependencies to fix potential vulnerabilities
+
 ## [v1.4.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.1) (2019-06-13)
 
 **Fixed**
