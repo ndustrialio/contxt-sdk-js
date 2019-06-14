@@ -3,8 +3,6 @@ import * as objectUtils from '../objects';
 import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
 
 describe('utils/pagination/formatPaginatedDataFromServer', function() {
-  beforeEach(function() {});
-
   afterEach(function() {
     sinon.restore();
   });

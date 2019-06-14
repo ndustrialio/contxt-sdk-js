@@ -7,8 +7,6 @@ describe('sessionTypes/passwordGrantAuth', function() {
   let authenticationSession;
   let sdk;
 
-  beforeEach(function() {});
-
   afterEach(function() {
     sinon.restore();
   });

@@ -2,8 +2,6 @@ import formatFacilityWithInfoFromServer from './formatFacilityWithInfoFromServer
 import * as objectUtils from '../objects';
 
 describe('utils/facilities/formatFacilityWithInfoFromServer', function() {
-  beforeEach(function() {});
-
   afterEach(function() {
     sinon.restore();
   });

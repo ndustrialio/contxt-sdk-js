@@ -4,8 +4,6 @@ import defaultAudiences from './audiences';
 import defaultConfigs from './defaults';
 
 describe('Config', function() {
-  beforeEach(function() {});
-
   afterEach(function() {
     sinon.restore();
   });
