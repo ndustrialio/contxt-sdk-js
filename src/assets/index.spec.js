@@ -9,7 +9,7 @@ describe('Assets', function() {
   let expectedHost;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
 
     baseRequest = {
       delete: this.sandbox.stub().resolves(),

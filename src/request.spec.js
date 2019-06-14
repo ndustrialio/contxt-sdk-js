@@ -7,7 +7,7 @@ describe('Request', function() {
   let baseSdk;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
 
     baseAxiosInstance = {
       interceptors: {

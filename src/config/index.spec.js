@@ -5,7 +5,7 @@ import defaultConfigs from './defaults';
 
 describe('Config', function() {
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {

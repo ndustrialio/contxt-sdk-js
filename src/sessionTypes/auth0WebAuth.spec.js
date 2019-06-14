@@ -1,7 +1,6 @@
 import auth0 from 'auth0-js';
 import axios from 'axios';
 import omit from 'lodash.omit';
-import sinon from 'sinon';
 import Auth0WebAuth from './auth0WebAuth';
 
 describe('sessionTypes/Auth0WebAuth', function() {
@@ -14,7 +13,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
   let webAuthSession;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
 
     sdk = {
       config: {

@@ -1,13 +1,12 @@
 import axios from 'axios';
 import times from 'lodash.times';
-import sinon from 'sinon';
 import MachineAuth from './machineAuth';
 
 describe('sessionTypes/MachineAuth', function() {
   let sdk;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
 
     sdk = {
       config: {

@@ -102,7 +102,7 @@
     "pretty-quick": "^1.4.1",
     "proxyquire": "^2.1.0",
     "rosie": "^1.6.0",
-    "sinon": "^4.1.6",
-    "sinon-chai": "^2.14.0"
+    "sinon": "^7.3.2",
+    "sinon-chai": "^3.2.0"
   }
 }

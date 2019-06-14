@@ -3,7 +3,7 @@ import * as objectUtils from '../objects';
 
 describe('utils/facilities/formatFacilityWithInfoFromServer', function() {
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {

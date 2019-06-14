@@ -15,7 +15,7 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let toCamelCase;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
 
     expectedOutputFieldMetadata = {
       count: faker.random.number(),

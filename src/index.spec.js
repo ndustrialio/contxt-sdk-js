@@ -14,7 +14,7 @@ describe('ContxtSdk', function() {
   let baseConfig;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
 
     baseConfig = {
       auth: {}

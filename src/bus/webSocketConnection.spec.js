@@ -1,5 +1,4 @@
 import { Server, WebSocket } from 'mock-socket';
-import sinon from 'sinon';
 import WebSocketConnection from './webSocketConnection';
 
 const DELAY = 5;
@@ -10,7 +9,7 @@ describe('Bus/WebSocketConnection', function() {
   let webSocketUrl;
 
   beforeEach(function(done) {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
     webSocketUrl = `wss://${faker.internet.domainName()}`;
     webSocketServer = new Server(webSocketUrl);
     expectedWebSocket = new WebSocket(webSocketUrl);

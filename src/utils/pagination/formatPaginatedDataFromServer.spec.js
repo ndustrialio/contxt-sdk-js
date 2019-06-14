@@ -4,7 +4,7 @@ import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
 
 describe('utils/pagination/formatPaginatedDataFromServer', function() {
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {

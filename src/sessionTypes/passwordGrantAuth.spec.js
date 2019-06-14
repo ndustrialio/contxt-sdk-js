@@ -8,7 +8,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
   let sdk;
 
   beforeEach(function() {
-    this.sandbox = sandbox.create();
+    this.sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {
