@@ -103,6 +103,17 @@ class ContxtSdk {
     this[moduleName] = externalModule;
   }
 
+  unmountExternalModule(moduleName) {
+    const replacedModuleId = this._replacedModuleMap[moduleName];
+
+    this.auth.deleteCurrentApiToken(moduleName);
+
+    this[moduleName] = this._replacedModules[replacedModuleId];
+
+    delete this._replacedModuleMap[moduleName];
+    delete this._replacedModules[replacedModuleId];
+  }
+
   /**
    * Returns a new instance of the session type requested
    *

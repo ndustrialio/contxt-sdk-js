@@ -60,6 +60,136 @@ describe('sessionTypes/MachineAuth', function() {
     });
   });
 
+  describe('deleteCurrentApiToken', function() {
+    context(
+      'when deleting an existing token where the request to acquire the token has completed',
+      function() {
+        let audienceNameToDelete;
+        let machineAuth;
+        let promise;
+
+        beforeEach(function() {
+          audienceNameToDelete = faker.random.arrayElement(
+            Object.keys(sdk.config.audiences)
+          );
+
+          machineAuth = new MachineAuth(sdk);
+          machineAuth._sessionInfo = Object.keys(sdk.config.audiences).reduce(
+            (memo, audienceName) => {
+              memo[audienceName] = {
+                apiToken: faker.internet.password(),
+                expiresAt: Date.now() + 7200 * 1000
+              };
+
+              return memo;
+            },
+            {}
+          );
+
+          promise = machineAuth.deleteCurrentApiToken(audienceNameToDelete);
+        });
+
+        it('removes the session info', function() {
+          return promise.then(() => {
+            expect(machineAuth._sessionInfo[audienceNameToDelete]).to.be
+              .undefined;
+          });
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      }
+    );
+
+    context(
+      'when deleting an token where the request to acquire the token has not yet completed',
+      function() {
+        let audienceNameToDelete;
+        let machineAuth;
+        let promise;
+
+        beforeEach(function() {
+          audienceNameToDelete = faker.random.arrayElement(
+            Object.keys(sdk.config.audiences)
+          );
+
+          machineAuth = new MachineAuth(sdk);
+          machineAuth._sessionInfo = Object.keys(sdk.config.audiences).reduce(
+            (memo, audienceName) => {
+              if (audienceName !== audienceNameToDelete) {
+                memo[audienceName] = {
+                  apiToken: faker.internet.password(),
+                  expiresAt: Date.now() + 7200 * 1000
+                };
+              }
+
+              return memo;
+            },
+            {}
+          );
+          machineAuth._tokenPromises = Object.keys(sdk.config.audiences).reduce(
+            (memo, audienceName) => {
+              if (audienceName === audienceNameToDelete) {
+                memo[audienceName] = Promise.resolve({
+                  apiToken: faker.internet.password(),
+                  expiresAt: Date.now() + 7200 * 1000
+                }).then(() => {
+                  machineAuth._tokenPromises[audienceName] = null;
+                });
+              }
+
+              return memo;
+            },
+            {}
+          );
+
+          promise = machineAuth.deleteCurrentApiToken(audienceNameToDelete);
+        });
+
+        it('removes the session info', function() {
+          return promise.then(() => {
+            expect(machineAuth._sessionInfo[audienceNameToDelete]).to.be
+              .undefined;
+          });
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      }
+    );
+
+    context(
+      'when attempting to delete an access token that does not currently exist',
+      function() {
+        let machineAuth;
+        let promise;
+
+        beforeEach(function() {
+          machineAuth = new MachineAuth(sdk);
+          machineAuth._sessionInfo = Object.keys(sdk.config.audiences).reduce(
+            (memo, audienceName) => {
+              memo[audienceName] = {
+                apiToken: faker.internet.password(),
+                expiresAt: Date.now() + 7200 * 1000
+              };
+
+              return memo;
+            },
+            {}
+          );
+
+          promise = machineAuth.deleteCurrentApiToken(faker.hacker.adjective());
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      }
+    );
+  });
+
   describe('getCurrentApiToken', function() {
     let expectedApiToken;
     let expectedAudienceName;

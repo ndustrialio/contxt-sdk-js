@@ -46,6 +46,14 @@ class MachineAuth {
     }
   }
 
+  deleteCurrentApiToken(audienceName) {
+    const promise = this._tokenPromises[audienceName] || Promise.resolve();
+
+    return promise.then(() => {
+      delete this._sessionInfo[audienceName];
+    });
+  }
+
   /**
    * Gets the current API token (used to communicate with other Contxt APIs). Will get and store a
    * token or use a previously acquired and stored token.

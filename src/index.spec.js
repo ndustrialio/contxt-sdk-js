@@ -187,6 +187,59 @@ describe('ContxtSdk', function() {
     });
   });
 
+  describe('unmountExternalModule', function() {
+    let expectedRemountedModule;
+    let expectedRemountedModuleId;
+    let expectedRemovedModule;
+    let moduleName;
+    let instance;
+
+    beforeEach(function() {
+      expectedRemountedModule = sinon.stub();
+      expectedRemountedModuleId = faker.random.uuid();
+      expectedRemovedModule = sinon.stub();
+      moduleName = faker.hacker.verb();
+
+      instance = {
+        _replacedModuleMap: {
+          [moduleName]: expectedRemountedModuleId
+        },
+        _replacedModules: {
+          [expectedRemountedModuleId]: expectedRemountedModule
+        },
+        auth: {
+          deleteCurrentApiToken: sinon.stub()
+        },
+        [moduleName]: expectedRemovedModule
+      };
+
+      ContxtSdk.prototype.unmountExternalModule.call(instance, moduleName);
+    });
+
+    it('removes the module from the sdk instance', function() {
+      expect(instance[moduleName]).to.not.equal(expectedRemovedModule);
+    });
+
+    it('remounts a previous module with the same name', function() {
+      expect(instance[moduleName]).to.equal(expectedRemountedModule);
+    });
+
+    it('removes the remounted module from the list of replaced modules', function() {
+      expect(instance._replacedModules[expectedRemountedModuleId]).to.be
+        .undefined;
+    });
+
+    it('removes the module from the list of mounted external modules', function() {
+      expect(instance._replacedModuleMap).to.not.include.key(moduleName);
+    });
+
+    it('clears out the stored access token', function() {
+      expect(instance.auth.deleteCurrentApiToken).to.be.calledWith(moduleName);
+    });
+
+    it('throws an error when trying to unmount a non-external module');
+  });
+
   describe('_createAuthSession', function() {
     [
       { sessionType: 'auth0WebAuth', moduleName: 'Auth0WebAuth' },

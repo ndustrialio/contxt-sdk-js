@@ -96,6 +96,14 @@ class Auth0WebAuth {
     }
   }
 
+  deleteCurrentApiToken(audienceName) {
+    const promise = this._tokenPromises[audienceName] || Promise.resolve();
+
+    return promise.then(() => {
+      delete this._tokenPromises[audienceName];
+    });
+  }
+
   /**
    * Requests an access token from Contxt Auth for the correct audience
    *
