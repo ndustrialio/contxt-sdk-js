@@ -396,6 +396,20 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | userId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtUserEvent"></a>
+
+## ContxtUserEvent : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| eventId | <code>string</code> |  |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtUserFavoriteApplication"></a>
 
 ## ContxtUserFavoriteApplication : <code>Object</code>
