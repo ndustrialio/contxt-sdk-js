@@ -59,9 +59,9 @@ describe('ContxtSdk', function() {
       });
     });
 
-    it('creates an empty object for keeping track of external modules', function() {
-      expect(contxtSdk._replacedModuleMap).to.be.an('object');
-      expect(contxtSdk._replacedModuleMap).to.be.empty;
+    it('creates an empty array for keeping track of external modules', function() {
+      expect(contxtSdk._externalModuleNames).to.be.an('array');
+      expect(contxtSdk._externalModuleNames).to.be.empty;
     });
 
     it('creates an empty object for keeping track of replaced modules', function() {
@@ -128,116 +128,340 @@ describe('ContxtSdk', function() {
   });
 
   describe('mountExternalModule', function() {
-    let expectedInternalModule;
-    let expectedModule;
-    let expectedModuleName;
-    let instance;
+    context(
+      'when mounting an external module where there is no existing external module',
+      function() {
+        let existingExternalModuleNames;
+        let existingInternalModule;
+        let expectedExternalModule;
+        let instance;
+        let moduleName;
 
-    beforeEach(function() {
-      expectedInternalModule = sinon.stub();
-      expectedModule = sinon.stub();
-      expectedModuleName = faker.hacker.verb();
+        beforeEach(function() {
+          existingExternalModuleNames = times(
+            faker.random.number({ min: 1, max: 10 })
+          ).map((index) => `${faker.hacker.adjective()}-${index}`);
+          existingInternalModule = sinon.stub();
+          expectedExternalModule = sinon.stub();
+          moduleName = faker.hacker.verb();
 
-      instance = {
-        _createRequest: sinon
-          .stub()
-          .callsFake((moduleName) => `request module for: ${moduleName}`),
-        _replacedModuleMap: {},
-        _replacedModules: {},
-        [expectedModuleName]: expectedInternalModule
-      };
+          instance = {
+            _createRequest: sinon
+              .stub()
+              .callsFake((moduleName) => `request module for: ${moduleName}`),
+            _externalModuleNames: existingExternalModuleNames,
+            _replacedModules: {},
+            [moduleName]: existingInternalModule
+          };
 
-      ContxtSdk.prototype.mountExternalModule.call(
-        instance,
-        expectedModuleName,
-        expectedModule
-      );
-    });
+          ContxtSdk.prototype.mountExternalModule.call(
+            instance,
+            moduleName,
+            expectedExternalModule
+          );
+        });
 
-    it('creates a request module for the provided module', function() {
-      expect(instance._createRequest).to.be.calledWith(expectedModuleName);
-    });
+        it('adds the module to a list of mounted external modules', function() {
+          expect(instance._externalModuleNames).to.include(moduleName);
+          expect(instance._externalModuleNames).to.include(
+            ...existingExternalModuleNames
+          );
+        });
 
-    it('creates a new instance of the provided module', function() {
-      expect(expectedModule).to.be.calledWithNew;
-      expect(expectedModule).to.be.calledWith(
-        instance,
-        `request module for: ${expectedModuleName}`
-      );
-    });
+        it('saves any existing module with the same namespace to be reattached when unmounting', function() {
+          expect(instance._replacedModules[moduleName]).to.equal(
+            existingInternalModule
+          );
+        });
 
-    it('adds the module to a list of mounted external modules with a key (UUID) for where the displaced module exists', function() {
-      const replacementModuleId =
-        instance._replacedModuleMap[expectedModuleName];
+        it('creates a request module for the provided module', function() {
+          expect(instance._createRequest).to.be.calledWith(moduleName);
+        });
 
-      expect(replacementModuleId).to.be.a.uuid('v4');
-    });
+        it('creates a new instance of the provided module', function() {
+          expect(expectedExternalModule).to.be.calledWithNew;
+          expect(expectedExternalModule).to.be.calledWith(
+            instance,
+            `request module for: ${moduleName}`
+          );
+        });
 
-    it('saves any existing module with the same namespace to be reattached when unmounting', function() {
-      const replacementModuleId =
-        instance._replacedModuleMap[expectedModuleName];
+        it('sets the new instance of the provided module to the sdk instance', function() {
+          expect(instance[moduleName]).to.be.an.instanceof(
+            expectedExternalModule
+          );
+        });
+      }
+    );
 
-      expect(instance._replacedModules[replacementModuleId]).to.equal(
-        expectedInternalModule
-      );
-    });
+    context(
+      'when mounting an external module where there is already an existing external module',
+      function() {
+        let existingExternalModule;
+        let fn;
+        let instance;
+        let moduleName;
+        let newExternalModule;
 
-    it('sets the new instance of the provided module to the sdk instance', function() {
-      expect(instance[expectedModuleName]).to.be.an.instanceof(expectedModule);
-    });
+        beforeEach(function() {
+          existingExternalModule = sinon.stub();
+          moduleName = faker.hacker.verb();
+          newExternalModule = sinon.stub();
+
+          instance = {
+            _createRequest: sinon
+              .stub()
+              .callsFake((moduleName) => `request module for: ${moduleName}`),
+            _externalModuleNames: [
+              moduleName,
+              times(faker.random.number({ min: 1, max: 10 })).map(
+                (index) => `${faker.hacker.adjective()}-${index}`
+              )
+            ],
+            _replacedModules: {
+              [moduleName]: sinon.stub()
+            },
+            [moduleName]: existingExternalModule
+          };
+
+          fn = () =>
+            ContxtSdk.prototype.mountExternalModule.call(
+              instance,
+              moduleName,
+              sinon.stub()
+            );
+        });
+
+        it('does not create a request module for the provided module', function() {
+          try {
+            fn();
+          } catch (e) {
+            expect(instance._createRequest).to.not.be.called;
+          }
+        });
+
+        it('does not a new instance of the provided module', function() {
+          try {
+            fn();
+          } catch (e) {
+            expect(newExternalModule).to.not.be.called;
+          }
+        });
+
+        it('does not replace the existing external module', function() {
+          try {
+            fn();
+          } catch (e) {
+            expect(instance[moduleName]).to.equal(existingExternalModule);
+          }
+        });
+
+        it('throws an error', function() {
+          expect(fn).to.throw(
+            `An external module of the name \`${moduleName}\` already exists. This problem can be rectified by using a different name for the new module.`
+          );
+        });
+      }
+    );
   });
 
   describe('unmountExternalModule', function() {
-    let expectedRemountedModule;
-    let expectedRemountedModuleId;
-    let expectedRemovedModule;
-    let moduleName;
-    let instance;
+    context('when unmounting an external module is successful', function() {
+      let expectedRemountedModule;
+      let expectedRemovedModule;
+      let instance;
+      let moduleName;
+      let remainingExternalModules;
 
-    beforeEach(function() {
-      expectedRemountedModule = sinon.stub();
-      expectedRemountedModuleId = faker.random.uuid();
-      expectedRemovedModule = sinon.stub();
-      moduleName = faker.hacker.verb();
+      beforeEach(function() {
+        expectedRemountedModule = sinon.stub();
+        expectedRemovedModule = sinon.stub();
+        moduleName = faker.hacker.verb();
+        remainingExternalModules = times(
+          faker.random.number({ min: 1, max: 10 })
+        ).reduce((memo, index) => {
+          memo[`${faker.hacker.adjective()}-${index}`] = sinon.stub();
 
-      instance = {
-        _replacedModuleMap: {
-          [moduleName]: expectedRemountedModuleId
-        },
-        _replacedModules: {
-          [expectedRemountedModuleId]: expectedRemountedModule
-        },
-        auth: {
-          deleteCurrentApiToken: sinon.stub()
-        },
-        [moduleName]: expectedRemovedModule
-      };
+          return memo;
+        }, {});
 
-      ContxtSdk.prototype.unmountExternalModule.call(instance, moduleName);
+        instance = {
+          ...remainingExternalModules,
+          _externalModuleNames: [
+            moduleName,
+            ...Object.keys(remainingExternalModules)
+          ],
+          _replacedModules: {
+            ...Object.keys(remainingExternalModules).reduce(
+              (memo, remainingModuleName) => {
+                memo[remainingModuleName] = sinon.stub();
+
+                return memo;
+              },
+              {}
+            ),
+            [moduleName]: expectedRemountedModule
+          },
+          auth: {
+            deleteCurrentApiToken: sinon.stub()
+          },
+          [moduleName]: expectedRemovedModule
+        };
+
+        ContxtSdk.prototype.unmountExternalModule.call(instance, moduleName);
+      });
+
+      it('clears the stored access token', function() {
+        expect(instance.auth.deleteCurrentApiToken).to.be.calledWith(
+          moduleName
+        );
+      });
+
+      it('removes the module from the sdk instance', function() {
+        expect(instance[moduleName]).to.not.equal(expectedRemovedModule);
+      });
+
+      it('remounts the replaced internal module of the same name', function() {
+        expect(instance[moduleName]).to.equal(expectedRemountedModule);
+      });
+
+      it('leaves the remaining external modules untouched', function() {
+        for (const remainingModuleName in remainingExternalModules) {
+          expect(instance[remainingModuleName]).to.equal(
+            remainingExternalModules[remainingModuleName]
+          );
+        }
+      });
+
+      it('removes the remounted module from the list of replaced modules', function() {
+        expect(instance._replacedModules[moduleName]).to.be.undefined;
+      });
+
+      it('removes the module from the list of mounted external modules', function() {
+        expect(instance._externalModuleNames).to.not.include(moduleName);
+      });
     });
 
-    it('removes the module from the sdk instance', function() {
-      expect(instance[moduleName]).to.not.equal(expectedRemovedModule);
-    });
+    context('when unmounting a module is unsuccessful', function() {
+      let externalModules;
+      let instance;
+      let internalModule;
+      let internalModuleName;
 
-    it('remounts a previous module with the same name', function() {
-      expect(instance[moduleName]).to.equal(expectedRemountedModule);
-    });
+      beforeEach(function() {
+        internalModule = sinon.stub();
+        internalModuleName = faker.hacker.verb();
+        externalModules = times(
+          faker.random.number({ min: 1, max: 10 })
+        ).reduce((memo, index) => {
+          memo[`${faker.hacker.adjective()}-${index}`] = sinon.stub();
 
-    it('removes the remounted module from the list of replaced modules', function() {
-      expect(instance._replacedModules[expectedRemountedModuleId]).to.be
-        .undefined;
-    });
+          return memo;
+        }, {});
 
-    it('removes the module from the list of mounted external modules', function() {
-      expect(instance._replacedModuleMap).to.not.include.key(moduleName);
-    });
+        instance = {
+          ...externalModules,
+          _externalModuleNames: Object.keys(externalModules),
+          _replacedModules: {
+            ...Object.keys(externalModules).reduce(
+              (memo, remainingModuleName) => {
+                memo[remainingModuleName] = sinon.stub();
 
-    it('clears out the stored access token', function() {
-      expect(instance.auth.deleteCurrentApiToken).to.be.calledWith(moduleName);
-    });
+                return memo;
+              },
+              {}
+            )
+          },
+          auth: {
+            deleteCurrentApiToken: sinon.stub()
+          },
+          [internalModuleName]: internalModule
+        };
+      });
 
-    it('throws an error when trying to unmount a non-external module');
+      context('when attempting to unmount an internal module', function() {
+        let fn;
+
+        beforeEach(function() {
+          fn = () =>
+            ContxtSdk.prototype.unmountExternalModule.call(
+              instance,
+              internalModuleName
+            );
+        });
+
+        it('does not delete the current api token', function() {
+          try {
+            fn();
+          } catch (e) {
+            expect(instance.auth.deleteCurrentApiToken).to.not.be.called;
+          }
+        });
+
+        it('leaves the internal module untouched', function() {
+          try {
+            fn();
+          } catch (e) {
+            expect(instance[internalModuleName]).to.equal(internalModule);
+          }
+        });
+
+        it('leaves the remaining external modules untouched', function() {
+          try {
+            fn();
+          } catch (e) {
+            for (const externalModuleName in externalModules) {
+              expect(instance[externalModuleName]).to.equal(
+                externalModules[externalModuleName]
+              );
+            }
+          }
+        });
+
+        it('throws an error', function() {
+          expect(fn).to.throw('There is no external module to unmount.');
+        });
+      });
+
+      context(
+        'when attempting to unmount a module that does not exist',
+        function() {
+          let fn;
+
+          beforeEach(function() {
+            fn = () =>
+              ContxtSdk.prototype.unmountExternalModule.call(
+                instance,
+                faker.lorem.word()
+              );
+          });
+
+          it('does not delete the current api token', function() {
+            try {
+              fn();
+            } catch (e) {
+              expect(instance.auth.deleteCurrentApiToken).to.not.be.called;
+            }
+          });
+
+          it('leaves the remaining external modules untouched', function() {
+            try {
+              fn();
+            } catch (e) {
+              for (const externalModuleName in externalModules) {
+                expect(instance[externalModuleName]).to.equal(
+                  externalModules[externalModuleName]
+                );
+              }
+            }
+          });
+
+          it('throws an error', function() {
+            expect(fn).to.throw('There is no external module to unmount.');
+          });
+        }
+      );
+    });
   });
 
   describe('_createAuthSession', function() {

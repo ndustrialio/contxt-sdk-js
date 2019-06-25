@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4';
 import Assets from './assets';
 import Bus from './bus';
 import Config from './config';
@@ -71,7 +70,7 @@ class ContxtSdk {
    *   or machine)
    */
   constructor({ config = {}, externalModules = {}, sessionType }) {
-    this._replacedModuleMap = {};
+    this._externalModuleNames = [];
     this._replacedModules = {};
 
     this.config = new Config(config, externalModules);
@@ -92,26 +91,34 @@ class ContxtSdk {
   }
 
   mountExternalModule(moduleName, module) {
-    const externalModule = new module(this, this._createRequest(moduleName));
-    const replacedModuleId = uuid();
-
-    if (this[moduleName]) {
-      this._replacedModuleMap[moduleName] = replacedModuleId;
-      this._replacedModules[replacedModuleId] = this[moduleName];
+    if (this._externalModuleNames.indexOf(moduleName) > -1) {
+      throw new Error(
+        `An external module of the name \`${moduleName}\` already exists. This problem can be rectified by using a different name for the new module.`
+      );
     }
 
-    this[moduleName] = externalModule;
+    this._externalModuleNames = [...this._externalModuleNames, moduleName];
+
+    if (this[moduleName]) {
+      this._replacedModules[moduleName] = this[moduleName];
+    }
+
+    this[moduleName] = new module(this, this._createRequest(moduleName));
   }
 
   unmountExternalModule(moduleName) {
-    const replacedModuleId = this._replacedModuleMap[moduleName];
+    if (this._externalModuleNames.indexOf(moduleName) === -1) {
+      throw new Error('There is no external module to unmount.');
+    }
 
     this.auth.deleteCurrentApiToken(moduleName);
 
-    this[moduleName] = this._replacedModules[replacedModuleId];
+    this[moduleName] = this._replacedModules[moduleName];
 
-    delete this._replacedModuleMap[moduleName];
-    delete this._replacedModules[replacedModuleId];
+    delete this._replacedModules[moduleName];
+    this._externalModuleNames = this._externalModuleNames.filter(
+      (name) => name !== moduleName
+    );
   }
 
   /**
