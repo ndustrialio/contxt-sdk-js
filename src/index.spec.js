@@ -59,6 +59,16 @@ describe('ContxtSdk', function() {
       });
     });
 
+    it('creates an empty object for keeping track of external modules', function() {
+      expect(contxtSdk._replacedModuleMap).to.be.an('object');
+      expect(contxtSdk._replacedModuleMap).to.be.empty;
+    });
+
+    it('creates an empty object for keeping track of replaced modules', function() {
+      expect(contxtSdk._replacedModules).to.be.an('object');
+      expect(contxtSdk._replacedModules).to.be.empty;
+    });
+
     it('creates an instance of the request module for Bus', function() {
       expect(createRequest).to.be.calledWith('bus');
     });
@@ -114,6 +124,66 @@ describe('ContxtSdk', function() {
 
     it('decorates the additional custom modules', function() {
       expect(decorate).to.be.calledWith(expectedExternalModules);
+    });
+  });
+
+  describe('mountExternalModule', function() {
+    let expectedInternalModule;
+    let expectedModule;
+    let expectedModuleName;
+    let instance;
+
+    beforeEach(function() {
+      expectedInternalModule = sinon.stub();
+      expectedModule = sinon.stub();
+      expectedModuleName = faker.hacker.verb();
+
+      instance = {
+        _createRequest: sinon
+          .stub()
+          .callsFake((moduleName) => `request module for: ${moduleName}`),
+        _replacedModuleMap: {},
+        _replacedModules: {},
+        [expectedModuleName]: expectedInternalModule
+      };
+
+      ContxtSdk.prototype.mountExternalModule.call(
+        instance,
+        expectedModuleName,
+        expectedModule
+      );
+    });
+
+    it('creates a request module for the provided module', function() {
+      expect(instance._createRequest).to.be.calledWith(expectedModuleName);
+    });
+
+    it('creates a new instance of the provided module', function() {
+      expect(expectedModule).to.be.calledWithNew;
+      expect(expectedModule).to.be.calledWith(
+        instance,
+        `request module for: ${expectedModuleName}`
+      );
+    });
+
+    it('adds the module to a list of mounted external modules with a key (UUID) for where the displaced module exists', function() {
+      const replacementModuleId =
+        instance._replacedModuleMap[expectedModuleName];
+
+      expect(replacementModuleId).to.be.a.uuid('v4');
+    });
+
+    it('saves any existing module with the same namespace to be reattached when unmounting', function() {
+      const replacementModuleId =
+        instance._replacedModuleMap[expectedModuleName];
+
+      expect(instance._replacedModules[replacementModuleId]).to.equal(
+        expectedInternalModule
+      );
+    });
+
+    it('sets the new instance of the provided module to the sdk instance', function() {
+      expect(instance[expectedModuleName]).to.be.an.instanceof(expectedModule);
     });
   });
 
@@ -211,25 +281,25 @@ describe('ContxtSdk', function() {
     });
 
     it('creates new request modules for the provided modules', function() {
-      for (const module in externalModules) {
-        expect(instance._createRequest).to.be.calledWith(module);
+      for (const moduleName in externalModules) {
+        expect(instance._createRequest).to.be.calledWith(moduleName);
       }
     });
 
     it('creates new instances of the provided modules', function() {
-      for (const module in externalModules) {
-        expect(externalModules[module].module).to.be.calledWithNew;
-        expect(externalModules[module].module).to.be.calledWith(
+      for (const moduleName in externalModules) {
+        expect(externalModules[moduleName].module).to.be.calledWithNew;
+        expect(externalModules[moduleName].module).to.be.calledWith(
           instance,
-          `request module for: ${module}`
+          `request module for: ${moduleName}`
         );
       }
     });
 
     it('sets the new instances of the provided modules to the sdk instance', function() {
-      for (const module in externalModules) {
-        expect(instance[module]).to.be.an.instanceof(
-          externalModules[module].module
+      for (const moduleName in externalModules) {
+        expect(instance[moduleName]).to.be.an.instanceof(
+          externalModules[moduleName].module
         );
       }
     });

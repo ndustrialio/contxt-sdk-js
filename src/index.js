@@ -1,3 +1,4 @@
+import uuid from 'uuid/v4';
 import Assets from './assets';
 import Bus from './bus';
 import Config from './config';
@@ -70,6 +71,9 @@ class ContxtSdk {
    *   or machine)
    */
   constructor({ config = {}, externalModules = {}, sessionType }) {
+    this._replacedModuleMap = {};
+    this._replacedModules = {};
+
     this.config = new Config(config, externalModules);
 
     this.assets = new Assets(this, this._createRequest('facilities'));
@@ -85,6 +89,18 @@ class ContxtSdk {
     this.iot = new Iot(this, this._createRequest('iot'));
 
     this._decorate(externalModules);
+  }
+
+  mountExternalModule(moduleName, module) {
+    const externalModule = new module(this, this._createRequest(moduleName));
+    const replacedModuleId = uuid();
+
+    if (this[moduleName]) {
+      this._replacedModuleMap[moduleName] = replacedModuleId;
+      this._replacedModules[replacedModuleId] = this[moduleName];
+    }
+
+    this[moduleName] = externalModule;
   }
 
   /**
