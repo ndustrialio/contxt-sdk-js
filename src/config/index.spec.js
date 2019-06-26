@@ -1,3 +1,4 @@
+import omit from 'lodash.omit';
 import times from 'lodash.times';
 import Config from './index';
 import defaultAudiences from './audiences';
@@ -54,6 +55,16 @@ describe('Config', function() {
       );
     });
 
+    it('creates an empty array for keeping track of dynamic audiences', function() {
+      expect(config._dynamicAudienceNames).to.be.an('array');
+      expect(config._dynamicAudienceNames).to.be.empty;
+    });
+
+    it('creates an empty object for keeping track of replaced audiences', function() {
+      expect(config._replacedAudiences).to.be.an('object');
+      expect(config._replacedAudiences).to.be.empty;
+    });
+
     it('assigns the user provided configs to the new config', function() {
       expect(config).to.include(baseConfigs);
     });
@@ -85,6 +96,289 @@ describe('Config', function() {
     it('assings the provided user interceptors to the new config', function() {
       expect(config.interceptors).to.include(interceptorConfigs);
     });
+  });
+
+  describe('addDynamicAudience', function() {
+    context(
+      'when providing a client ID and host for a new dynamic audience',
+      function() {
+        let audienceName;
+        let config;
+        let existingDynamicAudiences;
+        let existingInternalAudience;
+        let expectedDynamicAudience;
+
+        beforeEach(function() {
+          audienceName = faker.hacker.adjective();
+
+          existingDynamicAudiences = times(
+            faker.random.number({ min: 1, max: 3 })
+          ).reduce((memo, index) => {
+            memo[`${faker.lorem.word()}-${index}`] = fixture.build('audience');
+
+            return memo;
+          }, {});
+          existingInternalAudience = fixture.build('audience');
+          expectedDynamicAudience = fixture.build('audience');
+
+          const userConfig = {
+            auth: {
+              clientId: faker.internet.password(),
+              env: faker.hacker.adjective()
+            }
+          };
+          config = new Config(userConfig);
+          config._dynamicAudienceNames = Object.keys(existingDynamicAudiences);
+          config.audiences = {
+            ...config.audiences,
+            [audienceName]: existingInternalAudience,
+            ...existingDynamicAudiences
+          };
+
+          config.addDynamicAudience(audienceName, expectedDynamicAudience);
+        });
+
+        it('adds the audience to a list of dynamically added audiences', function() {
+          expect(config._dynamicAudienceNames).to.include(audienceName);
+          expect(config._dynamicAudienceNames).to.include(
+            ...Object.keys(existingDynamicAudiences)
+          );
+        });
+
+        it('saves any existing non-dynamic audience with the same name to be reattached later', function() {
+          expect(config._replacedAudiences[audienceName]).to.equal(
+            existingInternalAudience
+          );
+        });
+
+        it('set the audience to the config object', function() {
+          expect(config.audiences[audienceName]).to.deep.equal(
+            expectedDynamicAudience
+          );
+        });
+      }
+    );
+
+    context(
+      'when providing a client ID and host for a dynamic audience that already exists',
+      function() {
+        let audienceName;
+        let config;
+        let existingAudience;
+        let fn;
+
+        beforeEach(function() {
+          audienceName = faker.hacker.adjective();
+          existingAudience = fixture.build('audience');
+
+          const userConfig = {
+            auth: {
+              clientId: faker.internet.password(),
+              env: faker.hacker.adjective()
+            }
+          };
+          config = new Config(userConfig);
+          config._dynamicAudienceNames = [audienceName];
+          config.audiences = {
+            ...config.audiences,
+            [audienceName]: existingAudience
+          };
+
+          fn = () => {
+            return config.addDynamicAudience(
+              audienceName,
+              fixture.build('audience')
+            );
+          };
+        });
+
+        it('does not replace the existing dynamic audience', function() {
+          try {
+            fn();
+          } catch (e) {
+            expect(config.audiences[audienceName]).to.equal(existingAudience);
+          }
+        });
+
+        it('throws an error', function() {
+          expect(fn).to.throw(
+            `A dynamic audience of the name \`${audienceName}\` already exists. This problem can be rectified by using a different name for the audience.`
+          );
+        });
+      }
+    );
+
+    context('when missing a clientId or host', function() {
+      let audience;
+      let audienceName;
+      let config;
+
+      beforeEach(function() {
+        audienceName = faker.hacker.adjective();
+        audience = fixture.build('audience');
+
+        const userConfig = {
+          auth: {
+            clientId: faker.internet.password(),
+            env: faker.hacker.adjective()
+          }
+        };
+        config = new Config(userConfig);
+      });
+
+      ['clientId', 'host'].forEach(function(missingProperty) {
+        it(`throws an error when the ${missingProperty} is not provided`, function() {
+          const fn = () => {
+            return config.addDynamicAudience(
+              audienceName,
+              omit(audience, [missingProperty])
+            );
+          };
+
+          expect(fn).to.throw(
+            'A dynamic audience must contain `clientId` and `host` properties'
+          );
+        });
+      });
+    });
+  });
+
+  describe('removeDynamicAudience', function() {
+    context('when successfully removing a dynamic audience', function() {
+      let audienceName;
+      let config;
+      let existingStaticAudiences;
+      let expectedReaddedAudience;
+      let expectedRemovedAudience;
+      let remainingDynamicAudiences;
+
+      beforeEach(function() {
+        audienceName = faker.hacker.adjective();
+
+        expectedReaddedAudience = fixture.build('audience');
+        expectedRemovedAudience = fixture.build('audience');
+        remainingDynamicAudiences = times(
+          faker.random.number({ min: 1, max: 3 })
+        ).reduce((memo, index) => {
+          memo[`${faker.hacker.adjective()}-${index}`] = fixture.build(
+            'audience'
+          );
+
+          return memo;
+        }, {});
+
+        const userConfig = {
+          auth: {
+            clientId: faker.internet.password(),
+            env: faker.hacker.adjective()
+          }
+        };
+        config = new Config(userConfig);
+        existingStaticAudiences = { ...config.audiences };
+        config._dynamicAudienceNames = [
+          Object.keys(remainingDynamicAudiences),
+          audienceName
+        ];
+        config._replacedAudiences = { [audienceName]: expectedReaddedAudience };
+        config.audiences = {
+          ...config.audiences,
+          ...remainingDynamicAudiences,
+          [audienceName]: expectedRemovedAudience
+        };
+
+        config.removeDynamicAudience(audienceName);
+      });
+
+      it('removes the dynamic audience from the audience object', function() {
+        expect(config.audiences[audienceName]).to.not.equal(
+          expectedRemovedAudience
+        );
+      });
+
+      it('remounts the replaced static audience of the same name', function() {
+        expect(config.audiences[audienceName]).to.equal(
+          expectedReaddedAudience
+        );
+      });
+
+      [
+        { type: 'static', audiences: existingStaticAudiences },
+        { type: 'dynamic', audiences: remainingDynamicAudiences }
+      ].forEach(function({ audiences, type }) {
+        it(`leaves the ${type} audiences untouched`, function() {
+          for (const name in audiences) {
+            expect(config.audiences[name]).to.equal(audiences[name]);
+          }
+        });
+      });
+
+      it('removes the readded static audience from the list of replaced audiences', function() {
+        expect(config._replacedAudiences[audienceName]).to.be.undefined;
+      });
+
+      it('removes the dynamic audience from the list of dynamic audiences', function() {
+        expect(config._dynamicAudienceNames).to.not.include(audienceName);
+      });
+    });
+
+    context(
+      'when attempting to removing an audience that does not exist in the list of dynmic audiences',
+      function() {
+        let config;
+        let dynamicAudiences;
+        let fn;
+        let staticAudiences;
+
+        beforeEach(function() {
+          dynamicAudiences = times(
+            faker.random.number({ min: 1, max: 3 })
+          ).reduce((memo, index) => {
+            memo[`${faker.hacker.adjective()}-${index}`] = fixture.build(
+              'audience'
+            );
+
+            return memo;
+          }, {});
+
+          const userConfig = {
+            auth: {
+              clientId: faker.internet.password(),
+              env: faker.hacker.adjective()
+            }
+          };
+          config = new Config(userConfig);
+          staticAudiences = { ...config.audiences };
+          config._dynamicAudienceNames = Object.keys(dynamicAudiences);
+          config.audiences = {
+            ...config.audiences,
+            ...dynamicAudiences
+          };
+
+          fn = () => {
+            config.removeDynamicAudience(faker.lorem.word());
+          };
+        });
+
+        [
+          { type: 'static', audiences: staticAudiences },
+          { type: 'dynamic', audiences: dynamicAudiences }
+        ].forEach(function({ audiences, type }) {
+          it(`leaves the ${type} audiences untouched`, function() {
+            try {
+              fn();
+            } catch (e) {
+              for (const name in audiences) {
+                expect(config.audiences[name]).to.equal(audiences[name]);
+              }
+            }
+          });
+        });
+
+        it('throws an error', function() {
+          expect(fn).to.throw('There is no dynamic audience to remove.');
+        });
+      }
+    );
   });
 
   describe('_getAudienceFromCustomConfig', function() {
