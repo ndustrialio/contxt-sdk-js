@@ -23,6 +23,15 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} ContxtUserEvent
+ * @property {string} eventId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} id
+ * @property {string} userId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * @typedef {Object} ContxtUserRole
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id

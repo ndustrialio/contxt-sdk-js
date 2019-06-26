@@ -320,7 +320,7 @@ API Endpoint: '/users/:userId/events/:event_id'
 Method: POST
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
-**Fulfill**: <code>ContxtUserEvent</code> The newly created user event  
+**Fulfill**: [<code>ContxtUserEvent</code>](./Typedefs.md#ContxtUserEvent) The newly created user event  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |
