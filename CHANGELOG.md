@@ -2,9 +2,9 @@
 
 **Added**
 
--Added `Users#addEvent` for adding an event to a user
+-Added `Users#subscribeEvent` for subscribing an event to a user
 
-- Added `Users#removeEvent` for removing an event from a user
+- Added `Users#unsubscribeEvent` for unsubscribing an event from a user
 
 ## [v1.4.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.2) (2019-06-14)
 

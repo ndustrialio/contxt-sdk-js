@@ -9,7 +9,6 @@ Module that provides access to contxt users
     * [new Users(sdk, request, baseUrl)](#new_Users_new)
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
     * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
-    * [.addEvent(userId, eventId)](#Users+addEvent) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
     * [.addStack(userId, stackId, accessType)](#Users+addStack) ⇒ <code>Promise</code>
     * [.get(userId)](#Users+get) ⇒ <code>Promise</code>
@@ -18,9 +17,9 @@ Module that provides access to contxt users
     * [.remove(organizationId, userId)](#Users+remove) ⇒ <code>Promise</code>
     * [.removeApplication(userId, applicationId)](#Users+removeApplication) ⇒ <code>Promise</code>
     * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
-    * [.removeEvent(userId, userEventSubscriptionId)](#Users+removeEvent) ⇒ <code>Promise</code>
-    * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
     * [.removeStack(userId, stackId)](#Users+removeStack) ⇒ <code>Promise</code>
+    * [.subscribeEvent(userId, eventId)](#Users+subscribeEvent) ⇒ <code>Promise</code>
+    * [.unsubscribeEvent(userId, userEventSubscriptionId)](#Users+unsubscribeEvent) ⇒ <code>Promise</code>
 
 <a name="new_Users_new"></a>
 
@@ -89,30 +88,6 @@ contxtSdk.coordinator.users
   .then((userApplication) => console.log(userApplication))
   .catch((err) => console.log(err));
 ```
-<a name="Users+addEvent"></a>
-
-### contxtSdk.coordinator.users.addEvent(userId, eventId) ⇒ <code>Promise</code>
-Adds an event to a user
-
-API Endpoint: '/users/:userId/events/:event_id'
-Method: POST
-
-**Kind**: instance method of [<code>Users</code>](#Users)  
-**Fulfill**: [<code>ContxtUserEvent</code>](./Typedefs.md#ContxtUserEvent) The newly created user event  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| userId | <code>string</code> | The ID of the user |
-| eventId | <code>string</code> | The ID of the event |
-
-**Example**  
-```js
-contxtSdk.coordinator.users
-  .addEvent('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
-  .then((userEvent) => console.log(userEvent))
-  .catch((err) => console.log(err));
-```
 <a name="Users+addRole"></a>
 
 ### contxtSdk.coordinator.users.addRole(userId, roleId) ⇒ <code>Promise</code>
@@ -160,29 +135,6 @@ Method: POST
 contxtSdk.coordinator.users
   .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58', 'collaborator')
   .then((userStack) => console.log(userStack))
-  .catch((err) => console.log(err));
-```
-<a name="Users+removeEvent"></a>
-
-### contxtSdk.coordinator.users.removeEvent(userId, userEventSubscriptionId) ⇒ <code>Promise</code>
-Removes an event to a user
-
-API Endpoint: '/users/:userId/subscriptions/:user_event_subscription_id/'
-Method: DELETE
-
-**Kind**: instance method of [<code>Users</code>](#Users)  
-**Fulfill**: <code>undefined</code>  
-**Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| userId | <code>string</code> | The ID of the user |
-| userEventSubscriptionId | <code>string</code> | The ID of the user event subscription |
-
-**Example**  
-```js
-contxtSdk.coordinator.users
-  .removeEvent('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```
 <a name="Users+get"></a>
@@ -357,5 +309,53 @@ Method: DELETE
 ```js
 contxtSdk.coordinator.users
   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .catch((err) => console.log(err));
+```
+<a name="Users+subscribeEvent"></a>
+
+### contxtSdk.coordinator.users.subscribeEvent(userId, eventId) ⇒ <code>Promise</code>
+Subscribes a user to an event
+
+API Endpoint: '/users/:userId/events/:event_id'
+Method: POST
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: <code>ContxtUserEvent</code> The newly created user event  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| eventId | <code>string</code> | The ID of the event |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .subscribeEvent('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((userEvent) => console.log(userEvent))
+  .catch((err) => console.log(err));
+```
+<a name="Users+unsubscribeEvent"></a>
+
+### contxtSdk.coordinator.users.unsubscribeEvent(userId, userEventSubscriptionId) ⇒ <code>Promise</code>
+Removes an event subscription from a user
+
+API Endpoint: '/users/:userId/subscriptions/:user_event_subscription_id'
+Method: DELETE
+
+**Kind**: instance method of [<code>Users</code>](#Users)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| userEventSubscriptionId | <code>string</code> | The ID of the user event subscription |
+
+**Example**  
+```js
+contxtSdk.coordinator.users
+  .unsubscribeEvent('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((userEventSubscriptionId) => console.log(userEventSubscriptionId))
   .catch((err) => console.log(err));
 ```
