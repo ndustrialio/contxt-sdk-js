@@ -60,7 +60,7 @@ describe('sessionTypes/MachineAuth', function() {
     });
   });
 
-  describe('deleteCurrentApiToken', function() {
+  describe('clearCurrentApiToken', function() {
     context(
       'when deleting an existing token where the request to acquire the token has completed',
       function() {
@@ -86,7 +86,7 @@ describe('sessionTypes/MachineAuth', function() {
             {}
           );
 
-          promise = machineAuth.deleteCurrentApiToken(audienceNameToDelete);
+          promise = machineAuth.clearCurrentApiToken(audienceNameToDelete);
         });
 
         it('removes the session info', function() {
@@ -144,7 +144,7 @@ describe('sessionTypes/MachineAuth', function() {
             {}
           );
 
-          promise = machineAuth.deleteCurrentApiToken(audienceNameToDelete);
+          promise = machineAuth.clearCurrentApiToken(audienceNameToDelete);
         });
 
         it('removes the session info', function() {
@@ -180,7 +180,7 @@ describe('sessionTypes/MachineAuth', function() {
             {}
           );
 
-          promise = machineAuth.deleteCurrentApiToken(faker.hacker.adjective());
+          promise = machineAuth.clearCurrentApiToken(faker.hacker.adjective());
         });
 
         it('returns a resolved promise', function() {

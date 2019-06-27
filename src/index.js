@@ -23,7 +23,8 @@ import * as sessionTypes from './sessionTypes';
  * @property {function} [getProfile] Provides profile information about the current user
  * @property {function} [handleAuthentication] Is called by front-end code in the Auth0 reference
  *  implementation to handle getting the access token from Auth0
- * @property {function} isAuthenticated Tells caller if the current user is authenticated.
+ * @property {function} [isAuthenticated] Tells caller if the current user is authenticated.
+ *  Different session types may determine if a user is authenticated in different ways.
  * @property {function} [logIn] Is used by front-end code in the Auth0 reference implementation to
  *   start the sign in process
  * @property {function} [logOut] Is used by the front-end code in the Auth0 reference implementation
@@ -70,7 +71,7 @@ class ContxtSdk {
    *   or machine)
    */
   constructor({ config = {}, externalModules = {}, sessionType }) {
-    this._externalModuleNames = [];
+    this._dynamicModuleNames = [];
     this._replacedModules = {};
 
     this.config = new Config(config, externalModules);
@@ -90,16 +91,25 @@ class ContxtSdk {
     this._decorate(externalModules);
   }
 
-  mountExternalModule(moduleName, { clientId, host, module }) {
-    if (this._externalModuleNames.indexOf(moduleName) > -1) {
+  /**
+   * Mounts a dynamic module into the SDK. Is used to add a module after initial
+   * instatiation that will use the SDK's authentication and request methods to
+   * access an ndustrial.io API
+   *
+   * @param {string} moduleName The name (or key) that will serve as the mount
+   *   point for the module in the SDK (i.e. customModule -> sdk.customModule)
+   * @param {ExternalModule} externalModule
+   */
+  mountDynamicModule(moduleName, { clientId, host, module }) {
+    if (this._dynamicModuleNames.indexOf(moduleName) > -1) {
       throw new Error(
-        `An external module of the name \`${moduleName}\` already exists. This problem can be rectified by using a different name for the new module.`
+        `An dynamic module of the name \`${moduleName}\` already exists. This problem can be rectified by using a different name for the new module.`
       );
     }
 
     this.config.addDynamicAudience(moduleName, { clientId, host });
 
-    this._externalModuleNames = [...this._externalModuleNames, moduleName];
+    this._dynamicModuleNames = [...this._dynamicModuleNames, moduleName];
 
     if (this[moduleName]) {
       this._replacedModules[moduleName] = this[moduleName];
@@ -108,18 +118,23 @@ class ContxtSdk {
     this[moduleName] = new module(this, this._createRequest(moduleName));
   }
 
-  unmountExternalModule(moduleName) {
-    if (this._externalModuleNames.indexOf(moduleName) === -1) {
+  /**
+   * Unmounts a dynamic module from the SDK
+   *
+   * @param {string} moduleName The name of the dynamic module to unmount
+   */
+  unmountDynamicModule(moduleName) {
+    if (this._dynamicModuleNames.indexOf(moduleName) === -1) {
       throw new Error('There is no external module to unmount.');
     }
 
-    this.auth.deleteCurrentApiToken(moduleName);
+    this.auth.clearCurrentApiToken(moduleName);
     this.config.removeDynamicAudience(moduleName);
 
     this[moduleName] = this._replacedModules[moduleName];
 
     delete this._replacedModules[moduleName];
-    this._externalModuleNames = this._externalModuleNames.filter(
+    this._dynamicModuleNames = this._dynamicModuleNames.filter(
       (name) => name !== moduleName
     );
   }

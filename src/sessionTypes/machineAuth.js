@@ -46,7 +46,14 @@ class MachineAuth {
     }
   }
 
-  deleteCurrentApiToken(audienceName) {
+  /**
+   * Removes an audience's API token from the in-memory token storage
+   *
+   * @param audienceName
+   *
+   * @returns {Promise}
+   */
+  clearCurrentApiToken(audienceName) {
     const promise = this._tokenPromises[audienceName] || Promise.resolve();
 
     return promise.then(() => {

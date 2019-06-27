@@ -9,6 +9,7 @@ which are obtained from Auth0.
 
 * [MachineAuth](#MachineAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
     * [new MachineAuth(sdk)](#new_MachineAuth_new)
+    * [.clearCurrentApiToken(audienceName)](#MachineAuth+clearCurrentApiToken) ⇒ <code>Promise</code>
     * [.getCurrentApiToken(audienceName)](#MachineAuth+getCurrentApiToken) ⇒ <code>Promise</code>
     * [.isAuthenticated(audienceName)](#MachineAuth+isAuthenticated) ⇒ <code>boolean</code>
 
@@ -34,6 +35,17 @@ const contxtSdk = new ContxtSDK({
   sessionType: 'machineAuth'
 });
 ```
+<a name="MachineAuth+clearCurrentApiToken"></a>
+
+### contxtSdk.auth.clearCurrentApiToken(audienceName) ⇒ <code>Promise</code>
+Removes an audience's API token from the in-memory token storage
+
+**Kind**: instance method of [<code>MachineAuth</code>](#MachineAuth)  
+
+| Param |
+| --- |
+| audienceName | 
+
 <a name="MachineAuth+getCurrentApiToken"></a>
 
 ### contxtSdk.auth.getCurrentApiToken(audienceName) ⇒ <code>Promise</code>

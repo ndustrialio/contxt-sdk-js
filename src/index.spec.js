@@ -59,9 +59,9 @@ describe('ContxtSdk', function() {
       });
     });
 
-    it('creates an empty array for keeping track of external modules', function() {
-      expect(contxtSdk._externalModuleNames).to.be.an('array');
-      expect(contxtSdk._externalModuleNames).to.be.empty;
+    it('creates an empty array for keeping track of dynamic modules', function() {
+      expect(contxtSdk._dynamicModuleNames).to.be.an('array');
+      expect(contxtSdk._dynamicModuleNames).to.be.empty;
     });
 
     it('creates an empty object for keeping track of replaced modules', function() {
@@ -127,22 +127,22 @@ describe('ContxtSdk', function() {
     });
   });
 
-  describe('mountExternalModule', function() {
+  describe('mountDynamicModule', function() {
     context(
-      'when mounting an external module where there is no existing external module',
+      'when mounting a dynamic module where there is no existing dynamic module',
       function() {
-        let existingExternalModuleNames;
-        let existingInternalModule;
+        let existingDynamicModuleNames;
+        let existingStaticModule;
         let expectedAudience;
         let expectedExternalModule;
         let instance;
         let moduleName;
 
         beforeEach(function() {
-          existingExternalModuleNames = times(
+          existingDynamicModuleNames = times(
             faker.random.number({ min: 1, max: 10 })
           ).map((index) => `${faker.hacker.adjective()}-${index}`);
-          existingInternalModule = sinon.stub();
+          existingStaticModule = sinon.stub();
           expectedAudience = fixture.build('audience');
           expectedExternalModule = sinon.stub();
           moduleName = faker.hacker.verb();
@@ -151,15 +151,15 @@ describe('ContxtSdk', function() {
             _createRequest: sinon
               .stub()
               .callsFake((moduleName) => `request module for: ${moduleName}`),
-            _externalModuleNames: existingExternalModuleNames,
+            _dynamicModuleNames: existingDynamicModuleNames,
             _replacedModules: {},
             config: {
               addDynamicAudience: sinon.stub()
             },
-            [moduleName]: existingInternalModule
+            [moduleName]: existingStaticModule
           };
 
-          ContxtSdk.prototype.mountExternalModule.call(instance, moduleName, {
+          ContxtSdk.prototype.mountDynamicModule.call(instance, moduleName, {
             ...expectedAudience,
             module: expectedExternalModule
           });
@@ -172,16 +172,16 @@ describe('ContxtSdk', function() {
           );
         });
 
-        it('adds the module to a list of mounted external modules', function() {
-          expect(instance._externalModuleNames).to.include(moduleName);
-          expect(instance._externalModuleNames).to.include(
-            ...existingExternalModuleNames
+        it('adds the module to a list of mounted dynamic modules', function() {
+          expect(instance._dynamicModuleNames).to.include(moduleName);
+          expect(instance._dynamicModuleNames).to.include(
+            ...existingDynamicModuleNames
           );
         });
 
-        it('saves any existing non-external module with the same namespace to be reattached when unmounting', function() {
+        it('saves any existing non-dynamic module with the same namespace to be reattached when unmounting', function() {
           expect(instance._replacedModules[moduleName]).to.equal(
-            existingInternalModule
+            existingStaticModule
           );
         });
 
@@ -206,24 +206,24 @@ describe('ContxtSdk', function() {
     );
 
     context(
-      'when mounting an external module where there is already an existing external module',
+      'when mounting an dynamic module where there is already an existing dynamic module',
       function() {
-        let existingExternalModule;
+        let existingDynamicModule;
         let fn;
         let instance;
         let moduleName;
-        let newExternalModule;
+        let newDynamicModule;
 
         beforeEach(function() {
-          existingExternalModule = sinon.stub();
+          existingDynamicModule = sinon.stub();
           moduleName = faker.hacker.verb();
-          newExternalModule = sinon.stub();
+          newDynamicModule = sinon.stub();
 
           instance = {
             _createRequest: sinon
               .stub()
               .callsFake((moduleName) => `request module for: ${moduleName}`),
-            _externalModuleNames: [
+            _dynamicModuleNames: [
               moduleName,
               times(faker.random.number({ min: 1, max: 10 })).map(
                 (index) => `${faker.hacker.adjective()}-${index}`
@@ -232,11 +232,11 @@ describe('ContxtSdk', function() {
             _replacedModules: {
               [moduleName]: sinon.stub()
             },
-            [moduleName]: existingExternalModule
+            [moduleName]: existingDynamicModule
           };
 
           fn = () =>
-            ContxtSdk.prototype.mountExternalModule.call(instance, moduleName, {
+            ContxtSdk.prototype.mountDynamicModule.call(instance, moduleName, {
               ...fixture.build('audience'),
               module: sinon.stub()
             });
@@ -254,7 +254,7 @@ describe('ContxtSdk', function() {
           try {
             fn();
           } catch (e) {
-            expect(newExternalModule).to.not.be.called;
+            expect(newDynamicModule).to.not.be.called;
           }
         });
 
@@ -262,67 +262,67 @@ describe('ContxtSdk', function() {
           try {
             fn();
           } catch (e) {
-            expect(instance[moduleName]).to.equal(existingExternalModule);
+            expect(instance[moduleName]).to.equal(existingDynamicModule);
           }
         });
 
         it('throws an error', function() {
           expect(fn).to.throw(
-            `An external module of the name \`${moduleName}\` already exists. This problem can be rectified by using a different name for the new module.`
+            `An dynamic module of the name \`${moduleName}\` already exists. This problem can be rectified by using a different name for the new module.`
           );
         });
       }
     );
 
     context('when there is an error adding the audience', function() {
-      let existingExternalModuleNames;
-      let existingInternalModule;
+      let existingDynamicModuleNames;
+      let existingStaticModule;
       let expectedAudience;
       let expectedError;
       let fn;
       let instance;
       let moduleName;
-      let newExternalModule;
+      let newDynamicModule;
 
       beforeEach(function() {
-        existingExternalModuleNames = times(
+        existingDynamicModuleNames = times(
           faker.random.number({ min: 1, max: 10 })
         ).map((index) => `${faker.hacker.adjective()}-${index}`);
-        existingInternalModule = sinon.stub();
+        existingStaticModule = sinon.stub();
         expectedAudience = fixture.build('audience');
         expectedError = new Error(faker.hacker.phrase());
-        newExternalModule = sinon.stub();
+        newDynamicModule = sinon.stub();
         moduleName = faker.hacker.verb();
 
         instance = {
           _createRequest: sinon
             .stub()
             .callsFake((moduleName) => `request module for: ${moduleName}`),
-          _externalModuleNames: existingExternalModuleNames,
+          _dynamicModuleNames: existingDynamicModuleNames,
           _replacedModules: {},
           config: {
             addDynamicAudience: sinon.stub().throws(expectedError)
           },
-          [moduleName]: existingInternalModule
+          [moduleName]: existingStaticModule
         };
 
         fn = () => {
-          ContxtSdk.prototype.mountExternalModule.call(instance, moduleName, {
+          ContxtSdk.prototype.mountDynamicModule.call(instance, moduleName, {
             ...expectedAudience,
-            module: newExternalModule
+            module: newDynamicModule
           });
         };
       });
 
-      it('does not add the module to a list of mounted external modules', function() {
+      it('does not add the module to a list of mounted dynamic modules', function() {
         try {
           fn();
         } catch (e) {
-          expect(instance._externalModuleNames).to.not.include(moduleName);
+          expect(instance._dynamicModuleNames).to.not.include(moduleName);
         }
       });
 
-      it('does not save the existing non-external module with the same namespace to be reattached when unmounting', function() {
+      it('does not save the existing non-dynamic module with the same namespace to be reattached when unmounting', function() {
         try {
           fn();
         } catch (e) {
@@ -342,7 +342,7 @@ describe('ContxtSdk', function() {
         try {
           fn();
         } catch (e) {
-          expect(newExternalModule).to.not.be.called;
+          expect(newDynamicModule).to.not.be.called;
         }
       });
 
@@ -350,7 +350,7 @@ describe('ContxtSdk', function() {
         try {
           fn();
         } catch (e) {
-          expect(instance[moduleName]).to.equal(existingInternalModule);
+          expect(instance[moduleName]).to.equal(existingStaticModule);
         }
       });
 
@@ -360,19 +360,19 @@ describe('ContxtSdk', function() {
     });
   });
 
-  describe('unmountExternalModule', function() {
+  describe('unmountDynamicModule', function() {
     context('when unmounting an external module is successful', function() {
       let expectedRemountedModule;
       let expectedRemovedModule;
       let instance;
       let moduleName;
-      let remainingExternalModules;
+      let remainingDynamicModules;
 
       beforeEach(function() {
         expectedRemountedModule = sinon.stub();
         expectedRemovedModule = sinon.stub();
         moduleName = faker.hacker.verb();
-        remainingExternalModules = times(
+        remainingDynamicModules = times(
           faker.random.number({ min: 1, max: 10 })
         ).reduce((memo, index) => {
           memo[`${faker.hacker.adjective()}-${index}`] = sinon.stub();
@@ -381,13 +381,13 @@ describe('ContxtSdk', function() {
         }, {});
 
         instance = {
-          ...remainingExternalModules,
-          _externalModuleNames: [
+          ...remainingDynamicModules,
+          _dynamicModuleNames: [
             moduleName,
-            ...Object.keys(remainingExternalModules)
+            ...Object.keys(remainingDynamicModules)
           ],
           _replacedModules: {
-            ...Object.keys(remainingExternalModules).reduce(
+            ...Object.keys(remainingDynamicModules).reduce(
               (memo, remainingModuleName) => {
                 memo[remainingModuleName] = sinon.stub();
 
@@ -398,7 +398,7 @@ describe('ContxtSdk', function() {
             [moduleName]: expectedRemountedModule
           },
           auth: {
-            deleteCurrentApiToken: sinon.stub()
+            clearCurrentApiToken: sinon.stub()
           },
           config: {
             removeDynamicAudience: sinon.stub()
@@ -406,13 +406,11 @@ describe('ContxtSdk', function() {
           [moduleName]: expectedRemovedModule
         };
 
-        ContxtSdk.prototype.unmountExternalModule.call(instance, moduleName);
+        ContxtSdk.prototype.unmountDynamicModule.call(instance, moduleName);
       });
 
       it('clears the stored access token', function() {
-        expect(instance.auth.deleteCurrentApiToken).to.be.calledWith(
-          moduleName
-        );
+        expect(instance.auth.clearCurrentApiToken).to.be.calledWith(moduleName);
       });
 
       it('removes the dynamic audience', function() {
@@ -423,14 +421,14 @@ describe('ContxtSdk', function() {
         expect(instance[moduleName]).to.not.equal(expectedRemovedModule);
       });
 
-      it('remounts the replaced internal module of the same name', function() {
+      it('remounts the replaced static module of the same name', function() {
         expect(instance[moduleName]).to.equal(expectedRemountedModule);
       });
 
-      it('leaves the remaining external modules untouched', function() {
-        for (const remainingModuleName in remainingExternalModules) {
+      it('leaves the remaining static modules untouched', function() {
+        for (const remainingModuleName in remainingDynamicModules) {
           expect(instance[remainingModuleName]).to.equal(
-            remainingExternalModules[remainingModuleName]
+            remainingDynamicModules[remainingModuleName]
           );
         }
       });
@@ -439,8 +437,8 @@ describe('ContxtSdk', function() {
         expect(instance._replacedModules[moduleName]).to.be.undefined;
       });
 
-      it('removes the module from the list of mounted external modules', function() {
-        expect(instance._externalModuleNames).to.not.include(moduleName);
+      it('removes the module from the list of mounted dynamic modules', function() {
+        expect(instance._dynamicModuleNames).to.not.include(moduleName);
       });
     });
 
@@ -463,7 +461,7 @@ describe('ContxtSdk', function() {
 
         instance = {
           ...externalModules,
-          _externalModuleNames: Object.keys(externalModules),
+          _dynamicModuleNames: Object.keys(externalModules),
           _replacedModules: {
             ...Object.keys(externalModules).reduce(
               (memo, remainingModuleName) => {
@@ -475,7 +473,7 @@ describe('ContxtSdk', function() {
             )
           },
           auth: {
-            deleteCurrentApiToken: sinon.stub()
+            clearCurrentApiToken: sinon.stub()
           },
           config: { removeDynamicAudience: sinon.stub() },
           [internalModuleName]: internalModule
@@ -483,13 +481,13 @@ describe('ContxtSdk', function() {
       });
 
       context(
-        'when attempting to unmount a module that does not exist in the list of external audiences',
+        'when attempting to unmount a module that does not exist in the list of dynamic audiences',
         function() {
           let fn;
 
           beforeEach(function() {
             fn = () =>
-              ContxtSdk.prototype.unmountExternalModule.call(
+              ContxtSdk.prototype.unmountDynamicModule.call(
                 instance,
                 faker.lorem.word()
               );
@@ -499,11 +497,11 @@ describe('ContxtSdk', function() {
             try {
               fn();
             } catch (e) {
-              expect(instance.auth.deleteCurrentApiToken).to.not.be.called;
+              expect(instance.auth.clearCurrentApiToken).to.not.be.called;
             }
           });
 
-          it('leaves the internal modules untouched', function() {
+          it('leaves the static modules untouched', function() {
             try {
               fn();
             } catch (e) {
@@ -511,7 +509,7 @@ describe('ContxtSdk', function() {
             }
           });
 
-          it('leaves the remaining external modules untouched', function() {
+          it('leaves the dynamic modules untouched', function() {
             try {
               fn();
             } catch (e) {
@@ -538,13 +536,13 @@ describe('ContxtSdk', function() {
           instance.config.removeDynamicAudience.throws(expectedError);
 
           fn = () =>
-            ContxtSdk.prototype.unmountExternalModule.call(
+            ContxtSdk.prototype.unmountDynamicModule.call(
               instance,
               faker.random.arrayElement(Object.keys(externalModules))
             );
         });
 
-        it('leaves the internal modules untouched', function() {
+        it('leaves the static modules untouched', function() {
           try {
             fn();
           } catch (e) {
@@ -552,7 +550,7 @@ describe('ContxtSdk', function() {
           }
         });
 
-        it('leaves the external modules untouched', function() {
+        it('leaves the dynamic modules untouched', function() {
           try {
             fn();
           } catch (e) {
@@ -648,13 +646,14 @@ describe('ContxtSdk', function() {
 
     beforeEach(function() {
       externalModules = times(faker.random.number({ min: 1, max: 5 })).reduce(
-        (memo) => {
-          const moduleName = faker.hacker.verb();
+        (memo, index) => {
+          const moduleName = `${faker.hacker.verb()}-${index}`;
           memo[moduleName] = { module: sinon.stub() };
           return memo;
         },
         {}
       );
+
       instance = {
         _createRequest: sinon
           .stub()

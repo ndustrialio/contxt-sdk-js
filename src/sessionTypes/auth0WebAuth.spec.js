@@ -173,7 +173,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  describe('deleteCurrentApiToken', function() {
+  describe('clearCurrentApiToken', function() {
     context(
       'when deleting an existing token where the request to acquire the token has completed',
       function() {
@@ -195,7 +195,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
             return memo;
           }, {});
 
-          promise = auth0WebAuth.deleteCurrentApiToken(audienceNameToDelete);
+          promise = auth0WebAuth.clearCurrentApiToken(audienceNameToDelete);
         });
 
         it('removes the access token promise', function() {
@@ -240,7 +240,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
             return memo;
           }, {});
 
-          promise = auth0WebAuth.deleteCurrentApiToken(audienceNameToDelete);
+          promise = auth0WebAuth.clearCurrentApiToken(audienceNameToDelete);
 
           resolver(faker.internet.password());
         });
@@ -274,9 +274,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
             return memo;
           }, {});
 
-          promise = auth0WebAuth.deleteCurrentApiToken(
-            faker.hacker.adjective()
-          );
+          promise = auth0WebAuth.clearCurrentApiToken(faker.hacker.adjective());
         });
 
         it('returns a resolved promise', function() {
