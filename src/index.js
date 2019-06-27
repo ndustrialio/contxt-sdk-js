@@ -90,12 +90,14 @@ class ContxtSdk {
     this._decorate(externalModules);
   }
 
-  mountExternalModule(moduleName, module) {
+  mountExternalModule(moduleName, { clientId, host, module }) {
     if (this._externalModuleNames.indexOf(moduleName) > -1) {
       throw new Error(
         `An external module of the name \`${moduleName}\` already exists. This problem can be rectified by using a different name for the new module.`
       );
     }
+
+    this.config.addDynamicAudience(moduleName, { clientId, host });
 
     this._externalModuleNames = [...this._externalModuleNames, moduleName];
 
@@ -112,6 +114,7 @@ class ContxtSdk {
     }
 
     this.auth.deleteCurrentApiToken(moduleName);
+    this.config.removeDynamicAudience(moduleName);
 
     this[moduleName] = this._replacedModules[moduleName];
 

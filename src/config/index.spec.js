@@ -322,7 +322,7 @@ describe('Config', function() {
     });
 
     context(
-      'when attempting to removing an audience that does not exist in the list of dynmic audiences',
+      'when attempting to removing an audience that does not exist in the list of dynamic audiences',
       function() {
         let config;
         let dynamicAudiences;
