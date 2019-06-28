@@ -64,7 +64,7 @@ class Consent {
   }
 
   /**
-   * Accepts an application's consent for a given audience name
+   * Accepts a user's consent to an application for a given audience name
    *
    *
    * API Endpoint: '/consents/:consentId/accept'
@@ -78,7 +78,7 @@ class Consent {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.consent
+   * contxtSdk.coordinator.consent
    *   .accept('coordinator', '36b8421a-cc4a-4204-b839-1397374fb16b')
    *   .then((userApproval) => console.log(userApproval))
    *   .catch((err) => console.log(err));
@@ -127,7 +127,7 @@ class Consent {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.consent
+   * contxtSdk.coordinator.consent
    *   .verify('coordinator')
    *   .then((applicationConsent) => console.log(applicationConsent))
    *   .catch((err) => console.log(err));

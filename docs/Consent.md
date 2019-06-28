@@ -23,7 +23,7 @@ Module for managing application consent
 <a name="Consent+accept"></a>
 
 ### contxtSdk.coordinator.consent.accept(audienceName, consentId) ⇒ <code>Promise</code>
-Accepts an application's consent for a given audience name
+Accepts a user's consent to an application for a given audience name
 
 
 API Endpoint: '/consents/:consentId/accept'
@@ -40,7 +40,7 @@ Method: POST
 
 **Example**  
 ```js
-contxtSdk.consent
+contxtSdk.coordinator.consent
   .accept('coordinator', '36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((userApproval) => console.log(userApproval))
   .catch((err) => console.log(err));
@@ -64,7 +64,7 @@ Method: POST
 
 **Example**  
 ```js
-contxtSdk.consent
+contxtSdk.coordinator.consent
   .verify('coordinator')
   .then((applicationConsent) => console.log(applicationConsent))
   .catch((err) => console.log(err));
