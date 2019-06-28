@@ -4,7 +4,7 @@ const factory = require('rosie').Factory;
 const faker = require('faker');
 
 factory
-  .define('contxtUserEvent')
+  .define('userEventSubscription')
   .option('fromServer', false)
   .attrs({
     eventId: () => factory.build('event').id,

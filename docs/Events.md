@@ -13,6 +13,8 @@ of, information about different events
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
     * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
+    * [.subscribeEvent(userId, eventId)](#Events+subscribeEvent) ⇒ <code>Promise</code>
+    * [.unsubscribeEvent(userId, userEventSubscriptionId)](#Events+unsubscribeEvent) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
     * [.createEventType(eventType)](#Events+createEventType) ⇒ <code>Promise</code>
 
@@ -160,6 +162,53 @@ contxtSdk.events
      }
    )
   .then((events) => console.log(events))
+  .catch((err) => console.log(err));
+```
+<a name="Events+subscribeEvent"></a>
+
+### contxtSdk.events.subscribeEvent(userId, eventId) ⇒ <code>Promise</code>
+Subscribes an user to an event
+
+API Endpoint: '/users/:userId/events/:event_id'
+Method: POST
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>UserEventSubscription</code>](./Typedefs.md#UserEventSubscription) The newly created user event  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| eventId | <code>string</code> | The ID of the event |
+
+**Example**  
+```js
+contxtSdk.events
+  .subscribeUser('auth0|saklafjheuaiweh', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .then((userEvent) => console.log(userEvent))
+  .catch((err) => console.log(err));
+```
+<a name="Events+unsubscribeEvent"></a>
+
+### contxtSdk.events.unsubscribeEvent(userId, userEventSubscriptionId) ⇒ <code>Promise</code>
+Removes an event subscription from a user
+
+API Endpoint: '/users/:userId/subscriptions/:user_event_subscription_id'
+Method: DELETE
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: <code>undefined</code>  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+| userEventSubscriptionId | <code>string</code> | The ID of the user event subscription |
+
+**Example**  
+```js
+contxtSdk.events
+  .unsubscribeUser('auth0|saklafjheuaiweh', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```
 <a name="Events+update"></a>

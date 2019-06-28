@@ -23,15 +23,6 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtUserEvent
- * @property {string} eventId
- * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} id
- * @property {string} userId
- * @property {string} updatedAt ISO 8601 Extended Format date/time string
- */
-
-/**
  * @typedef {Object} ContxtUserRole
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
@@ -518,86 +509,6 @@ class Users {
     return this._request.delete(
       `${this._baseUrl}/users/${userId}/stacks/${stackId}`
     );
-  }
-
-  /**
-   * Subscribes a user to an event
-   *
-   * API Endpoint: '/users/:userId/events/:event_id'
-   * Method: POST
-   *
-   * @param {string} userId The ID of the user
-   * @param {string} eventId The ID of the event
-   *
-   * @returns {Promise}
-   * @fulfill {ContxtUserEvent} The newly created user event
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.coordinator.users
-   *   .subscribeEvent('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
-   *   .then((userEvent) => console.log(userEvent))
-   *   .catch((err) => console.log(err));
-   */
-  subscribeEvent(userId, eventId) {
-    if (!userId) {
-      return Promise.reject(
-        new Error('A user ID is required for adding a application to a user')
-      );
-    }
-
-    if (!eventId) {
-      return Promise.reject(
-        new Error('An event ID is required for adding an event to a user')
-      );
-    }
-
-    return this._request
-      .post(`${this._baseUrl}/users/${userId}/events/${eventId}`)
-      .then((response) => toCamelCase(response));
-  }
-
-  /**
-   * Removes an event subscription from a user
-   *
-   * API Endpoint: '/users/:userId/subscriptions/:user_event_subscription_id'
-   * Method: DELETE
-   *
-   * @param {string} userId The ID of the user
-   * @param {string} userEventSubscriptionId The ID of the user event subscription
-   *
-   * @returns {Promise}
-   * @fulfill {undefined}
-   * @reject {Error}
-   *
-   * @example
-   * contxtSdk.coordinator.users
-   *   .unsubscribeEvent('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
-   *   .then((userEventSubscriptionId) => console.log(userEventSubscriptionId))
-   *   .catch((err) => console.log(err));
-   */
-  unsubscribeEvent(userId, userEventSubscriptionId) {
-    if (!userId) {
-      return Promise.reject(
-        new Error('A user ID is required for adding a application to a user')
-      );
-    }
-
-    if (!userEventSubscriptionId) {
-      return Promise.reject(
-        new Error(
-          'An user event subscription ID is required for removing an event to a user'
-        )
-      );
-    }
-
-    return this._request
-      .delete(
-        `${
-          this._baseUrl
-        }/users/${userId}/subscriptions/${userEventSubscriptionId}`
-      )
-      .then((response) => toCamelCase(response));
   }
 }
 

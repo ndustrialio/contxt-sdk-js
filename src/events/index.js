@@ -69,6 +69,15 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} UserEventSubscription
+ * @property {string} eventId
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} id
+ * @property {string} userId
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
  * Module that provides access to, and the manipulation
  * of, information about different events
  *
@@ -267,6 +276,83 @@ class Events {
         params: toSnakeCase(eventFilters)
       })
       .then((events) => formatPaginatedDataFromServer(events));
+  }
+
+  /**
+   * Subscribes an user to an event
+   *
+   * API Endpoint: '/users/:userId/events/:event_id'
+   * Method: POST
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} eventId The ID of the event
+   *
+   * @returns {Promise}
+   * @fulfill {UserEventSubscription} The newly created user event
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.events
+   *   .subscribeUser('auth0|saklafjheuaiweh', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .then((userEvent) => console.log(userEvent))
+   *   .catch((err) => console.log(err));
+   */
+  subscribeEvent(userId, eventId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for subscribing a user to an event')
+      );
+    }
+
+    if (!eventId) {
+      return Promise.reject(
+        new Error('An event ID is required for subscribing a user to an event')
+      );
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/users/${userId}/events/${eventId}`)
+      .then((response) => toCamelCase(response));
+  }
+
+  /**
+   * Removes an event subscription from a user
+   *
+   * API Endpoint: '/users/:userId/subscriptions/:user_event_subscription_id'
+   * Method: DELETE
+   *
+   * @param {string} userId The ID of the user
+   * @param {string} userEventSubscriptionId The ID of the user event subscription
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.events
+   *   .unsubscribeUser('auth0|saklafjheuaiweh', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .catch((err) => console.log(err));
+   */
+  unsubscribeEvent(userId, userEventSubscriptionId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required to unsubscribe a user from an event')
+      );
+    }
+
+    if (!userEventSubscriptionId) {
+      return Promise.reject(
+        new Error(
+          'A user event subscription ID is required for unsubscribing a user from an event'
+        )
+      );
+    }
+
+    return this._request.delete(
+      `${
+        this._baseUrl
+      }/users/${userId}/subscriptions/${userEventSubscriptionId}`
+    );
   }
 
   /**
