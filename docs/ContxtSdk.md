@@ -4,6 +4,12 @@
 ContxtSdk constructor
 
 **Kind**: global class  
+
+* [ContxtSdk](#ContxtSdk)
+    * [new ContxtSdk(config, [externalModules], sessionType)](#new_ContxtSdk_new)
+    * [.mountDynamicModule(moduleName, externalModule)](#ContxtSdk+mountDynamicModule)
+    * [.unmountDynamicModule(moduleName)](#ContxtSdk+unmountDynamicModule)
+
 <a name="new_ContxtSdk_new"></a>
 
 ### new ContxtSdk(config, [externalModules], sessionType)
@@ -43,3 +49,28 @@ const contxtSdk = new ContxtSdk({
   sessionType: 'auth0WebAuth'
 });
 ```
+<a name="ContxtSdk+mountDynamicModule"></a>
+
+### contxtSdk.mountDynamicModule(moduleName, externalModule)
+Mounts a dynamic module into the SDK. Is used to add a module after initial
+instatiation that will use the SDK's authentication and request methods to
+access an ndustrial.io API
+
+**Kind**: instance method of [<code>ContxtSdk</code>](#ContxtSdk)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| moduleName | <code>string</code> | The name (or key) that will serve as the mount   point for the module in the SDK (i.e. customModule -> sdk.customModule) |
+| externalModule | [<code>ExternalModule</code>](./Typedefs.md#ExternalModule) |  |
+
+<a name="ContxtSdk+unmountDynamicModule"></a>
+
+### contxtSdk.unmountDynamicModule(moduleName)
+Unmounts a dynamic module from the SDK
+
+**Kind**: instance method of [<code>ContxtSdk</code>](#ContxtSdk)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| moduleName | <code>string</code> | The name of the dynamic module to unmount |
+

@@ -20,6 +20,7 @@ enabled in Auth0.
 
 * [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
     * [new Auth0WebAuth(sdk)](#new_Auth0WebAuth_new)
+    * [.clearCurrentApiToken(audienceName)](#Auth0WebAuth+clearCurrentApiToken) ⇒ <code>Promise</code>
     * [.getCurrentApiToken(audienceName)](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
     * [.getProfile()](#Auth0WebAuth+getProfile) ⇒ <code>Promise</code>
     * [.handleAuthentication()](#Auth0WebAuth+handleAuthentication) ⇒ <code>Promise</code>
@@ -58,6 +59,17 @@ const contxtSdk = new ContxtSDK({
   sessionType: 'auth0WebAuth'
 });
 ```
+<a name="Auth0WebAuth+clearCurrentApiToken"></a>
+
+### contxtSdk.auth.clearCurrentApiToken(audienceName) ⇒ <code>Promise</code>
+Removes an audience's API token from the in-memory token storage
+
+**Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
+
+| Param |
+| --- |
+| audienceName | 
+
 <a name="Auth0WebAuth+getCurrentApiToken"></a>
 
 ### contxtSdk.auth.getCurrentApiToken(audienceName) ⇒ <code>Promise</code>

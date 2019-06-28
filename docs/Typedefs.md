@@ -962,7 +962,7 @@ the optional methods are documented below.
 | getCurrentApiToken | <code>function</code> | Provides a current API token that is used across   different Contxt services |
 | [getProfile] | <code>function</code> | Provides profile information about the current user |
 | [handleAuthentication] | <code>function</code> | Is called by front-end code in the Auth0 reference  implementation to handle getting the access token from Auth0 |
-| isAuthenticated | <code>function</code> | Tells caller if the current user is authenticated. |
+| [isAuthenticated] | <code>function</code> | Tells caller if the current user is authenticated.  Different session types may determine if a user is authenticated in different ways. |
 | [logIn] | <code>function</code> | Is used by front-end code in the Auth0 reference implementation to   start the sign in process |
 | [logOut] | <code>function</code> | Is used by the front-end code in the Auth0 reference implementation   to sign the user out |
 
