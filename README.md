@@ -29,17 +29,34 @@ contxtSdk.facilities.getAll().then((facilities) => {
 });
 ```
 
-Information about using the auth0WebAuth and machineAuth modules is available in the API docs [here (auth0WebAuth)](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/Auth0WebAuth.md) and [here (machineAuth)](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/MachineAuth.md). Additional information about configuration options can also be found in the [API docs](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/ContxtSdk.md).
+Additional information about configuration options can be found in the [API docs](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/ContxtSdk.md).
 
-## Adding in external modules
+## SessionTypes {#session-types}
 
-At times when building your application, there might be a Contxt API that you need to reach that is not currently included in the `contxt-sdk` package. To help out with this, we've created a way to include an external module into the SDK when creating an SDK instance that allows the external module to act as a first class extension of the SDK's API.
+There are several session types available for different types of applications:
 
-To do this, just include information about the module when creating your `contxt-sdk` instance:
+1. [`Auth0WebAuth` (documentation)](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/Auth0WebAuth.md)
+1. [`MachineAuth` (documentation)](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/MachineAuth.md)
+1. [`PasswordGrantAuth` (documentation)](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/PasswordGrantAuth.md)
+
+- This session type is a work in progress and some features are incomplete. One specific caveat is that this session type does not work with dynamic modules or dynamic audiences.
+
+## Extending Functionality
+
+There are times where it is necessary to access Contxt and ndustrial.io APIs that are not currently in the SDK. There are two different mechanisms to extend functionality and allow custom code to act as a first class extension of the SDK's API:
+
+1. [External Modules](#external-modules)
+1. [Dynamic Modules](#dynamic-modules)
+
+### External Modules {#external-modules}
+
+The simplest method for extending functionality is to use an External Module. These modules can be added to the SDK when the SDK is initially instantiated in your application.
+
+Include your information about the module when creating your `contxt-sdk` instance:
 
 ```javascript
 import ContxtSdk from 'contxt-sdk';
-import NewModule from './NewModule';
+import NewExternalModule from './NewExternalModule';
 
 const contxtSdk = new ContxtSdk({
   config: {
@@ -48,10 +65,10 @@ const contxtSdk = new ContxtSdk({
     }
   },
   externalModules: {
-    newModule: {
+    newExternalModule: {
       clientId: 'The Auth0 Id of the API you are communicated with',
-      host: 'http://newModule.example.com',
-      module: NewModule
+      host: 'http://newExternalModule.example.com',
+      module: NewExternalModule
     }
   },
   sessionType: 'auth0WebAuth'
@@ -63,9 +80,9 @@ contxtSdk.newModule.doWork();
 When we decorate your external module into your SDK instance, it is treated just like one of the native, internal modules and is provided with the SDK instance (so you can use other parts of the SDK from your new module) and its own request module, which will handle API tokens if you are working with a Contxt API.
 
 ```javascript
-class NewModule {
+class NewExternalModule {
   constructor(sdk, request) {
-    this._baseUrl = `${sdk.config.audiences.newModule.host}/v1`;
+    this._baseUrl = `${sdk.config.audiences.newExternalModule.host}/v1`;
     this._request = request;
     this._sdk = sdk;
   }
@@ -75,8 +92,85 @@ class NewModule {
   }
 }
 
-export default NewModule;
+export default NewExternalModule;
 ```
+
+### Dynamic Modules {#dynamic-modules}
+
+A more flexible, but slightly more intensive way of extending functionality is through dynamic modules. Dynamic modules are very much like external modules, but differ in that they can be added or mounted to the SDK after the SDK is initially instatiated. An example of a good time to use this functionality is a web application where Webpack's code splitting functionality is used and parts of the application are added with dynamic imports -- not all the code would necessarily available when initially creating a ContxtSDK instance, so extensions to the SDK need to be added when the split part of the application is loaded.
+
+#### Mounting a dynamic module
+
+To start, there should be a ContxtSDK instance that is created at initial runtime:
+
+```javascript
+import ContxtSdk from 'contxt-sdk';
+
+const contxtSdk = new ContxtSdk({
+  config: {
+    auth: {
+      clientId: 'example clientId from auth0'
+    }
+  },
+  sessionType: 'auth0WebAuth'
+});
+
+export default contxtSdk;
+```
+
+There is also a module that is going to be dynamically decorated or mounted into the Contxt SDK:
+
+```javascript
+class NewDynamicModule {
+  constructor(sdk, request) {
+    this._baseUrl = `${sdk.config.audiences.newDynamicModule.host}/v1`;
+    this._request = request;
+    this._sdk = sdk;
+  }
+
+  doWork() {
+    return this._request.patch(`${this._baseUrl}/data`, { work: 'finished' });
+  }
+}
+
+export default NewDynamicModule;
+```
+
+Once both of these things are available, the module can be mounted into the existing SDK instance and the methods of the module can run:
+
+```javascript
+import contxtSdk from './contxtSdk';
+import NewDynamicModule from './NewDynamicModule';
+
+contxtSdk.mountDynamicModule('newDynamicModule', {
+  clientId: 'The Auth0 Id of the API you are communicated with',
+  host: 'http://newDynamicModule.example.com',
+  module: NewDynamicModule
+});
+
+contxtSdk.newDynamicModule.doWork();
+```
+
+##### Notes
+
+- If there is already a module (a built-in module or an external module that was added at instantiation time) at this `newDynamicModule` namespace, this functionality will overwrite the existing module, but store the existing built-in or external module and it's audience information for future use if the dynamic module was unmounted in the future.
+
+[More information on `mountDynamicModule`](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/ContxtSdk.md#ContxtSdk+mountDynamicModule)
+
+#### Unmounting a dynamic module
+
+There may arise a situation where a dynamic module needs to be unmounted. To do this, the `unmountDynamicModule` method can be used:
+
+```javascript
+contxtSdk.unmountDynamicModule('newDynamicModule');
+```
+
+##### Notes
+
+- If attempting to unmount a module that is not a dynamic module, an error will be thrown.
+- If there was a module that was previously mounted at the same namespace/key, it will be remounted.
+
+[More information on `unmountDynamicModule`](https://github.com/ndustrialio/contxt-sdk-js/blob/master/docs/ContxtSdk.md#ContxtSdk+ynmountDynamicModule)
 
 ## Development
 

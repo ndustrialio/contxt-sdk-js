@@ -2,9 +2,20 @@
 
 **Added**
 
--Added `Users#subscribeEvent` for subscribing a user to an event
-
+- Added `Users#subscribeEvent` for subscribing a user to an event
 - Added `Users#unsubscribeEvent` for unsubscribing a user from an event
+
+## [v1.5.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.5.0) (2019-06-28)
+
+**Added**
+
+- Concept of dynamic modules. Dynamic modules can be used to insert/decorate an external module into the SDK after the SDK is initially instantiated.
+  - `Contxt#mountDynamicModule`
+  - `Contxt#unmountDynamicModule`
+- Concept of dynamic audiences. Dynamic audiences can be used to edit the list of audiences in the SDK's config object after the SDK is initially instantiated.
+  - `Config#addDynamicAudience`
+  - `Config#removeDynamicAudience`
+- `Auth#clearCurrentApiToken` - Added the ability to clear an audience's API token out of memory so a new token is created and retrieved on the next request
 
 ## [v1.4.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.2) (2019-06-14)
 

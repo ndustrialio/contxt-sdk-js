@@ -173,6 +173,117 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
+  describe('clearCurrentApiToken', function() {
+    context(
+      'when deleting an existing token where the request to acquire the token has completed',
+      function() {
+        let audienceNameToDelete;
+        let auth0WebAuth;
+        let promise;
+
+        beforeEach(function() {
+          audienceNameToDelete = faker.random.arrayElement(
+            Object.keys(sdk.config.audiences)
+          );
+
+          auth0WebAuth = new Auth0WebAuth(sdk);
+          auth0WebAuth._tokenPromises = Object.keys(
+            sdk.config.audiences
+          ).reduce((memo, audienceName) => {
+            memo[audienceName] = Promise.resolve(faker.internet.password());
+
+            return memo;
+          }, {});
+
+          promise = auth0WebAuth.clearCurrentApiToken(audienceNameToDelete);
+        });
+
+        it('removes the access token promise', function() {
+          return promise.then(() => {
+            expect(auth0WebAuth._tokenPromises[audienceNameToDelete]).to.be
+              .undefined;
+          });
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      }
+    );
+
+    context(
+      'when deleting an token where the request to acquire the token has not yet completed',
+      function() {
+        let audienceNameToDelete;
+        let auth0WebAuth;
+        let promise;
+
+        beforeEach(function() {
+          let resolver;
+
+          audienceNameToDelete = faker.random.arrayElement(
+            Object.keys(sdk.config.audiences)
+          );
+
+          auth0WebAuth = new Auth0WebAuth(sdk);
+          auth0WebAuth._tokenPromises = Object.keys(
+            sdk.config.audiences
+          ).reduce((memo, audienceName) => {
+            if (audienceName === audienceNameToDelete) {
+              memo[audienceName] = new Promise((resolve) => {
+                resolver = resolve;
+              });
+            } else {
+              memo[audienceName] = Promise.resolve(faker.internet.password());
+            }
+
+            return memo;
+          }, {});
+
+          promise = auth0WebAuth.clearCurrentApiToken(audienceNameToDelete);
+
+          resolver(faker.internet.password());
+        });
+
+        it('removes the access token promise', function() {
+          return promise.then(() => {
+            expect(auth0WebAuth._tokenPromises[audienceNameToDelete]).to.be
+              .undefined;
+          });
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      }
+    );
+
+    context(
+      'when attempting to delete an access token that does not currently exist',
+      function() {
+        let auth0WebAuth;
+        let promise;
+
+        beforeEach(function() {
+          auth0WebAuth = new Auth0WebAuth(sdk);
+          auth0WebAuth._tokenPromises = Object.keys(
+            sdk.config.audiences
+          ).reduce((memo, audienceName) => {
+            memo[audienceName] = Promise.resolve(faker.internet.password());
+
+            return memo;
+          }, {});
+
+          promise = auth0WebAuth.clearCurrentApiToken(faker.hacker.adjective());
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      }
+    );
+  });
+
   describe('getCurrentApiToken', function() {
     let expectedAudienceName;
 
