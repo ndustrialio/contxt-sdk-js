@@ -644,7 +644,7 @@ describe('Events', function() {
         };
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
-          .callsFake((app) => expectedSubscription);
+          .returns(expectedSubscription);
 
         const events = new Events(baseSdk, request);
         events._baseUrl = expectedHost;
@@ -652,13 +652,13 @@ describe('Events', function() {
         promise = events.subscribeEvent(user.id, event.id);
       });
 
-      it('posts the user event to the server', function() {
+      it('creates the user event subscription', function() {
         expect(request.post).to.be.calledWith(
           `${expectedHost}/users/${user.id}/events/${event.id}`
         );
       });
 
-      it('formats the returned user event', function() {
+      it('formats the returned user event subscription', function() {
         return promise.then(() => {
           expect(toCamelCase).to.be.calledWith(subscriptionFromServer);
         });
@@ -673,10 +673,13 @@ describe('Events', function() {
 
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
-        const event = fixture.build('userEventSubscription');
+        const userEventSubscription = fixture.build('userEventSubscription');
 
         const events = new Events(baseSdk, baseRequest);
-        const promise = events.subscribeEvent(null, event.id);
+        const promise = events.subscribeEvent(
+          null,
+          userEventSubscription.eventId
+        );
 
         return expect(promise).to.be.rejectedWith(
           'A user ID is required for subscribing a user to an event'
@@ -714,7 +717,7 @@ describe('Events', function() {
         promise = events.unsubscribeEvent(user.id, userEventSubscription.id);
       });
 
-      it('sends a request to unsubscribeEvent the user from the event', function() {
+      it('sends a request to unsubscribe the user from the event', function() {
         expect(baseRequest.delete).to.be.calledWith(
           `${expectedHost}/users/${user.id}/subscriptions/${
             userEventSubscription.id
@@ -729,7 +732,7 @@ describe('Events', function() {
 
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
-        const userEventSubscription = fixture.build('event');
+        const userEventSubscription = fixture.build('userEventSubscription');
         const events = new Events(baseSdk, baseRequest);
         const promise = events.unsubscribeEvent(null, userEventSubscription.id);
 
@@ -739,7 +742,7 @@ describe('Events', function() {
       });
     });
 
-    context('when the application ID is not provided', function() {
+    context('when the user event subscription ID is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
         const events = new Events(baseSdk, baseRequest);
