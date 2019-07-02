@@ -988,6 +988,20 @@ User provided configuration options
 | [interceptors.request] | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |  | Interceptors that act on every request |
 | [intercepotrs.response] | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |  | Intereptors that act on every response |
 
+<a name="UserEventSubscription"></a>
+
+## UserEventSubscription : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| eventId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="UserProfile"></a>
 
 ## UserProfile : <code>Object</code>

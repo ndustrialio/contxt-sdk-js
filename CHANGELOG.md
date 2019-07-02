@@ -1,3 +1,10 @@
+## [v1.6.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.5.0) (2019-06-25)
+
+**Added**
+
+- Added `Users#subscribeEvent` for subscribing a user to an event
+- Added `Users#unsubscribeEvent` for unsubscribing a user from an event
+
 ## [v1.5.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.5.0) (2019-06-28)
 
 **Added**
