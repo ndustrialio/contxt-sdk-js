@@ -1,3 +1,10 @@
+## [v1.5.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.2) (2019-07-03)
+
+**Added**
+
+- Added `Coordinator.consent#verify` for verifying if consent is needed for an application
+- Added `Coordinator.consent#accept` for accepting user consent to an applications
+
 ## [v1.4.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.4.2) (2019-06-14)
 
 **Fixed**
