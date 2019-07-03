@@ -332,7 +332,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         promise = auth0WebAuth.getCurrentAccessToken();
       });
 
-      it('checks if the audience already has a valid token', function() {
+      it('checks if the session has a valid token', function() {
         return promise.then(expect.fail).catch(() => {
           expect(isAuthenticated).to.be.calledOnce;
         });
