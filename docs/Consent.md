@@ -40,7 +40,7 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.coordinator.consent
-  .accept('coordinator', '36b8421a-cc4a-4204-b839-1397374fb16b')
+  .accept('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((userApproval) => console.log(userApproval))
   .catch((err) => console.log(err));
 ```
@@ -59,7 +59,7 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.coordinator.consent
-  .verify('coordinator')
+  .verify()
   .then((applicationConsent) => console.log(applicationConsent))
   .catch((err) => console.log(err));
 ```
