@@ -7,8 +7,8 @@ Module for managing application consent
 
 * [Consent](#Consent)
     * [new Consent(sdk, request, baseUrl)](#new_Consent_new)
-    * [.accept(audienceName, consentId)](#Consent+accept) ⇒ <code>Promise</code>
-    * [.verify(audienceName)](#Consent+verify) ⇒ <code>Promise</code>
+    * [.accept(consentId)](#Consent+accept) ⇒ <code>Promise</code>
+    * [.verify()](#Consent+verify) ⇒ <code>Promise</code>
 
 <a name="new_Consent_new"></a>
 
@@ -22,8 +22,8 @@ Module for managing application consent
 
 <a name="Consent+accept"></a>
 
-### contxtSdk.coordinator.consent.accept(audienceName, consentId) ⇒ <code>Promise</code>
-Accepts a user's consent to an application for a given audience name
+### contxtSdk.coordinator.consent.accept(consentId) ⇒ <code>Promise</code>
+Accepts a user's consent to an application
 
 
 API Endpoint: '/consents/:consentId/accept'
@@ -35,7 +35,6 @@ Method: POST
 
 | Param | Type | Description |
 | --- | --- | --- |
-| audienceName | <code>string</code> | The auth0 audience that the user is consenting with |
 | consentId | <code>string</code> | The ID of the consent form the user is accepting |
 
 **Example**  
@@ -47,8 +46,8 @@ contxtSdk.coordinator.consent
 ```
 <a name="Consent+verify"></a>
 
-### contxtSdk.coordinator.consent.verify(audienceName) ⇒ <code>Promise</code>
-Verify if application consent is needed from the user for a given audience name
+### contxtSdk.coordinator.consent.verify() ⇒ <code>Promise</code>
+Verify if application consent is needed from the user
 
 
 API Endpoint: '/applications/consent'
@@ -57,11 +56,6 @@ Method: POST
 **Kind**: instance method of [<code>Consent</code>](#Consent)  
 **Fulfill**: [<code>ContxtApplicationConsent</code>](./Typedefs.md#ContxtApplicationConsent)  
 **Reject**: <code>Error</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| audienceName | <code>string</code> | The auth0 audience that the user is verifying consent with |
-
 **Example**  
 ```js
 contxtSdk.coordinator.consent

@@ -22,7 +22,9 @@ describe('Coordinator/Consent', function() {
         }
       },
       auth: {
-        getCurrentApiToken: sinon.stub().resolves(expectedAccessToken)
+        _getStoredSession: sinon.stub().returns({
+          accessToken: expectedAccessToken
+        })
       }
     };
     expectedHost = faker.internet.url();
@@ -54,11 +56,9 @@ describe('Coordinator/Consent', function() {
 
   describe('accept', function() {
     let consent;
-    let expectedAudienceName;
     let expectedConsentId;
 
     beforeEach(function() {
-      expectedAudienceName = faker.hacker.noun();
       expectedConsentId = faker.random.uuid();
       consent = new Consent(baseSdk, baseRequest, expectedHost);
     });
@@ -67,13 +67,11 @@ describe('Coordinator/Consent', function() {
       let promise;
 
       beforeEach(function() {
-        promise = consent.accept(expectedAudienceName, expectedConsentId);
+        promise = consent.accept(expectedConsentId);
       });
 
-      it('requests the current accessToken for the given audience name', function() {
-        expect(baseSdk.auth.getCurrentApiToken).to.be.calledOnce.and.calledWith(
-          expectedAudienceName
-        );
+      it('requests the current accessToken', function() {
+        expect(baseSdk.auth._getStoredSession).to.be.calledOnce;
       });
 
       it('makes a request to the server', function() {
@@ -94,7 +92,7 @@ describe('Coordinator/Consent', function() {
 
     context('when a consent id is not provided', function() {
       it('throws an error', function() {
-        const promise = consent.accept(expectedAudienceName, null);
+        const promise = consent.accept(null);
 
         return expect(promise).to.be.rejectedWith(
           'A consent ID is required for accepting consent'
@@ -102,25 +100,15 @@ describe('Coordinator/Consent', function() {
       });
     });
 
-    context('when an audience name is not provided', function() {
+    context('when an access token is not found', function() {
       it('throws an error', function() {
-        const promise = consent.accept(null, expectedConsentId);
-
-        return expect(promise).to.be.rejectedWith(
-          'An audience name is required for accepting consent'
-        );
-      });
-    });
-
-    context('when an access token is not found for an audience', function() {
-      it('throws an error', function() {
-        baseSdk.auth.getCurrentApiToken = sinon.stub().resolves(null);
+        baseSdk.auth._getStoredSession = sinon.stub().returns({});
         consent = new Consent(baseSdk, baseRequest, expectedHost);
 
-        const promise = consent.accept(expectedAudienceName, expectedConsentId);
+        const promise = consent.accept(expectedConsentId);
 
         return expect(promise).to.be.rejectedWith(
-          `A valid JWT token for the audience ${expectedAudienceName} is required`
+          `A valid JWT token is required`
         );
       });
     });
@@ -128,10 +116,8 @@ describe('Coordinator/Consent', function() {
 
   describe('verify', function() {
     let consent;
-    let expectedAudienceName;
 
     beforeEach(function() {
-      expectedAudienceName = faker.hacker.noun();
       consent = new Consent(baseSdk, baseRequest, expectedHost);
     });
 
@@ -139,13 +125,11 @@ describe('Coordinator/Consent', function() {
       let promise;
 
       beforeEach(function() {
-        promise = consent.verify(expectedAudienceName);
+        promise = consent.verify();
       });
 
-      it('requests the current accessToken for the given audience name', function() {
-        expect(baseSdk.auth.getCurrentApiToken).to.be.calledOnce.and.calledWith(
-          expectedAudienceName
-        );
+      it('requests the current accessToken', function() {
+        expect(baseSdk.auth._getStoredSession).to.be.calledOnce;
       });
 
       it('makes a request to the server', function() {
@@ -164,25 +148,15 @@ describe('Coordinator/Consent', function() {
       });
     });
 
-    context('when an audience name is not provided', function() {
+    context('when an access token is not found', function() {
       it('throws an error', function() {
-        const promise = consent.verify(null);
-
-        return expect(promise).to.be.rejectedWith(
-          'An audience name is required for verifying consent'
-        );
-      });
-    });
-
-    context('when an access token is not found for an audience', function() {
-      it('throws an error', function() {
-        baseSdk.auth.getCurrentApiToken = sinon.stub().resolves(null);
+        baseSdk.auth._getStoredSession = sinon.stub().returns({});
         consent = new Consent(baseSdk, baseRequest, expectedHost);
 
-        const promise = consent.verify(expectedAudienceName);
+        const promise = consent.verify();
 
         return expect(promise).to.be.rejectedWith(
-          `A valid JWT token for the audience ${expectedAudienceName} is required`
+          `A valid JWT token is required`
         );
       });
     });

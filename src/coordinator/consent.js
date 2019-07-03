@@ -64,13 +64,12 @@ class Consent {
   }
 
   /**
-   * Accepts a user's consent to an application for a given audience name
+   * Accepts a user's consent to an application
    *
    *
    * API Endpoint: '/consents/:consentId/accept'
    * Method: POST
    *
-   * @param {string} audienceName The auth0 audience that the user is consenting with
    * @param {string} consentId The ID of the consent form the user is accepting
    *
    * @returns {Promise}
@@ -83,44 +82,32 @@ class Consent {
    *   .then((userApproval) => console.log(userApproval))
    *   .catch((err) => console.log(err));
    */
-  accept(audienceName, consentId) {
-    if (!audienceName) {
-      return Promise.reject(
-        new Error('An audience name is required for accepting consent')
-      );
-    }
-
+  accept(consentId) {
     if (!consentId) {
       return Promise.reject(
         new Error('A consent ID is required for accepting consent')
       );
     }
 
-    return this._sdk.auth
-      .getCurrentApiToken(audienceName)
-      .then((accessToken) => {
-        if (!accessToken) {
-          throw new Error(
-            `A valid JWT token for the audience ${audienceName} is required`
-          );
-        }
+    const { accessToken } = this._sdk.auth._getStoredSession();
 
-        return this._request
-          .post(`${this._baseUrl}/consents/${consentId}/accept`, {
-            access_token: accessToken
-          })
-          .then((userApproval) => toCamelCase(userApproval));
-      });
+    if (!accessToken) {
+      return Promise.reject(new Error('A valid JWT token is required'));
+    }
+
+    return this._request
+      .post(`${this._baseUrl}/consents/${consentId}/accept`, {
+        access_token: accessToken
+      })
+      .then((userApproval) => toCamelCase(userApproval));
   }
 
   /**
-   * Verify if application consent is needed from the user for a given audience name
+   * Verify if application consent is needed from the user
    *
    *
    * API Endpoint: '/applications/consent'
    * Method: POST
-   *
-   * @param {string} audienceName The auth0 audience that the user is verifying consent with
    *
    * @returns {Promise}
    * @fulfill {ContxtApplicationConsent}
@@ -132,28 +119,18 @@ class Consent {
    *   .then((applicationConsent) => console.log(applicationConsent))
    *   .catch((err) => console.log(err));
    */
-  verify(audienceName) {
-    if (!audienceName) {
-      return Promise.reject(
-        new Error('An audience name is required for verifying consent')
-      );
+  verify() {
+    const { accessToken } = this._sdk.auth._getStoredSession();
+
+    if (!accessToken) {
+      return Promise.reject(new Error('A valid JWT token is required'));
     }
 
-    return this._sdk.auth
-      .getCurrentApiToken(audienceName)
-      .then((accessToken) => {
-        if (!accessToken) {
-          throw new Error(
-            `A valid JWT token for the audience ${audienceName} is required`
-          );
-        }
-
-        return this._request
-          .post(`${this._baseUrl}/applications/consent`, {
-            access_token: accessToken
-          })
-          .then((applicationConsent) => toCamelCase(applicationConsent));
-      });
+    return this._request
+      .post(`${this._baseUrl}/applications/consent`, {
+        access_token: accessToken
+      })
+      .then((applicationConsent) => toCamelCase(applicationConsent));
   }
 }
 
