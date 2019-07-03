@@ -286,6 +286,8 @@ the optional methods are documented below.</p>
 <dt><a href="./Typedefs.md#UserConfig">UserConfig</a> : <code>Object</code></dt>
 <dd><p>User provided configuration options</p>
 </dd>
+<dt><a href="./Typedefs.md#UserEventSubscription">UserEventSubscription</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#UserProfile">UserProfile</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#WebSocket">WebSocket</a> : <code>Object</code></dt>

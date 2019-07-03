@@ -94,6 +94,9 @@ class Config {
   constructor(userConfig, externalModules) {
     Object.assign(this, userConfig);
 
+    this._dynamicAudienceNames = [];
+    this._replacedAudiences = {};
+
     this.audiences = this._getAudiences({
       externalModules,
       customModuleConfigs: userConfig.auth.customModuleConfigs,
@@ -109,6 +112,44 @@ class Config {
       ...defaultConfigs.interceptors,
       ...userConfig.interceptors
     };
+  }
+
+  addDynamicAudience(audienceName, { clientId, host }) {
+    if (!clientId || !host) {
+      throw new Error(
+        'A dynamic audience must contain `clientId` and `host` properties'
+      );
+    }
+
+    if (this._dynamicAudienceNames.indexOf(audienceName) > -1) {
+      throw new Error(
+        `A dynamic audience of the name \`${audienceName}\` already exists. This problem can be rectified by using a different name for the audience.`
+      );
+    }
+
+    this._dynamicAudienceNames = [...this._dynamicAudienceNames, audienceName];
+
+    if (this.audiences[audienceName]) {
+      this._replacedAudiences[audienceName] = this.audiences[audienceName];
+    }
+
+    this.audiences[audienceName] = {
+      clientId,
+      host
+    };
+  }
+
+  removeDynamicAudience(audienceName) {
+    if (this._dynamicAudienceNames.indexOf(audienceName) === -1) {
+      throw new Error('There is no dynamic audience to remove.');
+    }
+
+    this.audiences[audienceName] = this._replacedAudiences[audienceName];
+
+    delete this._replacedAudiences[audienceName];
+    this._dynamicAudienceNames = this._dynamicAudienceNames.filter(
+      (name) => name !== audienceName
+    );
   }
 
   /**

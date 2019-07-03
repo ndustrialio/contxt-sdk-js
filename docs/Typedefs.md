@@ -1024,7 +1024,7 @@ the optional methods are documented below.
 | getCurrentApiToken | <code>function</code> | Provides a current API token that is used across   different Contxt services |
 | [getProfile] | <code>function</code> | Provides profile information about the current user |
 | [handleAuthentication] | <code>function</code> | Is called by front-end code in the Auth0 reference  implementation to handle getting the access token from Auth0 |
-| isAuthenticated | <code>function</code> | Tells caller if the current user is authenticated. |
+| [isAuthenticated] | <code>function</code> | Tells caller if the current user is authenticated.  Different session types may determine if a user is authenticated in different ways. |
 | [logIn] | <code>function</code> | Is used by front-end code in the Auth0 reference implementation to   start the sign in process |
 | [logOut] | <code>function</code> | Is used by the front-end code in the Auth0 reference implementation   to sign the user out |
 
@@ -1049,6 +1049,20 @@ User provided configuration options
 | [interceptors] | <code>Object</code> |  | Axios interceptors that can transform requests and responses.   More information at [axios Interceptors](https://github.com/axios/axios#interceptors) |
 | [interceptors.request] | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |  | Interceptors that act on every request |
 | [intercepotrs.response] | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |  | Intereptors that act on every response |
+
+<a name="UserEventSubscription"></a>
+
+## UserEventSubscription : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| eventId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="UserProfile"></a>
 

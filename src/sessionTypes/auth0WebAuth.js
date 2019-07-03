@@ -97,6 +97,21 @@ class Auth0WebAuth {
   }
 
   /**
+   * Removes an audience's API token from the in-memory token storage
+   *
+   * @param audienceName
+   *
+   * @returns {Promise}
+   */
+  clearCurrentApiToken(audienceName) {
+    const promise = this._tokenPromises[audienceName] || Promise.resolve();
+
+    return promise.then(() => {
+      delete this._tokenPromises[audienceName];
+    });
+  }
+
+  /**
    * Requests an access token from Contxt Auth for the correct audience
    *
    * @param audienceName

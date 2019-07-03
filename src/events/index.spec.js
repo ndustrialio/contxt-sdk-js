@@ -614,4 +614,144 @@ describe('Events', function() {
       });
     });
   });
+
+  describe('subscribeEvent', function() {
+    context('when all the required parameters are provided', function() {
+      let expectedSubscription;
+      let promise;
+      let request;
+      let event;
+      let user;
+      let subscriptionFromServer;
+      let toCamelCase;
+
+      beforeEach(function() {
+        event = fixture.build('event');
+        user = fixture.build('contxtUser');
+
+        expectedSubscription = fixture.build('userEventSubscription');
+        subscriptionFromServer = fixture.build(
+          'userEventSubscription',
+          expectedSubscription,
+          {
+            fromServer: true
+          }
+        );
+
+        request = {
+          ...baseRequest,
+          post: sinon.stub().resolves(subscriptionFromServer)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedSubscription);
+
+        const events = new Events(baseSdk, request);
+        events._baseUrl = expectedHost;
+
+        promise = events.subscribeEvent(user.id, event.id);
+      });
+
+      it('creates the user event subscription', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/events/${event.id}`
+        );
+      });
+
+      it('formats the returned user event subscription', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(subscriptionFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the new user event subscription', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedSubscription
+        );
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const userEventSubscription = fixture.build('userEventSubscription');
+
+        const events = new Events(baseSdk, baseRequest);
+        const promise = events.subscribeEvent(
+          null,
+          userEventSubscription.eventId
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for subscribing a user to an event'
+        );
+      });
+    });
+
+    context('when the event ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+
+        const events = new Events(baseSdk, baseRequest);
+        const promise = events.subscribeEvent(user.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'An event ID is required for subscribing a user to an event'
+        );
+      });
+    });
+  });
+
+  describe('unsubscribeEvent', function() {
+    context('when all required parameters are provided', function() {
+      let userEventSubscription;
+      let user;
+      let promise;
+
+      beforeEach(function() {
+        userEventSubscription = fixture.build('userEventSubscription');
+        user = fixture.build('contxtUser');
+
+        const events = new Events(baseSdk, baseRequest);
+        events._baseUrl = expectedHost;
+
+        promise = events.unsubscribeEvent(user.id, userEventSubscription.id);
+      });
+
+      it('sends a request to unsubscribe the user from the event', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/subscriptions/${
+            userEventSubscription.id
+          }`
+        );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const userEventSubscription = fixture.build('userEventSubscription');
+        const events = new Events(baseSdk, baseRequest);
+        const promise = events.unsubscribeEvent(null, userEventSubscription.id);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required to unsubscribe a user from an event'
+        );
+      });
+    });
+
+    context('when the user event subscription ID is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const events = new Events(baseSdk, baseRequest);
+        const promise = events.unsubscribeEvent(user.id, null);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user event subscription ID is required for unsubscribing a user from an event'
+        );
+      });
+    });
+  });
 });
