@@ -22,9 +22,7 @@ describe('Coordinator/Consent', function() {
         }
       },
       auth: {
-        _getStoredSession: sinon.stub().returns({
-          accessToken: expectedAccessToken
-        })
+        getCurrentAccessToken: sinon.stub().resolves(expectedAccessToken)
       }
     };
     expectedHost = faker.internet.url();
@@ -71,7 +69,7 @@ describe('Coordinator/Consent', function() {
       });
 
       it('requests the current accessToken', function() {
-        expect(baseSdk.auth._getStoredSession).to.be.calledOnce;
+        expect(baseSdk.auth.getCurrentAccessToken).to.be.calledOnce;
       });
 
       it('makes a request to the server', function() {
@@ -102,7 +100,7 @@ describe('Coordinator/Consent', function() {
 
     context('when an access token is not found', function() {
       it('throws an error', function() {
-        baseSdk.auth._getStoredSession = sinon.stub().returns({});
+        baseSdk.auth.getCurrentAccessToken = sinon.stub().resolves();
         consent = new Consent(baseSdk, baseRequest, expectedHost);
 
         const promise = consent.accept(expectedConsentId);
@@ -129,7 +127,7 @@ describe('Coordinator/Consent', function() {
       });
 
       it('requests the current accessToken', function() {
-        expect(baseSdk.auth._getStoredSession).to.be.calledOnce;
+        expect(baseSdk.auth.getCurrentAccessToken).to.be.calledOnce;
       });
 
       it('makes a request to the server', function() {
@@ -150,7 +148,7 @@ describe('Coordinator/Consent', function() {
 
     context('when an access token is not found', function() {
       it('throws an error', function() {
-        baseSdk.auth._getStoredSession = sinon.stub().returns({});
+        baseSdk.auth.getCurrentAccessToken = sinon.stub().resolves();
         consent = new Consent(baseSdk, baseRequest, expectedHost);
 
         const promise = consent.get();

@@ -91,17 +91,17 @@ class Consent {
       );
     }
 
-    const { accessToken } = this._sdk.auth._getStoredSession();
+    return this._sdk.auth.getCurrentAccessToken().then((accessToken) => {
+      if (!accessToken) {
+        return Promise.reject(new Error('A valid JWT token is required'));
+      }
 
-    if (!accessToken) {
-      return Promise.reject(new Error('A valid JWT token is required'));
-    }
-
-    return this._request
-      .post(`${this._baseUrl}/consents/${consentId}/accept`, {
-        access_token: accessToken
-      })
-      .then((userApproval) => toCamelCase(userApproval));
+      return this._request
+        .post(`${this._baseUrl}/consents/${consentId}/accept`, {
+          access_token: accessToken
+        })
+        .then((userApproval) => toCamelCase(userApproval));
+    });
   }
 
   /**
@@ -125,17 +125,17 @@ class Consent {
    *   .catch((err) => console.log(err));
    */
   get() {
-    const { accessToken } = this._sdk.auth._getStoredSession();
+    return this._sdk.auth.getCurrentAccessToken().then((accessToken) => {
+      if (!accessToken) {
+        return Promise.reject(new Error('A valid JWT token is required'));
+      }
 
-    if (!accessToken) {
-      return Promise.reject(new Error('A valid JWT token is required'));
-    }
-
-    return this._request
-      .post(`${this._baseUrl}/applications/consent`, {
-        access_token: accessToken
-      })
-      .then((applicationConsent) => toCamelCase(applicationConsent));
+      return this._request
+        .post(`${this._baseUrl}/applications/consent`, {
+          access_token: accessToken
+        })
+        .then((applicationConsent) => toCamelCase(applicationConsent));
+    });
   }
 }
 
