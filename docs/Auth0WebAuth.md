@@ -21,6 +21,7 @@ enabled in Auth0.
 * [Auth0WebAuth](#Auth0WebAuth) : [<code>SessionType</code>](./Typedefs.md#SessionType)
     * [new Auth0WebAuth(sdk)](#new_Auth0WebAuth_new)
     * [.clearCurrentApiToken(audienceName)](#Auth0WebAuth+clearCurrentApiToken) ⇒ <code>Promise</code>
+    * [.getCurrentAccessToken()](#Auth0WebAuth+getCurrentAccessToken) ⇒ <code>Promise</code>
     * [.getCurrentApiToken(audienceName)](#Auth0WebAuth+getCurrentApiToken) ⇒ <code>Promise</code>
     * [.getProfile()](#Auth0WebAuth+getProfile) ⇒ <code>Promise</code>
     * [.handleAuthentication()](#Auth0WebAuth+handleAuthentication) ⇒ <code>Promise</code>
@@ -70,10 +71,17 @@ Removes an audience's API token from the in-memory token storage
 | --- |
 | audienceName | 
 
+<a name="Auth0WebAuth+getCurrentAccessToken"></a>
+
+### contxtSdk.auth.getCurrentAccessToken() ⇒ <code>Promise</code>
+Gets the current auth0 access token
+
+**Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
+**Fulfills**: <code>string</code> accessToken  
 <a name="Auth0WebAuth+getCurrentApiToken"></a>
 
 ### contxtSdk.auth.getCurrentApiToken(audienceName) ⇒ <code>Promise</code>
-Requests an access token from Contxt Auth for the correct audience
+Requests an api token from Contxt Auth for the correct audience
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
 **Fulfills**: <code>string</code> apiToken  

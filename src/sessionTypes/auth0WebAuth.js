@@ -112,7 +112,21 @@ class Auth0WebAuth {
   }
 
   /**
-   * Requests an access token from Contxt Auth for the correct audience
+   * Gets the current auth0 access token
+   *
+   * @returns {Promise}
+   * @fulfills {string} accessToken
+   */
+  getCurrentAccessToken() {
+    if (!this.isAuthenticated()) {
+      return Promise.reject(this._generateUnauthorizedError());
+    }
+
+    return Promise.resolve(this._sessionInfo.accessToken);
+  }
+
+  /**
+   * Requests an api token from Contxt Auth for the correct audience
    *
    * @param audienceName
    *
