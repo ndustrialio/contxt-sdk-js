@@ -114,7 +114,7 @@ describe('Coordinator/Consent', function() {
     });
   });
 
-  describe('verify', function() {
+  describe('get', function() {
     let consent;
 
     beforeEach(function() {
@@ -125,7 +125,7 @@ describe('Coordinator/Consent', function() {
       let promise;
 
       beforeEach(function() {
-        promise = consent.verify();
+        promise = consent.get();
       });
 
       it('requests the current accessToken', function() {
@@ -153,7 +153,7 @@ describe('Coordinator/Consent', function() {
         baseSdk.auth._getStoredSession = sinon.stub().returns({});
         consent = new Consent(baseSdk, baseRequest, expectedHost);
 
-        const promise = consent.verify();
+        const promise = consent.get();
 
         return expect(promise).to.be.rejectedWith(
           `A valid JWT token is required`

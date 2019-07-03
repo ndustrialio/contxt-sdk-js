@@ -8,7 +8,7 @@ Module for managing application consent
 * [Consent](#Consent)
     * [new Consent(sdk, request, baseUrl)](#new_Consent_new)
     * [.accept(consentId)](#Consent+accept) ⇒ <code>Promise</code>
-    * [.verify()](#Consent+verify) ⇒ <code>Promise</code>
+    * [.get()](#Consent+get) ⇒ <code>Promise</code>
 
 <a name="new_Consent_new"></a>
 
@@ -35,7 +35,7 @@ Method: POST
 
 | Param | Type | Description |
 | --- | --- | --- |
-| consentId | <code>string</code> | The ID of the consent form the user is accepting |
+| consentId | <code>string</code> | The ID of the consent form the user is accepting Note: Only valid for web users using auth0WebAuth session type |
 
 **Example**  
 ```js
@@ -44,14 +44,17 @@ contxtSdk.coordinator.consent
   .then((userApproval) => console.log(userApproval))
   .catch((err) => console.log(err));
 ```
-<a name="Consent+verify"></a>
+<a name="Consent+get"></a>
 
-### contxtSdk.coordinator.consent.verify() ⇒ <code>Promise</code>
-Verify if application consent is needed from the user
+### contxtSdk.coordinator.consent.get() ⇒ <code>Promise</code>
+Gets the current application version's consent forms. The current
+access_token will be used to derive which application is being consented to.
 
 
 API Endpoint: '/applications/consent'
 Method: POST
+
+Note: Only valid for web users using auth0WebAuth session type
 
 **Kind**: instance method of [<code>Consent</code>](#Consent)  
 **Fulfill**: [<code>ContxtApplicationConsent</code>](./Typedefs.md#ContxtApplicationConsent)  
@@ -59,7 +62,7 @@ Method: POST
 **Example**  
 ```js
 contxtSdk.coordinator.consent
-  .verify()
+  .get()
   .then((applicationConsent) => console.log(applicationConsent))
   .catch((err) => console.log(err));
 ```

@@ -72,6 +72,8 @@ class Consent {
    *
    * @param {string} consentId The ID of the consent form the user is accepting
    *
+   * Note: Only valid for web users using auth0WebAuth session type
+   *
    * @returns {Promise}
    * @fulfill {ContxtUserConsentApproval}
    * @reject {Error}
@@ -103,11 +105,14 @@ class Consent {
   }
 
   /**
-   * Verify if application consent is needed from the user
+   * Gets the current application version's consent forms. The current
+   * access_token will be used to derive which application is being consented to.
    *
    *
    * API Endpoint: '/applications/consent'
    * Method: POST
+   *
+   * Note: Only valid for web users using auth0WebAuth session type
    *
    * @returns {Promise}
    * @fulfill {ContxtApplicationConsent}
@@ -115,11 +120,11 @@ class Consent {
    *
    * @example
    * contxtSdk.coordinator.consent
-   *   .verify()
+   *   .get()
    *   .then((applicationConsent) => console.log(applicationConsent))
    *   .catch((err) => console.log(err));
    */
-  verify() {
+  get() {
     const { accessToken } = this._sdk.auth._getStoredSession();
 
     if (!accessToken) {
