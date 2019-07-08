@@ -2,7 +2,7 @@
 
 **Added**
 
-- Added `Coordinator.consent#get` for getting the current application version's consent form. The current access_token will be used to derive which application is being consented to.
+- Added `Coordinator.consent#getForCurrentApplication` for getting the current application version's consent form. The current access_token will be used to derive which application is being consented to.
 - Added `Coordinator.consent#accept` for accepting user consent to an applications
 
 ## [v1.6.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.5.0) (2019-06-25)

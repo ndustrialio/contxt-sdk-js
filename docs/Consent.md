@@ -8,7 +8,7 @@ Module for managing application consent
 * [Consent](#Consent)
     * [new Consent(sdk, request, baseUrl)](#new_Consent_new)
     * [.accept(consentId)](#Consent+accept) ⇒ <code>Promise</code>
-    * [.get()](#Consent+get) ⇒ <code>Promise</code>
+    * [.getForCurrentApplication()](#Consent+getForCurrentApplication) ⇒ <code>Promise</code>
 
 <a name="new_Consent_new"></a>
 
@@ -44,9 +44,9 @@ contxtSdk.coordinator.consent
   .then((userApproval) => console.log(userApproval))
   .catch((err) => console.log(err));
 ```
-<a name="Consent+get"></a>
+<a name="Consent+getForCurrentApplication"></a>
 
-### contxtSdk.coordinator.consent.get() ⇒ <code>Promise</code>
+### contxtSdk.coordinator.consent.getForCurrentApplication() ⇒ <code>Promise</code>
 Gets the current application version's consent forms. The current
 access_token will be used to derive which application is being consented to.
 
@@ -62,7 +62,7 @@ Note: Only valid for web users using auth0WebAuth session type
 **Example**  
 ```js
 contxtSdk.coordinator.consent
-  .get()
+  .getForCurrentApplication()
   .then((applicationConsent) => console.log(applicationConsent))
   .catch((err) => console.log(err));
 ```

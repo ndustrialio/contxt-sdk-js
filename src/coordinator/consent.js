@@ -120,11 +120,11 @@ class Consent {
    *
    * @example
    * contxtSdk.coordinator.consent
-   *   .get()
+   *   .getForCurrentApplication()
    *   .then((applicationConsent) => console.log(applicationConsent))
    *   .catch((err) => console.log(err));
    */
-  get() {
+  getForCurrentApplication() {
     return this._sdk.auth.getCurrentAccessToken().then((accessToken) => {
       if (!accessToken) {
         return Promise.reject(new Error('A valid JWT token is required'));
