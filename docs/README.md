@@ -52,6 +52,9 @@ environments. Documentation for browser environments is found under
 <dt><a href="./Config.md">Config</a></dt>
 <dd><p>Module that merges user assigned configurations with default configurations.</p>
 </dd>
+<dt><a href="./Consent.md">Consent</a></dt>
+<dd><p>Module for managing application consent</p>
+</dd>
 <dt><a href="./ContxtSdk.md">ContxtSdk</a></dt>
 <dd><p>ContxtSdk constructor</p>
 </dd>
@@ -169,9 +172,15 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 </dd>
 <dt><a href="./Typedefs.md#ContxtApplication">ContxtApplication</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#ContxtApplicationConsent">ContxtApplicationConsent</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#ContxtApplicationGrouping">ContxtApplicationGrouping</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtApplicationModule">ContxtApplicationModule</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtApplicationVersion">ContxtApplicationVersion</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtConsent">ContxtConsent</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtOrganization">ContxtOrganization</a> : <code>Object</code></dt>
 <dd></dd>
@@ -188,6 +197,8 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUserApplication">ContxtUserApplication</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#ContxtUserConsentApproval">ContxtUserConsentApproval</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUserFavoriteApplication">ContxtUserFavoriteApplication</a> : <code>Object</code></dt>
 <dd></dd>

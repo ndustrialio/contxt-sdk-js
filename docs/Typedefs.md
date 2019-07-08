@@ -238,6 +238,24 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | type | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtApplicationConsent"></a>
+
+## ContxtApplicationConsent : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| clientId | <code>string</code> |  |
+| clientSecret | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| currentVersion | [<code>ContxtApplicationVersion</code>](./Typedefs.md#ContxtApplicationVersion) | The current application version |
+| description | <code>string</code> | Application's description |
+| iconUrl | <code>string</code> | Application's icon url |
+| id | <code>number</code> | Application's ID |
+| name | <code>string</code> | Application's name |
+| serviceId | <code>number</code> | Application's service ID |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtApplicationGrouping"></a>
 
 ## ContxtApplicationGrouping : <code>Object</code>
@@ -267,6 +285,37 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | index | <code>number</code> | The position of the module within the list of all   modules of a the parent application grouping |
 | label | <code>string</code> |  |
 | slug | <code>string</code> | String that corresponds with a front-end package   name (e.g. the `@ndustrial/nsight-example` example application) |
+
+<a name="ContxtApplicationVersion"></a>
+
+## ContxtApplicationVersion : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| applicationId | <code>number</code> |  |
+| [consent] | [<code>ContxtConsent</code>](./Typedefs.md#ContxtConsent) | The consent model associated with this application version |
+| consentId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| description | <code>string</code> |  |
+| id | <code>string</code> | UUID |
+| label | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="ContxtConsent"></a>
+
+## ContxtConsent : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [effectiveEndDate] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| effectiveStartDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> | UUID |
+| text | <code>string</code> | The body of the consent form in HTML |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| userApproval | [<code>Array.&lt;ContxtUser&gt;</code>](#ContxtUser) | An array of users. If empty, the user has not consented |
 
 <a name="ContxtOrganization"></a>
 
@@ -395,6 +444,19 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | id | <code>string</code> |  |
 | userId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="ContxtUserConsentApproval"></a>
+
+## ContxtUserConsentApproval : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| consentId | <code>string</code> |  |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> | UUID |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| userId | <code>string</code> | UUID |
 
 <a name="ContxtUserFavoriteApplication"></a>
 

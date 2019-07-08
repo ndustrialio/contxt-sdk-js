@@ -1,4 +1,5 @@
 import Applications from './applications';
+import Consent from './consent';
 import Coordinator from './index';
 import EdgeNodes from './edgeNodes';
 import Organizations from './organizations';
@@ -53,6 +54,10 @@ describe('Coordinator', function() {
 
     it('appends an instance of Applications to the class instance', function() {
       expect(coordinator.applications).to.be.an.instanceof(Applications);
+    });
+
+    it('appends an instance of Consent to the class instance', function() {
+      expect(coordinator.consent).to.be.an.instanceof(Consent);
     });
 
     it('appends an instance of EdgeNodes to the class instance', function() {

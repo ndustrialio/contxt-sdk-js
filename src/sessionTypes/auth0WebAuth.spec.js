@@ -284,6 +284,72 @@ describe('sessionTypes/Auth0WebAuth', function() {
     );
   });
 
+  describe('getCurrentAccessToken', function() {
+    context('when the user is authenticaed', function() {
+      let expectedAccessToken;
+      let promise;
+
+      beforeEach(function() {
+        isAuthenticated.restore();
+        isAuthenticated = sinon
+          .stub(Auth0WebAuth.prototype, 'isAuthenticated')
+          .returns(true);
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+
+        expectedAccessToken = faker.internet.password();
+        auth0WebAuth._sessionInfo.accessToken = expectedAccessToken;
+
+        promise = auth0WebAuth.getCurrentAccessToken();
+      });
+
+      it('returns the current access token', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedAccessToken
+        );
+      });
+    });
+
+    context('when the user is not authenticated', function() {
+      let expectedError;
+      let generateUnauthorizedError;
+      let promise;
+
+      beforeEach(function() {
+        expectedError = new Error(faker.hacker.phrase());
+
+        generateUnauthorizedError = sinon
+          .stub(Auth0WebAuth.prototype, '_generateUnauthorizedError')
+          .returns(expectedError);
+
+        const auth0WebAuth = new Auth0WebAuth(sdk);
+
+        isAuthenticated.restore();
+        isAuthenticated = sinon
+          .stub(Auth0WebAuth.prototype, 'isAuthenticated')
+          .returns(false);
+
+        promise = auth0WebAuth.getCurrentAccessToken();
+      });
+
+      it('checks if the session has a valid token', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(isAuthenticated).to.be.calledOnce;
+        });
+      });
+
+      it('gets a generated `unauthorized` error', function() {
+        return promise.then(expect.fail).catch(() => {
+          expect(generateUnauthorizedError).to.be.calledOnce;
+        });
+      });
+
+      it('throws an error', function() {
+        return expect(promise).to.be.rejectedWith(expectedError);
+      });
+    });
+  });
+
   describe('getCurrentApiToken', function() {
     let expectedAudienceName;
 
