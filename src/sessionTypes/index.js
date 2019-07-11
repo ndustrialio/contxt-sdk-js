@@ -1,13 +1,25 @@
-import Auth0WebAuth, { TYPE as AUTH0_WEB_AUTH } from './auth0WebAuth';
-import PasswordGrantAuth, {
-  TYPE as PASSWORD_GRANT_AUTH
-} from './passwordGrantAuth';
-import MachineAuth, { TYPE as MACHINE_AUTH } from './machineAuth';
-
 const TYPES = {
-  AUTH0_WEB_AUTH,
-  PASSWORD_GRANT_AUTH,
-  MACHINE_AUTH
+  AUTH0_WEB_AUTH: 'auth0WebAuth',
+  MACHINE_AUTH: 'machineAuth',
+  PASSWORD_GRANT_AUTH: 'passwordGrantAuth'
 };
 
-export { Auth0WebAuth, PasswordGrantAuth, MachineAuth, TYPES };
+function Auth0WebAuth(...args) {
+  const Auth = require('./auth0WebAuth').default;
+
+  return new Auth(...args);
+}
+
+function MachineAuth(...args) {
+  const Auth = require('./machineAuth').default;
+
+  return new Auth(...args);
+}
+
+function PasswordGrantAuth(...args) {
+  const Auth = require('./passwordGrantAuth').default;
+
+  return new Auth(...args);
+}
+
+export { Auth0WebAuth, MachineAuth, PasswordGrantAuth, TYPES };
