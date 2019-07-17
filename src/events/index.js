@@ -297,7 +297,7 @@ class Events {
    *   .then((userEvent) => console.log(userEvent))
    *   .catch((err) => console.log(err));
    */
-  subscribeEvent(userId, eventId) {
+  subscribeUser(userId, eventId) {
     if (!userId) {
       return Promise.reject(
         new Error('A user ID is required for subscribing a user to an event')
@@ -333,7 +333,7 @@ class Events {
    *   .unsubscribeUser('auth0|saklafjheuaiweh', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
    *   .catch((err) => console.log(err));
    */
-  unsubscribeEvent(userId, userEventSubscriptionId) {
+  unsubscribeUser(userId, userEventSubscriptionId) {
     if (!userId) {
       return Promise.reject(
         new Error('A user ID is required to unsubscribe a user from an event')

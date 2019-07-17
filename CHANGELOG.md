@@ -1,3 +1,10 @@
+## [v1.8.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.8.0) (2019-07-17)
+
+**Changed**
+
+- Change method name
+  - Change .subscribeEvent to .subscribeUser and .unsubscribeEvent to .unsubscribeUser
+
 ## [v1.7.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v1.7.1) (2019-07-12)
 
 **Changed**

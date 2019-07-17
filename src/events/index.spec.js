@@ -615,7 +615,7 @@ describe('Events', function() {
     });
   });
 
-  describe('subscribeEvent', function() {
+  describe('subscribeUser', function() {
     context('when all the required parameters are provided', function() {
       let expectedSubscription;
       let promise;
@@ -649,7 +649,7 @@ describe('Events', function() {
         const events = new Events(baseSdk, request);
         events._baseUrl = expectedHost;
 
-        promise = events.subscribeEvent(user.id, event.id);
+        promise = events.subscribeUser(user.id, event.id);
       });
 
       it('creates the user event subscription', function() {
@@ -676,7 +676,7 @@ describe('Events', function() {
         const userEventSubscription = fixture.build('userEventSubscription');
 
         const events = new Events(baseSdk, baseRequest);
-        const promise = events.subscribeEvent(
+        const promise = events.subscribeUser(
           null,
           userEventSubscription.eventId
         );
@@ -692,7 +692,7 @@ describe('Events', function() {
         const user = fixture.build('contxtUser');
 
         const events = new Events(baseSdk, baseRequest);
-        const promise = events.subscribeEvent(user.id, null);
+        const promise = events.subscribeUser(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'An event ID is required for subscribing a user to an event'
@@ -701,7 +701,7 @@ describe('Events', function() {
     });
   });
 
-  describe('unsubscribeEvent', function() {
+  describe('unsubscribeUser', function() {
     context('when all required parameters are provided', function() {
       let userEventSubscription;
       let user;
@@ -714,7 +714,7 @@ describe('Events', function() {
         const events = new Events(baseSdk, baseRequest);
         events._baseUrl = expectedHost;
 
-        promise = events.unsubscribeEvent(user.id, userEventSubscription.id);
+        promise = events.unsubscribeUser(user.id, userEventSubscription.id);
       });
 
       it('sends a request to unsubscribe the user from the event', function() {
@@ -734,7 +734,7 @@ describe('Events', function() {
       it('throws an error', function() {
         const userEventSubscription = fixture.build('userEventSubscription');
         const events = new Events(baseSdk, baseRequest);
-        const promise = events.unsubscribeEvent(null, userEventSubscription.id);
+        const promise = events.unsubscribeUser(null, userEventSubscription.id);
 
         return expect(promise).to.be.rejectedWith(
           'A user ID is required to unsubscribe a user from an event'
@@ -746,7 +746,7 @@ describe('Events', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
         const events = new Events(baseSdk, baseRequest);
-        const promise = events.unsubscribeEvent(user.id, null);
+        const promise = events.unsubscribeUser(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'A user event subscription ID is required for unsubscribing a user from an event'
