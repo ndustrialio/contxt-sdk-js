@@ -13,8 +13,8 @@ of, information about different events
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
     * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
-    * [.subscribeEvent(userId, eventId)](#Events+subscribeEvent) ⇒ <code>Promise</code>
-    * [.unsubscribeEvent(userId, userEventSubscriptionId)](#Events+unsubscribeEvent) ⇒ <code>Promise</code>
+    * [.subscribeUser(userId, eventId)](#Events+subscribeUser) ⇒ <code>Promise</code>
+    * [.unsubscribeUser(userId, userEventSubscriptionId)](#Events+unsubscribeUser) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
     * [.createEventType(eventType)](#Events+createEventType) ⇒ <code>Promise</code>
 
@@ -164,9 +164,9 @@ contxtSdk.events
   .then((events) => console.log(events))
   .catch((err) => console.log(err));
 ```
-<a name="Events+subscribeEvent"></a>
+<a name="Events+subscribeUser"></a>
 
-### contxtSdk.events.subscribeEvent(userId, eventId) ⇒ <code>Promise</code>
+### contxtSdk.events.subscribeUser(userId, eventId) ⇒ <code>Promise</code>
 Subscribes an user to an event
 
 API Endpoint: '/users/:userId/events/:event_id'
@@ -188,9 +188,9 @@ contxtSdk.events
   .then((userEvent) => console.log(userEvent))
   .catch((err) => console.log(err));
 ```
-<a name="Events+unsubscribeEvent"></a>
+<a name="Events+unsubscribeUser"></a>
 
-### contxtSdk.events.unsubscribeEvent(userId, userEventSubscriptionId) ⇒ <code>Promise</code>
+### contxtSdk.events.unsubscribeUser(userId, userEventSubscriptionId) ⇒ <code>Promise</code>
 Removes an event subscription from a user
 
 API Endpoint: '/users/:userId/subscriptions/:user_event_subscription_id'
