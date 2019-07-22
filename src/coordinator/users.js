@@ -510,6 +510,33 @@ class Users {
       `${this._baseUrl}/users/${userId}/stacks/${stackId}`
     );
   }
+
+  /**
+   * Syncs the user's roles, servies, and application access with auth0
+   *
+   * API Endpoint: '/users/:userId/sync'
+   * Method: GET
+   *
+   * @param {string} userId The ID of the user
+   *
+   * @returns {Promise}
+   * @fulfill {undefined}
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.coordinator.users
+   *   .sync('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .catch((err) => console.log(err));
+   */
+  syncWithAuth0(userId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for syncing with auth0')
+      );
+    }
+
+    return this._request.get(`${this._baseUrl}/users/${userId}/sync`);
+  }
 }
 
 export default Users;
