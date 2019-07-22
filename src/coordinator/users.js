@@ -512,7 +512,7 @@ class Users {
   }
 
   /**
-   * Syncs the user's roles and application access with auth0
+   * Syncs the user's roles and application access with the external auth provider
    *
    * API Endpoint: '/users/:userId/sync'
    * Method: GET
@@ -525,13 +525,13 @@ class Users {
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .syncWithAuth0('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .sync('36b8421a-cc4a-4204-b839-1397374fb16b')
    *   .catch((err) => console.log(err));
    */
-  syncWithAuth0(userId) {
+  sync(userId) {
     if (!userId) {
       return Promise.reject(
-        new Error('A user ID is required for syncing with auth0')
+        new Error('A user ID is required for syncing user permissions')
       );
     }
 

@@ -2,7 +2,7 @@
 
 **Added**
 
-- Added `Coordinator.users#syncWithAuth0` for syncing a user's roles and application access with auth0
+- Added `Coordinator.users#sync` for syncing a user's roles and application access with the external authorization provider
 
 ## [v2.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.0.0) (2019-07-17)
 

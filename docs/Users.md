@@ -18,7 +18,7 @@ Module that provides access to contxt users
     * [.removeApplication(userId, applicationId)](#Users+removeApplication) ⇒ <code>Promise</code>
     * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
     * [.removeStack(userId, stackId)](#Users+removeStack) ⇒ <code>Promise</code>
-    * [.syncWithAuth0(userId)](#Users+syncWithAuth0) ⇒ <code>Promise</code>
+    * [.sync(userId)](#Users+sync) ⇒ <code>Promise</code>
 
 <a name="new_Users_new"></a>
 
@@ -310,10 +310,10 @@ contxtSdk.coordinator.users
   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```
-<a name="Users+syncWithAuth0"></a>
+<a name="Users+sync"></a>
 
-### contxtSdk.coordinator.users.syncWithAuth0(userId) ⇒ <code>Promise</code>
-Syncs the user's roles and application access with auth0
+### contxtSdk.coordinator.users.sync(userId) ⇒ <code>Promise</code>
+Syncs the user's roles and application access with the external auth provider
 
 API Endpoint: '/users/:userId/sync'
 Method: GET
@@ -329,6 +329,6 @@ Method: GET
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .syncWithAuth0('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .sync('36b8421a-cc4a-4204-b839-1397374fb16b')
   .catch((err) => console.log(err));
 ```
