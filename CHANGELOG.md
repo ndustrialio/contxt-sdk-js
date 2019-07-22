@@ -1,3 +1,9 @@
+## [v2.1.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.1.0) (2019-07-22)
+
+**Added**
+
+- Added `Coordinator.users#syncWithAuth0` for syncing a user's roles and application access with auth0
+
 ## [v2.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.0.0) (2019-07-17)
 
 **Breaking Changes**

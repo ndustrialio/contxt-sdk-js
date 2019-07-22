@@ -313,7 +313,7 @@ contxtSdk.coordinator.users
 <a name="Users+syncWithAuth0"></a>
 
 ### contxtSdk.coordinator.users.syncWithAuth0(userId) ⇒ <code>Promise</code>
-Syncs the user's roles, servies, and application access with auth0
+Syncs the user's roles and application access with auth0
 
 API Endpoint: '/users/:userId/sync'
 Method: GET
@@ -329,6 +329,6 @@ Method: GET
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .sync('36b8421a-cc4a-4204-b839-1397374fb16b')
+  .syncWithAuth0('36b8421a-cc4a-4204-b839-1397374fb16b')
   .catch((err) => console.log(err));
 ```
