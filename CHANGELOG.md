@@ -1,3 +1,9 @@
+## [v2.1.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.1.0) (2019-07-22)
+
+**Added**
+
+- Added `Coordinator.users#sync` for syncing a user's roles and application access with the external authorization provider
+
 ## [v2.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.0.0) (2019-07-17)
 
 **Breaking Changes**

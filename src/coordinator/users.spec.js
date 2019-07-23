@@ -850,4 +850,39 @@ describe('Coordinator/Users', function() {
       });
     });
   });
+
+  describe('sync', function() {
+    context('when all required parameters are present', function() {
+      let user;
+      let promise;
+
+      beforeEach(function() {
+        user = fixture.build('contxtUser');
+
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        promise = users.sync(user.id);
+      });
+
+      it('sends a request to sync user permissions', function() {
+        expect(baseRequest.get).to.be.calledWith(
+          `${expectedHost}/users/${user.id}/sync`
+        );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
+      });
+    });
+
+    context('when the user ID is not provided', function() {
+      it('throws an error', function() {
+        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const promise = users.sync(null);
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for syncing user permissions'
+        );
+      });
+    });
+  });
 });
