@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
@@ -106,7 +108,8 @@ class Users {
       }
     }
 
-    return this._request.post(
+    // Uses axios directly instead of this.request to bypass authorization interceptors
+    return axios.post(
       `${this._baseUrl}/users/${userId}/activate`,
       toSnakeCase(user)
     );
