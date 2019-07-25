@@ -58,7 +58,6 @@ describe('Coordinator/Users', function() {
       let promise;
       let request;
       let toSnakeCase;
-      let axiosStub;
 
       beforeEach(function() {
         user = fixture.build('contxtUser');
@@ -80,7 +79,7 @@ describe('Coordinator/Users', function() {
           post: sinon.stub().resolves()
         };
 
-        axiosStub = sinon.stub(axios, 'post').resolves();
+        sinon.stub(axios, 'post').resolves();
 
         toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
@@ -97,7 +96,7 @@ describe('Coordinator/Users', function() {
       });
 
       it('posts the new user to the server', function() {
-        expect(axiosStub).to.be.calledWith(
+        expect(axios.post).to.be.calledWith(
           `${expectedHost}/users/${user.id}/activate`,
           userActivationPayloadToServer
         );
