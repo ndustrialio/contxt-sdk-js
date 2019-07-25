@@ -1,3 +1,9 @@
+## [v2.1.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.1.1) (2019-07-25)
+
+**Fixed**
+
+- `Coordinator.users#activate` no longer attempts to attach an authorization header to the request
+
 ## [v2.1.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.1.0) (2019-07-22)
 
 **Added**

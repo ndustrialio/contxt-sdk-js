@@ -1,3 +1,4 @@
+import axios from 'axios';
 import omit from 'lodash.omit';
 
 import Users from './users';
@@ -57,6 +58,7 @@ describe('Coordinator/Users', function() {
       let promise;
       let request;
       let toSnakeCase;
+      let axiosStub;
 
       beforeEach(function() {
         user = fixture.build('contxtUser');
@@ -78,6 +80,8 @@ describe('Coordinator/Users', function() {
           post: sinon.stub().resolves()
         };
 
+        axiosStub = sinon.stub(axios, 'post').resolves();
+
         toSnakeCase = sinon
           .stub(objectUtils, 'toSnakeCase')
           .callsFake(() => userActivationPayloadToServer);
@@ -93,7 +97,7 @@ describe('Coordinator/Users', function() {
       });
 
       it('posts the new user to the server', function() {
-        expect(request.post).to.be.calledWith(
+        expect(axiosStub).to.be.calledWith(
           `${expectedHost}/users/${user.id}/activate`,
           userActivationPayloadToServer
         );
