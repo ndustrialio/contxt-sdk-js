@@ -4,6 +4,8 @@ import URL from 'url-parse';
 
 /**
  * @typedef {Object} UserProfile
+ * @property {string} email
+ * @property {boolean} email_verified
  * @property {string} name
  * @property {string} nickname
  * @property {string} picture URL to an avatar
@@ -88,7 +90,7 @@ class Auth0WebAuth {
       domain: 'ndustrial.auth0.com',
       redirectUri: `${currentUrl.origin}${currentUrl.pathname}`,
       responseType: 'token',
-      scope: 'profile openid'
+      scope: 'email profile openid'
     });
 
     if (this.isAuthenticated()) {
