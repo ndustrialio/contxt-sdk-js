@@ -1,3 +1,10 @@
+## [v2.2.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.2.0) (2019-08-13)
+
+**Added**
+
+- Added the `email` scope when signing in via Auth0WebAuth
+  - Provides additional information when getting a user's info from Auth0
+
 ## [v2.1.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.1.1) (2019-07-25)
 
 **Fixed**
