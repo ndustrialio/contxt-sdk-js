@@ -107,7 +107,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
             sdk.config.auth.authorizationPath
           }`,
           responseType: 'token',
-          scope: 'profile openid'
+          scope: 'email profile openid'
         });
       });
 

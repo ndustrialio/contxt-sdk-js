@@ -1072,6 +1072,8 @@ User provided configuration options
 
 | Name | Type | Description |
 | --- | --- | --- |
+| email | <code>string</code> |  |
+| email_verified | <code>boolean</code> |  |
 | name | <code>string</code> |  |
 | nickname | <code>string</code> |  |
 | picture | <code>string</code> | URL to an avatar |
