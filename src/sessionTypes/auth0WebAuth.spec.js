@@ -733,10 +733,16 @@ describe('sessionTypes/Auth0WebAuth', function() {
   describe('logOut', function() {
     let auth0WebAuth;
     let clearTimeout;
+    let expectedOptions;
     let expectedTokenRenewalTimeout;
     let localStorage;
 
     beforeEach(function() {
+      expectedOptions = {
+        federated: true,
+        returnTo: global.window.location,
+        [faker.hacker.adjective()]: faker.hacker.phrase()
+      };
       expectedTokenRenewalTimeout = faker.helpers.createTransaction();
 
       clearTimeout = sinon.stub(global, 'clearTimeout');
@@ -756,7 +762,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       };
       auth0WebAuth._sessionRenewalTimeout = expectedTokenRenewalTimeout;
 
-      auth0WebAuth.logOut();
+      auth0WebAuth.logOut(omit(expectedOptions, ['returnTo']));
     });
 
     it('resets the session info stored in the auth module instance', function() {
@@ -780,9 +786,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
 
     it('logs the user out from Auth0 and redirects to the project root', function() {
-      expect(webAuthSession.logout).to.be.calledWith({
-        returnTo: global.window.location
-      });
+      expect(webAuthSession.logout).to.be.calledWith(expectedOptions);
     });
   });
 
