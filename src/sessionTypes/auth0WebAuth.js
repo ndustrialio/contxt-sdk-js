@@ -244,8 +244,14 @@ class Auth0WebAuth {
   /**
    * Logs the user out by removing any stored session info, clearing any token
    * renewal, and redirecting to the root
+   *
+   * @param {Object} options
+   * @param {Boolean} [options.federated = false] Indicator for if Auth0 should
+   *   attempt to log out the user from an external IdP
+   * @param {String} [options.returnTo = window.location.origin] URL that the
+   *   user will be redirected to after a successful log out
    */
-  logOut() {
+  logOut(options) {
     this._sessionInfo = {};
     this._tokenPromises = {};
 
@@ -254,7 +260,10 @@ class Auth0WebAuth {
 
     clearTimeout(this._sessionRenewalTimeout);
 
-    this._auth0.logout({ returnTo: new URL(window.location).origin });
+    this._auth0.logout({
+      returnTo: new URL(window.location).origin,
+      ...options
+    });
   }
 
   /**

@@ -1,3 +1,9 @@
+## [v2.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.3.0) (2019-09-09)
+
+**Added**
+
+- Added the ability to pass options to the Auth0WebAuth#logOut method. This will be useful for setting up Single Logout between Auth0 and an external IdP
+
 ## [v2.2.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.2.0) (2019-08-13)
 
 **Added**
