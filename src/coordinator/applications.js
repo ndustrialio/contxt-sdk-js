@@ -82,7 +82,6 @@ class Applications {
    *
    * Note: Only valid for web users using auth0WebAuth session type
    *
-   * @param {string} organizationId The ID of the organization
    * @param {number} applicationId The ID of the application
    *
    * @returns {Promise}
@@ -91,19 +90,11 @@ class Applications {
    *
    * @example
    * contxtSdk.coordinator.applications
-   *   .addFavorite('36b8421a-cc4a-4204-b839-1397374fb16b', 25)
+   *   .addFavorite(25)
    *   .then((favoriteApplication) => console.log(favoriteApplication))
    *   .catch((err) => console.log(err));
    */
-  addFavorite(organizationId, applicationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error(
-          'An organization ID is required for creating a favorite application'
-        )
-      );
-    }
-
+  addFavorite(applicationId) {
     if (!applicationId) {
       return Promise.reject(
         new Error(
@@ -113,11 +104,7 @@ class Applications {
     }
 
     return this._request
-      .post(
-        `${
-          this._baseUrl
-        }/${organizationId}/applications/${applicationId}/favorites`
-      )
+      .post(`${this._baseUrl}/applications/${applicationId}/favorites`)
       .then((favoriteApplication) => toCamelCase(favoriteApplication));
   }
 
@@ -127,27 +114,19 @@ class Applications {
    * API Endpoint: '/applications'
    * Method: GET
    *
-   * @param {string} organizationId The ID of the organization
-   *
    * @returns {Promise}
    * @fulfill {ContxtApplication[]} Information about all contxt applications
    * @reject {Error}
    *
    * @example
    * contxtSdk.coordinator.applications
-   *   .getAll('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .getAll()
    *   .then((apps) => console.log(apps))
    *   .catch((err) => console.log(err));
    */
-  getAll(organizationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error('An organization ID is required for getting all applications')
-      );
-    }
-
+  getAll() {
     return this._request
-      .get(`${this._baseUrl}/${organizationId}/applications`)
+      .get(`${this._baseUrl}/applications`)
       .then((apps) => apps.map((app) => toCamelCase(app)));
   }
 
@@ -159,29 +138,19 @@ class Applications {
    *
    * Note: Only valid for web users using auth0WebAuth session type
    *
-   * @param {string} organizationId The ID of the organization
-   *
    * @returns {Promise}
    * @fulfill {ContxtUserFavoriteApplication[]} A list of favorited applications
    * @reject {Error}
    *
    * @example
    * contxtSdk.coordinator.applications
-   *   .getFavorites('36b8421a-cc4a-4204-b839-1397374fb16b')
+   *   .getFavorites()
    *   .then((favoriteApplications) => console.log(favoriteApplications))
    *   .catch((err) => console.log(err));
    */
-  getFavorites(organizationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error(
-          "An organization ID is required for getting a user's list of favorited applications"
-        )
-      );
-    }
-
+  getFavorites() {
     return this._request
-      .get(`${this._baseUrl}/${organizationId}/applications/favorites`)
+      .get(`${this._baseUrl}/applications/favorites`)
       .then((favoriteApps) => toCamelCase(favoriteApps));
   }
 
@@ -215,7 +184,9 @@ class Applications {
     }
 
     return this._request
-      .get(`${this._baseUrl}/${organizationId}/applications/featured`)
+      .get(
+        `${this._baseUrl}/organizations/${organizationId}/applications/featured`
+      )
       .then((featuredApplications) => toCamelCase(featuredApplications));
   }
 
@@ -226,7 +197,6 @@ class Applications {
    * API Endpoint: '/applications/:applicationId/groupings'
    * Method: GET
    *
-   * @param {string} organizationId The ID of the organization
    * @param {number} applicationId
    *
    * @returns {Promise}
@@ -235,33 +205,13 @@ class Applications {
    *
    * @example
    * contxtSdk.coordinator.applications
-   *   .getGroupings('36b8421a-cc4a-4204-b839-1397374fb16b', 31)
+   *   .getGroupings(31)
    *   .then((applicationGroupings) => console.log(applicationGroupings))
    *   .catch((err) => console.log(err));
    */
-  getGroupings(organizationId, applicationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error(
-          'An organization ID is required for getting application groupings of an application'
-        )
-      );
-    }
-
-    if (!applicationId) {
-      return Promise.reject(
-        new Error(
-          'An application ID is required for getting application groupings of an application'
-        )
-      );
-    }
-
+  getGroupings(applicationId) {
     return this._request
-      .get(
-        `${
-          this._baseUrl
-        }/${organizationId}/applications/${applicationId}/groupings`
-      )
+      .get(`${this._baseUrl}/applications/${applicationId}/groupings`)
       .then((groupings) => toCamelCase(groupings));
   }
 
@@ -273,7 +223,6 @@ class Applications {
    *
    * Note: Only valid for web users using auth0WebAuth session type
    *
-   * @param {string} organizationId The ID of the organization
    * @param {number} applicationId The ID of the application
    *
    * @returns {Promise}
@@ -282,18 +231,10 @@ class Applications {
    *
    * @example
    * contxtSdk.coordinator.applications
-   *   .removeFavorite('36b8421a-cc4a-4204-b839-1397374fb16b', 25)
+   *   .removeFavorite(25)
    *   .catch((err) => console.log(err));
    */
-  removeFavorite(organizationId, applicationId) {
-    if (!organizationId) {
-      return Promise.reject(
-        new Error(
-          'An organization ID is required for deleting a favorite application'
-        )
-      );
-    }
-
+  removeFavorite(applicationId) {
     if (!applicationId) {
       return Promise.reject(
         new Error(
@@ -303,9 +244,7 @@ class Applications {
     }
 
     return this._request.delete(
-      `${
-        this._baseUrl
-      }/${organizationId}/applications/${applicationId}/favorites`
+      `${this._baseUrl}/applications/${applicationId}/favorites`
     );
   }
 }

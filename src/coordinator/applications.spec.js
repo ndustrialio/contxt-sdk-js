@@ -1,7 +1,7 @@
 import Applications from './applications';
 import * as objectUtils from '../utils/objects';
 
-describe.only('Coordinator/Applications', function() {
+describe('Coordinator/Applications', function() {
   let baseRequest;
   let baseSdk;
   let expectedHost;
@@ -48,80 +48,55 @@ describe.only('Coordinator/Applications', function() {
   });
 
   describe('addFavorite', function() {
-    context(
-      'when the organizationID and application ID are provided',
-      function() {
-        let application;
-        let expectedApplicationFavorite;
-        let applicationFavoriteFromServer;
-        let organization;
-        let promise;
-        let request;
-        let toCamelCase;
+    context('when the application ID is provided', function() {
+      let application;
+      let expectedApplicationFavorite;
+      let applicationFavoriteFromServer;
+      let promise;
+      let request;
+      let toCamelCase;
 
-        beforeEach(function() {
-          application = fixture.build('contxtApplication');
+      beforeEach(function() {
+        application = fixture.build('contxtApplication');
 
-          expectedApplicationFavorite = fixture.build(
-            'contxtUserFavoriteApplication'
-          );
-          applicationFavoriteFromServer = fixture.build(
-            'contxtUserFavoriteApplication',
-            expectedApplicationFavorite,
-            {
-              fromServer: true
-            }
-          );
-
-          organization = fixture.build('organization');
-
-          request = {
-            ...baseRequest,
-            post: sinon.stub().resolves(applicationFavoriteFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .callsFake((app) => expectedApplicationFavorite);
-
-          const applications = new Applications(baseSdk, request, expectedHost);
-          promise = applications.addFavorite(organization.id, application.id);
-        });
-
-        it('posts the new application favorite to the server', function() {
-          expect(request.post).to.be.calledWith(
-            `${expectedHost}/${organization.id}/applications/${
-              application.id
-            }/favorites`
-          );
-        });
-
-        it('formats the application favorite', function() {
-          return promise.then(() => {
-            expect(toCamelCase).to.be.calledWith(applicationFavoriteFromServer);
-          });
-        });
-
-        it('returns a fulfilled promise with the application favorite', function() {
-          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-            expectedApplicationFavorite
-          );
-        });
-      }
-    );
-
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const applications = new Applications(
-          baseSdk,
-          baseRequest,
-          expectedHost
+        expectedApplicationFavorite = fixture.build(
+          'contxtUserFavoriteApplication'
         );
-        const application = fixture.build('contxtApplication');
+        applicationFavoriteFromServer = fixture.build(
+          'contxtUserFavoriteApplication',
+          expectedApplicationFavorite,
+          {
+            fromServer: true
+          }
+        );
 
-        const promise = applications.addFavorite(undefined, application.id);
+        request = {
+          ...baseRequest,
+          post: sinon.stub().resolves(applicationFavoriteFromServer)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .callsFake((app) => expectedApplicationFavorite);
 
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for creating a favorite application'
+        const applications = new Applications(baseSdk, request, expectedHost);
+        promise = applications.addFavorite(application.id);
+      });
+
+      it('posts the new application favorite to the server', function() {
+        expect(request.post).to.be.calledWith(
+          `${expectedHost}/applications/${application.id}/favorites`
+        );
+      });
+
+      it('formats the application favorite', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(applicationFavoriteFromServer);
+        });
+      });
+
+      it('returns a fulfilled promise with the application favorite', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          expectedApplicationFavorite
         );
       });
     });
@@ -133,9 +108,7 @@ describe.only('Coordinator/Applications', function() {
           baseRequest,
           expectedHost
         );
-        const organization = fixture.build('organization');
-
-        const promise = applications.addFavorite(organization);
+        const promise = applications.addFavorite();
 
         return expect(promise).to.be.rejectedWith(
           'An application ID is required for creating a favorite application'
@@ -145,151 +118,157 @@ describe.only('Coordinator/Applications', function() {
   });
 
   describe('getAll', function() {
-    context('when the organization ID is provided', function() {
-      let expectedApplications;
-      let applicationsFromServer;
-      let organization;
-      let promise;
-      let request;
-      let toCamelCase;
+    let expectedApplications;
+    let applicationsFromServer;
+    let promise;
+    let request;
+    let toCamelCase;
 
-      beforeEach(function() {
-        const numberOfApplications = faker.random.number({
-          min: 1,
-          max: 10
+    beforeEach(function() {
+      const numberOfApplications = faker.random.number({
+        min: 1,
+        max: 10
+      });
+      expectedApplications = fixture.buildList(
+        'contxtApplication',
+        numberOfApplications
+      );
+      applicationsFromServer = expectedApplications.map((app) =>
+        fixture.build('contxtApplication', app, { fromServer: true })
+      );
+
+      request = {
+        ...baseRequest,
+        get: sinon.stub().resolves(applicationsFromServer)
+      };
+      toCamelCase = sinon
+        .stub(objectUtils, 'toCamelCase')
+        .callsFake((app) =>
+          expectedApplications.find(({ id }) => id === app.id)
+        );
+
+      const applications = new Applications(baseSdk, request, expectedHost);
+      promise = applications.getAll();
+    });
+
+    it('gets the list of applications from the server', function() {
+      expect(request.get).to.be.calledWith(`${expectedHost}/applications`);
+    });
+
+    it('formats the list of applications', function() {
+      return promise.then(() => {
+        expect(toCamelCase).to.have.callCount(applicationsFromServer.length);
+        applicationsFromServer.forEach((app) => {
+          expect(toCamelCase).to.be.calledWith(app);
         });
-        expectedApplications = fixture.buildList(
-          'contxtApplication',
-          numberOfApplications
-        );
-        applicationsFromServer = expectedApplications.map((app) =>
-          fixture.build('contxtApplication', app, { fromServer: true })
-        );
-
-        organization = fixture.build('organization');
-
-        request = {
-          ...baseRequest,
-          get: sinon.stub().resolves(applicationsFromServer)
-        };
-        toCamelCase = sinon
-          .stub(objectUtils, 'toCamelCase')
-          .callsFake((app) =>
-            expectedApplications.find(({ id }) => id === app.id)
-          );
-
-        const applications = new Applications(baseSdk, request, expectedHost);
-        promise = applications.getAll(organization.id);
-      });
-
-      it('gets the list of applications from the server', function() {
-        expect(request.get).to.be.calledWith(
-          `${expectedHost}/${organization.id}/applications`
-        );
-      });
-
-      it('formats the list of applications', function() {
-        return promise.then(() => {
-          expect(toCamelCase).to.have.callCount(applicationsFromServer.length);
-          applicationsFromServer.forEach((app) => {
-            expect(toCamelCase).to.be.calledWith(app);
-          });
-        });
-      });
-
-      it('returns a fulfilled promise with the applications', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          expectedApplications
-        );
       });
     });
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const applications = new Applications(
-          baseSdk,
-          baseRequest,
-          expectedHost
-        );
-
-        const promise = applications.getAll();
-
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for getting all applications'
-        );
-      });
+    it('returns a fulfilled promise with the applications', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        expectedApplications
+      );
     });
   });
 
   describe('getFavorites', function() {
-    context('when the organization ID is provided', function() {
-      let expectedFavoriteApplications;
-      let favoritesFromServer;
-      let organization;
-      let promise;
-      let request;
-      let toCamelCase;
+    let expectedFavoriteApplications;
+    let favoritesFromServer;
+    let promise;
+    let request;
+    let toCamelCase;
 
-      beforeEach(function() {
-        expectedFavoriteApplications = fixture.buildList(
-          'contxtUserFavoriteApplication',
-          faker.random.number({
-            min: 1,
-            max: 10
-          })
-        );
-        favoritesFromServer = expectedFavoriteApplications.map((app) =>
-          fixture.build('contxtUserFavoriteApplication', app, {
-            fromServer: true
-          })
-        );
-        organization = fixture.build('organization');
+    beforeEach(function() {
+      expectedFavoriteApplications = fixture.buildList(
+        'contxtUserFavoriteApplication',
+        faker.random.number({
+          min: 1,
+          max: 10
+        })
+      );
+      favoritesFromServer = expectedFavoriteApplications.map((app) =>
+        fixture.build('contxtUserFavoriteApplication', app, {
+          fromServer: true
+        })
+      );
 
-        request = {
-          ...baseRequest,
-          get: sinon.stub().resolves(favoritesFromServer)
-        };
-        toCamelCase = sinon
-          .stub(objectUtils, 'toCamelCase')
-          .returns(expectedFavoriteApplications);
+      request = {
+        ...baseRequest,
+        get: sinon.stub().resolves(favoritesFromServer)
+      };
+      toCamelCase = sinon
+        .stub(objectUtils, 'toCamelCase')
+        .returns(expectedFavoriteApplications);
 
-        const applications = new Applications(baseSdk, request, expectedHost);
-        promise = applications.getFavorites(organization.id);
-      });
+      const applications = new Applications(baseSdk, request, expectedHost);
+      promise = applications.getFavorites();
+    });
 
-      it('gets the list of favorite applications from the server', function() {
-        expect(request.get).to.be.calledWith(
-          `${expectedHost}/${organization.id}/applications/favorites`
-        );
-      });
+    it('gets the list of favorite applications from the server', function() {
+      expect(request.get).to.be.calledWith(
+        `${expectedHost}/applications/favorites`
+      );
+    });
 
-      it('formats the list of favorite applications', function() {
-        return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(favoritesFromServer);
-        });
-      });
-
-      it('returns a fulfilled promise with the favorite applications', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          expectedFavoriteApplications
-        );
+    it('formats the list of favorite applications', function() {
+      return promise.then(() => {
+        expect(toCamelCase).to.be.calledWith(favoritesFromServer);
       });
     });
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const applications = new Applications(
-          baseSdk,
-          baseRequest,
-          expectedHost
-        );
+    it('returns a fulfilled promise with the favorite applications', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        expectedFavoriteApplications
+      );
+    });
+  });
 
-        const promise = applications.getFavorites();
+  describe('getGroupings', function() {
+    let expectedApplicationId;
+    let expectedGroupings;
+    let groupingsFromServer;
+    let promise;
+    let request;
+    let toCamelCase;
 
-        return expect(promise).to.be.rejectedWith(
-          "An organization ID is required for getting a user's list of favorited applications"
-        );
+    beforeEach(function() {
+      expectedApplicationId = faker.random.uuid();
+      expectedGroupings = fixture.buildList(
+        'applicationGrouping',
+        faker.random.number({ min: 1, max: 10 })
+      );
+      groupingsFromServer = expectedGroupings.map((grouping) =>
+        fixture.build('applicationGrouping', grouping, { fromServer: true })
+      );
+
+      request = {
+        ...baseRequest,
+        get: sinon.stub().resolves(groupingsFromServer)
+      };
+      toCamelCase = sinon
+        .stub(objectUtils, 'toCamelCase')
+        .returns(expectedGroupings);
+
+      const applications = new Applications(baseSdk, request, expectedHost);
+      promise = applications.getGroupings(expectedApplicationId);
+    });
+
+    it('gets the list of application groupings', function() {
+      expect(request.get).to.be.calledWith(
+        `${expectedHost}/applications/${expectedApplicationId}/groupings`
+      );
+    });
+
+    it('formats the list of application groupings', function() {
+      return promise.then(() => {
+        expect(toCamelCase).to.be.calledWith(groupingsFromServer);
       });
+    });
+
+    it('returns a fulfilled promise with the application groupings', function() {
+      return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+        expectedGroupings
+      );
     });
   });
 
@@ -335,7 +314,7 @@ describe.only('Coordinator/Applications', function() {
 
       it('gets the list of featured applications from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/${expectedOrganizationId}/applications/featured`
+          `${expectedHost}/organizations/${expectedOrganizationId}/applications/featured`
         );
       });
 
@@ -368,149 +347,30 @@ describe.only('Coordinator/Applications', function() {
     });
   });
 
-  describe('getGroupings', function() {
-    context(
-      'when the organization ID and application ID are provided',
-      function() {
-        let expectedApplicationId;
-        let expectedGroupings;
-        let groupingsFromServer;
-        let organization;
-        let promise;
-        let request;
-        let toCamelCase;
-
-        beforeEach(function() {
-          expectedApplicationId = faker.random.uuid();
-          expectedGroupings = fixture.buildList(
-            'applicationGrouping',
-            faker.random.number({ min: 1, max: 10 })
-          );
-          groupingsFromServer = expectedGroupings.map((grouping) =>
-            fixture.build('applicationGrouping', grouping, { fromServer: true })
-          );
-          organization = fixture.build('organization');
-
-          request = {
-            ...baseRequest,
-            get: sinon.stub().resolves(groupingsFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .returns(expectedGroupings);
-
-          const applications = new Applications(baseSdk, request, expectedHost);
-          promise = applications.getGroupings(
-            organization.id,
-            expectedApplicationId
-          );
-        });
-
-        it('gets the list of application groupings', function() {
-          expect(request.get).to.be.calledWith(
-            `${expectedHost}/${
-              organization.id
-            }/applications/${expectedApplicationId}/groupings`
-          );
-        });
-
-        it('formats the list of application groupings', function() {
-          return promise.then(() => {
-            expect(toCamelCase).to.be.calledWith(groupingsFromServer);
-          });
-        });
-
-        it('returns a fulfilled promise with the application groupings', function() {
-          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-            expectedGroupings
-          );
-        });
-      }
-    );
-
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const applications = new Applications(
-          baseSdk,
-          baseRequest,
-          expectedHost
-        );
-        const application = fixture.build('contxtApplication');
-        const promise = applications.getGroupings(undefined, application.id);
-
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for getting application groupings of an application'
-        );
-      });
-    });
-
-    context('when the application ID is not provided', function() {
-      it('throws an error', function() {
-        const applications = new Applications(
-          baseSdk,
-          baseRequest,
-          expectedHost
-        );
-        const organization = fixture.build('organization');
-        const promise = applications.getGroupings(organization.id);
-
-        return expect(promise).to.be.rejectedWith(
-          'An application ID is required for getting application groupings of an application'
-        );
-      });
-    });
-  });
-
   describe('removeFavorite', function() {
-    context(
-      'when the organization ID and application ID are provided',
-      function() {
-        let application;
-        let organization;
-        let promise;
+    context('when the application ID is provided', function() {
+      let application;
+      let promise;
 
-        beforeEach(function() {
-          application = fixture.build('contxtApplication');
-          organization = fixture.build('organization');
+      beforeEach(function() {
+        application = fixture.build('contxtApplication');
 
-          const applications = new Applications(
-            baseSdk,
-            baseRequest,
-            expectedHost
-          );
-          promise = applications.removeFavorite(
-            organization.id,
-            application.id
-          );
-        });
-
-        it('requests to delete the application favorite', function() {
-          expect(baseRequest.delete).to.be.calledWith(
-            `${expectedHost}/${organization.id}/applications/${
-              application.id
-            }/favorites`
-          );
-        });
-
-        it('returns a resolved promise', function() {
-          return expect(promise).to.be.fulfilled;
-        });
-      }
-    );
-
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
         const applications = new Applications(
           baseSdk,
           baseRequest,
           expectedHost
         );
-        const application = fixture.build('contxtApplication');
-        const promise = applications.removeFavorite(undefined, application.id);
+        promise = applications.removeFavorite(application.id);
+      });
 
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for deleting a favorite application'
+      it('requests to delete the application favorite', function() {
+        expect(baseRequest.delete).to.be.calledWith(
+          `${expectedHost}/applications/${application.id}/favorites`
         );
+      });
+
+      it('returns a resolved promise', function() {
+        return expect(promise).to.be.fulfilled;
       });
     });
 
@@ -521,8 +381,7 @@ describe.only('Coordinator/Applications', function() {
           baseRequest,
           expectedHost
         );
-        const organization = fixture.build('organization');
-        const promise = applications.removeFavorite(organization.id);
+        const promise = applications.removeFavorite();
 
         return expect(promise).to.be.rejectedWith(
           'An application ID is required for deleting a favorite application'

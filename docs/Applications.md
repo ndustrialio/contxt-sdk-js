@@ -10,7 +10,7 @@ Module that provides access to contxt applications
     * [.addFavorite(applicationId)](#Applications+addFavorite) ⇒ <code>Promise</code>
     * [.getAll()](#Applications+getAll) ⇒ <code>Promise</code>
     * [.getFavorites()](#Applications+getFavorites) ⇒ <code>Promise</code>
-    * [.getFeatured()](#Applications+getFeatured) ⇒ <code>Promise</code>
+    * [.getFeatured(organizationId)](#Applications+getFeatured) ⇒ <code>Promise</code>
     * [.getGroupings(applicationId)](#Applications+getGroupings) ⇒ <code>Promise</code>
     * [.removeFavorite(applicationId)](#Applications+removeFavorite) ⇒ <code>Promise</code>
 
@@ -89,7 +89,7 @@ contxtSdk.coordinator.applications
 ```
 <a name="Applications+getFeatured"></a>
 
-### contxtSdk.coordinator.applications.getFeatured() ⇒ <code>Promise</code>
+### contxtSdk.coordinator.applications.getFeatured(organizationId) ⇒ <code>Promise</code>
 Gets an organization's list of featured applications
 
 API Endpoint: '/organizations/:organizationId/applications/featured'
@@ -100,10 +100,15 @@ Note: Only valid for web users using auth0WebAuth session type
 **Kind**: instance method of [<code>Applications</code>](#Applications)  
 **Fulfill**: <code>ContxtOrganizationFeaturedApplication[]</code> A list of featured applications  
 **Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+
 **Example**  
 ```js
 contxtSdk.coordinator.applications
-  .getFeatured()
+  .getFeatured('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((featuredApplications) => console.log(featuredApplications))
   .catch((err) => console.log(err));
 ```
