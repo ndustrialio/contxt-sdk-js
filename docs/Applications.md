@@ -7,12 +7,12 @@ Module that provides access to contxt applications
 
 * [Applications](#Applications)
     * [new Applications(sdk, request, baseUrl)](#new_Applications_new)
-    * [.addFavorite(applicationId)](#Applications+addFavorite) ⇒ <code>Promise</code>
-    * [.getAll()](#Applications+getAll) ⇒ <code>Promise</code>
-    * [.getFavorites()](#Applications+getFavorites) ⇒ <code>Promise</code>
+    * [.addFavorite(organizationId, applicationId)](#Applications+addFavorite) ⇒ <code>Promise</code>
+    * [.getAll(organizationId)](#Applications+getAll) ⇒ <code>Promise</code>
+    * [.getFavorites(organizationId)](#Applications+getFavorites) ⇒ <code>Promise</code>
     * [.getFeatured(organizationId)](#Applications+getFeatured) ⇒ <code>Promise</code>
-    * [.getGroupings(applicationId)](#Applications+getGroupings) ⇒ <code>Promise</code>
-    * [.removeFavorite(applicationId)](#Applications+removeFavorite) ⇒ <code>Promise</code>
+    * [.getGroupings(organizationId, applicationId)](#Applications+getGroupings) ⇒ <code>Promise</code>
+    * [.removeFavorite(organizationId, applicationId)](#Applications+removeFavorite) ⇒ <code>Promise</code>
 
 <a name="new_Applications_new"></a>
 
@@ -26,7 +26,7 @@ Module that provides access to contxt applications
 
 <a name="Applications+addFavorite"></a>
 
-### contxtSdk.coordinator.applications.addFavorite(applicationId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.applications.addFavorite(organizationId, applicationId) ⇒ <code>Promise</code>
 Adds an application to the current user's list of favorited applications
 
 API Endpoint: '/applications/:applicationId/favorites'
@@ -40,18 +40,19 @@ Note: Only valid for web users using auth0WebAuth session type
 
 | Param | Type | Description |
 | --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
 | applicationId | <code>number</code> | The ID of the application |
 
 **Example**  
 ```js
 contxtSdk.coordinator.applications
-  .addFavorite(25)
+  .addFavorite('36b8421a-cc4a-4204-b839-1397374fb16b', 25)
   .then((favoriteApplication) => console.log(favoriteApplication))
   .catch((err) => console.log(err));
 ```
 <a name="Applications+getAll"></a>
 
-### contxtSdk.coordinator.applications.getAll() ⇒ <code>Promise</code>
+### contxtSdk.coordinator.applications.getAll(organizationId) ⇒ <code>Promise</code>
 Gets information about all contxt applications
 
 API Endpoint: '/applications'
@@ -60,16 +61,21 @@ Method: GET
 **Kind**: instance method of [<code>Applications</code>](#Applications)  
 **Fulfill**: <code>ContxtApplication[]</code> Information about all contxt applications  
 **Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+
 **Example**  
 ```js
 contxtSdk.coordinator.applications
-  .getAll()
+  .getAll('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((apps) => console.log(apps))
   .catch((err) => console.log(err));
 ```
 <a name="Applications+getFavorites"></a>
 
-### contxtSdk.coordinator.applications.getFavorites() ⇒ <code>Promise</code>
+### contxtSdk.coordinator.applications.getFavorites(organizationId) ⇒ <code>Promise</code>
 Gets the current user's list of favorited applications
 
 API Endpoint: '/applications/favorites'
@@ -80,10 +86,15 @@ Note: Only valid for web users using auth0WebAuth session type
 **Kind**: instance method of [<code>Applications</code>](#Applications)  
 **Fulfill**: <code>ContxtUserFavoriteApplication[]</code> A list of favorited applications  
 **Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+
 **Example**  
 ```js
 contxtSdk.coordinator.applications
-  .getFavorites()
+  .getFavorites('36b8421a-cc4a-4204-b839-1397374fb16b')
   .then((favoriteApplications) => console.log(favoriteApplications))
   .catch((err) => console.log(err));
 ```
@@ -114,7 +125,7 @@ contxtSdk.coordinator.applications
 ```
 <a name="Applications+getGroupings"></a>
 
-### contxtSdk.coordinator.applications.getGroupings(applicationId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.applications.getGroupings(organizationId, applicationId) ⇒ <code>Promise</code>
 Gets the application groupings (and application modules) of an application
 that are available to the currently authenticated user.
 
@@ -125,20 +136,21 @@ Method: GET
 **Fulfill**: <code>ContxtApplicationGrouping[]</code>  
 **Reject**: <code>Error</code>  
 
-| Param | Type |
-| --- | --- |
-| applicationId | <code>number</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
+| applicationId | <code>number</code> |  |
 
 **Example**  
 ```js
 contxtSdk.coordinator.applications
-  .getGroupings(31)
+  .getGroupings('36b8421a-cc4a-4204-b839-1397374fb16b', 31)
   .then((applicationGroupings) => console.log(applicationGroupings))
   .catch((err) => console.log(err));
 ```
 <a name="Applications+removeFavorite"></a>
 
-### contxtSdk.coordinator.applications.removeFavorite(applicationId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.applications.removeFavorite(organizationId, applicationId) ⇒ <code>Promise</code>
 Removes an application from the current user's list of favorited applications
 
 API Endpoint: '/applications/:applicationId/favorites'
@@ -152,11 +164,12 @@ Note: Only valid for web users using auth0WebAuth session type
 
 | Param | Type | Description |
 | --- | --- | --- |
+| organizationId | <code>string</code> | The ID of the organization |
 | applicationId | <code>number</code> | The ID of the application |
 
 **Example**  
 ```js
 contxtSdk.coordinator.applications
-  .removeFavorite(25)
+  .removeFavorite('36b8421a-cc4a-4204-b839-1397374fb16b', 25)
   .catch((err) => console.log(err));
 ```
