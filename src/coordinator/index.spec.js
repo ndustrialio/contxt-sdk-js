@@ -40,8 +40,12 @@ describe('Coordinator', function() {
 
     it('sets a base url for the class instance', function() {
       expect(coordinator._baseUrl).to.equal(
-        `${baseSdk.config.audiences.coordinator.host}/contxt/v1`
+        `${baseSdk.config.audiences.coordinator.host}/v1`
       );
+    });
+
+    it('sets the organization ID to null', function() {
+      expect(coordinator._organizationId).to.equal(null);
     });
 
     it('appends the supplied request module to the class instance', function() {
@@ -78,6 +82,66 @@ describe('Coordinator', function() {
 
     it('appends an instance of Users to the class instance', function() {
       expect(coordinator.users).to.be.an.instanceof(Users);
+    });
+  });
+
+  describe('setOrganizationId', function() {
+    let coordinator;
+    let organization;
+
+    beforeEach(function() {
+      coordinator = new Coordinator(baseSdk, baseRequest);
+      organization = fixture.build('organization');
+    });
+
+    context('when an organization ID is provided', function() {
+      beforeEach(function() {
+        coordinator.setOrganizationId(organization.id);
+      });
+
+      it('sets the organization ID for the class instance', function() {
+        expect(coordinator._organizationId).to.equal(organization.id);
+      });
+
+      it('sets the base url to be the new tenant url', function() {
+        expect(coordinator._baseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+            organization.id
+          }`
+        );
+      });
+
+      it('appends a new instance of Application to the class instance with the tenant base url', function() {
+        expect(coordinator.applications).to.be.an.instanceof(Applications);
+        expect(coordinator.applications._baseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+            organization.id
+          }`
+        );
+      });
+    });
+
+    context('when an organization ID provided is null', function() {
+      beforeEach(function() {
+        coordinator.setOrganizationId(null);
+      });
+
+      it('sets the organization ID for the class instance to null', function() {
+        expect(coordinator._organizationId).to.equal(null);
+      });
+
+      it('sets the base url to be the legacy url', function() {
+        expect(coordinator._baseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/v1`
+        );
+      });
+
+      it('appends a new instance of Application to the class instance with the legacy base url', function() {
+        expect(coordinator.applications).to.be.an.instanceof(Applications);
+        expect(coordinator.applications._baseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/v1`
+        );
+      });
     });
   });
 });
