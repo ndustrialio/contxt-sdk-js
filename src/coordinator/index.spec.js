@@ -40,7 +40,7 @@ describe('Coordinator', function() {
 
     it('sets a base url for the class instance', function() {
       expect(coordinator._baseUrl).to.equal(
-        `${baseSdk.config.audiences.coordinator.host}/v1`
+        `${baseSdk.config.audiences.coordinator.host}/contxt/v1`
       );
     });
 

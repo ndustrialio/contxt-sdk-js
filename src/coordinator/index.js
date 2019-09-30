@@ -17,7 +17,7 @@ class Coordinator {
    * @param {Object} request An instance of the request module tied to this module's audience.
    */
   constructor(sdk, request) {
-    const baseUrl = `${sdk.config.audiences.coordinator.host}/v1`;
+    const baseUrl = `${sdk.config.audiences.coordinator.host}/contxt/v1`;
 
     this._baseUrl = baseUrl;
     this._request = request;
