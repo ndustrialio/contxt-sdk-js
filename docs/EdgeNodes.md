@@ -6,25 +6,27 @@ Module that provides access to contxt edge nodes
 **Kind**: global class  
 
 * [EdgeNodes](#EdgeNodes)
-    * [new EdgeNodes(sdk, request, baseUrl)](#new_EdgeNodes_new)
-    * [.get(organizationId, edgeNodeClientId)](#EdgeNodes+get) ⇒ <code>Promise</code>
+    * [new EdgeNodes(sdk, request, baseUrl, [organizationId])](#new_EdgeNodes_new)
+    * [.get([organizationId], edgeNodeClientId)](#EdgeNodes+get) ⇒ <code>Promise</code>
 
 <a name="new_EdgeNodes_new"></a>
 
-### new EdgeNodes(sdk, request, baseUrl)
+### new EdgeNodes(sdk, request, baseUrl, [organizationId])
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
-| request | <code>Object</code> | An instance of the request module tied to this module's audience. |
-| baseUrl | <code>string</code> | The base URL provided by the parent module |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sdk | <code>Object</code> |  | An instance of the SDK so the module can communicate with other modules |
+| request | <code>Object</code> |  | An instance of the request module tied to this module's audience. |
+| baseUrl | <code>string</code> |  | The base URL provided by the parent module |
+| [organizationId] | <code>string</code> | <code>null</code> | The organization ID to be used in tenant url requests |
 
 <a name="EdgeNodes+get"></a>
 
-### contxtSdk.coordinator.edgeNodes.get(organizationId, edgeNodeClientId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.edgeNodes.get([organizationId], edgeNodeClientId) ⇒ <code>Promise</code>
 Get an edge node
 
-API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeClientId'
+Legacy API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeClientId'
+API Endpoint: 'edgenodes/:edgeNodeClientId'
 METHOD: GET
 
 **Kind**: instance method of [<code>EdgeNodes</code>](#EdgeNodes)  
@@ -33,7 +35,7 @@ METHOD: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | UUID |
+| [organizationId] | <code>string</code> | UUID Required when using the legacy API |
 | edgeNodeClientId | <code>string</code> |  |
 
 **Example**  
