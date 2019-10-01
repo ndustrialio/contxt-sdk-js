@@ -1,7 +1,7 @@
 import Applications from './applications';
 import * as objectUtils from '../utils/objects';
 
-describe.only('Coordinator/Applications', function() {
+describe('Coordinator/Applications', function() {
   let baseRequest;
   let baseSdk;
   let expectedHost;
@@ -28,22 +28,60 @@ describe.only('Coordinator/Applications', function() {
   });
 
   describe('constructor', function() {
-    let applications;
+    context('when organization ID is provided', function() {
+      let applications;
+      let organizationId;
 
-    beforeEach(function() {
-      applications = new Applications(baseSdk, baseRequest, expectedHost);
+      beforeEach(function() {
+        organizationId = fixture.build('organization').id;
+
+        applications = new Applications(
+          baseSdk,
+          baseRequest,
+          expectedHost,
+          organizationId
+        );
+      });
+
+      it('sets a base url for the class instance', function() {
+        expect(applications._baseUrl).to.equal(expectedHost);
+      });
+
+      it('appends the supplied request module to the class instance', function() {
+        expect(applications._request).to.deep.equal(baseRequest);
+      });
+
+      it('appends the supplied sdk to the class instance', function() {
+        expect(applications._sdk).to.deep.equal(baseSdk);
+      });
+
+      it('sets the organization ID for the class instance', function() {
+        expect(applications._organizationId).to.equal(organizationId);
+      });
     });
 
-    it('sets a base url for the class instance', function() {
-      expect(applications._baseUrl).to.equal(expectedHost);
-    });
+    context('when organization ID is not provided', function() {
+      let applications;
 
-    it('appends the supplied request module to the class instance', function() {
-      expect(applications._request).to.deep.equal(baseRequest);
-    });
+      beforeEach(function() {
+        applications = new Applications(baseSdk, baseRequest, expectedHost);
+      });
 
-    it('appends the supplied sdk to the class instance', function() {
-      expect(applications._sdk).to.deep.equal(baseSdk);
+      it('sets a base url for the class instance', function() {
+        expect(applications._baseUrl).to.equal(expectedHost);
+      });
+
+      it('appends the supplied request module to the class instance', function() {
+        expect(applications._request).to.deep.equal(baseRequest);
+      });
+
+      it('appends the supplied sdk to the class instance', function() {
+        expect(applications._sdk).to.deep.equal(baseSdk);
+      });
+
+      it('sets the organization ID for the class instance', function() {
+        expect(applications._organizationId).to.equal(null);
+      });
     });
   });
 

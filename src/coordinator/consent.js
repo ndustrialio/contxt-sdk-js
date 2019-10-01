@@ -56,11 +56,13 @@ class Consent {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    * @param {string} baseUrl The base URL provided by the parent module
+   * @param {string} [organizationId] The organization ID to be used in tenant url requests
    */
-  constructor(sdk, request, baseUrl) {
+  constructor(sdk, request, baseUrl, organizationId = null) {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+    this._organizationId = organizationId;
   }
 
   /**

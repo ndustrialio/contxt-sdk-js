@@ -6,19 +6,20 @@ Module for managing application consent
 **Kind**: global class  
 
 * [Consent](#Consent)
-    * [new Consent(sdk, request, baseUrl)](#new_Consent_new)
+    * [new Consent(sdk, request, baseUrl, [organizationId])](#new_Consent_new)
     * [.accept(consentId)](#Consent+accept) ⇒ <code>Promise</code>
     * [.getForCurrentApplication()](#Consent+getForCurrentApplication) ⇒ <code>Promise</code>
 
 <a name="new_Consent_new"></a>
 
-### new Consent(sdk, request, baseUrl)
+### new Consent(sdk, request, baseUrl, [organizationId])
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
-| request | <code>Object</code> | An instance of the request module tied to this module's audience. |
-| baseUrl | <code>string</code> | The base URL provided by the parent module |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sdk | <code>Object</code> |  | An instance of the SDK so the module can communicate with other modules |
+| request | <code>Object</code> |  | An instance of the request module tied to this module's audience. |
+| baseUrl | <code>string</code> |  | The base URL provided by the parent module |
+| [organizationId] | <code>string</code> | <code>null</code> | The organization ID to be used in tenant url requests |
 
 <a name="Consent+accept"></a>
 

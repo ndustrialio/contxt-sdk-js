@@ -33,22 +33,60 @@ describe('Coordinator/Consent', function() {
   });
 
   describe('constructor', function() {
-    let consent;
+    context('when organization ID is provided', function() {
+      let consent;
+      let organizationId;
 
-    beforeEach(function() {
-      consent = new Consent(baseSdk, baseRequest, expectedHost);
+      beforeEach(function() {
+        organizationId = fixture.build('organization').id;
+
+        consent = new Consent(
+          baseSdk,
+          baseRequest,
+          expectedHost,
+          organizationId
+        );
+      });
+
+      it('sets a base url for the class instance', function() {
+        expect(consent._baseUrl).to.equal(expectedHost);
+      });
+
+      it('appends the supplied request module to the class instance', function() {
+        expect(consent._request).to.deep.equal(baseRequest);
+      });
+
+      it('appends the supplied sdk to the class instance', function() {
+        expect(consent._sdk).to.deep.equal(baseSdk);
+      });
+
+      it('sets the organization ID for the class instance', function() {
+        expect(consent._organizationId).to.equal(organizationId);
+      });
     });
 
-    it('sets a base url for the class instance', function() {
-      expect(consent._baseUrl).to.equal(expectedHost);
-    });
+    context('when organization ID is not provided', function() {
+      let consent;
 
-    it('appends the supplied request module to the class instance', function() {
-      expect(consent._request).to.deep.equal(baseRequest);
-    });
+      beforeEach(function() {
+        consent = new Consent(baseSdk, baseRequest, expectedHost);
+      });
 
-    it('appends the supplied sdk to the class instance', function() {
-      expect(consent._sdk).to.deep.equal(baseSdk);
+      it('sets a base url for the class instance', function() {
+        expect(consent._baseUrl).to.equal(expectedHost);
+      });
+
+      it('appends the supplied request module to the class instance', function() {
+        expect(consent._request).to.deep.equal(baseRequest);
+      });
+
+      it('appends the supplied sdk to the class instance', function() {
+        expect(consent._sdk).to.deep.equal(baseSdk);
+      });
+
+      it('sets the organization ID for the class instance', function() {
+        expect(consent._organizationId).to.equal(null);
+      });
     });
   });
 
