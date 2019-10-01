@@ -67,11 +67,13 @@ class Applications {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    * @param {string} baseUrl The base URL provided by the parent module
+   * @param {string} [organizationId] The organization ID to be used in tenant url requests
    */
-  constructor(sdk, request, baseUrl) {
+  constructor(sdk, request, baseUrl, organizationId = null) {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+    this._organizationId = organizationId;
   }
 
   /**
@@ -157,12 +159,13 @@ class Applications {
   /**
    * Gets an organization's list of featured applications
    *
-   * API Endpoint: '/organizations/:organizationId/applications/featured'
+   * Legacy API Endpoint: '/organizations/:organizationId/applications/featured'
+   * API Endpoint: '/applications/featured'
    * Method: GET
    *
    * Note: Only valid for web users using auth0WebAuth session type
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} [organizationId] The ID of the organization, required when using the legacy API
    *
    * @returns {Promise}
    * @fulfill {ContxtOrganizationFeaturedApplication[]} A list of featured applications
@@ -175,6 +178,12 @@ class Applications {
    *   .catch((err) => console.log(err));
    */
   getFeatured(organizationId) {
+    if (this._organizationId) {
+      return this._request
+        .get(`${this._baseUrl}/applications/featured`)
+        .then((featuredApplications) => toCamelCase(featuredApplications));
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error(

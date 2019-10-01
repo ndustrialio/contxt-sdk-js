@@ -105,7 +105,7 @@ Note: Only valid for web users using auth0WebAuth session type
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | The ID of the organization |
+| [organizationId] | <code>string</code> | The ID of the organization, required when using the legacy API |
 
 **Example**  
 ```js
