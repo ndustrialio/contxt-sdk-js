@@ -46,10 +46,10 @@ class Coordinator {
   setOrganizationId(organizationId) {
     this._organizationId = organizationId;
 
-    const url = organizationId
-      ? `${
-          this._sdk.config.audiences.coordinator.host
-        }/contxt/v1/${organizationId}`
+    const url = this._organizationId
+      ? `${this._sdk.config.audiences.coordinator.host}/contxt/v1/${
+          this._organizationId
+        }`
       : `${this._sdk.config.audiences.coordinator.host}/v1`;
 
     this._baseUrl = url;
@@ -57,7 +57,44 @@ class Coordinator {
     this.applications = new Applications(
       this._sdk,
       this._request,
-      this._baseUrl
+      this._baseUrl,
+      this._organizationId
+    );
+    this.consent = new Consent(
+      this._sdk,
+      this._request,
+      this._baseUrl,
+      this._organizationId
+    );
+    this.edgeNodes = new EdgeNodes(
+      this._sdk,
+      this._request,
+      this._baseUrl,
+      this._organizationId
+    );
+    this.organizations = new Organizations(
+      this._sdk,
+      this._request,
+      this._baseUrl,
+      this._organizationId
+    );
+    this.permissions = new Permissions(
+      this._sdk,
+      this._request,
+      this._baseUrl,
+      this._organizationId
+    );
+    this.roles = new Roles(
+      this._sdk,
+      this._request,
+      this._baseUrl,
+      this._organizationId
+    );
+    this.users = new Users(
+      this._sdk,
+      this._request,
+      this._baseUrl,
+      this._organizationId
     );
   }
 }
