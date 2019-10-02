@@ -27,7 +27,7 @@ Module that provides access to contxt organizations
 Gets information about a contxt organization
 
 Legacy API Endpoint: '/organizations/:organizationId'
-API Endpoint: ''
+API Endpoint: '/'
 Method: GET
 
 **Kind**: instance method of [<code>Organizations</code>](#Organizations)  
