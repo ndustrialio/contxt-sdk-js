@@ -165,7 +165,7 @@ class Applications {
    *
    * Note: Only valid for web users using auth0WebAuth session type
    *
-   * @param {string} [organizationId] The ID of the organization, required when using the legacy API
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    *
    * @returns {Promise}
    * @fulfill {ContxtOrganizationFeaturedApplication[]} A list of featured applications

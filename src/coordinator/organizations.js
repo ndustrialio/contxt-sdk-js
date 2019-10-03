@@ -35,7 +35,7 @@ class Organizations {
    * API Endpoint: '/'
    * Method: GET
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    *
    * @returns {Promise}
    * @fulfill {ContxtOrganization} Information about a contxt organization

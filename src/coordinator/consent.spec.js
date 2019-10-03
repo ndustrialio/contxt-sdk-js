@@ -33,7 +33,7 @@ describe('Coordinator/Consent', function() {
   });
 
   describe('constructor', function() {
-    context('when organization ID is provided', function() {
+    context('when an organization ID is provided', function() {
       let consent;
       let organizationId;
 
@@ -65,7 +65,7 @@ describe('Coordinator/Consent', function() {
       });
     });
 
-    context('when organization ID is not provided', function() {
+    context('when an organization ID is not provided', function() {
       let consent;
 
       beforeEach(function() {
@@ -84,7 +84,7 @@ describe('Coordinator/Consent', function() {
         expect(consent._sdk).to.deep.equal(baseSdk);
       });
 
-      it('sets the organization ID for the class instance', function() {
+      it('sets the organization ID for the class instance to null', function() {
         expect(consent._organizationId).to.equal(null);
       });
     });

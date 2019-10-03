@@ -10,7 +10,7 @@ Module that provides access to contxt applications
     * [.addFavorite(applicationId)](#Applications+addFavorite) ⇒ <code>Promise</code>
     * [.getAll()](#Applications+getAll) ⇒ <code>Promise</code>
     * [.getFavorites()](#Applications+getFavorites) ⇒ <code>Promise</code>
-    * [.getFeatured([organizationId])](#Applications+getFeatured) ⇒ <code>Promise</code>
+    * [.getFeatured(organizationId)](#Applications+getFeatured) ⇒ <code>Promise</code>
     * [.getGroupings(applicationId)](#Applications+getGroupings) ⇒ <code>Promise</code>
     * [.removeFavorite(applicationId)](#Applications+removeFavorite) ⇒ <code>Promise</code>
 
@@ -90,7 +90,7 @@ contxtSdk.coordinator.applications
 ```
 <a name="Applications+getFeatured"></a>
 
-### contxtSdk.coordinator.applications.getFeatured([organizationId]) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.applications.getFeatured(organizationId) ⇒ <code>Promise</code>
 Gets an organization's list of featured applications
 
 Legacy API Endpoint: '/organizations/:organizationId/applications/featured'
@@ -105,7 +105,7 @@ Note: Only valid for web users using auth0WebAuth session type
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | The ID of the organization, required when using the legacy API |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js

@@ -7,7 +7,7 @@ Module that provides access to contxt edge nodes
 
 * [EdgeNodes](#EdgeNodes)
     * [new EdgeNodes(sdk, request, baseUrl, [organizationId])](#new_EdgeNodes_new)
-    * [.get([organizationId], edgeNodeClientId)](#EdgeNodes+get) ⇒ <code>Promise</code>
+    * [.get(organizationId, edgeNodeClientId)](#EdgeNodes+get) ⇒ <code>Promise</code>
 
 <a name="new_EdgeNodes_new"></a>
 
@@ -22,7 +22,7 @@ Module that provides access to contxt edge nodes
 
 <a name="EdgeNodes+get"></a>
 
-### contxtSdk.coordinator.edgeNodes.get([organizationId], edgeNodeClientId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.edgeNodes.get(organizationId, edgeNodeClientId) ⇒ <code>Promise</code>
 Get an edge node
 
 Legacy API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeClientId'
@@ -35,7 +35,7 @@ METHOD: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | UUID Required when using the legacy API |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | edgeNodeClientId | <code>string</code> |  |
 
 **Example**  

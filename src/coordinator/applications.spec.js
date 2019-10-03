@@ -28,7 +28,7 @@ describe('Coordinator/Applications', function() {
   });
 
   describe('constructor', function() {
-    context('when organization ID is provided', function() {
+    context('when an organization ID is provided', function() {
       let applications;
       let organizationId;
 
@@ -60,7 +60,7 @@ describe('Coordinator/Applications', function() {
       });
     });
 
-    context('when organization ID is not provided', function() {
+    context('when an organization ID is not provided', function() {
       let applications;
 
       beforeEach(function() {
@@ -79,7 +79,7 @@ describe('Coordinator/Applications', function() {
         expect(applications._sdk).to.deep.equal(baseSdk);
       });
 
-      it('sets the organization ID for the class instance', function() {
+      it('sets the organization ID for the class instance to null', function() {
         expect(applications._organizationId).to.equal(null);
       });
     });
@@ -389,47 +389,51 @@ describe('Coordinator/Applications', function() {
     });
 
     context('tenant API', function() {
+      let applications;
+      let expectedFeaturedApplications;
+      let featuredApplicationsFromServer;
+      let expectedOrganizationId;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedOrganizationId = fixture.build('organization').id;
+        expectedFeaturedApplications = fixture.buildList(
+          'contxtOrganizationFeaturedApplication',
+          faker.random.number({
+            min: 1,
+            max: 10
+          }),
+          {
+            organizationId: expectedOrganizationId
+          }
+        );
+        featuredApplicationsFromServer = expectedFeaturedApplications.map(
+          (app) =>
+            fixture.build('contxtOrganizationFeaturedApplication', app, {
+              fromServer: true
+            })
+        );
+
+        request = {
+          ...baseRequest,
+          get: sinon.stub().resolves(featuredApplicationsFromServer)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedFeaturedApplications);
+
+        applications = new Applications(
+          baseSdk,
+          request,
+          expectedHost,
+          expectedOrganizationId
+        );
+      });
+
       context('when the organization ID is provided', function() {
-        let expectedFeaturedApplications;
-        let featuredApplicationsFromServer;
-        let expectedOrganizationId;
-        let promise;
-        let request;
-        let toCamelCase;
-
         beforeEach(function() {
-          expectedOrganizationId = faker.random.uuid();
-          expectedFeaturedApplications = fixture.buildList(
-            'contxtOrganizationFeaturedApplication',
-            faker.random.number({
-              min: 1,
-              max: 10
-            }),
-            {
-              organizationId: expectedOrganizationId
-            }
-          );
-          featuredApplicationsFromServer = expectedFeaturedApplications.map(
-            (app) =>
-              fixture.build('contxtOrganizationFeaturedApplication', app, {
-                fromServer: true
-              })
-          );
-
-          request = {
-            ...baseRequest,
-            get: sinon.stub().resolves(featuredApplicationsFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .returns(expectedFeaturedApplications);
-
-          const applications = new Applications(
-            baseSdk,
-            request,
-            expectedHost,
-            expectedOrganizationId
-          );
           promise = applications.getFeatured(expectedOrganizationId);
         });
 
@@ -455,50 +459,11 @@ describe('Coordinator/Applications', function() {
       });
 
       context('when the organization ID is not provided', function() {
-        let expectedFeaturedApplications;
-        let featuredApplicationsFromServer;
-        let expectedOrganizationId;
-        let promise;
-        let request;
-        let toCamelCase;
-
         beforeEach(function() {
-          expectedOrganizationId = faker.random.uuid();
-          expectedFeaturedApplications = fixture.buildList(
-            'contxtOrganizationFeaturedApplication',
-            faker.random.number({
-              min: 1,
-              max: 10
-            }),
-            {
-              organizationId: expectedOrganizationId
-            }
-          );
-          featuredApplicationsFromServer = expectedFeaturedApplications.map(
-            (app) =>
-              fixture.build('contxtOrganizationFeaturedApplication', app, {
-                fromServer: true
-              })
-          );
-
-          request = {
-            ...baseRequest,
-            get: sinon.stub().resolves(featuredApplicationsFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .returns(expectedFeaturedApplications);
-
-          const applications = new Applications(
-            baseSdk,
-            request,
-            expectedHost,
-            expectedOrganizationId
-          );
-          promise = applications.getFeatured(expectedOrganizationId);
+          promise = applications.getFeatured();
         });
 
-        it('gets the list of featured applications from the server and does not use the organization ID provided', function() {
+        it('gets the list of featured applications from the server', function() {
           expect(request.get).to.be.calledWith(
             `${expectedHost}/applications/featured`
           );

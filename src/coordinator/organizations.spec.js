@@ -1,7 +1,7 @@
 import Organizations from './organizations';
 import * as objectUtils from '../utils/objects';
 
-describe('Coordinator/Organizations', function() {
+describe.only('Coordinator/Organizations', function() {
   let baseRequest;
   let baseSdk;
   let expectedHost;
@@ -28,7 +28,7 @@ describe('Coordinator/Organizations', function() {
   });
 
   describe('constructor', function() {
-    context('when organization ID is provided', function() {
+    context('when an organization ID is provided', function() {
       let organizationId;
       let organizations;
 
@@ -60,7 +60,7 @@ describe('Coordinator/Organizations', function() {
       });
     });
 
-    context('when organization ID is not provided', function() {
+    context('when an organization ID is not provided', function() {
       let organizations;
 
       beforeEach(function() {
@@ -79,7 +79,7 @@ describe('Coordinator/Organizations', function() {
         expect(organizations._sdk).to.deep.equal(baseSdk);
       });
 
-      it('sets the organization ID for the class instance', function() {
+      it('sets the organization ID for the class instance to null', function() {
         expect(organizations._organizationId).to.equal(null);
       });
     });
@@ -163,42 +163,46 @@ describe('Coordinator/Organizations', function() {
     });
 
     context('tenant API', function() {
+      let organizationFromServerAfterFormat;
+      let organizationFromServerBeforeFormat;
+      let expectedOrganizationId;
+      let organizations;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedOrganizationId = faker.random.uuid();
+        organizationFromServerAfterFormat = fixture.build(
+          'contxtOrganization',
+          {
+            id: expectedOrganizationId
+          }
+        );
+        organizationFromServerBeforeFormat = fixture.build(
+          'event',
+          { id: expectedOrganizationId },
+          { fromServer: true }
+        );
+
+        request = {
+          ...baseRequest,
+          get: sinon.stub().resolves(organizationFromServerBeforeFormat)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(organizationFromServerAfterFormat);
+
+        organizations = new Organizations(
+          baseSdk,
+          request,
+          expectedHost,
+          expectedOrganizationId
+        );
+      });
+
       context('the organization ID is provided', function() {
-        let organizationFromServerAfterFormat;
-        let organizationFromServerBeforeFormat;
-        let expectedOrganizationId;
-        let promise;
-        let request;
-        let toCamelCase;
-
         beforeEach(function() {
-          expectedOrganizationId = faker.random.uuid();
-          organizationFromServerAfterFormat = fixture.build(
-            'contxtOrganization',
-            {
-              id: expectedOrganizationId
-            }
-          );
-          organizationFromServerBeforeFormat = fixture.build(
-            'event',
-            { id: expectedOrganizationId },
-            { fromServer: true }
-          );
-
-          request = {
-            ...baseRequest,
-            get: sinon.stub().resolves(organizationFromServerBeforeFormat)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .returns(organizationFromServerAfterFormat);
-
-          const organizations = new Organizations(
-            baseSdk,
-            request,
-            expectedHost,
-            expectedOrganizationId
-          );
           promise = organizations.get(expectedOrganizationId);
         });
 
@@ -222,41 +226,7 @@ describe('Coordinator/Organizations', function() {
       });
 
       context('the organization ID is not provided', function() {
-        let organizationFromServerAfterFormat;
-        let organizationFromServerBeforeFormat;
-        let expectedOrganizationId;
-        let promise;
-        let request;
-        let toCamelCase;
-
         beforeEach(function() {
-          expectedOrganizationId = faker.random.uuid();
-          organizationFromServerAfterFormat = fixture.build(
-            'contxtOrganization',
-            {
-              id: expectedOrganizationId
-            }
-          );
-          organizationFromServerBeforeFormat = fixture.build(
-            'event',
-            { id: expectedOrganizationId },
-            { fromServer: true }
-          );
-
-          request = {
-            ...baseRequest,
-            get: sinon.stub().resolves(organizationFromServerBeforeFormat)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .returns(organizationFromServerAfterFormat);
-
-          const organizations = new Organizations(
-            baseSdk,
-            request,
-            expectedHost,
-            expectedOrganizationId
-          );
           promise = organizations.get();
         });
 

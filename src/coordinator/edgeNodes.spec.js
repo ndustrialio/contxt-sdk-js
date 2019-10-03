@@ -28,7 +28,7 @@ describe('edgeNodes', function() {
   });
 
   describe('constructor', function() {
-    context('when organization ID is provided', function() {
+    context('when an organization ID is provided', function() {
       let edgeNodes;
       let organizationId;
 
@@ -60,7 +60,7 @@ describe('edgeNodes', function() {
       });
     });
 
-    context('when organization ID is not provided', function() {
+    context('when an organization ID is not provided', function() {
       let edgeNodes;
 
       beforeEach(function() {
@@ -79,7 +79,7 @@ describe('edgeNodes', function() {
         expect(edgeNodes._sdk).to.deep.equal(baseSdk);
       });
 
-      it('sets the organization ID for the class instance', function() {
+      it('sets the organization ID for the class instance to null', function() {
         expect(edgeNodes._organizationId).to.equal(null);
       });
     });
@@ -143,7 +143,7 @@ describe('edgeNodes', function() {
       context('the organization ID is not provided', function() {
         it('throws an error', function() {
           const edgeNodes = new EdgeNodes(baseSdk, baseRequest);
-          const promise = edgeNodes.get();
+          const promise = edgeNodes.get(null, faker.random.uuid());
 
           return expect(promise).to.be.rejectedWith(
             'An organizationId is required for getting an edge node.'
@@ -154,7 +154,7 @@ describe('edgeNodes', function() {
       context('the edge node client ID is not provided', function() {
         it('throws an error', function() {
           const edgeNodes = new EdgeNodes(baseSdk, baseRequest);
-          const promise = edgeNodes.get('1');
+          const promise = edgeNodes.get(faker.random.uuid());
 
           return expect(promise).to.be.rejectedWith(
             'An edgeNodeClientId is required for getting an edge node.'
@@ -256,7 +256,8 @@ describe('edgeNodes', function() {
             expectedOrganizationId
           );
           edgeNodes._baseUrl = expectedHost;
-          promise = edgeNodes.get(expectedOrganizationId, expectedEdgeNodeId);
+
+          promise = edgeNodes.get(null, expectedEdgeNodeId);
         });
 
         it('gets the edge node from the server', function() {
@@ -289,7 +290,7 @@ describe('edgeNodes', function() {
             null,
             organizationId
           );
-          const promise = edgeNodes.get('1');
+          const promise = edgeNodes.get(organizationId);
 
           return expect(promise).to.be.rejectedWith(
             'An edgeNodeClientId is required for getting an edge node.'

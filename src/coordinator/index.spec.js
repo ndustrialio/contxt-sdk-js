@@ -44,7 +44,7 @@ describe('Coordinator', function() {
       );
     });
 
-    it('sets the organization ID to null', function() {
+    it('sets the organization ID to null for the class instance', function() {
       expect(coordinator._organizationId).to.equal(null);
     });
 
@@ -118,6 +118,9 @@ describe('Coordinator', function() {
             organization.id
           }`
         );
+        expect(coordinator.applications._organizationId).to.equal(
+          organization.id
+        );
       });
 
       it('appends a new instance of Consent to the class instance with the tenant base url', function() {
@@ -127,6 +130,7 @@ describe('Coordinator', function() {
             organization.id
           }`
         );
+        expect(coordinator.consent._organizationId).to.equal(organization.id);
       });
 
       it('appends a new instance of EdgeNodes to the class instance with the tenant base url', function() {
@@ -136,6 +140,7 @@ describe('Coordinator', function() {
             organization.id
           }`
         );
+        expect(coordinator.edgeNodes._organizationId).to.equal(organization.id);
       });
 
       it('appends a new instance of Organizations to the class instance with the tenant base url', function() {
@@ -144,6 +149,9 @@ describe('Coordinator', function() {
           `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
             organization.id
           }`
+        );
+        expect(coordinator.organizations._organizationId).to.equal(
+          organization.id
         );
       });
 
@@ -154,6 +162,9 @@ describe('Coordinator', function() {
             organization.id
           }`
         );
+        expect(coordinator.permissions._organizationId).to.equal(
+          organization.id
+        );
       });
 
       it('appends a new instance of Roles to the class instance with the tenant base url', function() {
@@ -163,6 +174,7 @@ describe('Coordinator', function() {
             organization.id
           }`
         );
+        expect(coordinator.roles._organizationId).to.equal(organization.id);
       });
 
       it('appends a new instance of Users to the class instance with the tenant base url', function() {
@@ -172,6 +184,7 @@ describe('Coordinator', function() {
             organization.id
           }`
         );
+        expect(coordinator.users._organizationId).to.equal(organization.id);
       });
     });
 
@@ -195,6 +208,7 @@ describe('Coordinator', function() {
         expect(coordinator.applications._baseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
+        expect(coordinator.applications._organizationId).to.equal(null);
       });
 
       it('appends a new instance of Consent to the class instance with the legacy base url', function() {
@@ -202,6 +216,7 @@ describe('Coordinator', function() {
         expect(coordinator.consent._baseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
+        expect(coordinator.consent._organizationId).to.equal(null);
       });
 
       it('appends a new instance of EdgeNodes to the class instance with the legacy base url', function() {
@@ -209,6 +224,7 @@ describe('Coordinator', function() {
         expect(coordinator.edgeNodes._baseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
+        expect(coordinator.edgeNodes._organizationId).to.equal(null);
       });
 
       it('appends a new instance of Organizations to the class instance with the legacy base url', function() {
@@ -216,6 +232,7 @@ describe('Coordinator', function() {
         expect(coordinator.organizations._baseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
+        expect(coordinator.organizations._organizationId).to.equal(null);
       });
 
       it('appends a new instance of Permissions to the class instance with the legacy base url', function() {
@@ -223,6 +240,7 @@ describe('Coordinator', function() {
         expect(coordinator.permissions._baseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
+        expect(coordinator.permissions._organizationId).to.equal(null);
       });
 
       it('appends a new instance of Roles to the class instance with the legacy base url', function() {
@@ -230,6 +248,7 @@ describe('Coordinator', function() {
         expect(coordinator.roles._baseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
+        expect(coordinator.roles._organizationId).to.equal(null);
       });
 
       it('appends a new instance of Users to the class instance with the legacy base url', function() {
@@ -237,6 +256,7 @@ describe('Coordinator', function() {
         expect(coordinator.users._baseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
+        expect(coordinator.users._organizationId).to.equal(null);
       });
     });
   });

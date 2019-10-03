@@ -37,7 +37,7 @@ class EdgeNodes {
    * API Endpoint: 'edgenodes/:edgeNodeClientId'
    * METHOD: GET
    *
-   * @param {string} [organizationId] UUID Required when using the legacy API
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {string} edgeNodeClientId
    *
    * @returns {Promise}
@@ -51,13 +51,13 @@ class EdgeNodes {
    *   .catch((err) => console.log(err));
    */
   get(organizationId, edgeNodeClientId) {
-    if (this._organizationId) {
-      if (!edgeNodeClientId) {
-        return Promise.reject(
-          new Error('An edgeNodeClientId is required for getting an edge node.')
-        );
-      }
+    if (!edgeNodeClientId) {
+      return Promise.reject(
+        new Error('An edgeNodeClientId is required for getting an edge node.')
+      );
+    }
 
+    if (this._organizationId) {
       return this._request
         .get(`${this._baseUrl}/edgenodes/${edgeNodeClientId}`)
         .then((edgeNode) => toCamelCase(edgeNode));
@@ -66,12 +66,6 @@ class EdgeNodes {
     if (!organizationId) {
       return Promise.reject(
         new Error('An organizationId is required for getting an edge node.')
-      );
-    }
-
-    if (!edgeNodeClientId) {
-      return Promise.reject(
-        new Error('An edgeNodeClientId is required for getting an edge node.')
       );
     }
 
