@@ -175,7 +175,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js
@@ -202,7 +202,7 @@ Note: Only valid for web users using auth0WebAuth session type
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | user | <code>Object</code> |  |
 | user.email | <code>string</code> | The email address of the new user |
 | user.firstName | <code>string</code> | The first name of the new user |
@@ -236,7 +236,7 @@ Method: DELETE
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | userId | <code>string</code> | The ID of the user |
 
 **Example**  

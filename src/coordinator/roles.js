@@ -156,7 +156,7 @@ class Roles {
   /**
    * Create a new role for an organization
    *
-   * @param {string} [organizationId] The ID of the organization. Required when using the legacy API
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {Object} role
    * @param {string} role.name The name of the new role
    * @param {string} role.description Some text describing the purpose of the role
@@ -228,7 +228,7 @@ class Roles {
    * API Endpiont: '/roles/:roleId'
    * Method: DELETE
    *
-   * @param {string} [organizationId] The ID of the organization. Required when using the legacy API
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {string} roleId The UUID formatted ID of the role
    *
    * @returns {Promise}
@@ -273,7 +273,7 @@ class Roles {
    * API Endpoint: '/roles'
    * Method: GET
    *
-   * @param {string} [organizationId] The ID of the organization. Required when using the legacy API
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    *
    * @returns {Promise}
    * @fulfill {ContxtRole[]} A list of roles

@@ -278,7 +278,7 @@ class Users {
    * API Endpoint: '/users'
    * Method: GET
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    *
    * @returns {Promise}
    * @fulfill {ContxtUser[]} List of users for a contxt organization
@@ -320,7 +320,7 @@ class Users {
    *
    * Note: Only valid for web users using auth0WebAuth session type
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {Object} user
    * @param {string} user.email The email address of the new user
    * @param {string} user.firstName The first name of the new user
@@ -397,7 +397,7 @@ class Users {
    * API Endpoint: '/users/:userId'
    * Method: DELETE
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {string} userId The ID of the user
    *
    * @returns {Promise}

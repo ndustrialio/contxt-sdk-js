@@ -1,7 +1,7 @@
 import Organizations from './organizations';
 import * as objectUtils from '../utils/objects';
 
-describe.only('Coordinator/Organizations', function() {
+describe('Coordinator/Organizations', function() {
   let baseRequest;
   let baseSdk;
   let expectedHost;
@@ -206,7 +206,7 @@ describe.only('Coordinator/Organizations', function() {
           promise = organizations.get(expectedOrganizationId);
         });
 
-        it('gets the organization from the server', function() {
+        it('gets the organization from the server and does not use the organization ID provided', function() {
           expect(request.get).to.be.calledWith(`${expectedHost}`);
         });
 

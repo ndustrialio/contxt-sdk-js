@@ -7,8 +7,8 @@ Module that provides access to contxt user permissions
 
 * [Permissions](#Permissions)
     * [new Permissions(sdk, request, baseUrl, [organizationId])](#new_Permissions_new)
-    * [.getAllByOrganizationId([organizationId])](#Permissions+getAllByOrganizationId) ⇒ <code>Promise</code>
-    * [.getOneByOrganizationId([organizationId], userId)](#Permissions+getOneByOrganizationId) ⇒ <code>Promise</code>
+    * [.getAllByOrganizationId(organizationId)](#Permissions+getAllByOrganizationId) ⇒ <code>Promise</code>
+    * [.getOneByOrganizationId(organizationId, userId)](#Permissions+getOneByOrganizationId) ⇒ <code>Promise</code>
     * [.getByUserId(userId)](#Permissions+getByUserId) ⇒ <code>Promise</code>
 
 <a name="new_Permissions_new"></a>
@@ -24,7 +24,7 @@ Module that provides access to contxt user permissions
 
 <a name="Permissions+getAllByOrganizationId"></a>
 
-### contxtSdk.coordinator.permissions.getAllByOrganizationId([organizationId]) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.permissions.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
 Gets a list of user permissions for each user in an organization
 
 Legacy API Endpoint: '/organizations/:organizationId/users/permissions'
@@ -37,7 +37,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | The ID of the organization. Required when using the legacy API |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js
@@ -48,7 +48,7 @@ contxtSdk.coordinator.permissions
 ```
 <a name="Permissions+getOneByOrganizationId"></a>
 
-### contxtSdk.coordinator.permissions.getOneByOrganizationId([organizationId], userId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.permissions.getOneByOrganizationId(organizationId, userId) ⇒ <code>Promise</code>
 Gets a single user's permissions within an organization
 
 Legacy API Endpoint: '/organizations/:organizationId/users/:userId/permissions'
@@ -61,7 +61,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | The ID of the organization. Required when using the legacy API |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | userId | <code>string</code> | The ID of the user |
 
 **Example**  

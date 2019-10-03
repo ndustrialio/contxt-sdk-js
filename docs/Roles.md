@@ -9,9 +9,9 @@ Module that provides access to contxt roles
     * [new Roles(sdk, request, baseUrl, [organizationId])](#new_Roles_new)
     * [.addApplication(roleId, applicationId)](#Roles+addApplication) ⇒ <code>Promise</code>
     * [.addStack(roleId, stackId, accessType)](#Roles+addStack) ⇒ <code>Promise</code>
-    * [.create([organizationId], role)](#Roles+create) ⇒ <code>Promise</code>
-    * [.delete([organizationId], roleId)](#Roles+delete) ⇒ <code>Promise</code>
-    * [.getByOrganizationId([organizationId])](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
+    * [.create(organizationId, role)](#Roles+create) ⇒ <code>Promise</code>
+    * [.delete(organizationId, roleId)](#Roles+delete) ⇒ <code>Promise</code>
+    * [.getByOrganizationId(organizationId)](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
     * [.removeApplication(roleId, applicationId)](#Roles+removeApplication) ⇒ <code>Promise</code>
     * [.removeStack(roleId, stackId)](#Roles+removeStack) ⇒ <code>Promise</code>
 
@@ -77,7 +77,7 @@ contxtSdk.roles
 ```
 <a name="Roles+create"></a>
 
-### contxtSdk.coordinator.roles.create([organizationId], role) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.roles.create(organizationId, role) ⇒ <code>Promise</code>
 Create a new role for an organization
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -86,7 +86,7 @@ Create a new role for an organization
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | The ID of the organization. Required when using the legacy API |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | role | <code>Object</code> |  |
 | role.name | <code>string</code> | The name of the new role |
 | role.description | <code>string</code> | Some text describing the purpose of the role |
@@ -103,7 +103,7 @@ contxtSdk.coordinator.roles
 ```
 <a name="Roles+delete"></a>
 
-### contxtSdk.coordinator.roles.delete([organizationId], roleId) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.roles.delete(organizationId, roleId) ⇒ <code>Promise</code>
 Deletes a role from an organization
 
 Legacy API Endpoint: '/organizations/:organizationId/roles/:roleId'
@@ -116,7 +116,7 @@ Method: DELETE
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | The ID of the organization. Required when using the legacy API |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | roleId | <code>string</code> | The UUID formatted ID of the role |
 
 **Example**  
@@ -125,7 +125,7 @@ contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d', '8b64fb12-e649-46
 ```
 <a name="Roles+getByOrganizationId"></a>
 
-### contxtSdk.coordinator.roles.getByOrganizationId([organizationId]) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.roles.getByOrganizationId(organizationId) ⇒ <code>Promise</code>
 Gets an organization's list of roles
 
 Legacy API Endpoint: '/organizations/:organizationId/roles'
@@ -138,7 +138,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [organizationId] | <code>string</code> | The ID of the organization. Required when using the legacy API |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js

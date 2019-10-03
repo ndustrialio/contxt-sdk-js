@@ -28,7 +28,7 @@ describe('Coordinator/Permissions', function() {
   });
 
   describe('constructor', function() {
-    context('when organization ID is provided', function() {
+    context('when an organization ID is provided', function() {
       let permissions;
       let organizationId;
 
@@ -60,7 +60,7 @@ describe('Coordinator/Permissions', function() {
       });
     });
 
-    context('when organization ID is not provided', function() {
+    context('when an organization ID is not provided', function() {
       let permissions;
 
       beforeEach(function() {
@@ -79,7 +79,7 @@ describe('Coordinator/Permissions', function() {
         expect(permissions._sdk).to.deep.equal(baseSdk);
       });
 
-      it('sets the organization ID for the class instance', function() {
+      it('sets the organization ID for the class instance to null', function() {
         expect(permissions._organizationId).to.equal(null);
       });
     });
@@ -170,7 +170,7 @@ describe('Coordinator/Permissions', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedOrganizationId = fixture.build('contxtOrganization').id;
+        expectedOrganizationId = fixture.build('organization').id;
         expectedUsersPermissions = fixture.buildList(
           'contxtUserPermissions',
           faker.random.number({
@@ -212,7 +212,7 @@ describe('Coordinator/Permissions', function() {
           promise = permissions.getAllByOrganizationId(differentOrganizationId);
         });
 
-        it('gets the list of users permissions from the server', function() {
+        it('gets the list of users permissions from the server and does not use the organization ID provided', function() {
           expect(request.get).to.be.calledWith(
             `${expectedHost}/users/permissions`
           );
@@ -259,7 +259,7 @@ describe('Coordinator/Permissions', function() {
 
   describe('getOneByOrganizationId', function() {
     context('legacy API', function() {
-      context('when the organization ID is provided', function() {
+      context('when all required information is supplied', function() {
         let expectedUserPermissions;
         let userPermissionFromServer;
         let expectedOrganizationId;
@@ -357,51 +357,59 @@ describe('Coordinator/Permissions', function() {
     });
 
     context('tenant API', function() {
+      let expectedUserPermissions;
+      let userPermissionFromServer;
+      let expectedOrganizationId;
+      let expectedUserId;
+      let permissions;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedOrganizationId = fixture.build('organization').id;
+        expectedUserId = fixture.build('contxtUser').id;
+        expectedUserPermissions = fixture.build('contxtUserPermissions', {
+          organizationId: expectedOrganizationId
+        });
+
+        userPermissionFromServer = fixture.build(
+          'contxtUserPermissions',
+          expectedUserPermissions,
+          {
+            fromServer: true
+          }
+        );
+
+        request = {
+          ...baseRequest,
+          get: sinon.stub().resolves(userPermissionFromServer)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedUserPermissions);
+
+        permissions = new Permissions(
+          baseSdk,
+          request,
+          expectedHost,
+          expectedOrganizationId
+        );
+      });
+
       context('when the organization ID is provided', function() {
-        let expectedUserPermissions;
-        let userPermissionFromServer;
-        let expectedOrganizationId;
-        let expectedUserId;
-        let promise;
-        let request;
-        let toCamelCase;
+        let differentOrganizationId;
 
         beforeEach(function() {
-          expectedOrganizationId = fixture.build('contxtOrganization').id;
-          expectedUserId = fixture.build('contxtUser').id;
-          expectedUserPermissions = fixture.build('contxtUserPermissions', {
-            organizationId: expectedOrganizationId
-          });
+          differentOrganizationId = fixture.build('organization').id;
 
-          userPermissionFromServer = fixture.build(
-            'contxtUserPermissions',
-            expectedUserPermissions,
-            {
-              fromServer: true
-            }
-          );
-
-          request = {
-            ...baseRequest,
-            get: sinon.stub().resolves(userPermissionFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .returns(expectedUserPermissions);
-
-          const permissions = new Permissions(
-            baseSdk,
-            request,
-            expectedHost,
-            expectedOrganizationId
-          );
           promise = permissions.getOneByOrganizationId(
-            faker.random.uuid(),
+            differentOrganizationId,
             expectedUserId
           );
         });
 
-        it('gets the user permissions from the server', function() {
+        it('gets the user permissions from the server and does not use the organization ID provided', function() {
           expect(request.get).to.be.calledWith(
             `${expectedHost}/users/${expectedUserId}/permissions`
           );
@@ -421,43 +429,7 @@ describe('Coordinator/Permissions', function() {
       });
 
       context('when the organization ID is not provided', function() {
-        let expectedUserPermissions;
-        let userPermissionFromServer;
-        let expectedOrganizationId;
-        let expectedUserId;
-        let promise;
-        let request;
-        let toCamelCase;
-
         beforeEach(function() {
-          expectedOrganizationId = fixture.build('contxtOrganization').id;
-          expectedUserId = fixture.build('contxtUser').id;
-          expectedUserPermissions = fixture.build('contxtUserPermissions', {
-            organizationId: expectedOrganizationId
-          });
-
-          userPermissionFromServer = fixture.build(
-            'contxtUserPermissions',
-            expectedUserPermissions,
-            {
-              fromServer: true
-            }
-          );
-
-          request = {
-            ...baseRequest,
-            get: sinon.stub().resolves(userPermissionFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .returns(expectedUserPermissions);
-
-          const permissions = new Permissions(
-            baseSdk,
-            request,
-            expectedHost,
-            expectedOrganizationId
-          );
           promise = permissions.getOneByOrganizationId(null, expectedUserId);
         });
 
@@ -489,7 +461,7 @@ describe('Coordinator/Permissions', function() {
             expectedHost,
             expectedOrganizationId
           );
-          const promise = permissions.getOneByOrganizationId(null, null);
+          const promise = permissions.getOneByOrganizationId();
 
           return expect(promise).to.be.rejectedWith(
             "A user ID is required for getting a user's permissions for an organization"

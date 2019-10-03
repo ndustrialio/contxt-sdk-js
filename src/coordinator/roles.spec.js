@@ -28,7 +28,7 @@ describe('Coordinator/Roles', function() {
   });
 
   describe('constructor', function() {
-    context('when organization ID is provided', function() {
+    context('when an organization ID is provided', function() {
       let organizationId;
       let roles;
 
@@ -55,7 +55,7 @@ describe('Coordinator/Roles', function() {
       });
     });
 
-    context('when organization ID is not provided', function() {
+    context('when an organization ID is not provided', function() {
       let roles;
 
       beforeEach(function() {
@@ -74,7 +74,7 @@ describe('Coordinator/Roles', function() {
         expect(roles._sdk).to.deep.equal(baseSdk);
       });
 
-      it('sets the organization ID for the class instance', function() {
+      it('sets the organization ID for the class instance to null', function() {
         expect(roles._organizationId).to.equal(null);
       });
     });
@@ -390,49 +390,52 @@ describe('Coordinator/Roles', function() {
     });
 
     context('tenant API', function() {
+      let roles;
+      let organization;
+      let expectedRole;
+      let expectedRoleFromServer;
+      let newRolePayload;
+      let newRolePayloadToServer;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+
+      beforeEach(function() {
+        organization = fixture.build('contxtOrganization');
+        expectedRole = fixture.build('contxtRole');
+        expectedRoleFromServer = fixture.build('contxtRole', expectedRole, {
+          fromServer: true
+        });
+        newRolePayload = {
+          name: expectedRole.name,
+          description: expectedRole.description
+        };
+
+        newRolePayloadToServer = {
+          name: newRolePayload.name,
+          description: newRolePayload.description
+        };
+
+        request = {
+          ...baseRequest,
+          post: sinon.stub().resolves(expectedRoleFromServer)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .callsFake(() => expectedRole);
+
+        toSnakeCase = sinon
+          .stub(objectUtils, 'toSnakeCase')
+          .callsFake(() => newRolePayloadToServer);
+
+        roles = new Roles(baseSdk, request, expectedHost, organization.id);
+      });
+
       context(
         'when an organization ID and role information are both provided',
         function() {
-          let roles;
-          let organization;
-          let expectedRole;
-          let expectedRoleFromServer;
-          let newRolePayload;
-          let newRolePayloadToServer;
-          let promise;
-          let request;
-          let toCamelCase;
-          let toSnakeCase;
-
           beforeEach(function() {
-            organization = fixture.build('contxtOrganization');
-            expectedRole = fixture.build('contxtRole');
-            expectedRoleFromServer = fixture.build('contxtRole', expectedRole, {
-              fromServer: true
-            });
-            newRolePayload = {
-              name: expectedRole.name,
-              description: expectedRole.description
-            };
-
-            newRolePayloadToServer = {
-              name: newRolePayload.name,
-              description: newRolePayload.description
-            };
-
-            request = {
-              ...baseRequest,
-              post: sinon.stub().resolves(expectedRoleFromServer)
-            };
-            toCamelCase = sinon
-              .stub(objectUtils, 'toCamelCase')
-              .callsFake(() => expectedRole);
-
-            toSnakeCase = sinon
-              .stub(objectUtils, 'toSnakeCase')
-              .callsFake(() => newRolePayloadToServer);
-
-            roles = new Roles(baseSdk, request, expectedHost, organization.id);
             promise = roles.create(organization.id, newRolePayload);
           });
 
@@ -465,47 +468,8 @@ describe('Coordinator/Roles', function() {
       );
 
       context('when the organization ID is not provided', function() {
-        let roles;
-        let organization;
-        let expectedRole;
-        let expectedRoleFromServer;
-        let newRolePayload;
-        let newRolePayloadToServer;
-        let promise;
-        let request;
-        let toCamelCase;
-        let toSnakeCase;
-
         beforeEach(function() {
-          organization = fixture.build('contxtOrganization');
-          expectedRole = fixture.build('contxtRole');
-          expectedRoleFromServer = fixture.build('contxtRole', expectedRole, {
-            fromServer: true
-          });
-          newRolePayload = {
-            name: expectedRole.name,
-            description: expectedRole.description
-          };
-
-          newRolePayloadToServer = {
-            name: newRolePayload.name,
-            description: newRolePayload.description
-          };
-
-          request = {
-            ...baseRequest,
-            post: sinon.stub().resolves(expectedRoleFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .callsFake(() => expectedRole);
-
-          toSnakeCase = sinon
-            .stub(objectUtils, 'toSnakeCase')
-            .callsFake(() => newRolePayloadToServer);
-
-          roles = new Roles(baseSdk, request, expectedHost, organization.id);
-          promise = roles.create(organization.id, newRolePayload);
+          promise = roles.create(null, newRolePayload);
         });
 
         it('formats the role payload', function() {
@@ -622,23 +586,22 @@ describe('Coordinator/Roles', function() {
     });
 
     context('tenant API', function() {
+      let role;
+      let roles;
+      let organization;
+      let promise;
+
+      beforeEach(function() {
+        organization = fixture.build('organization');
+        role = fixture.build('contxtRole');
+
+        roles = new Roles(baseSdk, baseRequest, expectedHost, organization.id);
+      });
+
       context(
         'when the the organization ID and role ID are both provided',
         function() {
-          let role;
-          let organization;
-          let promise;
-
           beforeEach(function() {
-            organization = fixture.build('organization');
-            role = fixture.build('contxtRole');
-
-            const roles = new Roles(
-              baseSdk,
-              baseRequest,
-              expectedHost,
-              organization.id
-            );
             promise = roles.delete(organization.id, role.id);
           });
 
@@ -655,21 +618,8 @@ describe('Coordinator/Roles', function() {
       );
 
       context('when the organization ID is not provided', function() {
-        let role;
-        let organization;
-        let promise;
-
         beforeEach(function() {
-          organization = fixture.build('organization');
-          role = fixture.build('contxtRole');
-
-          const roles = new Roles(
-            baseSdk,
-            baseRequest,
-            expectedHost,
-            organization.id
-          );
-          promise = roles.delete(organization.id, role.id);
+          promise = roles.delete(null, role.id);
         });
 
         it('returns a fulfilled promise', function() {
@@ -816,7 +766,7 @@ describe('Coordinator/Roles', function() {
         );
       });
 
-      context('when the organizationId is provided', function() {
+      context('when the organization ID is provided', function() {
         beforeEach(function() {
           promise = roles.getByOrganizationId(expectedOrganizationId);
         });
@@ -838,7 +788,7 @@ describe('Coordinator/Roles', function() {
         });
       });
 
-      context('when the organizationId is not provided', function() {
+      context('when the organization ID is not provided', function() {
         beforeEach(function() {
           promise = roles.getByOrganizationId();
         });

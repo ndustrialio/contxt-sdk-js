@@ -31,7 +31,7 @@ describe('Coordinator/Users', function() {
   });
 
   describe('constructor', function() {
-    context('when organization ID is provided', function() {
+    context('when an organization ID is provided', function() {
       let organizationId;
       let users;
 
@@ -58,7 +58,7 @@ describe('Coordinator/Users', function() {
       });
     });
 
-    context('when organization ID is not provided', function() {
+    context('when an organization ID is not provided', function() {
       let users;
 
       beforeEach(function() {
@@ -77,7 +77,7 @@ describe('Coordinator/Users', function() {
         expect(users._sdk).to.deep.equal(baseSdk);
       });
 
-      it('sets the organization ID for the class instance', function() {
+      it('sets the organization ID for the class instance to null', function() {
         expect(users._organizationId).to.equal(null);
       });
     });
@@ -781,57 +781,56 @@ describe('Coordinator/Users', function() {
     });
 
     context('tenant API', function() {
-      context('when all the required parameters are provided', function() {
-        let organization;
-        let newUserPayload;
-        let newUserPayloadToServer;
-        let expectedNewUser;
-        let newUserFromServer;
-        let promise;
-        let request;
-        let toCamelCase;
-        let toSnakeCase;
+      let organization;
+      let newUserPayload;
+      let newUserPayloadToServer;
+      let expectedNewUser;
+      let newUserFromServer;
+      let promise;
+      let request;
+      let toCamelCase;
+      let toSnakeCase;
+      let users;
 
+      beforeEach(function() {
+        organization = fixture.build('organization');
+
+        expectedNewUser = fixture.build('contxtUser');
+        newUserFromServer = fixture.build('contxtUser', expectedNewUser, {
+          fromServer: true
+        });
+
+        newUserPayload = {
+          email: expectedNewUser.email,
+          firstName: expectedNewUser.firstName,
+          lastName: expectedNewUser.lastName,
+          redirectUrl: faker.internet.url()
+        };
+
+        newUserPayloadToServer = {
+          email: newUserPayload.email,
+          first_name: newUserPayload.firstName,
+          last_name: newUserPayload.lastName,
+          redirect_url: newUserPayload.redirectUrl
+        };
+
+        request = {
+          ...baseRequest,
+          post: sinon.stub().resolves(newUserFromServer)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .callsFake(() => expectedNewUser);
+
+        toSnakeCase = sinon
+          .stub(objectUtils, 'toSnakeCase')
+          .callsFake(() => newUserPayloadToServer);
+
+        users = new Users(baseSdk, request, expectedHost, organization.id);
+      });
+
+      context('when all the parameters are provided', function() {
         beforeEach(function() {
-          organization = fixture.build('organization');
-
-          expectedNewUser = fixture.build('contxtUser');
-          newUserFromServer = fixture.build('contxtUser', expectedNewUser, {
-            fromServer: true
-          });
-
-          newUserPayload = {
-            email: expectedNewUser.email,
-            firstName: expectedNewUser.firstName,
-            lastName: expectedNewUser.lastName,
-            redirectUrl: faker.internet.url()
-          };
-
-          newUserPayloadToServer = {
-            email: newUserPayload.email,
-            first_name: newUserPayload.firstName,
-            last_name: newUserPayload.lastName,
-            redirect_url: newUserPayload.redirectUrl
-          };
-
-          request = {
-            ...baseRequest,
-            post: sinon.stub().resolves(newUserFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .callsFake(() => expectedNewUser);
-
-          toSnakeCase = sinon
-            .stub(objectUtils, 'toSnakeCase')
-            .callsFake(() => newUserPayloadToServer);
-
-          const users = new Users(
-            baseSdk,
-            request,
-            expectedHost,
-            organization.id
-          );
           promise = users.invite(organization.id, newUserPayload);
         });
 
@@ -862,57 +861,8 @@ describe('Coordinator/Users', function() {
       });
 
       context('when the organization ID is not provided', function() {
-        let organization;
-        let newUserPayload;
-        let newUserPayloadToServer;
-        let expectedNewUser;
-        let newUserFromServer;
-        let promise;
-        let request;
-        let toCamelCase;
-        let toSnakeCase;
-
         beforeEach(function() {
-          organization = fixture.build('organization');
-
-          expectedNewUser = fixture.build('contxtUser');
-          newUserFromServer = fixture.build('contxtUser', expectedNewUser, {
-            fromServer: true
-          });
-
-          newUserPayload = {
-            email: expectedNewUser.email,
-            firstName: expectedNewUser.firstName,
-            lastName: expectedNewUser.lastName,
-            redirectUrl: faker.internet.url()
-          };
-
-          newUserPayloadToServer = {
-            email: newUserPayload.email,
-            first_name: newUserPayload.firstName,
-            last_name: newUserPayload.lastName,
-            redirect_url: newUserPayload.redirectUrl
-          };
-
-          request = {
-            ...baseRequest,
-            post: sinon.stub().resolves(newUserFromServer)
-          };
-          toCamelCase = sinon
-            .stub(objectUtils, 'toCamelCase')
-            .callsFake(() => expectedNewUser);
-
-          toSnakeCase = sinon
-            .stub(objectUtils, 'toSnakeCase')
-            .callsFake(() => newUserPayloadToServer);
-
-          const users = new Users(
-            baseSdk,
-            request,
-            expectedHost,
-            organization.id
-          );
-          promise = users.invite(organization.id, newUserPayload);
+          promise = users.invite(null, newUserPayload);
         });
 
         it('formats the user payload', function() {
@@ -1029,21 +979,20 @@ describe('Coordinator/Users', function() {
     });
 
     context('tenant API', function() {
-      context('when all required parameters are provided', function() {
-        let organization;
-        let user;
-        let promise;
+      let organization;
+      let user;
+      let users;
+      let promise;
 
+      beforeEach(function() {
+        organization = fixture.build('organization');
+        user = fixture.build('contxtUser');
+
+        users = new Users(baseSdk, baseRequest, expectedHost, organization.id);
+      });
+
+      context('when all parameters are provided', function() {
         beforeEach(function() {
-          organization = fixture.build('organization');
-          user = fixture.build('contxtUser');
-
-          const users = new Users(
-            baseSdk,
-            baseRequest,
-            expectedHost,
-            organization.id
-          );
           promise = users.remove(organization.id, user.id);
         });
 
@@ -1059,21 +1008,8 @@ describe('Coordinator/Users', function() {
       });
 
       context('when the organization ID is not provided', function() {
-        let organization;
-        let user;
-        let promise;
-
         beforeEach(function() {
-          organization = fixture.build('organization');
-          user = fixture.build('contxtUser');
-
-          const users = new Users(
-            baseSdk,
-            baseRequest,
-            expectedHost,
-            organization.id
-          );
-          promise = users.remove(organization.id, user.id);
+          promise = users.remove(null, user.id);
         });
 
         it('sends a request to remove the user from the organization', function() {
@@ -1096,7 +1032,7 @@ describe('Coordinator/Users', function() {
             expectedHost,
             organization.id
           );
-          const promise = users.remove(faker.random.uuid(), null);
+          const promise = users.remove(organization.id, null);
 
           return expect(promise).to.be.rejectedWith(
             'A user ID is required for removing a user from an organization'

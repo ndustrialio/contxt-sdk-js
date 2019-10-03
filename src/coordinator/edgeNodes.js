@@ -51,13 +51,13 @@ class EdgeNodes {
    *   .catch((err) => console.log(err));
    */
   get(organizationId, edgeNodeClientId) {
-    if (!edgeNodeClientId) {
-      return Promise.reject(
-        new Error('An edgeNodeClientId is required for getting an edge node.')
-      );
-    }
-
     if (this._organizationId) {
+      if (!edgeNodeClientId) {
+        return Promise.reject(
+          new Error('An edgeNodeClientId is required for getting an edge node.')
+        );
+      }
+
       return this._request
         .get(`${this._baseUrl}/edgenodes/${edgeNodeClientId}`)
         .then((edgeNode) => toCamelCase(edgeNode));
@@ -66,6 +66,12 @@ class EdgeNodes {
     if (!organizationId) {
       return Promise.reject(
         new Error('An organizationId is required for getting an edge node.')
+      );
+    }
+
+    if (!edgeNodeClientId) {
+      return Promise.reject(
+        new Error('An edgeNodeClientId is required for getting an edge node.')
       );
     }
 
