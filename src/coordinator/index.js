@@ -47,7 +47,7 @@ class Coordinator {
     this._organizationId = organizationId;
 
     const url = this._organizationId
-      ? `${this._sdk.config.audiences.coordinator.host}/contxt/v1/${
+      ? `${this._sdk.config.audiences.coordinator.host}/deploy/v1/${
           this._organizationId
         }`
       : `${this._sdk.config.audiences.coordinator.host}/v1`;

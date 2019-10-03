@@ -105,7 +105,7 @@ describe('Coordinator', function() {
 
       it('sets the base url to be the new tenant url', function() {
         expect(coordinator._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
@@ -114,7 +114,7 @@ describe('Coordinator', function() {
       it('appends a new instance of Application to the class instance with the tenant base url', function() {
         expect(coordinator.applications).to.be.an.instanceof(Applications);
         expect(coordinator.applications._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
@@ -126,7 +126,7 @@ describe('Coordinator', function() {
       it('appends a new instance of Consent to the class instance with the tenant base url', function() {
         expect(coordinator.consent).to.be.an.instanceof(Consent);
         expect(coordinator.consent._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
@@ -136,7 +136,7 @@ describe('Coordinator', function() {
       it('appends a new instance of EdgeNodes to the class instance with the tenant base url', function() {
         expect(coordinator.edgeNodes).to.be.an.instanceof(EdgeNodes);
         expect(coordinator.edgeNodes._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
@@ -146,7 +146,7 @@ describe('Coordinator', function() {
       it('appends a new instance of Organizations to the class instance with the tenant base url', function() {
         expect(coordinator.organizations).to.be.an.instanceof(Organizations);
         expect(coordinator.organizations._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
@@ -158,7 +158,7 @@ describe('Coordinator', function() {
       it('appends a new instance of Permissions to the class instance with the tenant base url', function() {
         expect(coordinator.permissions).to.be.an.instanceof(Permissions);
         expect(coordinator.permissions._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
@@ -170,7 +170,7 @@ describe('Coordinator', function() {
       it('appends a new instance of Roles to the class instance with the tenant base url', function() {
         expect(coordinator.roles).to.be.an.instanceof(Roles);
         expect(coordinator.roles._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
@@ -180,7 +180,7 @@ describe('Coordinator', function() {
       it('appends a new instance of Users to the class instance with the tenant base url', function() {
         expect(coordinator.users).to.be.an.instanceof(Users);
         expect(coordinator.users._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/contxt/v1/${
+          `${baseSdk.config.audiences.coordinator.host}/deploy/v1/${
             organization.id
           }`
         );
