@@ -23,6 +23,8 @@ class Coordinator {
     this._request = request;
     this._sdk = sdk;
 
+    this._accessBaseUrl = null;
+    this._deployBaseUrl = null;
     this._organizationId = null;
 
     this.applications = new Applications(sdk, request, baseUrl);
@@ -46,54 +48,58 @@ class Coordinator {
   setOrganizationId(organizationId) {
     this._organizationId = organizationId;
 
-    const url = this._organizationId
+    this._accessBaseUrl = this._organizationId
+      ? `${this._sdk.config.audiences.coordinator.host}/access/v1/${
+          this._organizationId
+        }`
+      : null;
+
+    this._deployBaseUrl = this._organizationId
       ? `${this._sdk.config.audiences.coordinator.host}/deploy/v1/${
           this._organizationId
         }`
-      : `${this._sdk.config.audiences.coordinator.host}/v1`;
-
-    this._baseUrl = url;
+      : null;
 
     this.applications = new Applications(
       this._sdk,
       this._request,
-      this._baseUrl,
+      this._deployBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.consent = new Consent(
       this._sdk,
       this._request,
-      this._baseUrl,
+      this._deployBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.edgeNodes = new EdgeNodes(
       this._sdk,
       this._request,
-      this._baseUrl,
+      this._deployBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.organizations = new Organizations(
       this._sdk,
       this._request,
-      this._baseUrl,
+      this._accessBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.permissions = new Permissions(
       this._sdk,
       this._request,
-      this._baseUrl,
+      this._accessBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.roles = new Roles(
       this._sdk,
       this._request,
-      this._baseUrl,
+      this._accessBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.users = new Users(
       this._sdk,
       this._request,
-      this._baseUrl,
+      this._accessBaseUrl || this._baseUrl,
       this._organizationId
     );
   }
