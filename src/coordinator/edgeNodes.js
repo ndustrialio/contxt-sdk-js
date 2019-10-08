@@ -21,20 +21,23 @@ class EdgeNodes {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    * @param {string} baseUrl The base URL provided by the parent module
+   * @param {string} [organizationId] The organization ID to be used in tenant url requests
    */
-  constructor(sdk, request, baseUrl) {
+  constructor(sdk, request, baseUrl, organizationId = null) {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+    this._organizationId = organizationId;
   }
 
   /**
    * Get an edge node
    *
-   * API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeClientId'
+   * Legacy API Endpoint: '/organizations/:organizationId/edgenodes/:edgeNodeClientId'
+   * API Endpoint: 'edgenodes/:edgeNodeClientId'
    * METHOD: GET
    *
-   * @param {string} organizationId UUID
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {string} edgeNodeClientId
    *
    * @returns {Promise}
@@ -48,6 +51,18 @@ class EdgeNodes {
    *   .catch((err) => console.log(err));
    */
   get(organizationId, edgeNodeClientId) {
+    if (this._organizationId) {
+      if (!edgeNodeClientId) {
+        return Promise.reject(
+          new Error('An edgeNodeClientId is required for getting an edge node.')
+        );
+      }
+
+      return this._request
+        .get(`${this._baseUrl}/edgenodes/${edgeNodeClientId}`)
+        .then((edgeNode) => toCamelCase(edgeNode));
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error('An organizationId is required for getting an edge node.')

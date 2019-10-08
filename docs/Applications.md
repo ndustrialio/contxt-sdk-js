@@ -6,7 +6,7 @@ Module that provides access to contxt applications
 **Kind**: global class  
 
 * [Applications](#Applications)
-    * [new Applications(sdk, request, baseUrl)](#new_Applications_new)
+    * [new Applications(sdk, request, baseUrl, [organizationId])](#new_Applications_new)
     * [.addFavorite(applicationId)](#Applications+addFavorite) ⇒ <code>Promise</code>
     * [.getAll()](#Applications+getAll) ⇒ <code>Promise</code>
     * [.getFavorites()](#Applications+getFavorites) ⇒ <code>Promise</code>
@@ -16,13 +16,14 @@ Module that provides access to contxt applications
 
 <a name="new_Applications_new"></a>
 
-### new Applications(sdk, request, baseUrl)
+### new Applications(sdk, request, baseUrl, [organizationId])
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
-| request | <code>Object</code> | An instance of the request module tied to this module's audience. |
-| baseUrl | <code>string</code> | The base URL provided by the parent module |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sdk | <code>Object</code> |  | An instance of the SDK so the module can communicate with other modules |
+| request | <code>Object</code> |  | An instance of the request module tied to this module's audience. |
+| baseUrl | <code>string</code> |  | The base URL provided by the parent module |
+| [organizationId] | <code>string</code> | <code>null</code> | The organization ID to be used in tenant url requests |
 
 <a name="Applications+addFavorite"></a>
 
@@ -92,7 +93,8 @@ contxtSdk.coordinator.applications
 ### contxtSdk.coordinator.applications.getFeatured(organizationId) ⇒ <code>Promise</code>
 Gets an organization's list of featured applications
 
-API Endpoint: '/organizations/:organizationId/applications/featured'
+Legacy API Endpoint: '/organizations/:organizationId/applications/featured'
+API Endpoint: '/applications/featured'
 Method: GET
 
 Note: Only valid for web users using auth0WebAuth session type
@@ -103,7 +105,7 @@ Note: Only valid for web users using auth0WebAuth session type
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js

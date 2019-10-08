@@ -54,11 +54,13 @@ class Users {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    * @param {string} baseUrl The base URL provided by the parent module
+   * @param {string} [organizationId] The organization ID to be used in tenant url requests
    */
-  constructor(sdk, request, baseUrl) {
+  constructor(sdk, request, baseUrl, organizationId = null) {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+    this._organizationId = organizationId;
   }
 
   /**
@@ -272,10 +274,11 @@ class Users {
   /**
    * Gets a list of users for a contxt organization
    *
-   * API Endpoint: '/organizations/:organizationId/users'
+   * Legacy API Endpoint: '/organizations/:organizationId/users'
+   * API Endpoint: '/users'
    * Method: GET
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    *
    * @returns {Promise}
    * @fulfill {ContxtUser[]} List of users for a contxt organization
@@ -288,6 +291,12 @@ class Users {
    *   .catch((err) => console.log(err));
    */
   getByOrganizationId(organizationId) {
+    if (this._organizationId) {
+      return this._request
+        .get(`${this._baseUrl}/users`)
+        .then((orgUsers) => toCamelCase(orgUsers));
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error(
@@ -305,12 +314,13 @@ class Users {
    * Creates a new contxt user, adds them to an organization, and
    * sends them an email invite link to do final account setup.
    *
-   * API Endpoint: '/organizations/:organizationId/users'
+   * Legacy API Endpoint: '/organizations/:organizationId/users'
+   * API Endpoint: '/users'
    * Method: POST
    *
    * Note: Only valid for web users using auth0WebAuth session type
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {Object} user
    * @param {string} user.email The email address of the new user
    * @param {string} user.firstName The first name of the new user
@@ -336,6 +346,24 @@ class Users {
    *   .catch((err) => console.log(err));
    */
   invite(organizationId, user = {}) {
+    if (this._organizationId) {
+      const requiredFields = ['email', 'firstName', 'lastName', 'redirectUrl'];
+
+      for (let i = 0; requiredFields.length > i; i++) {
+        const field = requiredFields[i];
+
+        if (!user[field]) {
+          return Promise.reject(
+            new Error(`A ${field} is required to create a new user.`)
+          );
+        }
+      }
+
+      return this._request
+        .post(`${this._baseUrl}/users`, toSnakeCase(user))
+        .then((response) => toCamelCase(response));
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error('An organization ID is required for inviting a new user')
@@ -365,10 +393,11 @@ class Users {
   /**
    * Removes a user from an organization
    *
-   * API Endpoint: '/organizations/:organizationId/users/:userId'
+   * Legacy API Endpoint: '/organizations/:organizationId/users/:userId'
+   * API Endpoint: '/users/:userId'
    * Method: DELETE
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {string} userId The ID of the user
    *
    * @returns {Promise}
@@ -381,6 +410,18 @@ class Users {
    *   .catch((err) => console.log(err));
    */
   remove(organizationId, userId) {
+    if (this._organizationId) {
+      if (!userId) {
+        return Promise.reject(
+          new Error(
+            'A user ID is required for removing a user from an organization'
+          )
+        );
+      }
+
+      return this._request.delete(`${this._baseUrl}/users/${userId}`);
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error(

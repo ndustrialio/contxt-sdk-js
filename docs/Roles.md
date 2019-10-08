@@ -6,7 +6,7 @@ Module that provides access to contxt roles
 **Kind**: global class  
 
 * [Roles](#Roles)
-    * [new Roles(sdk, request, baseUrl)](#new_Roles_new)
+    * [new Roles(sdk, request, baseUrl, [organizationId])](#new_Roles_new)
     * [.addApplication(roleId, applicationId)](#Roles+addApplication) ⇒ <code>Promise</code>
     * [.addStack(roleId, stackId, accessType)](#Roles+addStack) ⇒ <code>Promise</code>
     * [.create(organizationId, role)](#Roles+create) ⇒ <code>Promise</code>
@@ -17,13 +17,14 @@ Module that provides access to contxt roles
 
 <a name="new_Roles_new"></a>
 
-### new Roles(sdk, request, baseUrl)
+### new Roles(sdk, request, baseUrl, [organizationId])
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
-| request | <code>Object</code> | An instance of the request module tied to this module's audience. |
-| baseUrl | <code>string</code> | The base URL provided by the parent module |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sdk | <code>Object</code> |  | An instance of the SDK so the module can communicate with other modules |
+| request | <code>Object</code> |  | An instance of the request module tied to this module's audience. |
+| baseUrl | <code>string</code> |  | The base URL provided by the parent module |
+| [organizationId] | <code>string</code> | <code>null</code> | The organization ID to be used in tenant url requests |
 
 <a name="Roles+addApplication"></a>
 
@@ -85,7 +86,7 @@ Create a new role for an organization
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | role | <code>Object</code> |  |
 | role.name | <code>string</code> | The name of the new role |
 | role.description | <code>string</code> | Some text describing the purpose of the role |
@@ -105,7 +106,8 @@ contxtSdk.coordinator.roles
 ### contxtSdk.coordinator.roles.delete(organizationId, roleId) ⇒ <code>Promise</code>
 Deletes a role from an organization
 
-API Endpoint: '/organizations/:organizationId/roles/:roleId'
+Legacy API Endpoint: '/organizations/:organizationId/roles/:roleId'
+API Endpiont: '/roles/:roleId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -114,19 +116,20 @@ Method: DELETE
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | roleId | <code>string</code> | The UUID formatted ID of the role |
 
 **Example**  
 ```js
-contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d', '8b64fb12-e649-46be-b330-e672d28eed99s');
 ```
 <a name="Roles+getByOrganizationId"></a>
 
 ### contxtSdk.coordinator.roles.getByOrganizationId(organizationId) ⇒ <code>Promise</code>
 Gets an organization's list of roles
 
-API Endpoint: '/organizations/:organizationId/roles'
+Legacy API Endpoint: '/organizations/:organizationId/roles'
+API Endpoint: '/roles'
 Method: GET
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -135,7 +138,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js

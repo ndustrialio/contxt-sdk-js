@@ -6,27 +6,29 @@ Module that provides access to contxt user permissions
 **Kind**: global class  
 
 * [Permissions](#Permissions)
-    * [new Permissions(sdk, request, baseUrl)](#new_Permissions_new)
+    * [new Permissions(sdk, request, baseUrl, [organizationId])](#new_Permissions_new)
     * [.getAllByOrganizationId(organizationId)](#Permissions+getAllByOrganizationId) ⇒ <code>Promise</code>
     * [.getOneByOrganizationId(organizationId, userId)](#Permissions+getOneByOrganizationId) ⇒ <code>Promise</code>
     * [.getByUserId(userId)](#Permissions+getByUserId) ⇒ <code>Promise</code>
 
 <a name="new_Permissions_new"></a>
 
-### new Permissions(sdk, request, baseUrl)
+### new Permissions(sdk, request, baseUrl, [organizationId])
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
-| request | <code>Object</code> | An instance of the request module tied to this module's audience. |
-| baseUrl | <code>string</code> | The base URL provided by the parent module |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sdk | <code>Object</code> |  | An instance of the SDK so the module can communicate with other modules |
+| request | <code>Object</code> |  | An instance of the request module tied to this module's audience. |
+| baseUrl | <code>string</code> |  | The base URL provided by the parent module |
+| [organizationId] | <code>string</code> | <code>null</code> | The organization ID to be used in tenant url requests |
 
 <a name="Permissions+getAllByOrganizationId"></a>
 
 ### contxtSdk.coordinator.permissions.getAllByOrganizationId(organizationId) ⇒ <code>Promise</code>
 Gets a list of user permissions for each user in an organization
 
-API Endpoint: '/organizations/:organizationId/users/permissions'
+Legacy API Endpoint: '/organizations/:organizationId/users/permissions'
+API Endpoint: '/users/permissions/'
 Method: GET
 
 **Kind**: instance method of [<code>Permissions</code>](#Permissions)  
@@ -35,7 +37,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js
@@ -49,7 +51,8 @@ contxtSdk.coordinator.permissions
 ### contxtSdk.coordinator.permissions.getOneByOrganizationId(organizationId, userId) ⇒ <code>Promise</code>
 Gets a single user's permissions within an organization
 
-API Endpoint: '/organizations/:organizationId/users/:userId/permissions'
+Legacy API Endpoint: '/organizations/:organizationId/users/:userId/permissions'
+API Endpoint: '/users/:userId/permissions'
 Method: GET
 
 **Kind**: instance method of [<code>Permissions</code>](#Permissions)  
@@ -58,7 +61,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | userId | <code>string</code> | The ID of the user |
 
 **Example**  

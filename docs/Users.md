@@ -6,7 +6,7 @@ Module that provides access to contxt users
 **Kind**: global class  
 
 * [Users](#Users)
-    * [new Users(sdk, request, baseUrl)](#new_Users_new)
+    * [new Users(sdk, request, baseUrl, [organizationId])](#new_Users_new)
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
     * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
@@ -22,13 +22,14 @@ Module that provides access to contxt users
 
 <a name="new_Users_new"></a>
 
-### new Users(sdk, request, baseUrl)
+### new Users(sdk, request, baseUrl, [organizationId])
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sdk | <code>Object</code> | An instance of the SDK so the module can communicate with other modules |
-| request | <code>Object</code> | An instance of the request module tied to this module's audience. |
-| baseUrl | <code>string</code> | The base URL provided by the parent module |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sdk | <code>Object</code> |  | An instance of the SDK so the module can communicate with other modules |
+| request | <code>Object</code> |  | An instance of the request module tied to this module's audience. |
+| baseUrl | <code>string</code> |  | The base URL provided by the parent module |
+| [organizationId] | <code>string</code> | <code>null</code> | The organization ID to be used in tenant url requests |
 
 <a name="Users+activate"></a>
 
@@ -164,7 +165,8 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.getByOrganizationId(organizationId) ⇒ <code>Promise</code>
 Gets a list of users for a contxt organization
 
-API Endpoint: '/organizations/:organizationId/users'
+Legacy API Endpoint: '/organizations/:organizationId/users'
+API Endpoint: '/users'
 Method: GET
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -173,7 +175,7 @@ Method: GET
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 
 **Example**  
 ```js
@@ -188,7 +190,8 @@ contxtSdk.coordinator.users
 Creates a new contxt user, adds them to an organization, and
 sends them an email invite link to do final account setup.
 
-API Endpoint: '/organizations/:organizationId/users'
+Legacy API Endpoint: '/organizations/:organizationId/users'
+API Endpoint: '/users'
 Method: POST
 
 Note: Only valid for web users using auth0WebAuth session type
@@ -199,7 +202,7 @@ Note: Only valid for web users using auth0WebAuth session type
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | user | <code>Object</code> |  |
 | user.email | <code>string</code> | The email address of the new user |
 | user.firstName | <code>string</code> | The first name of the new user |
@@ -223,7 +226,8 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.remove(organizationId, userId) ⇒ <code>Promise</code>
 Removes a user from an organization
 
-API Endpoint: '/organizations/:organizationId/users/:userId'
+Legacy API Endpoint: '/organizations/:organizationId/users/:userId'
+API Endpoint: '/users/:userId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -232,7 +236,7 @@ Method: DELETE
 
 | Param | Type | Description |
 | --- | --- | --- |
-| organizationId | <code>string</code> | The ID of the organization |
+| organizationId | <code>string</code> | The ID of the organization, optional when using the tenant API and an organization ID has been set |
 | userId | <code>string</code> | The ID of the user |
 
 **Example**  

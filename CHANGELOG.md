@@ -1,3 +1,10 @@
+## [v2.4.0](https://github.com/ndustrialio/contxt-sdk-js/pull/131) (2019-10-07)
+
+**Changed**
+
+- Added `Coordinator.setOrganizationId` which, when set, will use the new tenancy/access based API endpoints
+  - If no `organizationId` has been set, all `Coordinator` endpoints will use the legacy API endpoints
+
 ## [v2.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.3.0) (2019-09-09)
 
 **Added**

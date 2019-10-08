@@ -57,11 +57,13 @@ class Roles {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    * @param {string} baseUrl The base URL provided by the parent module
+   * @param {string} [organizationId] The organization ID to be used in tenant url requests
    */
-  constructor(sdk, request, baseUrl) {
+  constructor(sdk, request, baseUrl, organizationId = null) {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+    this._organizationId = organizationId;
   }
 
   /**
@@ -154,7 +156,7 @@ class Roles {
   /**
    * Create a new role for an organization
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {Object} role
    * @param {string} role.name The name of the new role
    * @param {string} role.description Some text describing the purpose of the role
@@ -173,6 +175,24 @@ class Roles {
    *   .catch((err) => console.log(err));
    */
   create(organizationId, role = {}) {
+    if (this._organizationId) {
+      if (!role.name) {
+        return Promise.reject(
+          new Error(`A name is required to create a new role.`)
+        );
+      }
+
+      if (!role.description) {
+        return Promise.reject(
+          new Error(`A description is required to create a new role.`)
+        );
+      }
+
+      return this._request
+        .post(`${this._baseUrl}/roles`, toSnakeCase(role))
+        .then((response) => toCamelCase(response));
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error(
@@ -204,10 +224,11 @@ class Roles {
   /**
    * Deletes a role from an organization
    *
-   * API Endpoint: '/organizations/:organizationId/roles/:roleId'
+   * Legacy API Endpoint: '/organizations/:organizationId/roles/:roleId'
+   * API Endpiont: '/roles/:roleId'
    * Method: DELETE
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    * @param {string} roleId The UUID formatted ID of the role
    *
    * @returns {Promise}
@@ -215,9 +236,19 @@ class Roles {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d');
+   * contxtSdk.roles.delete('4f0e51c6-728b-4892-9863-6d002e61204d', '8b64fb12-e649-46be-b330-e672d28eed99s');
    */
   delete(organizationId, roleId) {
+    if (this._organizationId) {
+      if (!roleId) {
+        return Promise.reject(
+          new Error('A roleId is required for deleting a role.')
+        );
+      }
+
+      return this._request.delete(`${this._baseUrl}/roles/${roleId}`);
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error('An organizationId is required for deleting a role.')
@@ -238,10 +269,11 @@ class Roles {
   /**
    * Gets an organization's list of roles
    *
-   * API Endpoint: '/organizations/:organizationId/roles'
+   * Legacy API Endpoint: '/organizations/:organizationId/roles'
+   * API Endpoint: '/roles'
    * Method: GET
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    *
    * @returns {Promise}
    * @fulfill {ContxtRole[]} A list of roles
@@ -254,6 +286,12 @@ class Roles {
    *   .catch((err) => console.log(err));
    */
   getByOrganizationId(organizationId) {
+    if (this._organizationId) {
+      return this._request
+        .get(`${this._baseUrl}/roles`)
+        .then((roles) => toCamelCase(roles));
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error(

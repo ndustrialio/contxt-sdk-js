@@ -19,20 +19,23 @@ class Organizations {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    * @param {string} baseUrl The base URL provided by the parent module
+   * @param {string} [organizationId] The organization ID to be used in tenant url requests
    */
-  constructor(sdk, request, baseUrl) {
+  constructor(sdk, request, baseUrl, organizationId = null) {
     this._baseUrl = baseUrl;
     this._request = request;
     this._sdk = sdk;
+    this._organizationId = organizationId;
   }
 
   /**
    * Gets information about a contxt organization
    *
-   * API Endpoint: '/organizations/:organizationId'
+   * Legacy API Endpoint: '/organizations/:organizationId'
+   * API Endpoint: '/'
    * Method: GET
    *
-   * @param {string} organizationId The ID of the organization
+   * @param {string} organizationId The ID of the organization, optional when using the tenant API and an organization ID has been set
    *
    * @returns {Promise}
    * @fulfill {ContxtOrganization} Information about a contxt organization
@@ -45,6 +48,12 @@ class Organizations {
    *   .catch((err) => console.log(err));
    */
   get(organizationId) {
+    if (this._organizationId) {
+      return this._request
+        .get(`${this._baseUrl}`)
+        .then((org) => toCamelCase(org));
+    }
+
     if (!organizationId) {
       return Promise.reject(
         new Error(

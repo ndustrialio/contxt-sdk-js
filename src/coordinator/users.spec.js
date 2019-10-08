@@ -31,22 +31,55 @@ describe('Coordinator/Users', function() {
   });
 
   describe('constructor', function() {
-    let users;
+    context('when an organization ID is provided', function() {
+      let organizationId;
+      let users;
 
-    beforeEach(function() {
-      users = new Users(baseSdk, baseRequest, expectedHost);
+      beforeEach(function() {
+        organizationId = fixture.build('organization').id;
+
+        users = new Users(baseSdk, baseRequest, expectedHost, organizationId);
+      });
+
+      it('sets a base url for the class instance', function() {
+        expect(users._baseUrl).to.equal(expectedHost);
+      });
+
+      it('appends the supplied request module to the class instance', function() {
+        expect(users._request).to.deep.equal(baseRequest);
+      });
+
+      it('appends the supplied sdk to the class instance', function() {
+        expect(users._sdk).to.deep.equal(baseSdk);
+      });
+
+      it('sets the organization ID for the class instance', function() {
+        expect(users._organizationId).to.equal(organizationId);
+      });
     });
 
-    it('sets a base url for the class instance', function() {
-      expect(users._baseUrl).to.equal(expectedHost);
-    });
+    context('when an organization ID is not provided', function() {
+      let users;
 
-    it('appends the supplied request module to the class instance', function() {
-      expect(users._request).to.deep.equal(baseRequest);
-    });
+      beforeEach(function() {
+        users = new Users(baseSdk, baseRequest, expectedHost);
+      });
 
-    it('appends the supplied sdk to the class instance', function() {
-      expect(users._sdk).to.deep.equal(baseSdk);
+      it('sets a base url for the class instance', function() {
+        expect(users._baseUrl).to.equal(expectedHost);
+      });
+
+      it('appends the supplied request module to the class instance', function() {
+        expect(users._request).to.deep.equal(baseRequest);
+      });
+
+      it('appends the supplied sdk to the class instance', function() {
+        expect(users._sdk).to.deep.equal(baseSdk);
+      });
+
+      it('sets the organization ID for the class instance to null', function() {
+        expect(users._organizationId).to.equal(null);
+      });
     });
   });
 
@@ -479,13 +512,79 @@ describe('Coordinator/Users', function() {
   });
 
   describe('getByOrganizationId', function() {
-    context('the organization ID is provided', function() {
+    context('legacy API', function() {
+      context('the organization ID is provided', function() {
+        let expectedOrganizationId;
+        let expectedOrganizationUsers;
+        let organizationUsersFromServer;
+        let promise;
+        let request;
+        let toCamelCase;
+
+        beforeEach(function() {
+          expectedOrganizationId = faker.random.uuid();
+
+          expectedOrganizationUsers = fixture.buildList(
+            'contxtUser',
+            faker.random.number({ min: 1, max: 10 })
+          );
+
+          organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
+            fixture.build('contxtUser', user, { fromServer: true })
+          );
+
+          request = {
+            ...baseRequest,
+            get: sinon.stub().resolves(organizationUsersFromServer)
+          };
+
+          toCamelCase = sinon
+            .stub(objectUtils, 'toCamelCase')
+            .returns(expectedOrganizationUsers);
+
+          const users = new Users(baseSdk, request, expectedHost);
+          promise = users.getByOrganizationId(expectedOrganizationId);
+        });
+
+        it('gets the user list from the server', function() {
+          expect(request.get).to.be.calledWith(
+            `${expectedHost}/organizations/${expectedOrganizationId}/users`
+          );
+        });
+
+        it('formats the list of organization users', function() {
+          return promise.then(() => {
+            expect(toCamelCase).to.be.calledWith(organizationUsersFromServer);
+          });
+        });
+
+        it('returns the list of users by requested organization', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            expectedOrganizationUsers
+          );
+        });
+      });
+
+      context('the organization ID is not provided', function() {
+        it('throws an error', function() {
+          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const promise = users.getByOrganizationId();
+
+          return expect(promise).to.be.rejectedWith(
+            'An organization ID is required for getting a list of users for an organization'
+          );
+        });
+      });
+    });
+
+    context('tenant API', function() {
       let expectedOrganizationId;
       let expectedOrganizationUsers;
       let organizationUsersFromServer;
       let promise;
       let request;
       let toCamelCase;
+      let users;
 
       beforeEach(function() {
         expectedOrganizationId = faker.random.uuid();
@@ -508,43 +607,180 @@ describe('Coordinator/Users', function() {
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedOrganizationUsers);
 
-        const users = new Users(baseSdk, request, expectedHost);
-        promise = users.getByOrganizationId(expectedOrganizationId);
-      });
-
-      it('gets the user list from the server', function() {
-        expect(request.get).to.be.calledWith(
-          `${expectedHost}/organizations/${expectedOrganizationId}/users`
+        users = new Users(
+          baseSdk,
+          request,
+          expectedHost,
+          expectedOrganizationId
         );
       });
 
-      it('formats the list of organization users', function() {
-        return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(organizationUsersFromServer);
+      context('the organization ID is provided', function() {
+        beforeEach(function() {
+          promise = users.getByOrganizationId(expectedOrganizationId);
+        });
+
+        it('gets the user list from the server', function() {
+          expect(request.get).to.be.calledWith(`${expectedHost}/users`);
+        });
+
+        it('formats the list of organization users', function() {
+          return promise.then(() => {
+            expect(toCamelCase).to.be.calledWith(organizationUsersFromServer);
+          });
+        });
+
+        it('returns the list of users by requested organization', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            expectedOrganizationUsers
+          );
         });
       });
 
-      it('returns the list of users by requested organization', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          expectedOrganizationUsers
-        );
-      });
-    });
+      context('the organization ID is not provided', function() {
+        beforeEach(function() {
+          promise = users.getByOrganizationId();
+        });
 
-    context('the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const users = new Users(baseSdk, baseRequest, expectedHost);
-        const promise = users.getByOrganizationId();
+        it('gets the user list from the server', function() {
+          expect(request.get).to.be.calledWith(`${expectedHost}/users`);
+        });
 
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for getting a list of users for an organization'
-        );
+        it('formats the list of organization users', function() {
+          return promise.then(() => {
+            expect(toCamelCase).to.be.calledWith(organizationUsersFromServer);
+          });
+        });
+
+        it('returns the list of users by requested organization', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            expectedOrganizationUsers
+          );
+        });
       });
     });
   });
 
   describe('invite', function() {
-    context('when all the required parameters are provided', function() {
+    context('legacy API', function() {
+      context('when all the required parameters are provided', function() {
+        let organization;
+        let newUserPayload;
+        let newUserPayloadToServer;
+        let expectedNewUser;
+        let newUserFromServer;
+        let promise;
+        let request;
+        let toCamelCase;
+        let toSnakeCase;
+
+        beforeEach(function() {
+          organization = fixture.build('contxtOrganization');
+
+          expectedNewUser = fixture.build('contxtUser');
+          newUserFromServer = fixture.build('contxtUser', expectedNewUser, {
+            fromServer: true
+          });
+
+          newUserPayload = {
+            email: expectedNewUser.email,
+            firstName: expectedNewUser.firstName,
+            lastName: expectedNewUser.lastName,
+            redirectUrl: faker.internet.url()
+          };
+
+          newUserPayloadToServer = {
+            email: newUserPayload.email,
+            first_name: newUserPayload.firstName,
+            last_name: newUserPayload.lastName,
+            redirect_url: newUserPayload.redirectUrl
+          };
+
+          request = {
+            ...baseRequest,
+            post: sinon.stub().resolves(newUserFromServer)
+          };
+          toCamelCase = sinon
+            .stub(objectUtils, 'toCamelCase')
+            .callsFake(() => expectedNewUser);
+
+          toSnakeCase = sinon
+            .stub(objectUtils, 'toSnakeCase')
+            .callsFake(() => newUserPayloadToServer);
+
+          const users = new Users(baseSdk, request, expectedHost);
+          promise = users.invite(organization.id, newUserPayload);
+        });
+
+        it('formats the user payload', function() {
+          return promise.then(() => {
+            expect(toSnakeCase).to.be.calledWith(newUserPayload);
+          });
+        });
+
+        it('posts the new user to the server', function() {
+          expect(request.post).to.be.calledWith(
+            `${expectedHost}/organizations/${organization.id}/users`,
+            newUserPayloadToServer
+          );
+        });
+
+        it('formats the user response', function() {
+          return promise.then(() => {
+            expect(toCamelCase).to.be.calledWith(newUserFromServer);
+          });
+        });
+
+        it('returns a fulfilled promise with the new user', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            expectedNewUser
+          );
+        });
+      });
+
+      context('when the organization ID is not provided', function() {
+        it('throws an error', function() {
+          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const promise = users.invite();
+
+          return expect(promise).to.be.rejectedWith(
+            'An organization ID is required for inviting a new user'
+          );
+        });
+      });
+
+      context('when there is missing required user information', function() {
+        const requiredFields = [
+          'email',
+          'firstName',
+          'lastName',
+          'redirectUrl'
+        ];
+
+        requiredFields.forEach((field) => {
+          it(`it throws an error when ${field} is missing`, function() {
+            const newUserPayload = {
+              email: faker.internet.email(),
+              firstName: faker.name.firstName(),
+              lastName: faker.name.lastName(),
+              redirectUrl: faker.internet.url()
+            };
+
+            const users = new Users(baseSdk, baseRequest, expectedHost);
+            const promise = users.invite(
+              faker.random.uuid(),
+              omit(newUserPayload, [field])
+            );
+
+            return expect(promise).to.be.rejectedWith(
+              `A ${field} is required to create a new user.`
+            );
+          });
+        });
+      });
+    });
+
+    context('tenant API', function() {
       let organization;
       let newUserPayload;
       let newUserPayloadToServer;
@@ -554,9 +790,10 @@ describe('Coordinator/Users', function() {
       let request;
       let toCamelCase;
       let toSnakeCase;
+      let users;
 
       beforeEach(function() {
-        organization = fixture.build('contxtOrganization');
+        organization = fixture.build('organization');
 
         expectedNewUser = fixture.build('contxtUser');
         newUserFromServer = fixture.build('contxtUser', expectedNewUser, {
@@ -589,117 +826,218 @@ describe('Coordinator/Users', function() {
           .stub(objectUtils, 'toSnakeCase')
           .callsFake(() => newUserPayloadToServer);
 
-        const users = new Users(baseSdk, request, expectedHost);
-        promise = users.invite(organization.id, newUserPayload);
+        users = new Users(baseSdk, request, expectedHost, organization.id);
       });
 
-      it('formats the user payload', function() {
-        return promise.then(() => {
-          expect(toSnakeCase).to.be.calledWith(newUserPayload);
+      context('when all the parameters are provided', function() {
+        beforeEach(function() {
+          promise = users.invite(organization.id, newUserPayload);
+        });
+
+        it('formats the user payload', function() {
+          return promise.then(() => {
+            expect(toSnakeCase).to.be.calledWith(newUserPayload);
+          });
+        });
+
+        it('posts the new user to the server', function() {
+          expect(request.post).to.be.calledWith(
+            `${expectedHost}/users`,
+            newUserPayloadToServer
+          );
+        });
+
+        it('formats the user response', function() {
+          return promise.then(() => {
+            expect(toCamelCase).to.be.calledWith(newUserFromServer);
+          });
+        });
+
+        it('returns a fulfilled promise with the new user', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            expectedNewUser
+          );
         });
       });
 
-      it('posts the new user to the server', function() {
-        expect(request.post).to.be.calledWith(
-          `${expectedHost}/organizations/${organization.id}/users`,
-          newUserPayloadToServer
-        );
-      });
+      context('when the organization ID is not provided', function() {
+        beforeEach(function() {
+          promise = users.invite(null, newUserPayload);
+        });
 
-      it('formats the user response', function() {
-        return promise.then(() => {
-          expect(toCamelCase).to.be.calledWith(newUserFromServer);
+        it('formats the user payload', function() {
+          return promise.then(() => {
+            expect(toSnakeCase).to.be.calledWith(newUserPayload);
+          });
+        });
+
+        it('posts the new user to the server', function() {
+          expect(request.post).to.be.calledWith(
+            `${expectedHost}/users`,
+            newUserPayloadToServer
+          );
+        });
+
+        it('formats the user response', function() {
+          return promise.then(() => {
+            expect(toCamelCase).to.be.calledWith(newUserFromServer);
+          });
+        });
+
+        it('returns a fulfilled promise with the new user', function() {
+          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+            expectedNewUser
+          );
         });
       });
 
-      it('returns a fulfilled promise with the new user', function() {
-        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          expectedNewUser
-        );
-      });
-    });
+      context('when there is missing required user information', function() {
+        const requiredFields = [
+          'email',
+          'firstName',
+          'lastName',
+          'redirectUrl'
+        ];
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const users = new Users(baseSdk, baseRequest, expectedHost);
-        const promise = users.invite();
+        requiredFields.forEach((field) => {
+          it(`it throws an error when ${field} is missing`, function() {
+            const organization = fixture.build('organization');
+            const newUserPayload = {
+              email: faker.internet.email(),
+              firstName: faker.name.firstName(),
+              lastName: faker.name.lastName(),
+              redirectUrl: faker.internet.url()
+            };
 
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for inviting a new user'
-        );
-      });
-    });
+            const users = new Users(
+              baseSdk,
+              baseRequest,
+              expectedHost,
+              organization.id
+            );
+            const promise = users.invite(
+              faker.random.uuid(),
+              omit(newUserPayload, [field])
+            );
 
-    context('when there is missing required user information', function() {
-      const requiredFields = ['email', 'firstName', 'lastName', 'redirectUrl'];
-
-      requiredFields.forEach((field) => {
-        it(`it throws an error when ${field} is missing`, function() {
-          const newUserPayload = {
-            email: faker.internet.email(),
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName(),
-            redirectUrl: faker.internet.url()
-          };
-
-          const users = new Users(baseSdk, baseRequest, expectedHost);
-          const promise = users.invite(
-            faker.random.uuid(),
-            omit(newUserPayload, [field])
-          );
-
-          return expect(promise).to.be.rejectedWith(
-            `A ${field} is required to create a new user.`
-          );
+            return expect(promise).to.be.rejectedWith(
+              `A ${field} is required to create a new user.`
+            );
+          });
         });
       });
     });
   });
 
   describe('remove', function() {
-    context('when all required parameters are provided', function() {
+    context('legacy API', function() {
+      context('when all required parameters are provided', function() {
+        let organization;
+        let user;
+        let promise;
+
+        beforeEach(function() {
+          organization = fixture.build('contxtOrganization');
+          user = fixture.build('contxtUser');
+
+          const users = new Users(baseSdk, baseRequest, expectedHost);
+          promise = users.remove(organization.id, user.id);
+        });
+
+        it('sends a request to remove the user from the organization', function() {
+          expect(baseRequest.delete).to.be.calledWith(
+            `${expectedHost}/organizations/${organization.id}/users/${user.id}`
+          );
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
+      });
+
+      context('when the organization ID is not provided', function() {
+        it('throws an error', function() {
+          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const promise = users.remove(null, faker.random.uuid());
+
+          return expect(promise).to.be.rejectedWith(
+            'An organization ID is required for removing a user from an organization'
+          );
+        });
+      });
+
+      context('when the user ID is not provided', function() {
+        it('throws an error', function() {
+          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const promise = users.remove(faker.random.uuid(), null);
+
+          return expect(promise).to.be.rejectedWith(
+            'A user ID is required for removing a user from an organization'
+          );
+        });
+      });
+    });
+
+    context('tenant API', function() {
       let organization;
       let user;
+      let users;
       let promise;
 
       beforeEach(function() {
-        organization = fixture.build('contxtOrganization');
+        organization = fixture.build('organization');
         user = fixture.build('contxtUser');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
-        promise = users.remove(organization.id, user.id);
+        users = new Users(baseSdk, baseRequest, expectedHost, organization.id);
       });
 
-      it('sends a request to remove the user from the organization', function() {
-        expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/organizations/${organization.id}/users/${user.id}`
-        );
+      context('when all parameters are provided', function() {
+        beforeEach(function() {
+          promise = users.remove(organization.id, user.id);
+        });
+
+        it('sends a request to remove the user from the organization', function() {
+          expect(baseRequest.delete).to.be.calledWith(
+            `${expectedHost}/users/${user.id}`
+          );
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
       });
 
-      it('returns a resolved promise', function() {
-        return expect(promise).to.be.fulfilled;
+      context('when the organization ID is not provided', function() {
+        beforeEach(function() {
+          promise = users.remove(null, user.id);
+        });
+
+        it('sends a request to remove the user from the organization', function() {
+          expect(baseRequest.delete).to.be.calledWith(
+            `${expectedHost}/users/${user.id}`
+          );
+        });
+
+        it('returns a resolved promise', function() {
+          return expect(promise).to.be.fulfilled;
+        });
       });
-    });
 
-    context('when the organization ID is not provided', function() {
-      it('throws an error', function() {
-        const users = new Users(baseSdk, baseRequest, expectedHost);
-        const promise = users.remove(null, faker.random.uuid());
+      context('when the user ID is not provided', function() {
+        it('throws an error', function() {
+          const organization = fixture.build('organization');
+          const users = new Users(
+            baseSdk,
+            baseRequest,
+            expectedHost,
+            organization.id
+          );
+          const promise = users.remove(organization.id, null);
 
-        return expect(promise).to.be.rejectedWith(
-          'An organization ID is required for removing a user from an organization'
-        );
-      });
-    });
-
-    context('when the user ID is not provided', function() {
-      it('throws an error', function() {
-        const users = new Users(baseSdk, baseRequest, expectedHost);
-        const promise = users.remove(faker.random.uuid(), null);
-
-        return expect(promise).to.be.rejectedWith(
-          'A user ID is required for removing a user from an organization'
-        );
+          return expect(promise).to.be.rejectedWith(
+            'A user ID is required for removing a user from an organization'
+          );
+        });
       });
     });
   });
