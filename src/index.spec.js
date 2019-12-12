@@ -6,6 +6,7 @@ import Coordinator from './coordinator';
 import Events from './events';
 import Facilities from './facilities';
 import Files from './files';
+import Health from './health';
 import Iot from './iot';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
@@ -112,6 +113,10 @@ describe('ContxtSdk', function() {
 
     it('sets an instance of Files', function() {
       expect(contxtSdk.files).to.be.an.instanceof(Files);
+    });
+
+    it('sets an instance of Health', function() {
+      expect(contxtSdk.health).to.be.an.instanceof(Health);
     });
 
     it('creates an instance of the request module for IOT', function() {
