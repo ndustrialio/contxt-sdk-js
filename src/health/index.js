@@ -85,10 +85,10 @@ class Health {
       return Promise.reject(new Error('An organization ID is required'));
     }
 
-    if (!Object.values(this.status).includes(status)) {
+    if (!Object.values(Health.status).includes(status)) {
       return Promise.reject(
         new Error(
-          `Status must equal one of: ${Object.values(this.status).join(',')}`
+          `Status must equal one of: ${Object.values(Health.status).join(', ')}`
         )
       );
     }
