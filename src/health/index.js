@@ -191,7 +191,7 @@ class Health {
    *      organizationId: 'bd900b6e-a319-492f-aa95-9715891b9a83',
    *      status: contxtSdk.health.status.GOOD
    *   })
-   *   .then((integrations) => console.log(integrations))
+   *   .then((healthStatus) => console.log(healthStatus))
    *   .catch((err) => console.log(err));
    */
   post({ assetId, organizationId = this._organizationId, status, timestamp }) {
