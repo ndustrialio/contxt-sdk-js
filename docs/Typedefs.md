@@ -906,6 +906,36 @@ An error returned while creating and uploading an
 | _metadata.totalRecords | <code>number</code> | Total number of files found |
 | records | [<code>Array.&lt;File&gt;</code>](#File) |  |
 
+<a name="HealthAsset"></a>
+
+## HealthAsset : <code>Object</code>
+**Kind**: global typedef  
+**Extends**: [<code>Asset</code>](./Typedefs.md#Asset)  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| health | [<code>HealthStatus</code>](./Typedefs.md#HealthStatus) | 
+
+<a name="HealthAssetPaginatedResponse"></a>
+
+## HealthAssetPaginatedResponse : [<code>PaginatedResponse.&lt;HealthAsset&gt;</code>](#HealthAsset)
+**Kind**: global typedef  
+<a name="HealthStatus"></a>
+
+## HealthStatus : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| status | <code>string</code> | A health status of value 'healthy' or 'unhealthy' |
+| timestamp | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="HealthStatusPaginatedResponse"></a>
+
+## HealthStatusPaginatedResponse : [<code>PaginatedResponse.&lt;HealthStatus&gt;</code>](#HealthStatus)
+**Kind**: global typedef  
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>
@@ -984,6 +1014,19 @@ An error returned while creating and uploading an
 | [meta.timeStart] | <code>Number</code> | UNIX timestamp indicating the   start of the query window |
 | [meta.window] | <code>Number</code> | The sampling window for records.   Required if including a timeEnd or timeStart.   Valid options include: `0`, `60`, `900`, and `3600` |
 | records | [<code>Array.&lt;OutputFieldData&gt;</code>](#OutputFieldData) |  |
+
+<a name="PaginatedResponse"></a>
+
+## PaginatedResponse : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
+| records | <code>Array.&lt;RecordType&gt;</code> |  |
 
 <a name="PaginationMetadata"></a>
 
