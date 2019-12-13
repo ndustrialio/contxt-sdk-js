@@ -8,8 +8,8 @@ Module that provides access to the Contxt Health Service
 * [Health](#Health)
     * [new Health(sdk, request, [organizationId])](#new_Health_new)
     * [.status](#Health+status) : <code>enum</code>
-    * [.getAll(options)](#Health+getAll) ⇒ <code>Promise</code>
-    * [.getByAssetId(options)](#Health+getByAssetId) ⇒ <code>Promise</code>
+    * [.getAll(options, [paginationOptions])](#Health+getAll) ⇒ <code>Promise</code>
+    * [.getByAssetId(options, [paginationOptions])](#Health+getByAssetId) ⇒ <code>Promise</code>
     * [.post(options)](#Health+post) ⇒ <code>Promise</code>
 
 <a name="new_Health_new"></a>
@@ -35,7 +35,7 @@ console.log(Health.BAD) //unhealthy
 ```
 <a name="Health+getAll"></a>
 
-### contxtSdk.health.getAll(options) ⇒ <code>Promise</code>
+### contxtSdk.health.getAll(options, [paginationOptions]) ⇒ <code>Promise</code>
 Gets all of an organization's assets and their most recent health status
 
 API Endpoint: '/:organizationId/assets'
@@ -49,16 +49,14 @@ Method: GET
 | --- | --- | --- |
 | options | <code>Object</code> |  |
 | [options.organizationId] | <code>string</code> | The organization id that owns the assets. Required if an organization id isn't set on the module instance. |
-| [options.limit] | <code>number</code> | The maximum number of records to return |
-| [options.offset] | <code>number</code> | The number of records you wish to skip before returning records |
-| [options.orderBy] | <code>string</code> | The direction to sort by: "asc" or "desc" |
-| [options.sortBy] | <code>string</code> | The field to sort by |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
 
 **Example**  
 ```js
 contxtSdk.health
   .getAll({
-     organizationId: 'bd900b6e-a319-492f-aa95-9715891b9a83',
+     organizationId: 'bd900b6e-a319-492f-aa95-9715891b9a83'
+   }, {
      limit: 50,
      offset: 100
   })
@@ -67,7 +65,7 @@ contxtSdk.health
 ```
 <a name="Health+getByAssetId"></a>
 
-### contxtSdk.health.getByAssetId(options) ⇒ <code>Promise</code>
+### contxtSdk.health.getByAssetId(options, [paginationOptions]) ⇒ <code>Promise</code>
 Gets a list of health statuses for a single asset
 
 API Endpoint: '/:organizationId/assets/:assetId'
@@ -82,17 +80,15 @@ Method: GET
 | options | <code>Object</code> |  |
 | options.assetId | <code>string</code> | The asset id to get the health for |
 | [options.organizationId] | <code>string</code> | The organization id that owns the assets. Required if an organization id isn't set on the module instance. |
-| [options.limit] | <code>number</code> | The maximum number of records to return |
-| [options.offset] | <code>number</code> | The number of records you wish to skip before returning records |
-| [options.orderBy] | <code>string</code> | The direction to sort by: "asc" or "desc" |
-| [options.sortBy] | <code>string</code> | The field to sort by |
+| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) |  |
 
 **Example**  
 ```js
 contxtSdk.health
   .getByAssetId({
      assetId: '9859f22d-cc45-4015-8674-1671f54d1888',
-     organizationId: 'bd900b6e-a319-492f-aa95-9715891b9a83',
+     organizationId: 'bd900b6e-a319-492f-aa95-9715891b9a83'
+  }, {
      limit: 50,
      offset: 100
   })

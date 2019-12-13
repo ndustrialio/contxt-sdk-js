@@ -108,7 +108,7 @@ describe('Health', function() {
 
       context('when getAll is called without an organizationId', function() {
         it('calls the api with the class instance organizationId', function() {
-          health.getAll(Object.assign({}, paginationOptions));
+          health.getAll({}, paginationOptions);
 
           expect(baseRequest.get).to.be.calledWith(
             `${baseSdk.config.audiences.health.host}/v1/${
@@ -159,7 +159,7 @@ describe('Health', function() {
       });
 
       it('calls the api with the requested pagination options', function() {
-        health.getAll(Object.assign({}, paginationOptions));
+        health.getAll({}, paginationOptions);
 
         expect(baseRequest.get).to.be.calledWith(
           `${baseSdk.config.audiences.health.host}/v1/${
@@ -170,7 +170,7 @@ describe('Health', function() {
       });
 
       it('formats the response with formatPaginatedDataFromServer()', function() {
-        let promise = health.getAll(Object.assign({}, paginationOptions));
+        let promise = health.getAll({}, paginationOptions);
 
         return promise.then(() => {
           expect(formatPaginatedDataFromServer).to.be.called;
@@ -246,7 +246,7 @@ describe('Health', function() {
         'when getByAssetId is called without an organizationId',
         function() {
           it('calls the api with the class instance organizationId', function() {
-            health.getByAssetId(Object.assign({ assetId }, paginationOptions));
+            health.getByAssetId({ assetId }, paginationOptions);
 
             expect(baseRequest.get).to.be.calledWith(
               `${baseSdk.config.audiences.health.host}/v1/${
@@ -319,7 +319,7 @@ describe('Health', function() {
       });
 
       it('calls the api with the requested pagination options', function() {
-        health.getByAssetId(Object.assign({ assetId }, paginationOptions));
+        health.getByAssetId({ assetId }, paginationOptions);
 
         expect(baseRequest.get).to.be.calledWith(
           `${baseSdk.config.audiences.health.host}/v1/${
@@ -330,9 +330,7 @@ describe('Health', function() {
       });
 
       it('formats the response with formatPaginatedDataFromServer()', function() {
-        let promise = health.getByAssetId(
-          Object.assign({ assetId }, paginationOptions)
-        );
+        let promise = health.getByAssetId({ assetId }, paginationOptions);
 
         return promise.then(() => {
           expect(formatPaginatedDataFromServer).to.be.called;
