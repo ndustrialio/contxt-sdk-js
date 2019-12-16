@@ -94,6 +94,9 @@ the relationship between those groupings and facilities</p>
 More information about the best way to use this module is available at:
 <a href="https://contxt.readme.io/reference#files-overview">https://contxt.readme.io/reference#files-overview</a></p>
 </dd>
+<dt><a href="./Health.md">Health</a></dt>
+<dd><p>Module that provides access to the Contxt Health Service</p>
+</dd>
 <dt><a href="./Iot.md">Iot</a></dt>
 <dd><p>Module that provides access to real time IOT feeds and fields.</p>
 </dd>
@@ -263,6 +266,14 @@ for authenticating and communicating with an individual API and the external mod
 <dd></dd>
 <dt><a href="./Typedefs.md#FilesFromServer">FilesFromServer</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#HealthAsset">HealthAsset</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#HealthAssetPaginatedResponse">HealthAssetPaginatedResponse</a> : <code><a href="#HealthAsset">PaginatedResponse.&lt;HealthAsset&gt;</a></code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#HealthStatus">HealthStatus</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#HealthStatusPaginatedResponse">HealthStatusPaginatedResponse</a> : <code><a href="#HealthStatus">PaginatedResponse.&lt;HealthStatus&gt;</a></code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#MessageBusChannel">MessageBusChannel</a> : <code>Object</code></dt>
@@ -272,6 +283,8 @@ for authenticating and communicating with an individual API and the external mod
 <dt><a href="./Typedefs.md#OutputFieldData">OutputFieldData</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#OutputFieldDataResponse">OutputFieldDataResponse</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#PaginatedResponse">PaginatedResponse</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#PaginationMetadata">PaginationMetadata</a> : <code>Object</code></dt>
 <dd></dd>

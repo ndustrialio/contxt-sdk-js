@@ -61,6 +61,16 @@ export default {
       host: 'https://files-staging.api.ndustrial.io'
     }
   },
+  health: {
+    staging: {
+      clientId: '1zQ2YXbHXotrf2dDKgySqEjlJBz465qq',
+      host: 'https://health-staging.api.ndustrial.io'
+    },
+    production: {
+      clientId: '6uaQIV1KnnWhXiTm09iGDvy2aQaz2xVI',
+      host: 'https://health.api.ndustrial.io'
+    }
+  },
   iot: {
     staging: {
       clientId: 'm35AEcxD8hf65sq04ZU7yFxqpqVkKzES',
