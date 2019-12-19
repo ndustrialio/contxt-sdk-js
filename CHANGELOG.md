@@ -1,3 +1,12 @@
+## [v2.5.0](https://github.com/ndustrialio/contxt-sdk-js/pull/132) (2019-12-18)
+
+**Added**
+
+- Added `Health` sdk module
+  - Added `Health#getAll`, fetches all integration assets and their most recent health statuses
+  - Added `Health#getByAssetId`, fetches a single integration asset and a time series of its health status
+  - Added `Health#post`, posts new health to an asset
+
 ## [v2.4.0](https://github.com/ndustrialio/contxt-sdk-js/pull/131) (2019-10-07)
 
 **Changed**
