@@ -1,3 +1,11 @@
+## [v2.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.3.0) (2019-09-09)
+
+**Added**
+
+- Updated `Asset#getAllByOrganizationId`
+  - Added `options.includeTypeDescendents`, included descendents of the requested assetTypeId
+  - Added `options.includeMetricsId`, include the latest metrics value based on the id provided
+
 ## [v2.5.0](https://github.com/ndustrialio/contxt-sdk-js/pull/132) (2019-12-18)
 
 **Added**
