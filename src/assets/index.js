@@ -187,7 +187,7 @@ class Assets {
    * @param {Number} [options.limit] Maximum number of records to return per query
    * @param {Number} [options.offset] How many records from the first record to start
    * @param {boolean} [options.includeTypeDescendents] When true will look for all asset types that are descendendents from options.assetTypeId
-   * @param {boolean} [options.includeMetricsId] If asset has an associated metric value the latest metric will be returned.
+   * @param {string} [options.includeMetricId] If asset has an associated metric value the latest metric will be returned.
    *
    * @returns {Promise}
    * @fulfill {AssetsFromServer}

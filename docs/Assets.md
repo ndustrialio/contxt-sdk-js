@@ -141,7 +141,7 @@ Method: GET
 | [options.limit] | <code>Number</code> | Maximum number of records to return per query |
 | [options.offset] | <code>Number</code> | How many records from the first record to start |
 | [options.includeTypeDescendents] | <code>boolean</code> | When true will look for all asset types that are descendendents from options.assetTypeId |
-| [options.includeMetricsId] | <code>boolean</code> | If asset has an associated metric value the latest metric will be returned. |
+| [options.includeMetricId] | <code>string</code> | If asset has an associated metric value the latest metric will be returned. |
 
 **Example**  
 ```js
