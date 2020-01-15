@@ -18,7 +18,7 @@ import axios from 'axios';
  * @example
  * const ContxtSdk = require('@ndustrial/contxt-sdk');
  *
- * const contxtSdk = new ContxtSDK({
+ * const contxtSdk = new ContxtSdk({
  *   config: {
  *     auth: {
  *       clientId: '<client id>',

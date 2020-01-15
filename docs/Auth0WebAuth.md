@@ -50,7 +50,7 @@ enabled in Auth0.
 import ContxtSdk from '@ndustrial/contxt-sdk';
 import history from '../services/history';
 
-const contxtSdk = new ContxtSDK({
+const contxtSdk = new ContxtSdk({
   config: {
     auth: {
       clientId: '<client id>',
