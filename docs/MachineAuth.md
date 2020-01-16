@@ -25,7 +25,7 @@ which are obtained from Auth0.
 ```js
 const ContxtSdk = require('@ndustrial/contxt-sdk');
 
-const contxtSdk = new ContxtSDK({
+const contxtSdk = new ContxtSdk({
   config: {
     auth: {
       clientId: '<client id>',
