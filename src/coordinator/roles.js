@@ -69,7 +69,7 @@ class Roles {
   /**
    * Add an application to a role
    *
-   * API Endpoint: '/applications/:applications_id/roles/:roleId'
+   * API Endpoint: '/roles/:roleId/applications/:applicationId'
    * Method: POST
    *
    * @param {string} roleId The UUID formatted ID of the role
@@ -108,7 +108,7 @@ class Roles {
   /**
    * Add a stack to a role
    *
-   * API Endpoint: '/applications/:applications_id/stacks/:stackId'
+   * API Endpoint: '/roles/:roleId/stacks/:stackId'
    * Method: POST
    *
    * @param {string} roleId The UUID formatted ID of the role
@@ -308,7 +308,7 @@ class Roles {
   /**
    * Remove an application from a role
    *
-   * API Endpoint: '/applications/:applications_id/roles/:roleId'
+   * API Endpoint: '/roles/:roleId/applications/:applicationId'
    * Method: DELETE
    *
    * @param {string} roleId The UUID formatted ID of the role
@@ -348,7 +348,7 @@ class Roles {
   /**
    * Remove an stack from a role
    *
-   * API Endpoint: '/stacks/:stacks_id/roles/:roleId'
+   * API Endpoint: '/roles/:roleId/stacks/:stackId'
    * Method: DELETE
    *
    * @param {string} roleId The UUID formatted ID of the role

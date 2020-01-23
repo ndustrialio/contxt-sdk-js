@@ -31,7 +31,7 @@ Module that provides access to contxt roles
 ### contxtSdk.coordinator.roles.addApplication(roleId, applicationId) ⇒ <code>Promise</code>
 Add an application to a role
 
-API Endpoint: '/applications/:applications_id/roles/:roleId'
+API Endpoint: '/roles/:roleId/applications/:applicationId'
 Method: POST
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -55,7 +55,7 @@ contxtSdk.roles
 ### contxtSdk.coordinator.roles.addStack(roleId, stackId, accessType) ⇒ <code>Promise</code>
 Add a stack to a role
 
-API Endpoint: '/applications/:applications_id/stacks/:stackId'
+API Endpoint: '/roles/:roleId/stacks/:stackId'
 Method: POST
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -152,7 +152,7 @@ contxtSdk.coordinator.roles
 ### contxtSdk.coordinator.roles.removeApplication(roleId, applicationId) ⇒ <code>Promise</code>
 Remove an application from a role
 
-API Endpoint: '/applications/:applications_id/roles/:roleId'
+API Endpoint: '/roles/:roleId/applications/:applicationId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -175,7 +175,7 @@ contxtSdk.roles
 ### contxtSdk.coordinator.roles.removeStack(roleId, stackId) ⇒ <code>Promise</code>
 Remove an stack from a role
 
-API Endpoint: '/stacks/:stacks_id/roles/:roleId'
+API Endpoint: '/roles/:roleId/stacks/:stackId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
