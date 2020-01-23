@@ -1,8 +1,14 @@
-## [v2.6.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.1) (2020-01-23)
+## [v2.6.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.2) (2020-01-23)
 
 **Fixed**
 
 - `Coordinator.roles#addApplication`, `Coordinator.roles#removeApplication`, `Coordinator.roles#addStack`, `Coordinator.roles#removeStack` now use the correct endpoints
+
+## [v2.6.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.1) (2020-01-16)
+
+**Fixed**
+
+- Fixed documentation examples
 
 ## [v2.6.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.0) (2019-12-27)
 
