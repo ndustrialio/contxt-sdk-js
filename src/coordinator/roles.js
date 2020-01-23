@@ -101,7 +101,7 @@ class Roles {
     }
 
     return this._request
-      .post(`${this._baseUrl}/applications/${applicationId}/roles/${roleId}`)
+      .post(`${this._baseUrl}/roles/${roleId}/applications/${applicationId}`)
       .then((response) => toCamelCase(response));
   }
 
@@ -147,7 +147,7 @@ class Roles {
     }
 
     return this._request
-      .post(`${this._baseUrl}/stacks/${stackId}/roles/${roleId}`, {
+      .post(`${this._baseUrl}/roles/${roleId}/stacks/${stackId}`, {
         access_type: accessType
       })
       .then((response) => toCamelCase(response));
@@ -341,7 +341,7 @@ class Roles {
     }
 
     return this._request.delete(
-      `${this._baseUrl}/applications/${applicationId}/roles/${roleId}`
+      `${this._baseUrl}/roles/${roleId}/applications/${applicationId}`
     );
   }
 
@@ -377,7 +377,7 @@ class Roles {
     }
 
     return this._request.delete(
-      `${this._baseUrl}/stacks/${stackId}/roles/${roleId}`
+      `${this._baseUrl}/roles/${roleId}/stacks/${stackId}`
     );
   }
 }
