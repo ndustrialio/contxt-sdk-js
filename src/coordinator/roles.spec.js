@@ -117,7 +117,7 @@ describe('Coordinator/Roles', function() {
 
       it('posts the role application to the server', function() {
         expect(request.post).to.be.calledWith(
-          `${expectedHost}/applications/${application.id}/roles/${role.id}`
+          `${expectedHost}/roles/${role.id}/applications/${application.id}`
         );
       });
 
@@ -204,7 +204,7 @@ describe('Coordinator/Roles', function() {
 
         it('posts the role stack to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedHost}/stacks/${stack.id}/roles/${role.id}`,
+            `${expectedHost}/roles/${role.id}/stacks/${stack.id}`,
             {
               access_type: expectedRoleStack.accessType
             }
@@ -828,7 +828,7 @@ describe('Coordinator/Roles', function() {
 
       it('sends a request to removeApplication from the role', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/applications/${application.id}/roles/${role.id}`
+          `${expectedHost}/roles/${role.id}/applications/${application.id}`
         );
       });
 
@@ -878,7 +878,7 @@ describe('Coordinator/Roles', function() {
 
       it('sends a request to removeStack the role from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/stacks/${stack.id}/roles/${role.id}`
+          `${expectedHost}/roles/${role.id}/stacks/${stack.id}`
         );
       });
 

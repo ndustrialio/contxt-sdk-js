@@ -1,3 +1,15 @@
+## [v2.6.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.2) (2020-01-23)
+
+**Fixed**
+
+- `Coordinator.roles#addApplication`, `Coordinator.roles#removeApplication`, `Coordinator.roles#addStack`, `Coordinator.roles#removeStack` now use the correct endpoints
+
+## [v2.6.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.1) (2020-01-16)
+
+**Fixed**
+
+- Fixed documentation examples
+
 ## [v2.6.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.0) (2019-12-27)
 
 **Added**
@@ -6,7 +18,7 @@
   - Added `options.includeTypeDescendents`, included descendents of the requested assetTypeId
   - Added `options.includeMetricId`, include the latest metrics value based on the id provided
 
-## [v2.5.0](https://github.com/ndustrialio/contxt-sdk-js/pull/132) (2019-12-18)
+## [v2.5.0](http://github.com/ndustrialio/contxt-sdk-js/pull/132) (2019-12-18)
 
 **Added**
 
@@ -15,7 +27,7 @@
   - Added `Health#getByAssetId`, fetches a single integration asset and a time series of its health status
   - Added `Health#post`, posts new health to an asset
 
-## [v2.4.0](https://github.com/ndustrialio/contxt-sdk-js/pull/131) (2019-10-07)
+## [v2.4.0](http://github.com/ndustrialio/contxt-sdk-js/pull/131) (2019-10-07)
 
 **Changed**
 
