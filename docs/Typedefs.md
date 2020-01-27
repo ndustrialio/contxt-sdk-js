@@ -744,6 +744,50 @@ for authenticating and communicating with an individual API and the external mod
 | id | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="Feed"></a>
+
+## Feed : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| criticalThreshold | <code>Number</code> |  |
+| degradedThreshold | <code>Number</code> |  |
+| [downAfter] | <code>Number</code> |  |
+| facilityId | <code>Number</code> |  |
+| feedStatus | <code>Object</code> |  |
+| feedStatus.feedId | <code>Number</code> |  |
+| feedStatus.feedStatusId | <code>Number</code> |  |
+| feedStatus.id | <code>Number</code> |  |
+| feedStatus.status | <code>String</code> |  |
+| feedStatus.updateAt | <code>String</code> | ISO 8601 Extended Format date/time string |
+| feedType | <code>Object</code> |  |
+| feedType.createdAt | <code>String</code> | ISO 8601 Extended Format date/time string |
+| feedType.downAfter | <code>Number</code> |  |
+| feedType.id | <code>Number</code> |  |
+| feedType.type | <code>String</code> |  |
+| feedType.updateAt | <code>String</code> | ISO 8601 Extended Format date/time string |
+| feedTypeId | <code>Number</code> |  |
+| id | <code>Number</code> |  |
+| isPaused | <code>Boolean</code> |  |
+| key | <code>String</code> |  |
+| owner | <code>Object</code> |  |
+| owner.createdAt | <code>String</code> | ISO 8601 Extended Format date/time string |
+| owner.email | <code>String</code> |  |
+| owner.firstName | <code>String</code> |  |
+| owner.id | <code>String</code> | UUID corresponding with a user |
+| owner.lastName | <code>String</code> |  |
+| owner.updateAt | <code>String</code> | ISO 8601 Extended Format date/time string |
+| ownerId | <code>String</code> | Auth0 identifer of the user |
+| routingKeys | <code>String</code> |  |
+| status | <code>String</code> |  |
+| [statusEventId] | <code>String</code> | UUID corresponding with an event |
+| timezone | <code>String</code> | An IANA Time Zone Database string, i.e. America/Los_Angeles |
+| token | <code>String</code> |  |
+| updatedAt | <code>String</code> | ISO 8601 Extended Format date/time string |
+
 <a name="FieldCategoriesFromServer"></a>
 
 ## FieldCategoriesFromServer : <code>Object</code>

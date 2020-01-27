@@ -80,6 +80,9 @@ of, information about different facilities</p>
 <dd><p>Module that provides access to facility groupings, and helps manage
 the relationship between those groupings and facilities</p>
 </dd>
+<dt><a href="./Feeds.md">Feeds</a></dt>
+<dd><p>Module that provides access to feed information</p>
+</dd>
 <dt><a href="./FieldCategories.md">FieldCategories</a></dt>
 <dd><p>Module that provides access to field category information</p>
 </dd>
@@ -243,6 +246,8 @@ for authenticating and communicating with an individual API and the external mod
 <dt><a href="./Typedefs.md#FacilityGrouping">FacilityGrouping</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FacilityGroupingFacility">FacilityGroupingFacility</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#Feed">Feed</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FieldCategoriesFromServer">FieldCategoriesFromServer</a> : <code>Object</code></dt>
 <dd></dd>
