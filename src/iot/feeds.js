@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} Feed
@@ -64,17 +64,15 @@ class Feeds {
    * API Endpoint: '/feeds'
    * Method: GET
    *
-   * @param {number} [facility.id]
+   * @param {number} facilityId
    *
    * @returns {Promise}
-   * @fulfill {Feeds} Information about the feeds that are assigned to specific facility
+   * @fulfill {Feeds[]} Information about the feeds that are assigned to specific facility
    * @reject {Error}
    *
    * @example
    * contxtSdk.iot.feeds
-   *   .getByFacilityId({
-   *      facilityId: 4
-   *    })
+   *   .getByFacilityId(facilityId)
    *   .then((feeds) => console.log(feeds))
    *   .catch((err) => console.log(err));
    */
@@ -86,7 +84,7 @@ class Feeds {
 
     return this._request
       .get(`${this._baseUrl}/feeds`, {
-        facilityId: facilityId
+        params: toSnakeCase({ facilityId })
       })
       .then((response) => toCamelCase(response));
   }

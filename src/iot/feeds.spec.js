@@ -51,14 +51,29 @@ describe('Iot/Feeds', function() {
       let rawFeeds;
       let request;
       let toCamelCase;
+      let toSnakeCase;
       let facilityId;
 
       beforeEach(function() {
         facilityId = fixture.build('facility').id;
-        expectedFeeds = fixture.build('feed');
-        rawFeeds = fixture.build('feed', expectedFeeds, {
-          fromServer: true
-        });
+        expectedFeeds = fixture.buildList(
+          'feed',
+          faker.random.number({
+            min: 1,
+            max: 1
+          })
+        );
+        rawFeeds = fixture.buildList(
+          'feed',
+          faker.random.number({
+            min: 1,
+            max: 1
+          }),
+          expectedFeeds,
+          {
+            fromServer: true
+          }
+        );
 
         request = {
           ...baseRequest,
@@ -67,6 +82,9 @@ describe('Iot/Feeds', function() {
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedFeeds);
+        toSnakeCase = sinon
+          .stub(objectUtils, 'toSnakeCase')
+          .returns({ facilityId });
 
         const feeds = new Feeds(baseSdk, request);
         feeds._baseUrl = expectedHost;
@@ -74,9 +92,13 @@ describe('Iot/Feeds', function() {
         promise = feeds.getByFacilityId(facilityId);
       });
 
+      it('formats the submitted facility id to send to the server', function() {
+        expect(toSnakeCase).to.be.calledWith({ facilityId });
+      });
+
       it('gets feeds from provided facility from the server', function() {
         expect(request.get).to.be.calledWith(`${expectedHost}/feeds`, {
-          facilityId: facilityId
+          params: { facilityId }
         });
       });
 
