@@ -86,7 +86,7 @@ class Feeds {
 
     return this._request
       .get(`${this._baseUrl}/feeds`, {
-        params: facilityId
+        facilityId: facilityId
       })
       .then((response) => toCamelCase(response));
   }

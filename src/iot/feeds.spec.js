@@ -76,7 +76,7 @@ describe('Iot/Feeds', function() {
 
       it('gets feeds from provided facility from the server', function() {
         expect(request.get).to.be.calledWith(`${expectedHost}/feeds`, {
-          params: facilityId
+          facilityId: facilityId
         });
       });
 
