@@ -7,7 +7,7 @@ Module that provides access to feed information
 
 * [Feeds](#Feeds)
     * [new Feeds(sdk, request, baseUrl)](#new_Feeds_new)
-    * [.getByFacilityId()](#Feeds+getByFacilityId) ⇒ <code>Promise</code>
+    * [.getByFacilityId(facilityId)](#Feeds+getByFacilityId) ⇒ <code>Promise</code>
 
 <a name="new_Feeds_new"></a>
 
@@ -21,26 +21,24 @@ Module that provides access to feed information
 
 <a name="Feeds+getByFacilityId"></a>
 
-### contxtSdk.iot.feeds.getByFacilityId() ⇒ <code>Promise</code>
+### contxtSdk.iot.feeds.getByFacilityId(facilityId) ⇒ <code>Promise</code>
 Gets all feeds from a specific facility
 
 API Endpoint: '/feeds'
 Method: GET
 
 **Kind**: instance method of [<code>Feeds</code>](#Feeds)  
-**Fulfill**: [<code>Feeds</code>](#Feeds) Information about the feeds that are assigned to specific facility  
+**Fulfill**: <code>Feeds[]</code> Information about the feeds that are assigned to specific facility  
 **Reject**: <code>Error</code>  
 
 | Param | Type |
 | --- | --- |
-| [facility.id] | <code>number</code> | 
+| facilityId | <code>number</code> | 
 
 **Example**  
 ```js
 contxtSdk.iot.feeds
-  .getByFacilityId({
-     facilityId: 4
-   })
+  .getByFacilityId(facilityId)
   .then((feeds) => console.log(feeds))
   .catch((err) => console.log(err));
 ```

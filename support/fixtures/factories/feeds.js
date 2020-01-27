@@ -12,11 +12,11 @@ factory
     criticalThreshold: () => faker.random.number({ min: 0, max: 5 }),
     degradedThreshold: () => faker.random.number({ min: 0, max: 5 }),
     downAfter: () => faker.random.number({ min: 1000, max: 9999 }),
-    facilityId: () => faker.random.number({ min: 0, max: 40 }),
-    feedTypeId: () => faker.random.number({ min: 0, max: 40 }),
+    facilityId: () => factory.build('facility').id,
+    feedTypeId: () => factory.build('feedType').id,
     isPaused: () => faker.random.boolean(),
     key: () => faker.hacker.noun(),
-    ownerId: () => `auth0|${faker.internet.password()}`,
+    ownerId: () => factory.build('owner').id,
     routingKeys: () => `[${faker.hacker.noun()}]`,
     status: () => faker.random.arrayElement(['Active', 'Degraded', 'Critical']),
     statusEventId: () => faker.random.uuid(),
@@ -34,11 +34,11 @@ factory
   .attr('feedStatus', ['fromServer'], (fromServer) => {
     return factory.build('feedStatus', null, { fromServer });
   })
-  .attr('feedType', ['fromServer'], (fromServer) => {
-    return factory.build('feedType', null, { fromServer });
+  .attr('feedType', ['feedTypeId', 'fromServer'], (feedTypeId, fromServer) => {
+    return factory.build('feedType', { id: feedTypeId }, { fromServer });
   })
-  .attr('owner', ['fromServer'], (fromServer) => {
-    return factory.build('owner', {}, { fromServer });
+  .attr('owner', ['ownerId', 'fromServer'], (ownerId, fromServer) => {
+    return factory.build('owner', { id: ownerId }, { fromServer });
   })
   .after((feed, options) => {
     // If building a feed object that comes from the server, transform it to have camel
