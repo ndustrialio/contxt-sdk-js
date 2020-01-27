@@ -71,7 +71,7 @@ class Feeds {
    * @reject {Error}
    *
    * @example
-   * contxtSdk.events
+   * contxtSdk.iot.feeds
    *   .getByFacilityId({
    *      facilityId: 4
    *    })

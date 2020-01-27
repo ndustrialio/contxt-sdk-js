@@ -37,7 +37,7 @@ Method: GET
 
 **Example**  
 ```js
-contxtSdk.events
+contxtSdk.iot.feeds
   .getByFacilityId({
      facilityId: 4
    })
