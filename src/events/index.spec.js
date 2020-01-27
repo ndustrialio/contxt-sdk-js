@@ -429,6 +429,70 @@ describe('Events', function() {
     });
   });
 
+  describe('getUserInfo', function() {
+    context('the user ID is provided', function() {
+      let userFromServerAfterFormat;
+      let userFromServerBeforeFormat;
+      let expectedUserId;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        expectedUserId = fixture.build('contxtUser').id;
+        userFromServerAfterFormat = fixture.build('contxtUser', {
+          id: expectedUserId
+        });
+        userFromServerBeforeFormat = fixture.build(
+          'event',
+          { id: expectedUserId },
+          { fromServer: true }
+        );
+
+        request = {
+          ...baseRequest,
+          get: sinon.stub().resolves(userFromServerBeforeFormat)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(userFromServerAfterFormat);
+
+        const events = new Events(baseSdk, request, expectedHost);
+        events._baseUrl = expectedHost;
+        promise = events.getUserInfo(expectedUserId);
+      });
+
+      it('gets the user from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/users/${expectedUserId}`
+        );
+      });
+
+      it('formats the user object', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(userFromServerBeforeFormat);
+        });
+      });
+
+      it('returns the requested user', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          userFromServerAfterFormat
+        );
+      });
+    });
+
+    context('the user ID is not provided', function() {
+      it('throws an error', function() {
+        const events = new Events(baseSdk, baseRequest, expectedHost);
+        const promise = events.getUserInfo();
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for getting information about a user'
+        );
+      });
+    });
+  });
+
   describe('update', function() {
     context('when all required information is available', function() {
       let eventFromServerBeforeFormat;

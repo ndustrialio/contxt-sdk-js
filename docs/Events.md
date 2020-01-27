@@ -13,6 +13,7 @@ of, information about different events
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
     * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
+    * [.getUserInfo(userId)](#Events+getUserInfo) ⇒ <code>Promise</code>
     * [.subscribeUser(userId, eventId)](#Events+subscribeUser) ⇒ <code>Promise</code>
     * [.unsubscribeUser(userId, userEventSubscriptionId)](#Events+unsubscribeUser) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
@@ -162,6 +163,29 @@ contxtSdk.events
      }
    )
   .then((events) => console.log(events))
+  .catch((err) => console.log(err));
+```
+<a name="Events+getUserInfo"></a>
+
+### contxtSdk.events.getUserInfo(userId) ⇒ <code>Promise</code>
+Gets information about a contxt user
+
+API Endpoint: '/users/:userId'
+Method: GET
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>ContxtUser</code>](./Typedefs.md#ContxtUser) Information about a contxt user  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+
+**Example**  
+```js
+contxtSdk.events
+  .getUserInfo('auth0|saklafjheuaiweh')
+  .then((user) => console.log(user))
   .catch((err) => console.log(err));
 ```
 <a name="Events+subscribeUser"></a>

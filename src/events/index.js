@@ -279,6 +279,36 @@ class Events {
   }
 
   /**
+   * Gets information about a contxt user
+   *
+   * API Endpoint: '/users/:userId'
+   * Method: GET
+   *
+   * @param {string} userId The ID of the user
+   *
+   * @returns {Promise}
+   * @fulfill {ContxtUser} Information about a contxt user
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.events
+   *   .getUserInfo('auth0|saklafjheuaiweh')
+   *   .then((user) => console.log(user))
+   *   .catch((err) => console.log(err));
+   */
+  getUserInfo(userId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for getting information about a user')
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/users/${userId}`)
+      .then((user) => toCamelCase(user));
+  }
+
+  /**
    * Subscribes an user to an event
    *
    * API Endpoint: '/users/:userId/events/:event_id'
