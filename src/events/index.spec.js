@@ -439,8 +439,8 @@ describe('Events', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedUserId = fixture.build('contxtUser').id;
-        userFromServerAfterFormat = fixture.build('contxtUser', {
+        expectedUserId = fixture.build('eventUser').id;
+        userFromServerAfterFormat = fixture.build('eventUser', {
           id: expectedUserId
         });
         userFromServerBeforeFormat = fixture.build(

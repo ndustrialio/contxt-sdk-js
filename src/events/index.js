@@ -39,6 +39,31 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} EventUser
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} email
+ * @property {string} firstName
+ * @property {string} id
+ * @property {boolean} isMachineUser
+ * @property {Array} [IOSDevices]
+ * @property {string} [IOSDevices.createdAt] ISO 8601 Extended Format date/time string
+ * @property {boolean} [IOSDevices.isActive]
+ * @property {string} [IOSDevices.snsEndpointArn]
+ * @property {string} [IOSDevices.userId]
+ * @property {string} [IOSDevices.updatedAt] ISO 8601 Extended Format date/time string
+ * @property {string} lastName
+ * @property {Array} [userMobileNumbers]
+ * @property {string} [userMobileNumbers.createdAt] ISO 8601 Extended Format date/time string
+ * @property {string} [userMobileNumbers.name]
+ * @property {boolean} [userMobileNumbers.isActive]
+ * @property {string} [userMobileNumbers.phoneNumber]
+ * @property {string} [userMobileNumbers.updatedAt] ISO 8601 Extended Format date/time string
+ * @property {string} [userMobileNumbers.userId]
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {UserEventSubscription[]} records
+ */
+
+/**
  * @typedef {Object} EventsFromServer
  * @property {Object} _metadata Metadata about the pagination settings
  * @property {number} _metadata.offset Offset of records in subsequent queries
@@ -70,11 +95,13 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} UserEventSubscription
- * @property {string} eventId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} [endpointArn]
+ * @property {string} eventId
  * @property {string} id
- * @property {string} userId
+ * @property {string} mediumType
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {string} userId
  */
 
 /**
@@ -287,7 +314,7 @@ class Events {
    * @param {string} userId The ID of the user
    *
    * @returns {Promise}
-   * @fulfill {ContxtUser} Information about a contxt user
+   * @fulfill {EventUser} Information about an event user
    * @reject {Error}
    *
    * @example
