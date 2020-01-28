@@ -68,7 +68,7 @@ factory
           return factory.build(
             'userMobileNumber',
             {
-              name: firstName + lastName,
+              name: firstName + ' ' + lastName,
               userId: id
             },
             {
