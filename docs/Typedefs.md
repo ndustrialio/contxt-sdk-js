@@ -666,14 +666,14 @@ single module.
 | firstName | <code>string</code> |  |
 | id | <code>string</code> |  |
 | isMachineUser | <code>boolean</code> |  |
-| [IOSDevices] | <code>Array</code> |  |
+| [IOSDevices] | <code>Array.&lt;Object&gt;</code> |  |
 | [IOSDevices.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [IOSDevices.isActive] | <code>boolean</code> |  |
 | [IOSDevices.snsEndpointArn] | <code>string</code> |  |
 | [IOSDevices.userId] | <code>string</code> |  |
 | [IOSDevices.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | lastName | <code>string</code> |  |
-| [userMobileNumbers] | <code>Array</code> |  |
+| [userMobileNumbers] | <code>Array.&lt;Object&gt;</code> |  |
 | [userMobileNumbers.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [userMobileNumbers.name] | <code>string</code> |  |
 | [userMobileNumbers.isActive] | <code>boolean</code> |  |

@@ -45,14 +45,14 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  * @property {string} firstName
  * @property {string} id
  * @property {boolean} isMachineUser
- * @property {Array} [IOSDevices]
+ * @property {Object[]} [IOSDevices]
  * @property {string} [IOSDevices.createdAt] ISO 8601 Extended Format date/time string
  * @property {boolean} [IOSDevices.isActive]
  * @property {string} [IOSDevices.snsEndpointArn]
  * @property {string} [IOSDevices.userId]
  * @property {string} [IOSDevices.updatedAt] ISO 8601 Extended Format date/time string
  * @property {string} lastName
- * @property {Array} [userMobileNumbers]
+ * @property {Object[]} [userMobileNumbers]
  * @property {string} [userMobileNumbers.createdAt] ISO 8601 Extended Format date/time string
  * @property {string} [userMobileNumbers.name]
  * @property {boolean} [userMobileNumbers.isActive]
