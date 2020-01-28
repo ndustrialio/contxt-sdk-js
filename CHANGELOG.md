@@ -1,3 +1,9 @@
+## [v2.7.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.7.0) (2020-01-28)
+
+**Added**
+
+- Added `Feeds#getByFacilityId` for getting all feeds assigned to a specific facility.
+
 ## [v2.6.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.6.2) (2020-01-23)
 
 **Fixed**
