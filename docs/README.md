@@ -235,6 +235,8 @@ single module.</p>
 <dd></dd>
 <dt><a href="./Typedefs.md#EventTypesFromServer">EventTypesFromServer</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#EventUser">EventUser</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#EventsFromServer">EventsFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ExternalModule">ExternalModule</a> : <code>Object</code></dt>

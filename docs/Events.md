@@ -174,7 +174,7 @@ API Endpoint: '/users/:userId'
 Method: GET
 
 **Kind**: instance method of [<code>Events</code>](#Events)  
-**Fulfill**: [<code>ContxtUser</code>](./Typedefs.md#ContxtUser) Information about a contxt user  
+**Fulfill**: [<code>EventUser</code>](./Typedefs.md#EventUser) Information about an event user  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |

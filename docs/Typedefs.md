@@ -653,6 +653,36 @@ single module.
 | _metadata.totalRecords | <code>number</code> | Total number of asset types found |
 | records | [<code>Array.&lt;EventType&gt;</code>](#EventType) |  |
 
+<a name="EventUser"></a>
+
+## EventUser : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| email | <code>string</code> |  |
+| firstName | <code>string</code> |  |
+| id | <code>string</code> |  |
+| isMachineUser | <code>boolean</code> |  |
+| [IOSDevices] | <code>Array</code> |  |
+| [IOSDevices.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [IOSDevices.isActive] | <code>boolean</code> |  |
+| [IOSDevices.snsEndpointArn] | <code>string</code> |  |
+| [IOSDevices.userId] | <code>string</code> |  |
+| [IOSDevices.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| lastName | <code>string</code> |  |
+| [userMobileNumbers] | <code>Array</code> |  |
+| [userMobileNumbers.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [userMobileNumbers.name] | <code>string</code> |  |
+| [userMobileNumbers.isActive] | <code>boolean</code> |  |
+| [userMobileNumbers.phoneNumber] | <code>string</code> |  |
+| [userMobileNumbers.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [userMobileNumbers.userId] | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| records | [<code>Array.&lt;UserEventSubscription&gt;</code>](#UserEventSubscription) |  |
+
 <a name="EventsFromServer"></a>
 
 ## EventsFromServer : <code>Object</code>
@@ -1145,11 +1175,13 @@ User provided configuration options
 
 | Name | Type | Description |
 | --- | --- | --- |
-| eventId | <code>string</code> |  |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [endpointArn] | <code>string</code> |  |
+| eventId | <code>string</code> |  |
 | id | <code>string</code> |  |
-| userId | <code>string</code> |  |
+| mediumType | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| userId | <code>string</code> |  |
 
 <a name="UserProfile"></a>
 
