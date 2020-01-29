@@ -306,7 +306,7 @@ class Events {
   }
 
   /**
-   * Gets information about a contxt user
+   * Gets information about a contxt user with additional information related to event subscriptions
    *
    * API Endpoint: '/users/:userId'
    * Method: GET

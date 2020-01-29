@@ -168,7 +168,7 @@ contxtSdk.events
 <a name="Events+getUserInfo"></a>
 
 ### contxtSdk.events.getUserInfo(userId) ⇒ <code>Promise</code>
-Gets information about a contxt user
+Gets information about a contxt user with additional information related to event subscriptions
 
 API Endpoint: '/users/:userId'
 Method: GET
