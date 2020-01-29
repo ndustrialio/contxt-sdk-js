@@ -433,7 +433,6 @@ describe('Events', function() {
     context('the user ID is provided', function() {
       let userFromServerAfterFormat;
       let userFromServerBeforeFormat;
-      let expectedUserId;
       let promise;
       let request;
       let toCamelCase;
@@ -461,7 +460,7 @@ describe('Events', function() {
 
       it('gets the user from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/users/${expectedUserId}`
+          `${expectedHost}/users/${userFromServerAfterFormat.id}`
         );
       });
 
