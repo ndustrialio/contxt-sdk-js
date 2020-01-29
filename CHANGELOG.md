@@ -1,3 +1,9 @@
+## [v2.8.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.8.0) (2020-01-29)
+
+**Added**
+
+- Added `Events#getUserInfo` for getting information about a contxt user.
+
 ## [v2.7.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.7.0) (2020-01-28)
 
 **Added**
