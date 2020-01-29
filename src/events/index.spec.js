@@ -439,13 +439,10 @@ describe('Events', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedUserId = fixture.build('eventUser').id;
-        userFromServerAfterFormat = fixture.build('eventUser', {
-          id: expectedUserId
-        });
+        userFromServerAfterFormat = fixture.build('eventUser');
         userFromServerBeforeFormat = fixture.build(
-          'event',
-          { id: expectedUserId },
+          'eventUser',
+          userFromServerAfterFormat,
           { fromServer: true }
         );
 
@@ -459,7 +456,7 @@ describe('Events', function() {
 
         const events = new Events(baseSdk, request, expectedHost);
         events._baseUrl = expectedHost;
-        promise = events.getUserInfo(expectedUserId);
+        promise = events.getUserInfo(userFromServerAfterFormat.id);
       });
 
       it('gets the user from the server', function() {
