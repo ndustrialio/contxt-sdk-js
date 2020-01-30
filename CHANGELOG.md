@@ -1,3 +1,9 @@
+## [v2.8.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.8.1) (2020-01-30)
+
+**Added**
+
+- Added an additional parameter, `subscribeOpts` to `Events#subscribeUser`.
+
 ## [v2.8.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.8.0) (2020-01-29)
 
 **Added**
