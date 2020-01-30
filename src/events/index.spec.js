@@ -677,13 +677,13 @@ describe('Events', function() {
 
   describe('subscribeUser', function() {
     context('when all the required parameters are provided', function() {
+      let event;
       let expectedSubscription;
       let promise;
       let request;
-      let event;
-      let user;
       let subscriptionFromServer;
       let toCamelCase;
+      let user;
 
       beforeEach(function() {
         event = fixture.build('event');
@@ -702,6 +702,7 @@ describe('Events', function() {
           ...baseRequest,
           post: sinon.stub().resolves(subscriptionFromServer)
         };
+
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedSubscription);
@@ -728,6 +729,70 @@ describe('Events', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
           expectedSubscription
         );
+      });
+    });
+
+    context('when the optional parameter is provided', function() {
+      let event;
+      let expectedOpts;
+      let expectedSubscription;
+      let promise;
+      let request;
+      let subscriptionFromServer;
+      let subscriptionOpts;
+      let toSnakeCase;
+      let user;
+
+      beforeEach(function() {
+        event = fixture.build('event');
+        user = fixture.build('contxtUser');
+
+        expectedSubscription = fixture.build('userEventSubscription');
+        subscriptionFromServer = fixture.build(
+          'userEventSubscription',
+          expectedSubscription,
+          {
+            fromServer: true
+          }
+        );
+
+        request = {
+          ...baseRequest,
+          post: sinon.stub().resolves(subscriptionFromServer)
+        };
+
+        subscriptionOpts = {
+          mediumType: 'email'
+        };
+
+        expectedOpts = {
+          medium_type: 'email'
+        };
+
+        sinon.stub(objectUtils, 'toCamelCase').returns(expectedSubscription);
+
+        toSnakeCase = sinon
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(expectedOpts);
+
+        const events = new Events(baseSdk, request);
+        events._baseUrl = expectedHost;
+        promise = events.subscribeUser(user.id, event.id, subscriptionOpts);
+      });
+
+      it('creates the user event subscription', function() {
+        return promise.then(() => {
+          expect(request.post).to.be.calledWith(
+            `${expectedHost}/users/${user.id}/events/${event.id}`,
+            expectedOpts
+          );
+        });
+      });
+
+      it('formats the opts to snake case', function() {
+        return promise.then(() => {
+          expect(toSnakeCase).to.be.calledWith(subscriptionOpts);
+        });
       });
     });
 

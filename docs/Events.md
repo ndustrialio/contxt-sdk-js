@@ -14,7 +14,7 @@ of, information about different events
     * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
     * [.getUserInfo(userId)](#Events+getUserInfo) ⇒ <code>Promise</code>
-    * [.subscribeUser(userId, eventId)](#Events+subscribeUser) ⇒ <code>Promise</code>
+    * [.subscribeUser(userId, eventId, subscribeOpts)](#Events+subscribeUser) ⇒ <code>Promise</code>
     * [.unsubscribeUser(userId, userEventSubscriptionId)](#Events+unsubscribeUser) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
     * [.createEventType(eventType)](#Events+createEventType) ⇒ <code>Promise</code>
@@ -190,7 +190,7 @@ contxtSdk.events
 ```
 <a name="Events+subscribeUser"></a>
 
-### contxtSdk.events.subscribeUser(userId, eventId) ⇒ <code>Promise</code>
+### contxtSdk.events.subscribeUser(userId, eventId, subscribeOpts) ⇒ <code>Promise</code>
 Subscribes an user to an event
 
 API Endpoint: '/users/:userId/events/:event_id'
@@ -204,6 +204,7 @@ Method: POST
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
 | eventId | <code>string</code> | The ID of the event |
+| subscribeOpts | <code>Object</code> | Optional parameters to provide when subscribing the user |
 
 **Example**  
 ```js

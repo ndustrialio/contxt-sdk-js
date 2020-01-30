@@ -343,6 +343,7 @@ class Events {
    *
    * @param {string} userId The ID of the user
    * @param {string} eventId The ID of the event
+   * @param {Object} subscribeOpts Optional parameters to provide when subscribing the user
    *
    * @returns {Promise}
    * @fulfill {UserEventSubscription} The newly created user event
@@ -354,7 +355,7 @@ class Events {
    *   .then((userEvent) => console.log(userEvent))
    *   .catch((err) => console.log(err));
    */
-  subscribeUser(userId, eventId) {
+  subscribeUser(userId, eventId, subscribeOpts = {}) {
     if (!userId) {
       return Promise.reject(
         new Error('A user ID is required for subscribing a user to an event')
@@ -368,7 +369,10 @@ class Events {
     }
 
     return this._request
-      .post(`${this._baseUrl}/users/${userId}/events/${eventId}`)
+      .post(
+        `${this._baseUrl}/users/${userId}/events/${eventId}`,
+        toSnakeCase(subscribeOpts)
+      )
       .then((response) => toCamelCase(response));
   }
 
