@@ -1145,6 +1145,38 @@ the optional methods are documented below.
 | [logIn] | <code>function</code> | Is used by front-end code in the Auth0 reference implementation to   start the sign in process |
 | [logOut] | <code>function</code> | Is used by the front-end code in the Auth0 reference implementation   to sign the user out |
 
+<a name="TriggeredEvent"></a>
+
+## TriggeredEvent : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| data | <code>string</code> | A stringified JSON object containing additional data about the Triggered Event |
+| deletedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| eventId | <code>string</code> |  |
+| id | <code>string</code> |  |
+| isPublic | <code>boolean</code> | Whether or not the event |
+| ownerId | <code>string</code> | The Contxt entity who owns the event |
+| triggerEndAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| triggerStartAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="TriggeredEventsFromServer"></a>
+
+## TriggeredEventsFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of records found |
+| records | [<code>Array.&lt;TriggeredEvent&gt;</code>](#TriggeredEvent) |  |
+
 <a name="UserConfig"></a>
 
 ## UserConfig : <code>Object</code>

@@ -303,6 +303,10 @@ Can authenticate with a service like Auth0 and then with Contxt or can communica
 with Contxt. The adapter must implement required methods, but most methods are optional. Some of
 the optional methods are documented below.</p>
 </dd>
+<dt><a href="./Typedefs.md#TriggeredEvent">TriggeredEvent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#TriggeredEventsFromServer">TriggeredEventsFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#UserConfig">UserConfig</a> : <code>Object</code></dt>
 <dd><p>User provided configuration options</p>
 </dd>

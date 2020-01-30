@@ -429,6 +429,111 @@ describe('Events', function() {
     });
   });
 
+  describe('getTriggeredEventsByFacilityId', function() {
+    let events;
+    let facilityId;
+    let formatPaginatedDataFromServer;
+    let paginationOptionsAfterFormat;
+    let paginationOptionsBeforeFormat;
+    let promise;
+    let request;
+    let toSnakeCase;
+    let triggeredEventsFromServerAfterFormat;
+    let triggeredEventsFromServerBeforeFormat;
+
+    beforeEach(function() {
+      facilityId = faker.random.number();
+
+      triggeredEventsFromServerAfterFormat = {
+        _metadata: fixture.build('paginationMetadata'),
+        records: fixture.buildList(
+          'triggeredEvent',
+          faker.random.number({ min: 5, max: 10 })
+        )
+      };
+
+      triggeredEventsFromServerBeforeFormat = {
+        ...triggeredEventsFromServerAfterFormat,
+        records: triggeredEventsFromServerAfterFormat.records.map((values) =>
+          fixture.build('triggeredEvent', values, { fromServer: true })
+        )
+      };
+      paginationOptionsBeforeFormat = {
+        limit: faker.random.number({ min: 10, max: 1000 }),
+        offset: faker.random.number({ max: 1000 }),
+        eventTypeId: faker.random.uuid()
+      };
+      paginationOptionsAfterFormat = {
+        ...paginationOptionsBeforeFormat
+      };
+
+      formatPaginatedDataFromServer = sinon
+        .stub(paginationUtils, 'formatPaginatedDataFromServer')
+        .returns(triggeredEventsFromServerAfterFormat);
+
+      request = {
+        ...baseRequest,
+        get: sinon.stub().resolves(triggeredEventsFromServerBeforeFormat)
+      };
+      toSnakeCase = sinon
+        .stub(objectUtils, 'toSnakeCase')
+        .returns(paginationOptionsAfterFormat);
+
+      events = new Events(baseSdk, request);
+      events._baseUrl = expectedHost;
+    });
+
+    context('the facility ID is provided', function() {
+      beforeEach(function() {
+        promise = events.getTriggeredEventsByFacilityId(
+          facilityId,
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options', function() {
+        return promise.then(() => {
+          expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+        });
+      });
+
+      it('gets the triggered events from the server', function() {
+        return promise.then(() => {
+          expect(request.get).to.be.calledWith(
+            `${expectedHost}/facilities/${facilityId}/triggered-events`,
+            { params: paginationOptionsAfterFormat }
+          );
+        });
+      });
+
+      it('formats the triggered event response object', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            triggeredEventsFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('returns the requested triggered event response object', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          triggeredEventsFromServerAfterFormat
+        );
+      });
+    });
+
+    context('the facility ID is not proivded', function() {
+      beforeEach(function() {
+        promise = events.getTriggeredEventsByFacilityId();
+      });
+
+      it('throws an error', function() {
+        return expect(promise).to.be.rejectedWith(
+          'A facility ID is required for getting triggered events'
+        );
+      });
+    });
+  });
+
   describe('getUserInfo', function() {
     context('the user ID is provided', function() {
       let userFromServerAfterFormat;
