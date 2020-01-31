@@ -13,6 +13,7 @@ of, information about different events
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
     * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
+    * [.getTriggeredEventsByFacilityId(facilityId, [triggeredEventFilters])](#Events+getTriggeredEventsByFacilityId) ⇒ <code>Promise</code>
     * [.getUserInfo(userId)](#Events+getUserInfo) ⇒ <code>Promise</code>
     * [.subscribeUser(userId, eventId, subscribeOpts)](#Events+subscribeUser) ⇒ <code>Promise</code>
     * [.unsubscribeUser(userId, userEventSubscriptionId)](#Events+unsubscribeUser) ⇒ <code>Promise</code>
@@ -165,6 +166,25 @@ contxtSdk.events
   .then((events) => console.log(events))
   .catch((err) => console.log(err));
 ```
+<a name="Events+getTriggeredEventsByFacilityId"></a>
+
+### contxtSdk.events.getTriggeredEventsByFacilityId(facilityId, [triggeredEventFilters]) ⇒ <code>Promise</code>
+Gets a paginated list of triggered events for a given facility.
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>TriggeredEventsFromServer</code>](./Typedefs.md#TriggeredEventsFromServer) Triggered Events from server  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>Number</code> | The ID of the facility |
+| [triggeredEventFilters] | <code>Object</code> |  |
+| [triggeredEventFilters.eventTypeId] | <code>boolean</code> | Will filter records by a particular event type ID |
+| [triggeredEventFilters.limit] | <code>number</code> | Maximum number of records to return per query |
+| [triggeredEventFilters.offset] | <code>number</code> | How many records from the first record to start the query |
+| [triggeredEventFilters.orderBy] | <code>string</code> | The triggered field to sort the response records by in ascending order |
+| [triggeredEventFilters.reverseOrder] | <code>boolean</code> | If true, results will be sorted in descending order |
+
 <a name="Events+getUserInfo"></a>
 
 ### contxtSdk.events.getUserInfo(userId) ⇒ <code>Promise</code>
