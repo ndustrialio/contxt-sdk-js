@@ -1154,13 +1154,13 @@ the optional methods are documented below.
 | Name | Type | Description |
 | --- | --- | --- |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| data | <code>string</code> | A stringified JSON object containing additional data about the Triggered Event |
+| [data] | <code>string</code> | A stringified JSON object containing additional data about the Triggered Event |
 | [deletedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | eventId | <code>string</code> |  |
 | id | <code>string</code> |  |
 | [isPublic] | <code>boolean</code> | Whether or not the event |
-| ownerId | <code>string</code> | The Contxt entity who owns the event |
-| triggerEndAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [ownerId] | <code>string</code> | The Contxt entity who owns the event |
+| [triggerEndAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | triggerStartAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 

@@ -115,13 +115,13 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
 /**
  * @typedef {Object} TriggeredEvent
  * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} data A stringified JSON object containing additional data about the Triggered Event
+ * @property {string} [data] A stringified JSON object containing additional data about the Triggered Event
  * @property {string} [deletedAt] ISO 8601 Extended Format date/time string
  * @property {string} eventId
  * @property {string} id
  * @property {boolean} [isPublic] Whether or not the event
- * @property {string} ownerId The Contxt entity who owns the event
- * @property {string} triggerEndAt ISO 8601 Extended Format date/time string
+ * @property {string} [ownerId] The Contxt entity who owns the event
+ * @property {string} [triggerEndAt] ISO 8601 Extended Format date/time string
  * @property {string} triggerStartAt ISO 8601 Extended Format date/time string
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
