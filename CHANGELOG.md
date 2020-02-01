@@ -1,3 +1,9 @@
+## [v2.9.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.9.0) (2020-02-01)
+
+**Added**
+
+- Added `Events#getTriggeredEventsByFacilityId` to fetch triggered events for a given facility.
+
 ## [v2.8.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.8.1) (2020-01-30)
 
 **Added**
