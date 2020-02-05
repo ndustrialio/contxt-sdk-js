@@ -42,9 +42,13 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
 /**
  * @typedef {Object} FacilityFeedStatus
  * @param {FacilityGroupingStatus[]} groupings An array of field groupings associated with the feed
+ * @param {Object} feedType
+ * @param {Number} feedType.id
+ * @param {String} feedType.type The human readable type of the feed, e.g. "egauge"
  * @param {Number} id
  * @param {String} key The unique key for the feed
  * @param {String} status The most recent status of the feed, e.g. "Healthy"
+ * @param {String} statusEventId UUID of the feed status event
  * @param {string} updatedAt ISO 8601 Extended Format date/time string
  */
 

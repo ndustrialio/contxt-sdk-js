@@ -751,9 +751,13 @@ for authenticating and communicating with an individual API and the external mod
 | Param | Type | Description |
 | --- | --- | --- |
 | groupings | [<code>Array.&lt;FacilityGroupingStatus&gt;</code>](#FacilityGroupingStatus) | An array of field groupings associated with the feed |
+| feedType | <code>Object</code> |  |
+| feedType.id | <code>Number</code> |  |
+| feedType.type | <code>String</code> | The human readable type of the feed, e.g. "egauge" |
 | id | <code>Number</code> |  |
 | key | <code>String</code> | The unique key for the feed |
 | status | <code>String</code> | The most recent status of the feed, e.g. "Healthy" |
+| statusEventId | <code>String</code> | UUID of the feed status event |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="FacilityGrouping"></a>
