@@ -40,6 +40,28 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
+ * @typedef {Object} FacilityFeedStatus
+ * @param {FacilityGroupingStatus[]} groupings An array of field groupings associated with the feed
+ * @param {Number} id
+ * @param {String} key The unique key for the feed
+ * @param {String} status The most recent status of the feed, e.g. "Healthy"
+ * @param {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} FacilityGroupingStatus
+ * @param {String} id UUID
+ * @param {String} label The human readable name of the field grouping
+ * @param {String} status The most recent status of the field grouping
+ * @param {string} updatedAt ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object} FacilityStatusFromServer
+ * @property {FacilityFeedStatus[]} feeds
+ */
+
+/**
  * Module that provides access to feed information
  *
  * @typicalname contxtSdk.iot.feeds
@@ -64,7 +86,7 @@ class Feeds {
    * API Endpoint: '/feeds'
    * Method: GET
    *
-   * @param {number} facilityId
+   * @param {Number} facilityId
    *
    * @returns {Promise}
    * @fulfill {Feeds[]} Information about the feeds that are assigned to specific facility
@@ -76,16 +98,47 @@ class Feeds {
    *   .then((feeds) => console.log(feeds))
    *   .catch((err) => console.log(err));
    */
-
   getByFacilityId(facilityId) {
     if (!facilityId) {
-      return Promise.reject(new Error('A facilityId is required get feeds.'));
+      return Promise.reject(
+        new Error('A facilityId is required to get feeds.')
+      );
     }
 
     return this._request
       .get(`${this._baseUrl}/feeds`, {
         params: toSnakeCase({ facilityId })
       })
+      .then((response) => toCamelCase(response));
+  }
+
+  /**
+   * Gets current Feed and Grouping status for a given Facility
+   *
+   * API Endpoint: '/facilities/:facilityId/status'
+   * Method: GET
+   *
+   * @param {Number} facilityId
+   *
+   * @returns {Promise}
+   * @fulfill {FacilityStatusFromServer} Information about the Facility feed status
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.iot.feeds
+   *   .getStatusForFacility(563)
+   *   .then((status) => console.log(status.feeds))
+   *   .catch((err) => console.log(err));
+   */
+  getStatusForFacility(facilityId) {
+    if (!facilityId) {
+      return Promise.reject(
+        new Error('A facilityId is required to get facility feed status.')
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/facilities/${facilityId}/status`)
       .then((response) => toCamelCase(response));
   }
 }

@@ -245,9 +245,15 @@ for authenticating and communicating with an individual API and the external mod
 </dd>
 <dt><a href="./Typedefs.md#Facility">Facility</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#FacilityFeedStatus">FacilityFeedStatus</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#FacilityGrouping">FacilityGrouping</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FacilityGroupingFacility">FacilityGroupingFacility</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#FacilityGroupingStatus">FacilityGroupingStatus</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#FacilityStatusFromServer">FacilityStatusFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#Feed">Feed</a> : <code>Object</code></dt>
 <dd></dd>

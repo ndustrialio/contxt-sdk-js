@@ -743,6 +743,19 @@ for authenticating and communicating with an individual API and the external mod
 | [weatherLocationId] | <code>number</code> |  |
 | [zip] | <code>string</code> | US Zip Code |
 
+<a name="FacilityFeedStatus"></a>
+
+## FacilityFeedStatus : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| groupings | [<code>Array.&lt;FacilityGroupingStatus&gt;</code>](#FacilityGroupingStatus) | An array of field groupings associated with the feed |
+| id | <code>Number</code> |  |
+| key | <code>String</code> | The unique key for the feed |
+| status | <code>String</code> | The most recent status of the feed, e.g. "Healthy" |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="FacilityGrouping"></a>
 
 ## FacilityGrouping : <code>Object</code>
@@ -773,6 +786,28 @@ for authenticating and communicating with an individual API and the external mod
 | facilityId | <code>number</code> |  |
 | id | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="FacilityGroupingStatus"></a>
+
+## FacilityGroupingStatus : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> | UUID |
+| label | <code>String</code> | The human readable name of the field grouping |
+| status | <code>String</code> | The most recent status of the field grouping |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="FacilityStatusFromServer"></a>
+
+## FacilityStatusFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| feeds | [<code>Array.&lt;FacilityFeedStatus&gt;</code>](#FacilityFeedStatus) | 
 
 <a name="Feed"></a>
 
