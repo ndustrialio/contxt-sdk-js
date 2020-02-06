@@ -113,7 +113,95 @@ describe('Iot/Feeds', function() {
         const promise = feeds.getByFacilityId();
 
         return expect(promise).to.be.rejectedWith(
-          'A facilityId is required get feeds.'
+          'A facilityId is required to get feeds.'
+        );
+      });
+    });
+  });
+
+  describe('getStatusForFacility', function() {
+    context('the facility ID is provided', function() {
+      let expectedResult;
+      let promise;
+      let rawResult;
+      let request;
+      let toCamelCase;
+      let facilityId;
+
+      beforeEach(function() {
+        facilityId = fixture.build('facility').id;
+        expectedResult = {
+          feeds: fixture.buildList(
+            'feed',
+            faker.random.number({
+              min: 1,
+              max: 10
+            })
+          )
+        };
+
+        expectedResult.feeds.forEach((feed) => {
+          feed.groupings = fixture.buildList(
+            'fieldGroupingStatus',
+            faker.random.number({ min: 1, max: 4 })
+          );
+        });
+
+        rawResult = {
+          feeds: expectedResult.feeds.map((feed) =>
+            fixture.build('feed', feed, { fromServer: true })
+          )
+        };
+
+        rawResult.feeds.forEach((feed) => {
+          feed.groupings = feed.groupings.map((groupingStatus) => {
+            fixture.build('fieldGroupingStatus', groupingStatus, {
+              fromServer: true
+            });
+          });
+        });
+
+        request = {
+          ...baseRequest,
+          get: sinon.stub().resolves(rawResult)
+        };
+
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(expectedResult);
+
+        const feeds = new Feeds(baseSdk, request);
+        feeds._baseUrl = expectedHost;
+
+        promise = feeds.getStatusForFacility(facilityId);
+      });
+
+      it('gets feeds from provided facility from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/facilities/${facilityId}/status`
+        );
+      });
+
+      it('formats the status response', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(rawResult);
+        });
+      });
+
+      it('returns the requested feed status', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          expectedResult
+        );
+      });
+    });
+
+    context('the facility ID is not provided', function() {
+      it('throws an error', function() {
+        const feeds = new Feeds(baseSdk, baseRequest);
+        const promise = feeds.getStatusForFacility();
+
+        return expect(promise).to.be.rejectedWith(
+          'A facilityId is required to get facility feed status.'
         );
       });
     });

@@ -1,3 +1,9 @@
+## [v2.10.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.10.0) (2020-02-05)
+
+**Added**
+
+- Added `Feeds#getStatusForFacility` to fetch feed status for every feed in a given facility.
+
 ## [v2.9.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.9.0) (2020-02-01)
 
 **Added**
