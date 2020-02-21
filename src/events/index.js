@@ -39,6 +39,31 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} EventUser
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} email
+ * @property {string} firstName
+ * @property {string} id
+ * @property {boolean} isMachineUser
+ * @property {Object[]} [IOSDevices]
+ * @property {string} [IOSDevices.createdAt] ISO 8601 Extended Format date/time string
+ * @property {boolean} [IOSDevices.isActive]
+ * @property {string} [IOSDevices.snsEndpointArn]
+ * @property {string} [IOSDevices.userId]
+ * @property {string} [IOSDevices.updatedAt] ISO 8601 Extended Format date/time string
+ * @property {string} lastName
+ * @property {Object[]} [userMobileNumbers]
+ * @property {string} [userMobileNumbers.createdAt] ISO 8601 Extended Format date/time string
+ * @property {string} [userMobileNumbers.name]
+ * @property {boolean} [userMobileNumbers.isActive]
+ * @property {string} [userMobileNumbers.phoneNumber]
+ * @property {string} [userMobileNumbers.updatedAt] ISO 8601 Extended Format date/time string
+ * @property {string} [userMobileNumbers.userId]
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {UserEventSubscription[]} records
+ */
+
+/**
  * @typedef {Object} EventsFromServer
  * @property {Object} _metadata Metadata about the pagination settings
  * @property {number} _metadata.offset Offset of records in subsequent queries
@@ -70,10 +95,34 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
  * @typedef {Object} UserEventSubscription
- * @property {string} eventId
  * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} [endpointArn]
+ * @property {string} eventId
  * @property {string} id
+ * @property {string} mediumType
+ * @property {string} updatedAt ISO 8601 Extended Format date/time string
  * @property {string} userId
+ */
+
+/**
+ * @typedef {Object} TriggeredEventsFromServer
+ * @property {Object} _metadata Metadata about the pagination settings
+ * @property {number} _metadata.offset Offset of records in subsequent queries
+ * @property {number} _metadata.totalRecords Total number of records found
+ * @property {TriggeredEvent[]} records
+ */
+
+/**
+ * @typedef {Object} TriggeredEvent
+ * @property {string} createdAt ISO 8601 Extended Format date/time string
+ * @property {string} [data] A stringified JSON object containing additional data about the Triggered Event
+ * @property {string} [deletedAt] ISO 8601 Extended Format date/time string
+ * @property {string} eventId
+ * @property {string} id
+ * @property {boolean} [isPublic] Whether or not the event
+ * @property {string} [ownerId] The Contxt entity who owns the event
+ * @property {string} [triggerEndAt] ISO 8601 Extended Format date/time string
+ * @property {string} triggerStartAt ISO 8601 Extended Format date/time string
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
@@ -279,6 +328,65 @@ class Events {
   }
 
   /**
+   * Gets a paginated list of triggered events for a given facility.
+   * @param {Number} facilityId The ID of the facility
+   * @param {Object} [triggeredEventFilters]
+   * @param {boolean} [triggeredEventFilters.eventTypeId] Will filter records by a particular event type ID
+   * @param {number} [triggeredEventFilters.limit] Maximum number of records to return per query
+   * @param {number} [triggeredEventFilters.offset] How many records from the first record to start the query
+   * @param {string} [triggeredEventFilters.orderBy] The triggered field to sort the response records by in ascending order
+   * @param {boolean} [triggeredEventFilters.reverseOrder] If true, results will be sorted in descending order
+   *
+   * @returns {Promise}
+   * @fulfill {TriggeredEventsFromServer} Triggered Events from server
+   * @reject {Error}
+   *
+   */
+  getTriggeredEventsByFacilityId(facilityId, triggeredEventFilters = {}) {
+    if (!facilityId) {
+      return Promise.reject(
+        new Error('A facility ID is required for getting triggered events')
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/facilities/${facilityId}/triggered-events`, {
+        params: toSnakeCase(triggeredEventFilters)
+      })
+      .then((events) => formatPaginatedDataFromServer(events));
+  }
+
+  /**
+   * Gets information about a contxt user with additional information related to event subscriptions
+   *
+   * API Endpoint: '/users/:userId'
+   * Method: GET
+   *
+   * @param {string} userId The ID of the user
+   *
+   * @returns {Promise}
+   * @fulfill {EventUser} Information about an event user
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.events
+   *   .getUserInfo('auth0|saklafjheuaiweh')
+   *   .then((user) => console.log(user))
+   *   .catch((err) => console.log(err));
+   */
+  getUserInfo(userId) {
+    if (!userId) {
+      return Promise.reject(
+        new Error('A user ID is required for getting information about a user')
+      );
+    }
+
+    return this._request
+      .get(`${this._baseUrl}/users/${userId}`)
+      .then((user) => toCamelCase(user));
+  }
+
+  /**
    * Subscribes an user to an event
    *
    * API Endpoint: '/users/:userId/events/:event_id'
@@ -286,6 +394,7 @@ class Events {
    *
    * @param {string} userId The ID of the user
    * @param {string} eventId The ID of the event
+   * @param {Object} subscribeOpts Optional parameters to provide when subscribing the user
    *
    * @returns {Promise}
    * @fulfill {UserEventSubscription} The newly created user event
@@ -297,7 +406,7 @@ class Events {
    *   .then((userEvent) => console.log(userEvent))
    *   .catch((err) => console.log(err));
    */
-  subscribeUser(userId, eventId) {
+  subscribeUser(userId, eventId, subscribeOpts = {}) {
     if (!userId) {
       return Promise.reject(
         new Error('A user ID is required for subscribing a user to an event')
@@ -311,7 +420,10 @@ class Events {
     }
 
     return this._request
-      .post(`${this._baseUrl}/users/${userId}/events/${eventId}`)
+      .post(
+        `${this._baseUrl}/users/${userId}/events/${eventId}`,
+        toSnakeCase(subscribeOpts)
+      )
       .then((response) => toCamelCase(response));
   }
 

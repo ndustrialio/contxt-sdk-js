@@ -235,6 +235,8 @@ single module.</p>
 <dd></dd>
 <dt><a href="./Typedefs.md#EventTypesFromServer">EventTypesFromServer</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#EventUser">EventUser</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#EventsFromServer">EventsFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ExternalModule">ExternalModule</a> : <code>Object</code></dt>
@@ -243,9 +245,15 @@ for authenticating and communicating with an individual API and the external mod
 </dd>
 <dt><a href="./Typedefs.md#Facility">Facility</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#FacilityFeedStatus">FacilityFeedStatus</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#FacilityGrouping">FacilityGrouping</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FacilityGroupingFacility">FacilityGroupingFacility</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#FacilityGroupingStatus">FacilityGroupingStatus</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#FacilityStatusFromServer">FacilityStatusFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#Feed">Feed</a> : <code>Object</code></dt>
 <dd></dd>
@@ -301,6 +309,10 @@ Can authenticate with a service like Auth0 and then with Contxt or can communica
 with Contxt. The adapter must implement required methods, but most methods are optional. Some of
 the optional methods are documented below.</p>
 </dd>
+<dt><a href="./Typedefs.md#TriggeredEvent">TriggeredEvent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#TriggeredEventsFromServer">TriggeredEventsFromServer</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#UserConfig">UserConfig</a> : <code>Object</code></dt>
 <dd><p>User provided configuration options</p>
 </dd>

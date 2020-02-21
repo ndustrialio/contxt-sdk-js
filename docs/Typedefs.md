@@ -653,6 +653,36 @@ single module.
 | _metadata.totalRecords | <code>number</code> | Total number of asset types found |
 | records | [<code>Array.&lt;EventType&gt;</code>](#EventType) |  |
 
+<a name="EventUser"></a>
+
+## EventUser : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| email | <code>string</code> |  |
+| firstName | <code>string</code> |  |
+| id | <code>string</code> |  |
+| isMachineUser | <code>boolean</code> |  |
+| [IOSDevices] | <code>Array.&lt;Object&gt;</code> |  |
+| [IOSDevices.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [IOSDevices.isActive] | <code>boolean</code> |  |
+| [IOSDevices.snsEndpointArn] | <code>string</code> |  |
+| [IOSDevices.userId] | <code>string</code> |  |
+| [IOSDevices.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| lastName | <code>string</code> |  |
+| [userMobileNumbers] | <code>Array.&lt;Object&gt;</code> |  |
+| [userMobileNumbers.createdAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [userMobileNumbers.name] | <code>string</code> |  |
+| [userMobileNumbers.isActive] | <code>boolean</code> |  |
+| [userMobileNumbers.phoneNumber] | <code>string</code> |  |
+| [userMobileNumbers.updatedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [userMobileNumbers.userId] | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| records | [<code>Array.&lt;UserEventSubscription&gt;</code>](#UserEventSubscription) |  |
+
 <a name="EventsFromServer"></a>
 
 ## EventsFromServer : <code>Object</code>
@@ -713,6 +743,23 @@ for authenticating and communicating with an individual API and the external mod
 | [weatherLocationId] | <code>number</code> |  |
 | [zip] | <code>string</code> | US Zip Code |
 
+<a name="FacilityFeedStatus"></a>
+
+## FacilityFeedStatus : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| groupings | [<code>Array.&lt;FacilityGroupingStatus&gt;</code>](#FacilityGroupingStatus) | An array of field groupings associated with the feed |
+| feedType | <code>Object</code> |  |
+| feedType.id | <code>Number</code> |  |
+| feedType.type | <code>String</code> | The human readable type of the feed, e.g. "egauge" |
+| id | <code>Number</code> |  |
+| key | <code>String</code> | The unique key for the feed |
+| status | <code>String</code> | The most recent status of the feed, e.g. "Healthy" |
+| statusEventId | <code>String</code> | UUID of the feed status event |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="FacilityGrouping"></a>
 
 ## FacilityGrouping : <code>Object</code>
@@ -743,6 +790,28 @@ for authenticating and communicating with an individual API and the external mod
 | facilityId | <code>number</code> |  |
 | id | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="FacilityGroupingStatus"></a>
+
+## FacilityGroupingStatus : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>String</code> | UUID |
+| label | <code>String</code> | The human readable name of the field grouping |
+| status | <code>String</code> | The most recent status of the field grouping |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="FacilityStatusFromServer"></a>
+
+## FacilityStatusFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| feeds | [<code>Array.&lt;FacilityFeedStatus&gt;</code>](#FacilityFeedStatus) | 
 
 <a name="Feed"></a>
 
@@ -1115,6 +1184,38 @@ the optional methods are documented below.
 | [logIn] | <code>function</code> | Is used by front-end code in the Auth0 reference implementation to   start the sign in process |
 | [logOut] | <code>function</code> | Is used by the front-end code in the Auth0 reference implementation   to sign the user out |
 
+<a name="TriggeredEvent"></a>
+
+## TriggeredEvent : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [data] | <code>string</code> | A stringified JSON object containing additional data about the Triggered Event |
+| [deletedAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| eventId | <code>string</code> |  |
+| id | <code>string</code> |  |
+| [isPublic] | <code>boolean</code> | Whether or not the event |
+| [ownerId] | <code>string</code> | The Contxt entity who owns the event |
+| [triggerEndAt] | <code>string</code> | ISO 8601 Extended Format date/time string |
+| triggerStartAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="TriggeredEventsFromServer"></a>
+
+## TriggeredEventsFromServer : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| _metadata | <code>Object</code> | Metadata about the pagination settings |
+| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
+| _metadata.totalRecords | <code>number</code> | Total number of records found |
+| records | [<code>Array.&lt;TriggeredEvent&gt;</code>](#TriggeredEvent) |  |
+
 <a name="UserConfig"></a>
 
 ## UserConfig : <code>Object</code>
@@ -1145,11 +1246,13 @@ User provided configuration options
 
 | Name | Type | Description |
 | --- | --- | --- |
-| eventId | <code>string</code> |  |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| [endpointArn] | <code>string</code> |  |
+| eventId | <code>string</code> |  |
 | id | <code>string</code> |  |
-| userId | <code>string</code> |  |
+| mediumType | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| userId | <code>string</code> |  |
 
 <a name="UserProfile"></a>
 

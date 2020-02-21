@@ -1,8 +1,32 @@
-## [v2.8.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.8.0) (2020-02-21)
+## [v2.11.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.0) (2020-02-21)
 
 **Added**
 
 - Added the ability to force the login prompt on login. This will be useful for applications who need a Single Logout between Auth0 and an external IdP
+
+## [v2.10.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.10.0) (2020-02-05)
+
+**Added**
+
+- Added `Feeds#getStatusForFacility` to fetch feed status for every feed in a given facility.
+
+## [v2.9.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.9.0) (2020-02-01)
+
+**Added**
+
+- Added `Events#getTriggeredEventsByFacilityId` to fetch triggered events for a given facility.
+
+## [v2.8.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.8.1) (2020-01-30)
+
+**Added**
+
+- Added an additional parameter, `subscribeOpts` to `Events#subscribeUser`.
+
+## [v2.8.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.8.0) (2020-01-29)
+
+**Added**
+
+- Added `Events#getUserInfo` for getting information about a contxt user.
 
 ## [v2.7.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.7.0) (2020-01-28)
 

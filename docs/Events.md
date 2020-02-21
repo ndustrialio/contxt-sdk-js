@@ -13,7 +13,9 @@ of, information about different events
     * [.get(eventId)](#Events+get) ⇒ <code>Promise</code>
     * [.getEventTypesByClientId(clientId, [paginationOptions])](#Events+getEventTypesByClientId) ⇒ <code>Promise</code>
     * [.getEventsByTypeId(eventTypeId, [latest])](#Events+getEventsByTypeId) ⇒ <code>Promise</code>
-    * [.subscribeUser(userId, eventId)](#Events+subscribeUser) ⇒ <code>Promise</code>
+    * [.getTriggeredEventsByFacilityId(facilityId, [triggeredEventFilters])](#Events+getTriggeredEventsByFacilityId) ⇒ <code>Promise</code>
+    * [.getUserInfo(userId)](#Events+getUserInfo) ⇒ <code>Promise</code>
+    * [.subscribeUser(userId, eventId, subscribeOpts)](#Events+subscribeUser) ⇒ <code>Promise</code>
     * [.unsubscribeUser(userId, userEventSubscriptionId)](#Events+unsubscribeUser) ⇒ <code>Promise</code>
     * [.update(eventId, update)](#Events+update) ⇒ <code>Promise</code>
     * [.createEventType(eventType)](#Events+createEventType) ⇒ <code>Promise</code>
@@ -164,9 +166,51 @@ contxtSdk.events
   .then((events) => console.log(events))
   .catch((err) => console.log(err));
 ```
+<a name="Events+getTriggeredEventsByFacilityId"></a>
+
+### contxtSdk.events.getTriggeredEventsByFacilityId(facilityId, [triggeredEventFilters]) ⇒ <code>Promise</code>
+Gets a paginated list of triggered events for a given facility.
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>TriggeredEventsFromServer</code>](./Typedefs.md#TriggeredEventsFromServer) Triggered Events from server  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| facilityId | <code>Number</code> | The ID of the facility |
+| [triggeredEventFilters] | <code>Object</code> |  |
+| [triggeredEventFilters.eventTypeId] | <code>boolean</code> | Will filter records by a particular event type ID |
+| [triggeredEventFilters.limit] | <code>number</code> | Maximum number of records to return per query |
+| [triggeredEventFilters.offset] | <code>number</code> | How many records from the first record to start the query |
+| [triggeredEventFilters.orderBy] | <code>string</code> | The triggered field to sort the response records by in ascending order |
+| [triggeredEventFilters.reverseOrder] | <code>boolean</code> | If true, results will be sorted in descending order |
+
+<a name="Events+getUserInfo"></a>
+
+### contxtSdk.events.getUserInfo(userId) ⇒ <code>Promise</code>
+Gets information about a contxt user with additional information related to event subscriptions
+
+API Endpoint: '/users/:userId'
+Method: GET
+
+**Kind**: instance method of [<code>Events</code>](#Events)  
+**Fulfill**: [<code>EventUser</code>](./Typedefs.md#EventUser) Information about an event user  
+**Reject**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>string</code> | The ID of the user |
+
+**Example**  
+```js
+contxtSdk.events
+  .getUserInfo('auth0|saklafjheuaiweh')
+  .then((user) => console.log(user))
+  .catch((err) => console.log(err));
+```
 <a name="Events+subscribeUser"></a>
 
-### contxtSdk.events.subscribeUser(userId, eventId) ⇒ <code>Promise</code>
+### contxtSdk.events.subscribeUser(userId, eventId, subscribeOpts) ⇒ <code>Promise</code>
 Subscribes an user to an event
 
 API Endpoint: '/users/:userId/events/:event_id'
@@ -180,6 +224,7 @@ Method: POST
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
 | eventId | <code>string</code> | The ID of the event |
+| subscribeOpts | <code>Object</code> | Optional parameters to provide when subscribing the user |
 
 **Example**  
 ```js

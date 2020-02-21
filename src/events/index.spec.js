@@ -429,6 +429,171 @@ describe('Events', function() {
     });
   });
 
+  describe('getTriggeredEventsByFacilityId', function() {
+    let events;
+    let facilityId;
+    let formatPaginatedDataFromServer;
+    let paginationOptionsAfterFormat;
+    let paginationOptionsBeforeFormat;
+    let promise;
+    let request;
+    let toSnakeCase;
+    let triggeredEventsFromServerAfterFormat;
+    let triggeredEventsFromServerBeforeFormat;
+
+    beforeEach(function() {
+      facilityId = faker.random.number();
+
+      triggeredEventsFromServerAfterFormat = {
+        _metadata: fixture.build('paginationMetadata'),
+        records: fixture.buildList(
+          'triggeredEvent',
+          faker.random.number({ min: 5, max: 10 })
+        )
+      };
+
+      triggeredEventsFromServerBeforeFormat = {
+        ...triggeredEventsFromServerAfterFormat,
+        records: triggeredEventsFromServerAfterFormat.records.map((values) =>
+          fixture.build('triggeredEvent', values, { fromServer: true })
+        )
+      };
+      paginationOptionsBeforeFormat = {
+        limit: faker.random.number({ min: 10, max: 1000 }),
+        offset: faker.random.number({ max: 1000 }),
+        eventTypeId: faker.random.uuid()
+      };
+      paginationOptionsAfterFormat = {
+        ...paginationOptionsBeforeFormat
+      };
+
+      formatPaginatedDataFromServer = sinon
+        .stub(paginationUtils, 'formatPaginatedDataFromServer')
+        .returns(triggeredEventsFromServerAfterFormat);
+
+      request = {
+        ...baseRequest,
+        get: sinon.stub().resolves(triggeredEventsFromServerBeforeFormat)
+      };
+      toSnakeCase = sinon
+        .stub(objectUtils, 'toSnakeCase')
+        .returns(paginationOptionsAfterFormat);
+
+      events = new Events(baseSdk, request);
+      events._baseUrl = expectedHost;
+    });
+
+    context('the facility ID is provided', function() {
+      beforeEach(function() {
+        promise = events.getTriggeredEventsByFacilityId(
+          facilityId,
+          paginationOptionsBeforeFormat
+        );
+      });
+
+      it('formats the pagination options', function() {
+        return promise.then(() => {
+          expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+        });
+      });
+
+      it('gets the triggered events from the server', function() {
+        return promise.then(() => {
+          expect(request.get).to.be.calledWith(
+            `${expectedHost}/facilities/${facilityId}/triggered-events`,
+            { params: paginationOptionsAfterFormat }
+          );
+        });
+      });
+
+      it('formats the triggered event response object', function() {
+        return promise.then(() => {
+          expect(formatPaginatedDataFromServer).to.be.calledWith(
+            triggeredEventsFromServerBeforeFormat
+          );
+        });
+      });
+
+      it('returns the requested triggered event response object', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.equal(
+          triggeredEventsFromServerAfterFormat
+        );
+      });
+    });
+
+    context('the facility ID is not proivded', function() {
+      beforeEach(function() {
+        promise = events.getTriggeredEventsByFacilityId();
+      });
+
+      it('throws an error', function() {
+        return expect(promise).to.be.rejectedWith(
+          'A facility ID is required for getting triggered events'
+        );
+      });
+    });
+  });
+
+  describe('getUserInfo', function() {
+    context('the user ID is provided', function() {
+      let userFromServerAfterFormat;
+      let userFromServerBeforeFormat;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        userFromServerAfterFormat = fixture.build('eventUser');
+        userFromServerBeforeFormat = fixture.build(
+          'eventUser',
+          userFromServerAfterFormat,
+          { fromServer: true }
+        );
+
+        request = {
+          ...baseRequest,
+          get: sinon.stub().resolves(userFromServerBeforeFormat)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(userFromServerAfterFormat);
+
+        const events = new Events(baseSdk, request, expectedHost);
+        events._baseUrl = expectedHost;
+        promise = events.getUserInfo(userFromServerAfterFormat.id);
+      });
+
+      it('gets the user from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/users/${userFromServerAfterFormat.id}`
+        );
+      });
+
+      it('formats the user object', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(userFromServerBeforeFormat);
+        });
+      });
+
+      it('returns the requested user', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          userFromServerAfterFormat
+        );
+      });
+    });
+
+    context('the user ID is not provided', function() {
+      it('throws an error', function() {
+        const events = new Events(baseSdk, baseRequest, expectedHost);
+        const promise = events.getUserInfo();
+
+        return expect(promise).to.be.rejectedWith(
+          'A user ID is required for getting information about a user'
+        );
+      });
+    });
+  });
+
   describe('update', function() {
     context('when all required information is available', function() {
       let eventFromServerBeforeFormat;
@@ -617,13 +782,13 @@ describe('Events', function() {
 
   describe('subscribeUser', function() {
     context('when all the required parameters are provided', function() {
+      let event;
       let expectedSubscription;
       let promise;
       let request;
-      let event;
-      let user;
       let subscriptionFromServer;
       let toCamelCase;
+      let user;
 
       beforeEach(function() {
         event = fixture.build('event');
@@ -642,6 +807,7 @@ describe('Events', function() {
           ...baseRequest,
           post: sinon.stub().resolves(subscriptionFromServer)
         };
+
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
           .returns(expectedSubscription);
@@ -668,6 +834,70 @@ describe('Events', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.equal(
           expectedSubscription
         );
+      });
+    });
+
+    context('when the optional parameter is provided', function() {
+      let event;
+      let expectedOpts;
+      let expectedSubscription;
+      let promise;
+      let request;
+      let subscriptionFromServer;
+      let subscriptionOpts;
+      let toSnakeCase;
+      let user;
+
+      beforeEach(function() {
+        event = fixture.build('event');
+        user = fixture.build('contxtUser');
+
+        expectedSubscription = fixture.build('userEventSubscription');
+        subscriptionFromServer = fixture.build(
+          'userEventSubscription',
+          expectedSubscription,
+          {
+            fromServer: true
+          }
+        );
+
+        request = {
+          ...baseRequest,
+          post: sinon.stub().resolves(subscriptionFromServer)
+        };
+
+        subscriptionOpts = {
+          mediumType: 'email'
+        };
+
+        expectedOpts = {
+          medium_type: 'email'
+        };
+
+        sinon.stub(objectUtils, 'toCamelCase').returns(expectedSubscription);
+
+        toSnakeCase = sinon
+          .stub(objectUtils, 'toSnakeCase')
+          .returns(expectedOpts);
+
+        const events = new Events(baseSdk, request);
+        events._baseUrl = expectedHost;
+        promise = events.subscribeUser(user.id, event.id, subscriptionOpts);
+      });
+
+      it('creates the user event subscription', function() {
+        return promise.then(() => {
+          expect(request.post).to.be.calledWith(
+            `${expectedHost}/users/${user.id}/events/${event.id}`,
+            expectedOpts
+          );
+        });
+      });
+
+      it('formats the opts to snake case', function() {
+        return promise.then(() => {
+          expect(toSnakeCase).to.be.calledWith(subscriptionOpts);
+        });
       });
     });
 
