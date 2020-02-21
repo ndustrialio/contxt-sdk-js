@@ -717,7 +717,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
   });
 
-  describe.only('logIn', function() {
+  describe('logIn', function() {
     let auth0WebAuth;
 
     beforeEach(function() {
