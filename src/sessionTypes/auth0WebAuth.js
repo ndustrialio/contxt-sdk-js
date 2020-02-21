@@ -236,9 +236,17 @@ class Auth0WebAuth {
 
   /**
    * Starts the Auth0 log in process
+   *
+   * @param {Object} options
+   * @param {Boolean} [options.forceLogin = false] When true will bypass any sso settings in the authorization provider
    */
-  logIn() {
-    this._auth0.authorize();
+  logIn(options = {}) {
+    let authOptions = {};
+
+    if (options.forceLogin) {
+      authOptions.prompt = 'login';
+    }
+    this._auth0.authorize(authOptions);
   }
 
   /**

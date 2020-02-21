@@ -26,7 +26,7 @@ enabled in Auth0.
     * [.getProfile()](#Auth0WebAuth+getProfile) ⇒ <code>Promise</code>
     * [.handleAuthentication()](#Auth0WebAuth+handleAuthentication) ⇒ <code>Promise</code>
     * [.isAuthenticated()](#Auth0WebAuth+isAuthenticated) ⇒ <code>boolean</code>
-    * [.logIn()](#Auth0WebAuth+logIn)
+    * [.logIn(options)](#Auth0WebAuth+logIn)
     * [.logOut(options)](#Auth0WebAuth+logOut)
 
 <a name="new_Auth0WebAuth_new"></a>
@@ -116,10 +116,16 @@ Tells caller if the current user is authenticated.
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
 <a name="Auth0WebAuth+logIn"></a>
 
-### contxtSdk.auth.logIn()
+### contxtSdk.auth.logIn(options)
 Starts the Auth0 log in process
 
 **Kind**: instance method of [<code>Auth0WebAuth</code>](#Auth0WebAuth)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| [options.forceLogin] | <code>Boolean</code> | <code>false</code> | When true will bypass any sso settings in the authorization provider |
+
 <a name="Auth0WebAuth+logOut"></a>
 
 ### contxtSdk.auth.logOut(options)
