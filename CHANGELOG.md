@@ -1,3 +1,9 @@
+## [v2.11.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.0) (2020-02-24)
+
+**Added**
+
+- Added the ability to force the login prompt on login. This will be useful for applications who need a Single Logout between Auth0 and an external IdP
+
 ## [v2.10.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.10.0) (2020-02-05)
 
 **Added**

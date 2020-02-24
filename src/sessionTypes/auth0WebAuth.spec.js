@@ -722,11 +722,16 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     beforeEach(function() {
       auth0WebAuth = new Auth0WebAuth(sdk);
-      auth0WebAuth.logIn();
     });
 
     it('begins to authorize an auth0 WebAuth session', function() {
+      auth0WebAuth.logIn();
       expect(webAuthSession.authorize).to.be.calledOnce;
+    });
+
+    it('can force login by passing prompt=login', function() {
+      auth0WebAuth.logIn({ forceLogin: true });
+      expect(webAuthSession.authorize).to.be.calledWith({ prompt: 'login' });
     });
   });
 
