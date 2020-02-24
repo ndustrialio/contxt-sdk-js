@@ -1,4 +1,4 @@
-## [v2.11.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.0) (2020-02-21)
+## [v2.11.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.0) (2020-02-24)
 
 **Added**
 
