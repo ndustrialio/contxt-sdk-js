@@ -113,6 +113,7 @@
 | notes | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | value | <code>string</code> |  |
+| is_estimated | <code>boolean</code> | Whether the value is an estimation or a true reading |
 
 <a name="AssetMetricValuesFromServer"></a>
 

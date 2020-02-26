@@ -15,7 +15,8 @@ factory
     id: () => faker.random.uuid(),
     notes: () => faker.lorem.sentence(),
     updatedAt: () => faker.date.recent().toISOString(),
-    value: () => `${faker.random.number()}`
+    value: () => `${faker.random.number()}`,
+    is_estimated: () => faker.random.boolean()
   })
   .after((assetMetricValue, options) => {
     // If building an asset metric value object that comes from the server,
