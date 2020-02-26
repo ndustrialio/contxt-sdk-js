@@ -35,7 +35,7 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  * @property {string} notes
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  * @property {string} value
- * @property {boolean} is_estimated Whether the value is an estimation or a true reading
+ * @property {boolean} isEstimated Whether the value is an estimation or a true reading
  */
 
 /**
@@ -357,7 +357,7 @@ class AssetMetrics {
    * @param {string} assetMetricValue.effectiveStartDate ISO 8601 Extended Format date/time string
    * @param {string} [assetMetricValue.notes]
    * @param {string} assetMetricValue.value
-   * @param {boolean} assetMetricValue.is_estimated Whether the value is an estimation or a true reading
+   * @param {boolean} [assetMetricValue.isEstimated] Whether the value is an estimation or a true reading
    *
    * @returns {Promise}
    * @fulfill {AssetMetricValue}
@@ -371,7 +371,7 @@ class AssetMetrics {
    *      effectiveStartDate: '2018-08-27T18:18:03.175Z',
    *      notes: 'Iure delectus non sunt a voluptates pariatur fuga.',
    *      value: '2000',
-   *      is_estimation: true
+   *      isEstimated: true
    *    })
    *    .then((newAssetMetricValue) => {
    *      console.log(newAssetMetricValue);
@@ -584,7 +584,7 @@ class AssetMetrics {
    * @param {string} [update.effectiveStartDate] ISO 8601 Extended Format date/time string
    * @param {string} [update.notes]
    * @param {string} [update.value]
-   * @param {boolean} [update.is_estimated] Whether the value is an estimation or a true reading
+   * @param {boolean} [update.isEstimated] Whether the value is an estimation or a true reading
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -596,7 +596,7 @@ class AssetMetrics {
    *     effectiveEndDate: '2018-07-10T11:04:24.631Z',
    *     notes: 'Dolores et sapiente sunt doloribus aut in.',
    *     value: '61456',
-   *     is_estimated: true
+   *     isEstimated: true
    *   })
    *   .catch((err) => console.log(err));
    */

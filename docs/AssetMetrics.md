@@ -223,7 +223,7 @@ Method: POST
 | assetMetricValue.effectiveStartDate | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [assetMetricValue.notes] | <code>string</code> |  |
 | assetMetricValue.value | <code>string</code> |  |
-| assetMetricValue.is_estimated | <code>boolean</code> | Whether the value is an estimation or a true reading |
+| [assetMetricValue.isEstimated] | <code>boolean</code> | Whether the value is an estimation or a true reading |
 
 **Example**  
 ```js
@@ -234,7 +234,7 @@ contxtSdk.assets.metrics
      effectiveStartDate: '2018-08-27T18:18:03.175Z',
      notes: 'Iure delectus non sunt a voluptates pariatur fuga.',
      value: '2000',
-     is_estimation: true
+     isEstimated: true
    })
    .then((newAssetMetricValue) => {
      console.log(newAssetMetricValue);
@@ -361,7 +361,7 @@ Method: PUT
 | [update.effectiveStartDate] | <code>string</code> | ISO 8601 Extended Format date/time string |
 | [update.notes] | <code>string</code> |  |
 | [update.value] | <code>string</code> |  |
-| [update.is_estimated] | <code>boolean</code> | Whether the value is an estimation or a true reading |
+| [update.isEstimated] | <code>boolean</code> | Whether the value is an estimation or a true reading |
 
 **Example**  
 ```js
@@ -370,7 +370,7 @@ contxtSdk.assets.metrics
     effectiveEndDate: '2018-07-10T11:04:24.631Z',
     notes: 'Dolores et sapiente sunt doloribus aut in.',
     value: '61456',
-    is_estimated: true
+    isEstimated: true
   })
   .catch((err) => console.log(err));
 ```
