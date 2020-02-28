@@ -1,8 +1,8 @@
-## [v2.11.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.1) (2020-02-27)
+## [v2.11.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.1) (2020-02-28)
 
 **Updated**
 
-- Updated Asset Metric Value documentation to support `is_estimated` column
+- Updated Asset Metric Value documentation to support `isEstimated` column
 
 ## [v2.11.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.0) (2020-02-24)
 
