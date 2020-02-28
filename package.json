@@ -1,6 +1,6 @@
 {
   "name": "@ndustrial/contxt-sdk",
-  "version": "2.11.0",
+  "version": "2.11.1",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
