@@ -15,7 +15,8 @@ factory
     id: () => faker.random.uuid(),
     notes: () => faker.lorem.sentence(),
     updatedAt: () => faker.date.recent().toISOString(),
-    value: () => `${faker.random.number()}`
+    value: () => `${faker.random.number()}`,
+    isEstimated: () => faker.random.boolean()
   })
   .after((assetMetricValue, options) => {
     // If building an asset metric value object that comes from the server,
@@ -39,5 +40,8 @@ factory
 
       assetMetricValue.updated_at = assetMetricValue.updatedAt;
       delete assetMetricValue.updatedAt;
+
+      assetMetricValue.is_estimated = assetMetricValue.isEstimated;
+      delete assetMetricValue.isEstimated;
     }
   });
