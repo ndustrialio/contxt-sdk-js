@@ -351,7 +351,10 @@ class Events {
 
     return this._request
       .get(`${this._baseUrl}/facilities/${facilityId}/triggered-events`, {
-        params: toSnakeCase(triggeredEventFilters)
+        params: toSnakeCase(triggeredEventFilters, {
+          deep: true,
+          excludeTransform: ['orderBy', 'reverseOrder']
+        })
       })
       .then((events) => formatPaginatedDataFromServer(events));
   }
