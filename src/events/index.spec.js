@@ -493,7 +493,10 @@ describe('Events', function() {
 
       it('formats the pagination options', function() {
         return promise.then(() => {
-          expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat);
+          expect(toSnakeCase).to.be.calledWith(paginationOptionsBeforeFormat, {
+            deep: true,
+            excludeTransform: ['orderBy', 'reverseOrder']
+          });
         });
       });
 

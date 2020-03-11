@@ -2,7 +2,7 @@
 
 **Updated**
 
-- Excluded `orderBy` and `reverseOrder` from snake case conversion for the `getTriggeredEventsByFacilityId` call
+- Excluded `orderBy` and `reverseOrder` from snake case conversion for the `Events#getTriggeredEventsByFacilityId` call
 
 ## [v2.11.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.1) (2020-02-28)
 
