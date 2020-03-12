@@ -10,6 +10,7 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     downAfter: () => faker.random.number({ min: 1000, max: 9999 }),
+    troubleshootingUrl: () => faker.internet.url(),
     type: () => faker.hacker.noun(),
     updatedAt: () => faker.date.recent().toISOString()
   })
@@ -22,6 +23,9 @@ factory
 
       feedType.down_after = feedType.downAfter;
       delete feedType.downAfter;
+
+      feedType.troubleshooting_url = feedType.troubleshootingUrl;
+      delete feedType.troubleshootingUrl;
 
       feedType.updated_at = feedType.updatedAt;
       delete feedType.updatedAt;

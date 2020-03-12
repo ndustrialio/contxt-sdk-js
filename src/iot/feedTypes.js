@@ -1,3 +1,5 @@
+import { toCamelCase } from '../utils/objects';
+
 /**
  * @typedef {Object} FeedType
  * @property {String} createdAt
@@ -46,7 +48,9 @@ class FeedTypes {
    *   .catch((err) => console.log(err));
    */
   getAll() {
-    return this._request.get(`${this._baseUrl}/feeds/types`);
+    return this._request
+      .get(`${this._baseUrl}/feeds/types`)
+      .then((feedTypes) => toCamelCase(feedTypes));
   }
 }
 
