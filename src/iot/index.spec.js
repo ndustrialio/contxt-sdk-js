@@ -1,6 +1,7 @@
 import Fields from './fields';
 import Iot from './index';
 import Outputs from './outputs';
+import FeedTypes from './feedTypes';
 
 describe('Iot', function() {
   let baseRequest;
@@ -51,6 +52,10 @@ describe('Iot', function() {
 
     it('appends an instance of Outputs to the class instance', function() {
       expect(iot.outputs).to.be.an.instanceof(Outputs);
+    });
+
+    it('appends the supplied FeedTypes module to the class instance', function() {
+      expect(iot.feedTypes).to.be.an.instanceOf(FeedTypes);
     });
   });
 });

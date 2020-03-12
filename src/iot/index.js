@@ -1,4 +1,5 @@
 import Feeds from './feeds';
+import FeedTypes from './feedTypes';
 import FieldCategories from './fieldCategories';
 import FieldGroupings from './fieldGroupings';
 import Fields from './fields';
@@ -24,6 +25,7 @@ class Iot {
     this._sdk = sdk;
 
     this.feeds = new Feeds(sdk, request, baseUrl);
+    this.feedTypes = new FeedTypes(sdk, request, baseUrl);
     this.fields = new Fields(sdk, request, baseUrl);
     this.outputs = new Outputs(sdk, request, baseUrl);
     this.fieldCategories = new FieldCategories(sdk, request, baseUrl);
