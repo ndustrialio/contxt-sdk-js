@@ -1,3 +1,9 @@
+## [v2.12.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.12.0) (2020-03-13)
+
+**Added**
+
+- Added `FeedTypes#getAll` to fetch all feed types
+
 ## [v2.11.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.11.2) (2020-03-11)
 
 **Updated**
