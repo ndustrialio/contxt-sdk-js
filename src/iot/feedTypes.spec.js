@@ -8,14 +8,14 @@ describe('Iot/FeedTypes', function() {
   let expectedFeedTypes;
 
   beforeEach(function() {
-    expectedFeedTypes = fixture.buildList(
-      'feedType',
-      3,
-      {},
-      { fromServer: true }
+    expectedFeedTypes = fixture.buildList('feedType', 3);
+
+    const serverFeedTypes = expectedFeedTypes.map((feedType) =>
+      fixture.build('feedType', feedType, { fromServer: true })
     );
+
     baseRequest = {
-      get: sinon.stub().resolves(expectedFeedTypes)
+      get: sinon.stub().resolves(serverFeedTypes)
     };
     baseSdk = {
       config: {
@@ -38,19 +38,10 @@ describe('Iot/FeedTypes', function() {
       return feedTypes.getAll().then((feedTypes) => {
         expect(feedTypes.length).to.equal(expectedFeedTypes.length);
         expectedFeedTypes.forEach((expectedFeedType) => {
-          expect(
-            feedTypes.findIndex((feed) => feed.id === expectedFeedType.id)
-          ).to.not.equal(-1);
-        });
-      });
-    });
-
-    it('returns camel-cased properties', function() {
-      return feedTypes.getAll().then((feedTypes) => {
-        feedTypes.forEach((feedType) => {
-          Object.keys(feedType).forEach((key) => {
-            expect(key).to.not.contain('_');
-          });
+          const outputFeedType = feedTypes.find(
+            (feedType) => feedType.id === expectedFeedType.id
+          );
+          expect(outputFeedType).to.deep.equal(expectedFeedType);
         });
       });
     });
