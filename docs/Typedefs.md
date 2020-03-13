@@ -867,10 +867,10 @@ for authenticating and communicating with an individual API and the external mod
 | Name | Type | Description |
 | --- | --- | --- |
 | createdAt | <code>String</code> |  |
-| downAfter | <code>String</code> |  |
+| downAfter | <code>String</code> | Time (in seconds) threshold to receive data before a feed is considered down |
 | id | <code>String</code> | UUID |
 | troubleshootingUrl | <code>String</code> |  |
-| type | <code>String</code> |  |
+| type | <code>String</code> | The name of the feed type |
 | updatedAt | <code>String</code> |  |
 
 <a name="FieldCategoriesFromServer"></a>

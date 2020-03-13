@@ -3,10 +3,10 @@ import { toCamelCase } from '../utils/objects';
 /**
  * @typedef {Object} FeedType
  * @property {String} createdAt
- * @property {String} downAfter
+ * @property {String} downAfter Time (in seconds) threshold to receive data before a feed is considered down
  * @property {String} id UUID
  * @property {String} troubleshootingUrl
- * @property {String} type
+ * @property {String} type The name of the feed type
  * @property {String} updatedAt
  */
 
@@ -35,10 +35,8 @@ class FeedTypes {
    * API Endpoint: '/feeds/types'
    * Method: GET
    *
-   * @param {PaginationOptions} [paginationOptions]
-   *
    * @returns {Promise}
-   * @fulfill {FeedTypesFromServer} Information about the feed types
+   * @fulfill {FeedType[]} A list of feed types
    * @reject {Error}
    *
    * @example

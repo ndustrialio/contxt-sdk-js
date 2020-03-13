@@ -7,7 +7,7 @@ Module that provides access to feed type information
 
 * [FeedTypes](#FeedTypes)
     * [new FeedTypes(sdk, request, baseUrl)](#new_FeedTypes_new)
-    * [.getAll([paginationOptions])](#FeedTypes+getAll) ⇒ <code>Promise</code>
+    * [.getAll()](#FeedTypes+getAll) ⇒ <code>Promise</code>
 
 <a name="new_FeedTypes_new"></a>
 
@@ -21,20 +21,15 @@ Module that provides access to feed type information
 
 <a name="FeedTypes+getAll"></a>
 
-### contxtSdk.iot.feedTypes.getAll([paginationOptions]) ⇒ <code>Promise</code>
+### contxtSdk.iot.feedTypes.getAll() ⇒ <code>Promise</code>
 Get a listing of all feed types
 
 API Endpoint: '/feeds/types'
 Method: GET
 
 **Kind**: instance method of [<code>FeedTypes</code>](#FeedTypes)  
-**Fulfill**: <code>FeedTypesFromServer</code> Information about the feed types  
+**Fulfill**: <code>FeedType[]</code> A list of feed types  
 **Reject**: <code>Error</code>  
-
-| Param | Type |
-| --- | --- |
-| [paginationOptions] | [<code>PaginationOptions</code>](./Typedefs.md#PaginationOptions) | 
-
 **Example**  
 ```js
 contxtSdk.iot.feedTypes
