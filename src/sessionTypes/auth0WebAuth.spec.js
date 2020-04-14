@@ -78,6 +78,12 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expect(auth0WebAuth._sdk).to.equal(sdk);
       });
 
+      it('sets the default onAuthenticate method to the class instance', function() {
+        expect(auth0WebAuth._onAuthenticate).to.equal(
+          Auth0WebAuth.prototype._defaultOnAuthenticate
+        );
+      });
+
       it('sets the default onRedirect method to the class instance', function() {
         expect(auth0WebAuth._onRedirect).to.equal(
           Auth0WebAuth.prototype._defaultOnRedirect
@@ -127,15 +133,23 @@ describe('sessionTypes/Auth0WebAuth', function() {
     context('with custom WebAuth config options', function() {
       let auth0WebAuth;
       let expectedAuthorizationPath;
+      let expectedOnAuthenticate;
       let expectedOnRedirect;
 
       beforeEach(function() {
         expectedAuthorizationPath = faker.hacker.adjective();
+        expectedOnAuthenticate = sinon.stub().returns();
         expectedOnRedirect = sinon.stub();
+
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
+        sdk.config.auth.onAuthenticate = expectedOnAuthenticate;
         sdk.config.auth.onRedirect = expectedOnRedirect;
 
         auth0WebAuth = new Auth0WebAuth(sdk);
+      });
+
+      it('sets the custom onAuthenticate method to the class instance', function() {
+        expect(auth0WebAuth._onAuthenticate).to.equal(expectedOnAuthenticate);
       });
 
       it('sets the custom onRedirect method to the class instance', function() {
@@ -566,18 +580,15 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let expectedHash;
       let expectedRedirectPathname;
       let getRedirectPathname;
+      let onAuthenticate;
       let onRedirect;
       let parseHash;
       let promise;
       let storeSession;
 
       beforeEach(function() {
-        const currentDate = new Date();
-        expectedHash = {
-          accessToken: faker.internet.password(),
-          expiresIn:
-            (faker.date.future().getTime() - currentDate.getTime()) / 1000
-        };
+        expectedHash = fixture.build('Auth0WebAuthSessionInfo');
+
         expectedRedirectPathname = `/${faker.hacker.adjective()}/${faker.hacker.adjective()}`;
 
         getRedirectPathname = sinon
@@ -586,10 +597,12 @@ describe('sessionTypes/Auth0WebAuth', function() {
         parseHash = sinon
           .stub(Auth0WebAuth.prototype, '_parseHash')
           .resolves(expectedHash);
+        onAuthenticate = sinon.stub().returns(expectedHash);
         onRedirect = sinon.stub();
         storeSession = sinon.stub(Auth0WebAuth.prototype, '_storeSession');
 
         const auth0WebAuth = new Auth0WebAuth(sdk);
+        auth0WebAuth._onAuthenticate = onAuthenticate;
         auth0WebAuth._onRedirect = onRedirect;
         scheduleSessionRefresh.reset();
 
@@ -617,6 +630,12 @@ describe('sessionTypes/Auth0WebAuth', function() {
       it('gets a stored (or default redirect pathname)', function() {
         return promise.then(() => {
           expect(getRedirectPathname).to.be.calledOnce;
+        });
+      });
+
+      it('calls the onAuthenticate hook', function() {
+        return promise.then(() => {
+          expect(onAuthenticate).to.be.calledWith(expectedHash);
         });
       });
 
@@ -845,6 +864,17 @@ describe('sessionTypes/Auth0WebAuth', function() {
       it('returns with a rejected promise', function() {
         return expect(promise).to.be.rejectedWith(expectedError);
       });
+    });
+  });
+
+  describe('_defaultOnAuthenticate', function() {
+    it('it returns the original AuthResult', function() {
+      const expectedAuthResult = fixture.build('Auth0WebAuthSessionInfo');
+
+      const result = Auth0WebAuth.prototype._defaultOnAuthenticate(
+        expectedAuthResult
+      );
+      expect(result).to.equal(expectedAuthResult);
     });
   });
 
