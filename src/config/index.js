@@ -6,7 +6,7 @@ import defaultConfigs from './defaults';
  *
  * @typedef {Object} Audience
  * @param {string} config.clientId Client Id provided by Auth0 for the environment you are
- *   trying to communicate with
+ * trying to communicate with
  * @param {string} config.host Hostname for the API that corresponds with the clientId provided
  * @param {string} [config.webSocket] WebSocket URL for the API that corresponds with the clientId provided
  */
@@ -37,11 +37,11 @@ import defaultConfigs from './defaults';
  *
  * @typedef {Object} ExternalModule
  * @param {string} config.clientId Client Id provided by Auth0 for the environment you are
- *   trying to communicate with. Can be a `null` value if the value is not needed. Some SessionType
- *   adapters (currently, just the MachineAuth adapter) require a value other than `null` if the
- *   built-in `request` module is used since they acquire contxt tokens based on a single clientId.
+ * trying to communicate with. Can be a `null` value if the value is not needed. Some SessionType
+ * adapters (currently, just the MachineAuth adapter) require a value other than `null` if the
+ * built-in `request` module is used since they acquire contxt tokens based on a single clientId.
  * @param {string} config.host Hostname for the API that corresponds with the clientId provided.
- *   Can be a `null` value if the value is not needed.
+ * Can be a `null` value if the value is not needed.
  * @param {function} config.module The module that will be decorated into the SDK
  */
 
@@ -51,7 +51,7 @@ import defaultConfigs from './defaults';
  *
  * @typedef {Object} AxiosInterceptor
  * @param {function} interceptor.fulfilled A function that is run on every successful request or
- *   response
+ * response
  * @param {function} interceptor.rejected A function that is run on every failed request or response
  */
 
@@ -61,21 +61,23 @@ import defaultConfigs from './defaults';
  * @typedef {Object} UserConfig
  * @property {Object} auth User assigned configurations specific for their authentication methods
  * @property {string} [auth.authorizationPath] Path Auth0WebAuth process should redirect to after a
- *   successful sign in attempt
+ * successful sign in attempt
  * @property {string} auth.clientId Client Id provided by Auth0 for this application
  * @property {string} [auth.clientSecret] Client secret provided by Auth0 for this application. This
- *   is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType
+ * is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType
  * @property {Object.<string, CustomAudience>} [auth.customModuleConfigs] Custom environment setups
- *   for individual modules. Requires clientId/host or env
+ * for individual modules. Requires clientId/host or env
  * @property {string} [auth.env = 'production'] The environment that every module should use for
- *   their clientId and host
+ * their clientId and host
+ * @property {function} [auth.onAuthenticate = (auth0WebAuthSessionInfo) => handleSuccessfulAuth(auth0WebAuthSessionInfo); ] An optional
+ * hook for handling a successful authentication request or overriding returned values.
  * @property {function} [auth.onRedirect = (pathname) => { window.location = pathname; }] A redirect
- *   method used for navigating through Auth0 callbacks in Web applications
+ * method used for navigating through Auth0 callbacks in Web applications
  * @property {number} [auth.tokenExpiresAtBufferMs = 300000] The time (in milliseconds) before a
- *   token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated
- *   expiresAt). Defaults to 5 minutes.
+ * token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated
+ * expiresAt). Defaults to 5 minutes.
  * @property {Object} [interceptors] Axios interceptors that can transform requests and responses.
- *   More information at {@link https://github.com/axios/axios#interceptors axios Interceptors}
+ * More information at {@link https://github.com/axios/axios#interceptors axios Interceptors}
  * @property {AxiosInterceptor[]} [interceptors.request] Interceptors that act on every request
  * @property {AxiosInterceptor[]} [intercepotrs.response] Intereptors that act on every response
  */

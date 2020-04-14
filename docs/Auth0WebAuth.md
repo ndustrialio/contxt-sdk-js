@@ -54,6 +54,7 @@ const contxtSdk = new ContxtSdk({
   config: {
     auth: {
       clientId: '<client id>',
+      onAuthenticate: (auth0WebAuthSessionInfo) => handleSuccessfulAuth(auth0WebAuthSessionInfo),
       onRedirect: (pathname) => history.push(pathname)
     }
   },

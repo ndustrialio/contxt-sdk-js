@@ -191,7 +191,7 @@ A single audience used for authenticating and communicating with an individual A
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with |
+| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are trying to communicate with |
 | config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided |
 | [config.webSocket] | <code>string</code> | WebSocket URL for the API that corresponds with the clientId provided |
 
@@ -216,7 +216,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 
 | Param | Type | Description |
 | --- | --- | --- |
-| interceptor.fulfilled | <code>function</code> | A function that is run on every successful request or   response |
+| interceptor.fulfilled | <code>function</code> | A function that is run on every successful request or response |
 | interceptor.rejected | <code>function</code> | A function that is run on every failed request or response |
 
 <a name="ContxtApplication"></a>
@@ -707,8 +707,8 @@ for authenticating and communicating with an individual API and the external mod
 
 | Param | Type | Description |
 | --- | --- | --- |
-| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are   trying to communicate with. Can be a `null` value if the value is not needed. Some SessionType   adapters (currently, just the MachineAuth adapter) require a value other than `null` if the   built-in `request` module is used since they acquire contxt tokens based on a single clientId. |
-| config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided.   Can be a `null` value if the value is not needed. |
+| config.clientId | <code>string</code> | Client Id provided by Auth0 for the environment you are trying to communicate with. Can be a `null` value if the value is not needed. Some SessionType adapters (currently, just the MachineAuth adapter) require a value other than `null` if the built-in `request` module is used since they acquire contxt tokens based on a single clientId. |
+| config.host | <code>string</code> | Hostname for the API that corresponds with the clientId provided. Can be a `null` value if the value is not needed. |
 | config.module | <code>function</code> | The module that will be decorated into the SDK |
 
 <a name="Facility"></a>
@@ -1243,14 +1243,15 @@ User provided configuration options
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | auth | <code>Object</code> |  | User assigned configurations specific for their authentication methods |
-| [auth.authorizationPath] | <code>string</code> |  | Path Auth0WebAuth process should redirect to after a   successful sign in attempt |
+| [auth.authorizationPath] | <code>string</code> |  | Path Auth0WebAuth process should redirect to after a successful sign in attempt |
 | auth.clientId | <code>string</code> |  | Client Id provided by Auth0 for this application |
-| [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application. This   is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType |
-| [auth.customModuleConfigs] | <code>Object.&lt;string, CustomAudience&gt;</code> |  | Custom environment setups   for individual modules. Requires clientId/host or env |
-| [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for   their clientId and host |
-| [auth.onRedirect] | <code>function</code> | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect   method used for navigating through Auth0 callbacks in Web applications |
-| [auth.tokenExpiresAtBufferMs] | <code>number</code> | <code>300000</code> | The time (in milliseconds) before a   token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated   expiresAt). Defaults to 5 minutes. |
-| [interceptors] | <code>Object</code> |  | Axios interceptors that can transform requests and responses.   More information at [axios Interceptors](https://github.com/axios/axios#interceptors) |
+| [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application. This is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType |
+| [auth.customModuleConfigs] | <code>Object.&lt;string, CustomAudience&gt;</code> |  | Custom environment setups for individual modules. Requires clientId/host or env |
+| [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for their clientId and host |
+| [auth.onAuthenticate] | <code>function</code> | <code>(auth0WebAuthSessionInfo) &#x3D;&gt; handleSuccessfulAuth(auth0WebAuthSessionInfo);</code> | An optional hook for handling a successful authentication request or overriding returned values. |
+| [auth.onRedirect] | <code>function</code> | <code>(pathname) &#x3D;&gt; { window.location &#x3D; pathname; }</code> | A redirect method used for navigating through Auth0 callbacks in Web applications |
+| [auth.tokenExpiresAtBufferMs] | <code>number</code> | <code>300000</code> | The time (in milliseconds) before a token truly expires that we consider it expired (i.e. the token's expiresAt - this = calculated expiresAt). Defaults to 5 minutes. |
+| [interceptors] | <code>Object</code> |  | Axios interceptors that can transform requests and responses. More information at [axios Interceptors](https://github.com/axios/axios#interceptors) |
 | [interceptors.request] | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |  | Interceptors that act on every request |
 | [intercepotrs.response] | [<code>Array.&lt;AxiosInterceptor&gt;</code>](#AxiosInterceptor) |  | Intereptors that act on every response |
 
