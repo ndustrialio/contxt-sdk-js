@@ -50,6 +50,7 @@ import * as sessionTypes from './sessionTypes';
  *         }
  *       },
  *       env: 'staging',
+ *       onAuthenticate: (auth0WebAuthSessionInfo) => handleSuccessfulAuth(auth0WebAuthSessionInfo),
  *       onRedirect: (pathname) => history.push(pathname)
  *     }
  *   },

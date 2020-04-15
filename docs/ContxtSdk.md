@@ -36,6 +36,7 @@ const contxtSdk = new ContxtSdk({
         }
       },
       env: 'staging',
+      onAuthenticate: (auth0WebAuthSessionInfo) => handleSuccessfulAuth(auth0WebAuthSessionInfo),
       onRedirect: (pathname) => history.push(pathname)
     }
   },

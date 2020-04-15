@@ -47,6 +47,7 @@ import URL from 'url-parse';
  *   config: {
  *     auth: {
  *       clientId: '<client id>',
+ *       onAuthenticate: (auth0WebAuthSessionInfo) => handleSuccessfulAuth(auth0WebAuthSessionInfo),
  *       onRedirect: (pathname) => history.push(pathname)
  *     }
  *   },
@@ -75,6 +76,8 @@ class Auth0WebAuth {
       throw new Error('clientId is required for the WebAuth config');
     }
 
+    this._onAuthenticate =
+      this._sdk.config.auth.onAuthenticate || this._defaultOnAuthenticate;
     this._onRedirect =
       this._sdk.config.auth.onRedirect || this._defaultOnRedirect;
     this._sessionInfo = this._getStoredSession();
@@ -205,6 +208,7 @@ class Auth0WebAuth {
    */
   handleAuthentication() {
     return this._parseHash()
+      .then(this._onAuthenticate)
       .then((authResult) => {
         this._storeSession(authResult);
         this._scheduleSessionRefresh();
@@ -305,6 +309,16 @@ class Auth0WebAuth {
    */
   _defaultOnRedirect(pathname) {
     window.location = pathname;
+  }
+
+  /**
+   * Default method used for intercepting a successful authentication result. Overridden
+   * by `onAuthenticate` in the auth config
+   *
+   * @private
+   */
+  _defaultOnAuthenticate(authResult) {
+    return authResult;
   }
 
   /**
