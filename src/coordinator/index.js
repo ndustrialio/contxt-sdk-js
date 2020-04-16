@@ -24,6 +24,7 @@ class Coordinator {
     this._sdk = sdk;
 
     this._accessBaseUrl = null;
+    this._accessTenantBaseUrl = null;
     this._deployBaseUrl = null;
     this._organizationId = null;
 
@@ -49,6 +50,10 @@ class Coordinator {
     this._organizationId = organizationId;
 
     this._accessBaseUrl = this._organizationId
+      ? `${this._sdk.config.audiences.coordinator.host}/access/v1`
+      : null;
+
+    this._accessTenantBaseUrl = this._organizationId
       ? `${this._sdk.config.audiences.coordinator.host}/access/v1/${
           this._organizationId
         }`
@@ -87,19 +92,19 @@ class Coordinator {
     this.permissions = new Permissions(
       this._sdk,
       this._request,
-      this._accessBaseUrl || this._baseUrl,
+      this._accessTenantBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.roles = new Roles(
       this._sdk,
       this._request,
-      this._accessBaseUrl || this._baseUrl,
+      this._accessTenantBaseUrl || this._baseUrl,
       this._organizationId
     );
     this.users = new Users(
       this._sdk,
       this._request,
-      this._accessBaseUrl || this._baseUrl,
+      this._accessTenantBaseUrl || this._baseUrl,
       this._organizationId
     );
   }

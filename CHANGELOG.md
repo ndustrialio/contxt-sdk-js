@@ -1,3 +1,9 @@
+## [v2.13.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.13.1) (2020-04-16)
+
+**Fixed**
+
+- Fixed `Coordinator.organizations#getAll` to work with the access endpoints when an organizationId has been selected
+
 ## [v2.12.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.12.0) (2020-03-13)
 
 **Added**

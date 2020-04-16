@@ -52,6 +52,10 @@ describe('Coordinator', function() {
       expect(coordinator._accessBaseUrl).to.equal(null);
     });
 
+    it('sets the access tenant base url to null', function() {
+      expect(coordinator._accessTenantBaseUrl).to.equal(null);
+    });
+
     it('sets the deploy base url to null', function() {
       expect(coordinator._deployBaseUrl).to.equal(null);
     });
@@ -134,6 +138,9 @@ describe('Coordinator', function() {
 
       it('sets the access and deploy base urls to the class instance', function() {
         expect(coordinator._accessBaseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/access/v1`
+        );
+        expect(coordinator._accessTenantBaseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/access/v1/${
             organization.id
           }`
@@ -180,9 +187,7 @@ describe('Coordinator', function() {
       it('appends a new instance of Organizations to the class instance with the correct tenant base url', function() {
         expect(coordinator.organizations).to.be.an.instanceof(Organizations);
         expect(coordinator.organizations._baseUrl).to.equal(
-          `${baseSdk.config.audiences.coordinator.host}/access/v1/${
-            organization.id
-          }`
+          `${baseSdk.config.audiences.coordinator.host}/access/v1`
         );
         expect(coordinator.organizations._organizationId).to.equal(
           organization.id
@@ -233,6 +238,7 @@ describe('Coordinator', function() {
 
       it('sets the access and deploy base urls on the class instance to null', function() {
         expect(coordinator._accessBaseUrl).to.equal(null);
+        expect(coordinator._accessTenantBaseUrl).to.equal(null);
         expect(coordinator._deployBaseUrl).to.equal(null);
       });
 
