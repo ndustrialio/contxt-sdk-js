@@ -237,6 +237,7 @@ describe('Coordinator', function() {
       });
 
       it('sets the access and deploy base urls on the class instance to null', function() {
+        expect(coordinator._accessBaseUrl).to.equal(null);
         expect(coordinator._accessTenantBaseUrl).to.equal(null);
         expect(coordinator._deployBaseUrl).to.equal(null);
       });
