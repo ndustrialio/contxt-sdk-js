@@ -207,7 +207,9 @@ describe('Coordinator/Organizations', function() {
         });
 
         it('gets the organization from the server and does not use the organization ID provided', function() {
-          expect(request.get).to.be.calledWith(`${expectedHost}`);
+          expect(request.get).to.be.calledWith(
+            `${expectedHost}/${expectedOrganizationId}`
+          );
         });
 
         it('formats the organization object', function() {
@@ -231,7 +233,9 @@ describe('Coordinator/Organizations', function() {
         });
 
         it('gets the organization from the server', function() {
-          expect(request.get).to.be.calledWith(`${expectedHost}`);
+          expect(request.get).to.be.calledWith(
+            `${expectedHost}/${expectedOrganizationId}`
+          );
         });
 
         it('formats the organization object', function() {

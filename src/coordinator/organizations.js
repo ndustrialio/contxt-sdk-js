@@ -50,7 +50,7 @@ class Organizations {
   get(organizationId) {
     if (this._organizationId) {
       return this._request
-        .get(`${this._baseUrl}`)
+        .get(`${this._baseUrl}/${this._organizationId}`)
         .then((org) => toCamelCase(org));
     }
 
