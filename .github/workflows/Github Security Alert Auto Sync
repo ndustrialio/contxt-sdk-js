@@ -1,0 +1,19 @@
+name: GitHub Security Alerts for Jira
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  syncSecurityAlerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Sync security alerts to Jira issues"
+        uses: reload/github-security-jira@v1.x
+        env:
+          GH_SECURITY_TOKEN: ${{ secrets.GITHUBSECURITYTOKEN }}
+          JIRA_TOKEN: ${{ secrets.JIRAAPITOKEN }}
+          JIRA_HOST: https://ndustrialio.atlassian.net
+          JIRA_USER: josh@ndustrial.io
+          JIRA_PROJECT: GITSEC
+          JIRA_WATCHERS: chris@ndustrial.io,john@ndustrial.io
