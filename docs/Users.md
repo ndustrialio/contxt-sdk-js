@@ -6,7 +6,7 @@ Module that provides access to contxt users
 **Kind**: global class  
 
 * [Users](#Users)
-    * [new Users(sdk, request, baseUrl, [organizationId])](#new_Users_new)
+    * [new Users(sdk, request, baseUrl, [tenantBaseUrl], [legacyBaseUrl], [organizationId])](#new_Users_new)
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
     * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
@@ -22,13 +22,15 @@ Module that provides access to contxt users
 
 <a name="new_Users_new"></a>
 
-### new Users(sdk, request, baseUrl, [organizationId])
+### new Users(sdk, request, baseUrl, [tenantBaseUrl], [legacyBaseUrl], [organizationId])
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | sdk | <code>Object</code> |  | An instance of the SDK so the module can communicate with other modules |
 | request | <code>Object</code> |  | An instance of the request module tied to this module's audience. |
 | baseUrl | <code>string</code> |  | The base URL provided by the parent module |
+| [tenantBaseUrl] | <code>string</code> | <code>null</code> | The tenant base URL provided by the parent module |
+| [legacyBaseUrl] | <code>string</code> | <code>null</code> | The legacy base URL provided by the parent module |
 | [organizationId] | <code>string</code> | <code>null</code> | The organization ID to be used in tenant url requests |
 
 <a name="Users+activate"></a>
@@ -36,7 +38,7 @@ Module that provides access to contxt users
 ### contxtSdk.coordinator.users.activate(userId, user) ⇒ <code>Promise</code>
 Activates a new user
 
-API Endpoint: '/users/:userId/activate'
+API Endpoint: '/:organizationId/users/:userId/activate'
 Method: POST
 
 Note: Only valid for web users using auth0WebAuth session type
@@ -69,7 +71,7 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.addApplication(userId, applicationId) ⇒ <code>Promise</code>
 Adds a application to a user
 
-API Endpoint: '/users/:userId/applications/:applicationId'
+API Endpoint: '/:organizationId/users/:userId/applications/:applicationId'
 Method: GET
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -93,7 +95,7 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.addRole(userId, roleId) ⇒ <code>Promise</code>
 Adds a role to a user
 
-API Endpoint: '/users/:userId/roles/:roleId'
+API Endpoint: '/:organizationId/users/:userId/roles/:roleId'
 Method: POST
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -117,7 +119,7 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.addStack(userId, stackId, accessType) ⇒ <code>Promise</code>
 Adds a stack to a user
 
-API Endpoint: '/users/:userId/stacks/:stackId'
+API Endpoint: '/:organizationId/users/:userId/stacks/:stackId'
 Method: POST
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -166,7 +168,7 @@ contxtSdk.coordinator.users
 Gets a list of users for a contxt organization
 
 Legacy API Endpoint: '/organizations/:organizationId/users'
-API Endpoint: '/users'
+API Endpoint: '/:organizationId/users'
 Method: GET
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -191,7 +193,7 @@ Creates a new contxt user, adds them to an organization, and
 sends them an email invite link to do final account setup.
 
 Legacy API Endpoint: '/organizations/:organizationId/users'
-API Endpoint: '/users'
+API Endpoint: '/:organizationId/users'
 Method: POST
 
 Note: Only valid for web users using auth0WebAuth session type
@@ -227,7 +229,7 @@ contxtSdk.coordinator.users
 Removes a user from an organization
 
 Legacy API Endpoint: '/organizations/:organizationId/users/:userId'
-API Endpoint: '/users/:userId'
+API Endpoint: '/:organizationId/users/:userId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -250,7 +252,7 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.removeApplication(userId, applicationId) ⇒ <code>Promise</code>
 Removes a application from a user
 
-API Endpoint: '/users/:userId/applications/:applicationId'
+API Endpoint: '/:organizationId/users/:userId/applications/:applicationId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -273,7 +275,7 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.removeRole(userId, roleId) ⇒ <code>Promise</code>
 Removes a role from a user
 
-API Endpoint: '/users/:userId/roles/:roleId'
+API Endpoint: '/:organizationId/users/:userId/roles/:roleId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -296,7 +298,7 @@ contxtSdk.coordinator.users
 ### contxtSdk.coordinator.users.removeStack(userId, stackId) ⇒ <code>Promise</code>
 Removes a stack from a user
 
-API Endpoint: '/users/:userId/stacks/:stackId'
+API Endpoint: '/:organizationId/users/:userId/stacks/:stackId'
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  

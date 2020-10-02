@@ -216,12 +216,18 @@ describe('Coordinator', function() {
         expect(coordinator.roles._organizationId).to.equal(organization.id);
       });
 
-      it('appends a new instance of Users to the class instance with the correct tenant base url', function() {
+      it('appends a new instance of Users to the class instance with the correct legacy, access, and tenant base urls', function() {
         expect(coordinator.users).to.be.an.instanceof(Users);
         expect(coordinator.users._baseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/access/v1`
+        );
+        expect(coordinator.users._tenantBaseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/access/v1/${
             organization.id
           }`
+        );
+        expect(coordinator.users._legacyBaseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/v1`
         );
         expect(coordinator.users._organizationId).to.equal(organization.id);
       });
@@ -290,9 +296,15 @@ describe('Coordinator', function() {
         expect(coordinator.roles._organizationId).to.equal(null);
       });
 
-      it('appends a new instance of Users to the class instance with the legacy base url', function() {
+      it('appends a new instance of Users to the class instance with the legacy base url as the access, tenant, and legacy urls', function() {
         expect(coordinator.users).to.be.an.instanceof(Users);
         expect(coordinator.users._baseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/v1`
+        );
+        expect(coordinator.users._tenantBaseUrl).to.equal(
+          `${baseSdk.config.audiences.coordinator.host}/v1`
+        );
+        expect(coordinator.users._legacyBaseUrl).to.equal(
           `${baseSdk.config.audiences.coordinator.host}/v1`
         );
         expect(coordinator.users._organizationId).to.equal(null);

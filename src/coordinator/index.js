@@ -104,7 +104,9 @@ class Coordinator {
     this.users = new Users(
       this._sdk,
       this._request,
+      this._accessBaseUrl || this._baseUrl,
       this._accessTenantBaseUrl || this._baseUrl,
+      this._baseUrl,
       this._organizationId
     );
   }

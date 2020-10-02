@@ -1,3 +1,9 @@
+## [v2.13.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.13.1) (2020-09-02)
+
+**Fixed**
+
+- Fiex `Coordinator.users#activate`, `Coodinator.users#get`, and `Coorindator.users#sync` to work with the access endpoints when an orgaizationId has been selected
+
 ## [v2.13.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.13.1) (2020-04-16)
 
 **Fixed**
