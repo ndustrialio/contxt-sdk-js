@@ -3,11 +3,14 @@ import omit from 'lodash.omit';
 
 import Users from './users';
 import * as objectUtils from '../utils/objects';
+import { expect } from 'chai';
 
 describe('Coordinator/Users', function() {
   let baseRequest;
   let baseSdk;
-  let expectedHost;
+  let expectedBaseUrl;
+  let expectedTenantBaseUrl;
+  let expectedLegacyBaseUrl;
 
   beforeEach(function() {
     baseRequest = {
@@ -23,7 +26,9 @@ describe('Coordinator/Users', function() {
         }
       }
     };
-    expectedHost = faker.internet.url();
+    expectedBaseUrl = faker.internet.url();
+    expectedTenantBaseUrl = faker.internet.url();
+    expectedLegacyBaseUrl = faker.internet.url();
   });
 
   afterEach(function() {
@@ -31,60 +36,141 @@ describe('Coordinator/Users', function() {
   });
 
   describe('constructor', function() {
-    context('when an organization ID is provided', function() {
-      let organizationId;
+    context(
+      'when an organization ID and additional base URLs provided',
+      function() {
+        let organizationId;
+        let users;
+
+        beforeEach(function() {
+          organizationId = fixture.build('organization').id;
+
+          users = new Users(
+            baseSdk,
+            baseRequest,
+            expectedBaseUrl,
+            expectedTenantBaseUrl,
+            expectedLegacyBaseUrl,
+            organizationId
+          );
+        });
+
+        it('sets a base url for the class instance', function() {
+          expect(users._baseUrl).to.equal(expectedBaseUrl);
+        });
+
+        it('sets a tenant base url for the class instance', function() {
+          expect(users._tenantBaseUrl).to.equal(expectedTenantBaseUrl);
+        });
+
+        it('sets a legacy base url for the class instance', function() {
+          expect(users._legacyBaseUrl).to.equal(expectedLegacyBaseUrl);
+        });
+
+        it('appends the supplied request module to the class instance', function() {
+          expect(users._request).to.deep.equal(baseRequest);
+        });
+
+        it('appends the supplied sdk to the class instance', function() {
+          expect(users._sdk).to.deep.equal(baseSdk);
+        });
+
+        it('sets the organization ID for the class instance', function() {
+          expect(users._organizationId).to.equal(organizationId);
+        });
+      }
+    );
+
+    context(
+      'when an organization ID and additional base URLs are not provided',
+      function() {
+        let users;
+
+        beforeEach(function() {
+          users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
+        });
+
+        it('sets a base url for the class instance', function() {
+          expect(users._baseUrl).to.equal(expectedLegacyBaseUrl);
+        });
+
+        it('sets the tenant base url for the class instance to null', function() {
+          expect(users._tenantBaseUrl).to.equal(null);
+        });
+
+        it('sets the legacy base url for the class instance to null', function() {
+          expect(users._legacyBaseUrl).to.equal(null);
+        });
+
+        it('appends the supplied request module to the class instance', function() {
+          expect(users._request).to.deep.equal(baseRequest);
+        });
+
+        it('appends the supplied sdk to the class instance', function() {
+          expect(users._sdk).to.deep.equal(baseSdk);
+        });
+
+        it('sets the organization ID for the class instance to null', function() {
+          expect(users._organizationId).to.equal(null);
+        });
+      }
+    );
+  });
+
+  describe('_getBaseUrl', function() {
+    context('when additional base URLs are provided', function() {
       let users;
 
       beforeEach(function() {
-        organizationId = fixture.build('organization').id;
+        const organizationId = fixture.build('organization').id;
 
-        users = new Users(baseSdk, baseRequest, expectedHost, organizationId);
+        users = new Users(
+          baseSdk,
+          baseRequest,
+          expectedBaseUrl,
+          expectedTenantBaseUrl,
+          expectedLegacyBaseUrl,
+          organizationId
+        );
       });
 
-      it('sets a base url for the class instance', function() {
-        expect(users._baseUrl).to.equal(expectedHost);
+      it('returns the legacy base URL when requesting', function() {
+        expect(users._getBaseUrl('legacy')).to.equal(expectedLegacyBaseUrl);
       });
 
-      it('appends the supplied request module to the class instance', function() {
-        expect(users._request).to.deep.equal(baseRequest);
+      it('returns the access base URL', function() {
+        expect(users._getBaseUrl('access')).to.equal(expectedBaseUrl);
       });
 
-      it('appends the supplied sdk to the class instance', function() {
-        expect(users._sdk).to.deep.equal(baseSdk);
-      });
-
-      it('sets the organization ID for the class instance', function() {
-        expect(users._organizationId).to.equal(organizationId);
+      it('returns the tenant base URL', function() {
+        expect(users._getBaseUrl()).to.equal(expectedTenantBaseUrl);
       });
     });
 
-    context('when an organization ID is not provided', function() {
+    context('when only a legacy base URL is provided', function() {
       let users;
 
       beforeEach(function() {
-        users = new Users(baseSdk, baseRequest, expectedHost);
+        users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
       });
 
-      it('sets a base url for the class instance', function() {
-        expect(users._baseUrl).to.equal(expectedHost);
+      it('returns the legacy base URL', function() {
+        expect(users._getBaseUrl('legacy')).to.equal(expectedLegacyBaseUrl);
       });
 
-      it('appends the supplied request module to the class instance', function() {
-        expect(users._request).to.deep.equal(baseRequest);
+      it('returns the legacy base URL when requesting an access base URL', function() {
+        expect(users._getBaseUrl('access')).to.equal(expectedLegacyBaseUrl);
       });
 
-      it('appends the supplied sdk to the class instance', function() {
-        expect(users._sdk).to.deep.equal(baseSdk);
-      });
-
-      it('sets the organization ID for the class instance to null', function() {
-        expect(users._organizationId).to.equal(null);
+      it('returns the legacy base URL when requesting a tenant base URL', function() {
+        expect(users._getBaseUrl()).to.equal(expectedLegacyBaseUrl);
       });
     });
   });
 
   describe('activate', function() {
     context('when all the required parameters are provided', function() {
+      let getBaseUrl;
       let user;
       let userActivationPayload;
       let userActivationPayloadToServer;
@@ -118,7 +204,10 @@ describe('Coordinator/Users', function() {
           .stub(objectUtils, 'toSnakeCase')
           .callsFake(() => userActivationPayloadToServer);
 
-        const users = new Users(baseSdk, request, expectedHost);
+        const users = new Users(baseSdk, request, expectedBaseUrl);
+
+        getBaseUrl = sinon.stub(users, '_getBaseUrl').returns(expectedBaseUrl);
+
         promise = users.activate(user.id, userActivationPayload);
       });
 
@@ -128,9 +217,15 @@ describe('Coordinator/Users', function() {
         });
       });
 
+      it('gets the base URL', function() {
+        return promise.then(() => {
+          expect(getBaseUrl).to.be.calledOnceWith('access');
+        });
+      });
+
       it('posts the new user to the server', function() {
         expect(axios.post).to.be.calledWith(
-          `${expectedHost}/users/${user.id}/activate`,
+          `${expectedBaseUrl}/users/${user.id}/activate`,
           userActivationPayloadToServer
         );
       });
@@ -142,7 +237,7 @@ describe('Coordinator/Users', function() {
 
     context('when the organization ID is not provided', function() {
       it('throws an error', function() {
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedBaseUrl);
         const promise = users.activate();
 
         return expect(promise).to.be.rejectedWith(
@@ -162,7 +257,7 @@ describe('Coordinator/Users', function() {
             userToken: faker.random.uuid()
           };
 
-          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const users = new Users(baseSdk, baseRequest, expectedBaseUrl);
           const promise = users.activate(
             faker.random.uuid(),
             omit(payload, [field])
@@ -179,6 +274,7 @@ describe('Coordinator/Users', function() {
   describe('addApplication', function() {
     context('when all the required parameters are provided', function() {
       let expectedUserApplication;
+      let getBaseUrl;
       let promise;
       let request;
       let application;
@@ -207,13 +303,24 @@ describe('Coordinator/Users', function() {
           .stub(objectUtils, 'toCamelCase')
           .callsFake((app) => expectedUserApplication);
 
-        const users = new Users(baseSdk, request, expectedHost);
+        const users = new Users(baseSdk, request, expectedTenantBaseUrl);
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedTenantBaseUrl);
+
         promise = users.addApplication(user.id, application.id);
+      });
+
+      it('gets the base url', function() {
+        expect(getBaseUrl).to.be.calledOnceWith();
       });
 
       it('posts the user application to the server', function() {
         expect(request.post).to.be.calledWith(
-          `${expectedHost}/users/${user.id}/applications/${application.id}`
+          `${expectedTenantBaseUrl}/users/${user.id}/applications/${
+            application.id
+          }`
         );
       });
 
@@ -232,7 +339,7 @@ describe('Coordinator/Users', function() {
       it('throws an error', function() {
         const application = fixture.build('contxtApplication');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addApplication(null, application.id);
 
         return expect(promise).to.be.rejectedWith(
@@ -245,7 +352,7 @@ describe('Coordinator/Users', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addApplication(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
@@ -258,6 +365,7 @@ describe('Coordinator/Users', function() {
   describe('addRole', function() {
     context('when all the required parameters are provided', function() {
       let expectedUserRole;
+      let getBaseUrl;
       let promise;
       let request;
       let role;
@@ -282,13 +390,22 @@ describe('Coordinator/Users', function() {
           .stub(objectUtils, 'toCamelCase')
           .callsFake((app) => expectedUserRole);
 
-        const users = new Users(baseSdk, request, expectedHost);
+        const users = new Users(baseSdk, request, expectedTenantBaseUrl);
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedTenantBaseUrl);
+
         promise = users.addRole(user.id, role.id);
+      });
+
+      it('gets the base url', function() {
+        expect(getBaseUrl).to.be.calledOnceWith();
       });
 
       it('posts the user role to the server', function() {
         expect(request.post).to.be.calledWith(
-          `${expectedHost}/users/${user.id}/roles/${role.id}`
+          `${expectedTenantBaseUrl}/users/${user.id}/roles/${role.id}`
         );
       });
 
@@ -307,7 +424,7 @@ describe('Coordinator/Users', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addRole(null, role.id);
 
         return expect(promise).to.be.rejectedWith(
@@ -320,7 +437,7 @@ describe('Coordinator/Users', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addRole(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
@@ -335,6 +452,7 @@ describe('Coordinator/Users', function() {
       'when all the required parameters are provided and valid',
       function() {
         let expectedUserStack;
+        let getBaseUrl;
         let promise;
         let request;
         let stack;
@@ -363,7 +481,12 @@ describe('Coordinator/Users', function() {
             .stub(objectUtils, 'toCamelCase')
             .callsFake((app) => expectedUserStack);
 
-          const users = new Users(baseSdk, request, expectedHost);
+          const users = new Users(baseSdk, request, expectedTenantBaseUrl);
+
+          getBaseUrl = sinon
+            .stub(users, '_getBaseUrl')
+            .returns(expectedTenantBaseUrl);
+
           promise = users.addStack(
             user.id,
             stack.id,
@@ -371,9 +494,13 @@ describe('Coordinator/Users', function() {
           );
         });
 
+        it('gets the base url', function() {
+          expect(getBaseUrl).to.be.calledOnceWith();
+        });
+
         it('posts the user stack to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedHost}/users/${user.id}/stacks/${stack.id}`,
+            `${expectedTenantBaseUrl}/users/${user.id}/stacks/${stack.id}`,
             {
               access_type: expectedUserStack.accessType
             }
@@ -397,7 +524,7 @@ describe('Coordinator/Users', function() {
         const stack = fixture.build('contxtStack');
         const userStack = fixture.build('contxtUserStack');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addStack(null, stack.id, userStack.accessType);
 
         return expect(promise).to.be.rejectedWith(
@@ -410,7 +537,7 @@ describe('Coordinator/Users', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
         const userStack = fixture.build('contxtUserStack');
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addStack(user.id, null, userStack.accessType);
 
         return expect(promise).to.be.rejectedWith(
@@ -424,7 +551,7 @@ describe('Coordinator/Users', function() {
         const user = fixture.build('contxtUser');
         const stack = fixture.build('contxtStack');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addStack(user.id, stack.id, null);
 
         return expect(promise).to.be.rejectedWith(
@@ -438,7 +565,7 @@ describe('Coordinator/Users', function() {
         const user = fixture.build('contxtUser');
         const stack = fixture.build('contxtStack');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addStack(user.id, stack.id, faker.random.word());
 
         return expect(promise).to.be.rejectedWith(
@@ -453,6 +580,7 @@ describe('Coordinator/Users', function() {
       let userFromServerAfterFormat;
       let userFromServerBeforeFormat;
       let expectedUserId;
+      let getBaseUrl;
       let promise;
       let request;
       let toCamelCase;
@@ -476,13 +604,20 @@ describe('Coordinator/Users', function() {
           .stub(objectUtils, 'toCamelCase')
           .returns(userFromServerAfterFormat);
 
-        const users = new Users(baseSdk, request, expectedHost);
+        const users = new Users(baseSdk, request, expectedBaseUrl);
+
+        getBaseUrl = sinon.stub(users, '_getBaseUrl').returns(expectedBaseUrl);
+
         promise = users.get(expectedUserId);
+      });
+
+      it('gets the base url', function() {
+        expect(getBaseUrl).to.be.calledOnceWith('access');
       });
 
       it('gets the user from the server', function() {
         expect(request.get).to.be.calledWith(
-          `${expectedHost}/users/${expectedUserId}`
+          `${expectedBaseUrl}/users/${expectedUserId}`
         );
       });
 
@@ -501,7 +636,7 @@ describe('Coordinator/Users', function() {
 
     context('the user ID is not provided', function() {
       it('throws an error', function() {
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedBaseUrl);
         const promise = users.get();
 
         return expect(promise).to.be.rejectedWith(
@@ -516,6 +651,7 @@ describe('Coordinator/Users', function() {
       context('the organization ID is provided', function() {
         let expectedOrganizationId;
         let expectedOrganizationUsers;
+        let getBaseUrl;
         let organizationUsersFromServer;
         let promise;
         let request;
@@ -542,13 +678,22 @@ describe('Coordinator/Users', function() {
             .stub(objectUtils, 'toCamelCase')
             .returns(expectedOrganizationUsers);
 
-          const users = new Users(baseSdk, request, expectedHost);
+          const users = new Users(baseSdk, request, expectedLegacyBaseUrl);
+
+          getBaseUrl = sinon
+            .stub(users, '_getBaseUrl')
+            .returns(expectedLegacyBaseUrl);
+
           promise = users.getByOrganizationId(expectedOrganizationId);
+        });
+
+        it('gets the base url', function() {
+          expect(getBaseUrl).to.be.calledOnceWith('legacy');
         });
 
         it('gets the user list from the server', function() {
           expect(request.get).to.be.calledWith(
-            `${expectedHost}/organizations/${expectedOrganizationId}/users`
+            `${expectedLegacyBaseUrl}/organizations/${expectedOrganizationId}/users`
           );
         });
 
@@ -567,7 +712,7 @@ describe('Coordinator/Users', function() {
 
       context('the organization ID is not provided', function() {
         it('throws an error', function() {
-          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
           const promise = users.getByOrganizationId();
 
           return expect(promise).to.be.rejectedWith(
@@ -580,6 +725,7 @@ describe('Coordinator/Users', function() {
     context('tenant API', function() {
       let expectedOrganizationId;
       let expectedOrganizationUsers;
+      let getBaseUrl;
       let organizationUsersFromServer;
       let promise;
       let request;
@@ -610,9 +756,15 @@ describe('Coordinator/Users', function() {
         users = new Users(
           baseSdk,
           request,
-          expectedHost,
+          expectedBaseUrl,
+          expectedTenantBaseUrl,
+          expectedLegacyBaseUrl,
           expectedOrganizationId
         );
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedTenantBaseUrl);
       });
 
       context('the organization ID is provided', function() {
@@ -620,30 +772,14 @@ describe('Coordinator/Users', function() {
           promise = users.getByOrganizationId(expectedOrganizationId);
         });
 
+        it('gets the base url', function() {
+          expect(getBaseUrl).to.be.calledOnceWith();
+        });
+
         it('gets the user list from the server', function() {
-          expect(request.get).to.be.calledWith(`${expectedHost}/users`);
-        });
-
-        it('formats the list of organization users', function() {
-          return promise.then(() => {
-            expect(toCamelCase).to.be.calledWith(organizationUsersFromServer);
-          });
-        });
-
-        it('returns the list of users by requested organization', function() {
-          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-            expectedOrganizationUsers
+          expect(request.get).to.be.calledWith(
+            `${expectedTenantBaseUrl}/users`
           );
-        });
-      });
-
-      context('the organization ID is not provided', function() {
-        beforeEach(function() {
-          promise = users.getByOrganizationId();
-        });
-
-        it('gets the user list from the server', function() {
-          expect(request.get).to.be.calledWith(`${expectedHost}/users`);
         });
 
         it('formats the list of organization users', function() {
@@ -668,6 +804,7 @@ describe('Coordinator/Users', function() {
         let newUserPayload;
         let newUserPayloadToServer;
         let expectedNewUser;
+        let getBaseUrl;
         let newUserFromServer;
         let promise;
         let request;
@@ -708,7 +845,12 @@ describe('Coordinator/Users', function() {
             .stub(objectUtils, 'toSnakeCase')
             .callsFake(() => newUserPayloadToServer);
 
-          const users = new Users(baseSdk, request, expectedHost);
+          const users = new Users(baseSdk, request, expectedLegacyBaseUrl);
+
+          getBaseUrl = sinon
+            .stub(users, '_getBaseUrl')
+            .returns(expectedLegacyBaseUrl);
+
           promise = users.invite(organization.id, newUserPayload);
         });
 
@@ -718,9 +860,13 @@ describe('Coordinator/Users', function() {
           });
         });
 
+        it('gets the base url', function() {
+          expect(getBaseUrl).to.be.calledOnceWith('legacy');
+        });
+
         it('posts the new user to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedHost}/organizations/${organization.id}/users`,
+            `${expectedLegacyBaseUrl}/organizations/${organization.id}/users`,
             newUserPayloadToServer
           );
         });
@@ -740,7 +886,7 @@ describe('Coordinator/Users', function() {
 
       context('when the organization ID is not provided', function() {
         it('throws an error', function() {
-          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
           const promise = users.invite();
 
           return expect(promise).to.be.rejectedWith(
@@ -766,7 +912,11 @@ describe('Coordinator/Users', function() {
               redirectUrl: faker.internet.url()
             };
 
-            const users = new Users(baseSdk, baseRequest, expectedHost);
+            const users = new Users(
+              baseSdk,
+              baseRequest,
+              expectedLegacyBaseUrl
+            );
             const promise = users.invite(
               faker.random.uuid(),
               omit(newUserPayload, [field])
@@ -785,6 +935,7 @@ describe('Coordinator/Users', function() {
       let newUserPayload;
       let newUserPayloadToServer;
       let expectedNewUser;
+      let getBaseUrl;
       let newUserFromServer;
       let promise;
       let request;
@@ -826,7 +977,18 @@ describe('Coordinator/Users', function() {
           .stub(objectUtils, 'toSnakeCase')
           .callsFake(() => newUserPayloadToServer);
 
-        users = new Users(baseSdk, request, expectedHost, organization.id);
+        users = new Users(
+          baseSdk,
+          request,
+          expectedBaseUrl,
+          expectedTenantBaseUrl,
+          expectedLegacyBaseUrl,
+          organization.id
+        );
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedTenantBaseUrl);
       });
 
       context('when all the parameters are provided', function() {
@@ -834,35 +996,8 @@ describe('Coordinator/Users', function() {
           promise = users.invite(organization.id, newUserPayload);
         });
 
-        it('formats the user payload', function() {
-          return promise.then(() => {
-            expect(toSnakeCase).to.be.calledWith(newUserPayload);
-          });
-        });
-
-        it('posts the new user to the server', function() {
-          expect(request.post).to.be.calledWith(
-            `${expectedHost}/users`,
-            newUserPayloadToServer
-          );
-        });
-
-        it('formats the user response', function() {
-          return promise.then(() => {
-            expect(toCamelCase).to.be.calledWith(newUserFromServer);
-          });
-        });
-
-        it('returns a fulfilled promise with the new user', function() {
-          return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-            expectedNewUser
-          );
-        });
-      });
-
-      context('when the organization ID is not provided', function() {
-        beforeEach(function() {
-          promise = users.invite(null, newUserPayload);
+        it('gets the base url', function() {
+          expect(getBaseUrl).to.be.calledOnceWith();
         });
 
         it('formats the user payload', function() {
@@ -873,7 +1008,7 @@ describe('Coordinator/Users', function() {
 
         it('posts the new user to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedHost}/users`,
+            `${expectedTenantBaseUrl}/users`,
             newUserPayloadToServer
           );
         });
@@ -911,8 +1046,10 @@ describe('Coordinator/Users', function() {
 
             const users = new Users(
               baseSdk,
-              baseRequest,
-              expectedHost,
+              request,
+              expectedBaseUrl,
+              expectedTenantBaseUrl,
+              expectedLegacyBaseUrl,
               organization.id
             );
             const promise = users.invite(
@@ -932,6 +1069,7 @@ describe('Coordinator/Users', function() {
   describe('remove', function() {
     context('legacy API', function() {
       context('when all required parameters are provided', function() {
+        let getBaseUrl;
         let organization;
         let user;
         let promise;
@@ -940,13 +1078,24 @@ describe('Coordinator/Users', function() {
           organization = fixture.build('contxtOrganization');
           user = fixture.build('contxtUser');
 
-          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
+
+          getBaseUrl = sinon
+            .stub(users, '_getBaseUrl')
+            .returns(expectedLegacyBaseUrl);
+
           promise = users.remove(organization.id, user.id);
+        });
+
+        it('gets the base url', function() {
+          expect(getBaseUrl).to.be.calledOnceWith('legacy');
         });
 
         it('sends a request to remove the user from the organization', function() {
           expect(baseRequest.delete).to.be.calledWith(
-            `${expectedHost}/organizations/${organization.id}/users/${user.id}`
+            `${expectedLegacyBaseUrl}/organizations/${organization.id}/users/${
+              user.id
+            }`
           );
         });
 
@@ -957,7 +1106,7 @@ describe('Coordinator/Users', function() {
 
       context('when the organization ID is not provided', function() {
         it('throws an error', function() {
-          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
           const promise = users.remove(null, faker.random.uuid());
 
           return expect(promise).to.be.rejectedWith(
@@ -968,7 +1117,7 @@ describe('Coordinator/Users', function() {
 
       context('when the user ID is not provided', function() {
         it('throws an error', function() {
-          const users = new Users(baseSdk, baseRequest, expectedHost);
+          const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
           const promise = users.remove(faker.random.uuid(), null);
 
           return expect(promise).to.be.rejectedWith(
@@ -979,6 +1128,7 @@ describe('Coordinator/Users', function() {
     });
 
     context('tenant API', function() {
+      let getBaseUrl;
       let organization;
       let user;
       let users;
@@ -988,7 +1138,18 @@ describe('Coordinator/Users', function() {
         organization = fixture.build('organization');
         user = fixture.build('contxtUser');
 
-        users = new Users(baseSdk, baseRequest, expectedHost, organization.id);
+        users = new Users(
+          baseSdk,
+          baseRequest,
+          expectedBaseUrl,
+          expectedTenantBaseUrl,
+          expectedLegacyBaseUrl,
+          organization.id
+        );
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedTenantBaseUrl);
       });
 
       context('when all parameters are provided', function() {
@@ -996,47 +1157,18 @@ describe('Coordinator/Users', function() {
           promise = users.remove(organization.id, user.id);
         });
 
+        it('gets the base url', function() {
+          expect(getBaseUrl).to.be.calledOnceWith();
+        });
+
         it('sends a request to remove the user from the organization', function() {
           expect(baseRequest.delete).to.be.calledWith(
-            `${expectedHost}/users/${user.id}`
+            `${expectedTenantBaseUrl}/users/${user.id}`
           );
         });
 
         it('returns a resolved promise', function() {
           return expect(promise).to.be.fulfilled;
-        });
-      });
-
-      context('when the organization ID is not provided', function() {
-        beforeEach(function() {
-          promise = users.remove(null, user.id);
-        });
-
-        it('sends a request to remove the user from the organization', function() {
-          expect(baseRequest.delete).to.be.calledWith(
-            `${expectedHost}/users/${user.id}`
-          );
-        });
-
-        it('returns a resolved promise', function() {
-          return expect(promise).to.be.fulfilled;
-        });
-      });
-
-      context('when the user ID is not provided', function() {
-        it('throws an error', function() {
-          const organization = fixture.build('organization');
-          const users = new Users(
-            baseSdk,
-            baseRequest,
-            expectedHost,
-            organization.id
-          );
-          const promise = users.remove(organization.id, null);
-
-          return expect(promise).to.be.rejectedWith(
-            'A user ID is required for removing a user from an organization'
-          );
         });
       });
     });
@@ -1045,6 +1177,7 @@ describe('Coordinator/Users', function() {
   describe('removeApplication', function() {
     context('when all required parameters are provided', function() {
       let application;
+      let getBaseUrl;
       let user;
       let promise;
 
@@ -1052,13 +1185,24 @@ describe('Coordinator/Users', function() {
         application = fixture.build('contxtApplication');
         user = fixture.build('contxtUser');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedLegacyBaseUrl);
+
         promise = users.removeApplication(user.id, application.id);
+      });
+
+      it('gets the base url', function() {
+        expect(getBaseUrl).to.be.calledOnceWith();
       });
 
       it('sends a request to removeApplication the user from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/users/${user.id}/applications/${application.id}`
+          `${expectedLegacyBaseUrl}/users/${user.id}/applications/${
+            application.id
+          }`
         );
       });
 
@@ -1070,7 +1214,7 @@ describe('Coordinator/Users', function() {
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
         const application = fixture.build('contxtApplication');
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
         const promise = users.removeApplication(null, application.id);
 
         return expect(promise).to.be.rejectedWith(
@@ -1082,7 +1226,7 @@ describe('Coordinator/Users', function() {
     context('when the application ID is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
         const promise = users.removeApplication(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
@@ -1094,6 +1238,7 @@ describe('Coordinator/Users', function() {
 
   describe('removeRole', function() {
     context('when all required parameters are provided', function() {
+      let getBaseUrl;
       let role;
       let user;
       let promise;
@@ -1102,13 +1247,22 @@ describe('Coordinator/Users', function() {
         role = fixture.build('contxtRole');
         user = fixture.build('contxtUser');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedTenantBaseUrl);
+
         promise = users.removeRole(user.id, role.id);
+      });
+
+      it('gets the base url', function() {
+        expect(getBaseUrl).to.be.calledOnceWith();
       });
 
       it('sends a request to removeRole the user from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/users/${user.id}/roles/${role.id}`
+          `${expectedTenantBaseUrl}/users/${user.id}/roles/${role.id}`
         );
       });
 
@@ -1120,7 +1274,7 @@ describe('Coordinator/Users', function() {
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.removeRole(null, role.id);
 
         return expect(promise).to.be.rejectedWith(
@@ -1132,7 +1286,7 @@ describe('Coordinator/Users', function() {
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.removeRole(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
@@ -1144,6 +1298,7 @@ describe('Coordinator/Users', function() {
 
   describe('removeStack', function() {
     context('when all required parameters are provided', function() {
+      let getBaseUrl;
       let stack;
       let user;
       let promise;
@@ -1152,13 +1307,22 @@ describe('Coordinator/Users', function() {
         stack = fixture.build('contxtStack');
         user = fixture.build('contxtUser');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
+
+        getBaseUrl = sinon
+          .stub(users, '_getBaseUrl')
+          .returns(expectedTenantBaseUrl);
+
         promise = users.removeStack(user.id, stack.id);
+      });
+
+      it('gets the base url', function() {
+        expect(getBaseUrl).to.be.calledOnceWith();
       });
 
       it('sends a request to removeStack the user from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/users/${user.id}/stacks/${stack.id}`
+          `${expectedTenantBaseUrl}/users/${user.id}/stacks/${stack.id}`
         );
       });
 
@@ -1170,7 +1334,7 @@ describe('Coordinator/Users', function() {
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
         const stack = fixture.build('contxtStack');
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.removeStack(null, stack.id);
 
         return expect(promise).to.be.rejectedWith(
@@ -1182,7 +1346,7 @@ describe('Coordinator/Users', function() {
     context('when the stack ID is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.removeStack(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
@@ -1194,19 +1358,27 @@ describe('Coordinator/Users', function() {
 
   describe('sync', function() {
     context('when all required parameters are present', function() {
+      let getBaseUrl;
       let user;
       let promise;
 
       beforeEach(function() {
         user = fixture.build('contxtUser');
 
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedBaseUrl);
+
+        getBaseUrl = sinon.stub(users, '_getBaseUrl').returns(expectedBaseUrl);
+
         promise = users.sync(user.id);
+      });
+
+      it('gets the base url', function() {
+        expect(getBaseUrl).to.be.calledOnceWith('access');
       });
 
       it('sends a request to sync user permissions', function() {
         expect(baseRequest.get).to.be.calledWith(
-          `${expectedHost}/users/${user.id}/sync`
+          `${expectedBaseUrl}/users/${user.id}/sync`
         );
       });
 
@@ -1217,7 +1389,7 @@ describe('Coordinator/Users', function() {
 
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
-        const users = new Users(baseSdk, baseRequest, expectedHost);
+        const users = new Users(baseSdk, baseRequest, expectedBaseUrl);
         const promise = users.sync(null);
 
         return expect(promise).to.be.rejectedWith(

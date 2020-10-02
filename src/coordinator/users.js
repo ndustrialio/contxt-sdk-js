@@ -54,13 +54,37 @@ class Users {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    * @param {string} baseUrl The base URL provided by the parent module
+   * @param {string} [tenantBaseUrl] The tenant base URL provided by the parent module
+   * @param {string} [legacyBaseUrl] The legacy base URL provided by the parent module
    * @param {string} [organizationId] The organization ID to be used in tenant url requests
    */
-  constructor(sdk, request, baseUrl, organizationId = null) {
+  constructor(
+    sdk,
+    request,
+    baseUrl,
+    tenantBaseUrl = null,
+    legacyBaseUrl = null,
+    organizationId = null
+  ) {
     this._baseUrl = baseUrl;
+    this._tenantBaseUrl = tenantBaseUrl;
+    this._legacyBaseUrl = legacyBaseUrl;
     this._request = request;
     this._sdk = sdk;
     this._organizationId = organizationId;
+  }
+
+  _getBaseUrl(type) {
+    switch (type) {
+      case 'legacy':
+        return this._legacyBaseUrl || this._baseUrl;
+
+      case 'access':
+        return this._baseUrl;
+
+      default:
+        return this._tenantBaseUrl || this._baseUrl;
+    }
   }
 
   /**
@@ -112,7 +136,7 @@ class Users {
 
     // Uses axios directly instead of this.request to bypass authorization interceptors
     return axios.post(
-      `${this._baseUrl}/users/${userId}/activate`,
+      `${this._getBaseUrl('access')}/users/${userId}/activate`,
       toSnakeCase(user)
     );
   }
@@ -152,7 +176,9 @@ class Users {
     }
 
     return this._request
-      .post(`${this._baseUrl}/users/${userId}/applications/${applicationId}`)
+      .post(
+        `${this._getBaseUrl()}/users/${userId}/applications/${applicationId}`
+      )
       .then((response) => toCamelCase(response));
   }
 
@@ -189,7 +215,7 @@ class Users {
     }
 
     return this._request
-      .post(`${this._baseUrl}/users/${userId}/roles/${roleId}`)
+      .post(`${this._getBaseUrl()}/users/${userId}/roles/${roleId}`)
       .then((response) => toCamelCase(response));
   }
 
@@ -235,7 +261,7 @@ class Users {
     }
 
     return this._request
-      .post(`${this._baseUrl}/users/${userId}/stacks/${stackId}`, {
+      .post(`${this._getBaseUrl()}/users/${userId}/stacks/${stackId}`, {
         access_type: accessType
       })
       .then((response) => toCamelCase(response));
@@ -267,7 +293,7 @@ class Users {
     }
 
     return this._request
-      .get(`${this._baseUrl}/users/${userId}`)
+      .get(`${this._getBaseUrl('access')}/users/${userId}`)
       .then((user) => toCamelCase(user));
   }
 
@@ -293,7 +319,7 @@ class Users {
   getByOrganizationId(organizationId) {
     if (this._organizationId) {
       return this._request
-        .get(`${this._baseUrl}/users`)
+        .get(`${this._getBaseUrl()}/users`)
         .then((orgUsers) => toCamelCase(orgUsers));
     }
 
@@ -306,7 +332,9 @@ class Users {
     }
 
     return this._request
-      .get(`${this._baseUrl}/organizations/${organizationId}/users`)
+      .get(
+        `${this._getBaseUrl('legacy')}/organizations/${organizationId}/users`
+      )
       .then((orgUsers) => toCamelCase(orgUsers));
   }
 
@@ -360,7 +388,7 @@ class Users {
       }
 
       return this._request
-        .post(`${this._baseUrl}/users`, toSnakeCase(user))
+        .post(`${this._getBaseUrl()}/users`, toSnakeCase(user))
         .then((response) => toCamelCase(response));
     }
 
@@ -384,7 +412,7 @@ class Users {
 
     return this._request
       .post(
-        `${this._baseUrl}/organizations/${organizationId}/users`,
+        `${this._getBaseUrl('legacy')}/organizations/${organizationId}/users`,
         toSnakeCase(user)
       )
       .then((response) => toCamelCase(response));
@@ -419,7 +447,7 @@ class Users {
         );
       }
 
-      return this._request.delete(`${this._baseUrl}/users/${userId}`);
+      return this._request.delete(`${this._getBaseUrl()}/users/${userId}`);
     }
 
     if (!organizationId) {
@@ -439,7 +467,9 @@ class Users {
     }
 
     return this._request.delete(
-      `${this._baseUrl}/organizations/${organizationId}/users/${userId}`
+      `${this._getBaseUrl(
+        'legacy'
+      )}/organizations/${organizationId}/users/${userId}`
     );
   }
 
@@ -479,7 +509,7 @@ class Users {
     }
 
     return this._request.delete(
-      `${this._baseUrl}/users/${userId}/applications/${applicationId}`
+      `${this._getBaseUrl()}/users/${userId}/applications/${applicationId}`
     );
   }
 
@@ -515,7 +545,7 @@ class Users {
     }
 
     return this._request.delete(
-      `${this._baseUrl}/users/${userId}/roles/${roleId}`
+      `${this._getBaseUrl()}/users/${userId}/roles/${roleId}`
     );
   }
 
@@ -551,7 +581,7 @@ class Users {
     }
 
     return this._request.delete(
-      `${this._baseUrl}/users/${userId}/stacks/${stackId}`
+      `${this._getBaseUrl()}/users/${userId}/stacks/${stackId}`
     );
   }
 
@@ -579,7 +609,9 @@ class Users {
       );
     }
 
-    return this._request.get(`${this._baseUrl}/users/${userId}/sync`);
+    return this._request.get(
+      `${this._getBaseUrl('access')}/users/${userId}/sync`
+    );
   }
 }
 
