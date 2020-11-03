@@ -85,7 +85,7 @@
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-plugin-node": "^5.2.1",
     "faker": "^4.1.0",
-    "fast-glob": "^2.1.0",
+    "fast-glob": "^3.2.4",
     "gulp": "^4.0.2",
     "gulp-babel": "^7.0.1",
     "gulp-sourcemaps": "^2.6.5",
