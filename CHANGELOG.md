@@ -1,3 +1,9 @@
+## [v2.13.3](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.13.1) (2020-11-03)
+
+**Changed**
+
+- Updated some underlying dependencies to newer versions that do not have known exploits
+
 ## [v2.13.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.13.1) (2020-09-02)
 
 **Fixed**
