@@ -17,9 +17,9 @@ factory
     id: () => faker.random.uuid(),
     name: () => faker.name.title(),
     organizationId: () => factory.build('contxtOrganization').id,
-    stacks: () =>
+    projects: () =>
       factory.buildList(
-        'contxtStack',
+        'contxtProject',
         faker.random.number({ min: 0, max: 10 })
       ),
     updatedAt: () => faker.date.recent().toISOString()

@@ -26,18 +26,18 @@ factory
       factory
         .buildList('contxtRole', faker.random.number({ min: 0, max: 15 }))
         .map(({ id }) => ({ id })),
-    stacksExplicit: () =>
+    projectsExplicit: () =>
       times(faker.random.number({ min: 0, max: 15 }), () => {
         return {
-          id: factory.build('contxtStack').id,
-          accessType: factory.build('contxtUserStack').accessType
+          id: factory.build('contxtProject').id,
+          accessType: factory.build('contxtUserProject').accessType
         };
       }),
-    stacksImplicit: () =>
+    projectsImplicit: () =>
       times(faker.random.number({ min: 0, max: 15 }), () => {
         return {
-          id: factory.build('contxtStack').id,
-          accessType: factory.build('contxtUserStack').accessType
+          id: factory.build('contxtProject').id,
+          accessType: factory.build('contxtUserProject').accessType
         };
       }),
     userId: () => factory.build('contxtUser').id
@@ -52,17 +52,17 @@ factory
       permission.applications_implicit = permission.applicationsImplicit;
       delete permission.applicationsImplicit;
 
-      permission.stacks_explicit = permission.stacksExplicit.map((s) => ({
+      permission.projects_explicit = permission.projectsExplicit.map((s) => ({
         id: s.id,
         access_type: s.accessType
       }));
-      delete permission.stacksExplicit;
+      delete permission.projectsExplicit;
 
-      permission.stacks_implicit = permission.stacksImplicit.map((s) => ({
+      permission.projects_implicit = permission.projectsImplicit.map((s) => ({
         id: s.id,
         access_type: s.accessType
       }));
-      delete permission.stacksImplicit;
+      delete permission.projectsImplicit;
 
       permission.user_id = permission.userId;
       delete permission.userId;

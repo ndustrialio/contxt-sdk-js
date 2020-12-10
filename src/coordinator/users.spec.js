@@ -447,27 +447,27 @@ describe('Coordinator/Users', function() {
     });
   });
 
-  describe('addStack', function() {
+  describe('addProject', function() {
     context(
       'when all the required parameters are provided and valid',
       function() {
-        let expectedUserStack;
+        let expectedUserProject;
         let getBaseUrl;
         let promise;
         let request;
-        let stack;
+        let project;
         let user;
-        let userStackFromServer;
+        let userProjectFromServer;
         let toCamelCase;
 
         beforeEach(function() {
-          stack = fixture.build('contxtStack');
+          project = fixture.build('contxtProject');
           user = fixture.build('contxtUser');
 
-          expectedUserStack = fixture.build('contxtUserStack');
-          userStackFromServer = fixture.build(
-            'contxtUserStack',
-            expectedUserStack,
+          expectedUserProject = fixture.build('contxtUserProject');
+          userProjectFromServer = fixture.build(
+            'contxtUserProject',
+            expectedUserProject,
             {
               fromServer: true
             }
@@ -475,11 +475,11 @@ describe('Coordinator/Users', function() {
 
           request = {
             ...baseRequest,
-            post: sinon.stub().resolves(userStackFromServer)
+            post: sinon.stub().resolves(userProjectFromServer)
           };
           toCamelCase = sinon
             .stub(objectUtils, 'toCamelCase')
-            .callsFake((app) => expectedUserStack);
+            .callsFake((app) => expectedUserProject);
 
           const users = new Users(baseSdk, request, expectedTenantBaseUrl);
 
@@ -487,10 +487,10 @@ describe('Coordinator/Users', function() {
             .stub(users, '_getBaseUrl')
             .returns(expectedTenantBaseUrl);
 
-          promise = users.addStack(
+          promise = users.addProject(
             user.id,
-            stack.id,
-            expectedUserStack.accessType
+            project.slug,
+            expectedUserProject.accessType
           );
         });
 
@@ -498,18 +498,20 @@ describe('Coordinator/Users', function() {
           expect(getBaseUrl).to.be.calledOnceWith();
         });
 
-        it('posts the user stack to the server', function() {
+        it('posts the user project to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedTenantBaseUrl}/users/${user.id}/stacks/${stack.id}`,
+            `${expectedTenantBaseUrl}/users/${user.id}/projects/${
+              project.slug
+            }`,
             {
-              access_type: expectedUserStack.accessType
+              access_type: expectedUserProject.accessType
             }
           );
         });
 
-        it('formats the returned user stack', function() {
+        it('formats the returned user project', function() {
           return promise.then(() => {
-            expect(toCamelCase).to.be.calledWith(userStackFromServer);
+            expect(toCamelCase).to.be.calledWith(userProjectFromServer);
           });
         });
 
@@ -521,27 +523,31 @@ describe('Coordinator/Users', function() {
 
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
-        const stack = fixture.build('contxtStack');
-        const userStack = fixture.build('contxtUserStack');
+        const project = fixture.build('contxtProject');
+        const userProject = fixture.build('contxtUserProject');
 
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addStack(null, stack.id, userStack.accessType);
+        const promise = users.addProject(
+          null,
+          project.slug,
+          userProject.accessType
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'A user ID is required for adding a stack to a user'
+          'A user ID is required for adding a project to a user'
         );
       });
     });
 
-    context('when the stack ID is not provided', function() {
+    context('when the project slug is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
-        const userStack = fixture.build('contxtUserStack');
+        const userProject = fixture.build('contxtUserProject');
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addStack(user.id, null, userStack.accessType);
+        const promise = users.addProject(user.id, null, userProject.accessType);
 
         return expect(promise).to.be.rejectedWith(
-          'A stack ID is required for adding a stack to a user'
+          'A project slug is required for adding a project to a user'
         );
       });
     });
@@ -549,13 +555,13 @@ describe('Coordinator/Users', function() {
     context('when the access type is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
-        const stack = fixture.build('contxtStack');
+        const project = fixture.build('contxtProject');
 
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addStack(user.id, stack.id, null);
+        const promise = users.addProject(user.id, project.slug, null);
 
         return expect(promise).to.be.rejectedWith(
-          'An access type of "reader", "collaborator", or "owner" is required for adding a stack to a user'
+          'An access type of "reader", "collaborator", or "owner" is required for adding a project to a user'
         );
       });
     });
@@ -563,13 +569,17 @@ describe('Coordinator/Users', function() {
     context('when the access type is not a valid value', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
-        const stack = fixture.build('contxtStack');
+        const project = fixture.build('contxtProject');
 
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addStack(user.id, stack.id, faker.random.word());
+        const promise = users.addProject(
+          user.id,
+          project.slug,
+          faker.random.word()
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'An access type of "reader", "collaborator", or "owner" is required for adding a stack to a user'
+          'An access type of "reader", "collaborator", or "owner" is required for adding a project to a user'
         );
       });
     });
@@ -1296,15 +1306,15 @@ describe('Coordinator/Users', function() {
     });
   });
 
-  describe('removeStack', function() {
+  describe('removeProject', function() {
     context('when all required parameters are provided', function() {
       let getBaseUrl;
-      let stack;
+      let project;
       let user;
       let promise;
 
       beforeEach(function() {
-        stack = fixture.build('contxtStack');
+        project = fixture.build('contxtProject');
         user = fixture.build('contxtUser');
 
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
@@ -1313,16 +1323,16 @@ describe('Coordinator/Users', function() {
           .stub(users, '_getBaseUrl')
           .returns(expectedTenantBaseUrl);
 
-        promise = users.removeStack(user.id, stack.id);
+        promise = users.removeProject(user.id, project.slug);
       });
 
       it('gets the base url', function() {
         expect(getBaseUrl).to.be.calledOnceWith();
       });
 
-      it('sends a request to removeStack the user from the organization', function() {
+      it('sends a request to removeProject the user from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedTenantBaseUrl}/users/${user.id}/stacks/${stack.id}`
+          `${expectedTenantBaseUrl}/users/${user.id}/projects/${project.slug}`
         );
       });
 
@@ -1333,24 +1343,24 @@ describe('Coordinator/Users', function() {
 
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
-        const stack = fixture.build('contxtStack');
+        const project = fixture.build('contxtProject');
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.removeStack(null, stack.id);
+        const promise = users.removeProject(null, project.slug);
 
         return expect(promise).to.be.rejectedWith(
-          'A user ID is required for removing a stack from a user'
+          'A user ID is required for removing a project from a user'
         );
       });
     });
 
-    context('when the stack ID is not provided', function() {
+    context('when the project slug is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.removeStack(user.id, null);
+        const promise = users.removeProject(user.id, null);
 
         return expect(promise).to.be.rejectedWith(
-          'A stack ID is required for removing a stack from a user'
+          'A project slug is required for removing a project from a user'
         );
       });
     });
