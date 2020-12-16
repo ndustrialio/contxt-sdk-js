@@ -8,7 +8,7 @@ import { toSnakeCase, toCamelCase } from '../utils/objects';
  * @property {string} id
  * @property {string} name
  * @property {string} organizationId
- * @property {ContxtStack[]} stacks
+ * @property {ContxtProject[]} projects
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 /**
@@ -21,28 +21,26 @@ import { toSnakeCase, toCamelCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtRoleStack
- * @property {string} accessType Access Type of the user for this stack with options "reader", "collaborator", "owner"
+ * @typedef {Object} ContxtRoleProject
+ * @property {string} accessType Access Type of the user for this project with options "reader", "admin"
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {number} id
  * @property {string} userId
- * @property {number} stackId
+ * @property {number} projectId
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
 /**
- * @typedef {Object} ContxtStack
- * @property {string} clientId
- * @property {string} clusterId
+ * @typedef {Object} ContxtProject
  * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} currentVersionId
+ * @property {string} createdBy User ID of the user who created the project
  * @property {string} description
- * @property {string} documentationUrl
  * @property {string} icon
  * @property {number} id
  * @property {string} name
  * @property {string} organizationId
- * @property {string} ownerId
+ * @property {string} ownerRoleId
+ * @property {string} slug
  * @property {string} type
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
@@ -106,48 +104,48 @@ class Roles {
   }
 
   /**
-   * Add a stack to a role
+   * Add a project to a role
    *
-   * API Endpoint: '/roles/:roleId/stacks/:stackId'
+   * API Endpoint: '/roles/:roleId/projects/:projectSlug'
    * Method: POST
    *
    * @param {string} roleId The UUID formatted ID of the role
-   * @param {number} stackId The ID of the stack
-   * @param {'reader' | 'collaborator' | 'owner'} accessType The level of access for the role
+   * @param {string} projectSlug The slug of the project
+   * @param {'reader' | 'admin'} accessType The level of access for the role
    *
    * @returns {Promise}
-   * @fulfill {ContxtRoleStack}
+   * @fulfill {ContxtRoleProject}
    * @reject {Error}
    *
    * @example
    * contxtSdk.roles
-   *   .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42, 'collaborator')
-   *   .then((roleStack) => console.log(roleStack))
+   *   .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
+   *   .then((roleProject) => console.log(roleProject))
    *   .catch((err) => console.log(err));
    */
-  addStack(roleId, stackId, accessType) {
+  addProject(roleId, projectSlug, accessType) {
     if (!roleId) {
       return Promise.reject(
-        new Error('A roleId is required for adding a stack to a role.')
+        new Error('A roleId is required for adding a project to a role.')
       );
     }
 
-    if (!stackId) {
+    if (!projectSlug) {
       return Promise.reject(
-        new Error('A stackId is required for adding a stack to a role.')
+        new Error('A projectSlug is required for adding a project to a role.')
       );
     }
 
-    if (['reader', 'collaborator', 'owner'].indexOf(accessType) === -1) {
+    if (['reader', 'admin'].indexOf(accessType) === -1) {
       return Promise.reject(
         new Error(
-          'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
+          'An accessType of "reader" or "admin" is required for adding a project to a role.'
         )
       );
     }
 
     return this._request
-      .post(`${this._baseUrl}/roles/${roleId}/stacks/${stackId}`, {
+      .post(`${this._baseUrl}/roles/${roleId}/projects/${projectSlug}`, {
         access_type: accessType
       })
       .then((response) => toCamelCase(response));
@@ -346,13 +344,13 @@ class Roles {
   }
 
   /**
-   * Remove an stack from a role
+   * Remove an project from a role
    *
-   * API Endpoint: '/roles/:roleId/stacks/:stackId'
+   * API Endpoint: '/roles/:roleId/projects/:projectSlug'
    * Method: DELETE
    *
    * @param {string} roleId The UUID formatted ID of the role
-   * @param {number} stackId The ID of the stack
+   * @param {string} projectSlug The slug of the project
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -360,24 +358,26 @@ class Roles {
    *
    * @example
    * contxtSdk.roles
-   *   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', 42)
+   *   .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug')
    *   .catch((err) => console.log(err));
    */
-  removeStack(roleId, stackId) {
+  removeProject(roleId, projectSlug) {
     if (!roleId) {
       return Promise.reject(
-        new Error('A roleId is required for removing a stack from a role.')
+        new Error('A roleId is required for removing a project from a role.')
       );
     }
 
-    if (!stackId) {
+    if (!projectSlug) {
       return Promise.reject(
-        new Error('A stackId is required for removing a stack from a role.')
+        new Error(
+          'A projectSlug is required for removing a project from a role.'
+        )
       );
     }
 
     return this._request.delete(
-      `${this._baseUrl}/roles/${roleId}/stacks/${stackId}`
+      `${this._baseUrl}/roles/${roleId}/projects/${projectSlug}`
     );
   }
 }

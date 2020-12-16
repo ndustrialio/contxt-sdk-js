@@ -161,26 +161,26 @@ describe('Coordinator/Roles', function() {
     });
   });
 
-  describe('addStack', function() {
+  describe('addProject', function() {
     context(
       'when all the required parameters are provided and valid',
       function() {
-        let expectedRoleStack;
+        let expectedRoleProject;
         let promise;
         let request;
-        let stack;
+        let project;
         let role;
-        let roleStackFromServer;
+        let roleProjectFromServer;
         let toCamelCase;
 
         beforeEach(function() {
-          stack = fixture.build('contxtStack');
+          project = fixture.build('contxtProject');
           role = fixture.build('contxtRole');
 
-          expectedRoleStack = fixture.build('contxtRoleStack');
-          roleStackFromServer = fixture.build(
-            'contxtRoleStack',
-            expectedRoleStack,
+          expectedRoleProject = fixture.build('contxtRoleProject');
+          roleProjectFromServer = fixture.build(
+            'contxtRoleProject',
+            expectedRoleProject,
             {
               fromServer: true
             }
@@ -188,38 +188,38 @@ describe('Coordinator/Roles', function() {
 
           request = {
             ...baseRequest,
-            post: sinon.stub().resolves(roleStackFromServer)
+            post: sinon.stub().resolves(roleProjectFromServer)
           };
           toCamelCase = sinon
             .stub(objectUtils, 'toCamelCase')
-            .callsFake((app) => expectedRoleStack);
+            .callsFake((app) => expectedRoleProject);
 
           const roles = new Roles(baseSdk, request, expectedHost);
-          promise = roles.addStack(
+          promise = roles.addProject(
             role.id,
-            stack.id,
-            expectedRoleStack.accessType
+            project.slug,
+            expectedRoleProject.accessType
           );
         });
 
-        it('posts the role stack to the server', function() {
+        it('posts the role project to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedHost}/roles/${role.id}/stacks/${stack.id}`,
+            `${expectedHost}/roles/${role.id}/projects/${project.slug}`,
             {
-              access_type: expectedRoleStack.accessType
+              access_type: expectedRoleProject.accessType
             }
           );
         });
 
-        it('formats the returned role stack', function() {
+        it('formats the returned role project', function() {
           return promise.then(() => {
-            expect(toCamelCase).to.be.calledWith(roleStackFromServer);
+            expect(toCamelCase).to.be.calledWith(roleProjectFromServer);
           });
         });
 
         it('returns a fulfilled promise', function() {
           return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-            expectedRoleStack
+            expectedRoleProject
           );
         });
       }
@@ -227,27 +227,31 @@ describe('Coordinator/Roles', function() {
 
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const stack = fixture.build('contxtStack');
-        const roleStack = fixture.build('contxtRoleStack');
+        const project = fixture.build('contxtProject');
+        const roleProject = fixture.build('contxtRoleProject');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(null, stack.id, roleStack.accessType);
+        const promise = roles.addProject(
+          null,
+          project.slug,
+          roleProject.accessType
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'A roleId is required for adding a stack to a role.'
+          'A roleId is required for adding a project to a role.'
         );
       });
     });
 
-    context('when the stack ID is not provided', function() {
+    context('when the project slug is not provided', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
-        const roleStack = fixture.build('contxtRoleStack');
+        const roleProject = fixture.build('contxtRoleProject');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(role.id, null, roleStack.accessType);
+        const promise = roles.addProject(role.id, null, roleProject.accessType);
 
         return expect(promise).to.be.rejectedWith(
-          'A stackId is required for adding a stack to a role.'
+          'A projectSlug is required for adding a project to a role.'
         );
       });
     });
@@ -255,13 +259,13 @@ describe('Coordinator/Roles', function() {
     context('when the access type is not provided', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
-        const stack = fixture.build('contxtStack');
+        const project = fixture.build('contxtProject');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(role.id, stack.id, null);
+        const promise = roles.addProject(role.id, project.slug, null);
 
         return expect(promise).to.be.rejectedWith(
-          'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
+          'An accessType of "reader" or "admin" is required for adding a project to a role.'
         );
       });
     });
@@ -269,13 +273,17 @@ describe('Coordinator/Roles', function() {
     context('when the access type is not a valid value', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
-        const stack = fixture.build('contxtStack');
+        const project = fixture.build('contxtProject');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addStack(role.id, stack.id, faker.random.word());
+        const promise = roles.addProject(
+          role.id,
+          project.slug,
+          faker.random.word()
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'An accessType of "reader", "collaborator", or "owner" is required for adding a stack to a role.'
+          'An accessType of "reader" or "admin" is required for adding a project to a role.'
         );
       });
     });
@@ -862,23 +870,23 @@ describe('Coordinator/Roles', function() {
     });
   });
 
-  describe('removeStack', function() {
+  describe('removeProject', function() {
     context('when all required parameters are provided', function() {
-      let stack;
+      let project;
       let role;
       let promise;
 
       beforeEach(function() {
-        stack = fixture.build('contxtStack');
+        project = fixture.build('contxtProject');
         role = fixture.build('contxtRole');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        promise = roles.removeStack(role.id, stack.id);
+        promise = roles.removeProject(role.id, project.slug);
       });
 
-      it('sends a request to removeStack the role from the organization', function() {
+      it('sends a request to removeProject the role from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/roles/${role.id}/stacks/${stack.id}`
+          `${expectedHost}/roles/${role.id}/projects/${project.slug}`
         );
       });
 
@@ -889,24 +897,24 @@ describe('Coordinator/Roles', function() {
 
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const stack = fixture.build('contxtStack');
+        const project = fixture.build('contxtProject');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeStack(null, stack.id);
+        const promise = roles.removeProject(null, project.slug);
 
         return expect(promise).to.be.rejectedWith(
-          'A roleId is required for removing a stack from a role.'
+          'A roleId is required for removing a project from a role.'
         );
       });
     });
 
-    context('when the stack ID is not provided', function() {
+    context('when the project slug is not provided', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeStack(role.id, null);
+        const promise = roles.removeProject(role.id, null);
 
         return expect(promise).to.be.rejectedWith(
-          'A stackId is required for removing a stack from a role.'
+          'A projectSlug is required for removing a project from a role.'
         );
       });
     });

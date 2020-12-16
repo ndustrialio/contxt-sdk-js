@@ -10,14 +10,14 @@ Module that provides access to contxt users
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
     * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
-    * [.addStack(userId, stackId, accessType)](#Users+addStack) ⇒ <code>Promise</code>
+    * [.addProject(userId, projectSlug, accessType)](#Users+addProject) ⇒ <code>Promise</code>
     * [.get(userId)](#Users+get) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Users+getByOrganizationId) ⇒ <code>Promise</code>
     * [.invite(organizationId, user)](#Users+invite) ⇒ <code>Promise</code>
     * [.remove(organizationId, userId)](#Users+remove) ⇒ <code>Promise</code>
     * [.removeApplication(userId, applicationId)](#Users+removeApplication) ⇒ <code>Promise</code>
     * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
-    * [.removeStack(userId, stackId)](#Users+removeStack) ⇒ <code>Promise</code>
+    * [.removeProject(userId, projectSlug)](#Users+removeProject) ⇒ <code>Promise</code>
     * [.sync(userId)](#Users+sync) ⇒ <code>Promise</code>
 
 <a name="new_Users_new"></a>
@@ -114,29 +114,29 @@ contxtSdk.coordinator.users
   .then((userRole) => console.log(userRole))
   .catch((err) => console.log(err));
 ```
-<a name="Users+addStack"></a>
+<a name="Users+addProject"></a>
 
-### contxtSdk.coordinator.users.addStack(userId, stackId, accessType) ⇒ <code>Promise</code>
-Adds a stack to a user
+### contxtSdk.coordinator.users.addProject(userId, projectSlug, accessType) ⇒ <code>Promise</code>
+Adds a project to a user
 
-API Endpoint: '/users/:userId/stacks/:stackId'
+API Endpoint: '/users/:userId/projects/:projectSlug'
 Method: POST
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
-**Fulfill**: [<code>ContxtUserStack</code>](./Typedefs.md#ContxtUserStack) The newly created user stack  
+**Fulfill**: [<code>ContxtUserProject</code>](./Typedefs.md#ContxtUserProject) The newly created user project  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
-| stackId | <code>string</code> | The ID of the stack |
-| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;collaborator&#x27;</code> \| <code>&#x27;owner&#x27;</code> | The level of access for the user |
+| projectSlug | <code>string</code> | The slug of the project |
+| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;admin&#x27;</code> | The level of access for the user |
 
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58', 'collaborator')
-  .then((userStack) => console.log(userStack))
+  .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
+  .then((userProject) => console.log(userProject))
   .catch((err) => console.log(err));
 ```
 <a name="Users+get"></a>
@@ -293,12 +293,12 @@ contxtSdk.coordinator.users
   .removeRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```
-<a name="Users+removeStack"></a>
+<a name="Users+removeProject"></a>
 
-### contxtSdk.coordinator.users.removeStack(userId, stackId) ⇒ <code>Promise</code>
-Removes a stack from a user
+### contxtSdk.coordinator.users.removeProject(userId, projectSlug) ⇒ <code>Promise</code>
+Removes a project from a user
 
-API Endpoint: '/users/:userId/stacks/:stackId'
+API Endpoint: '/users/:userId/projects/:projectSlug'
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -308,12 +308,12 @@ Method: DELETE
 | Param | Type | Description |
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
-| stackId | <code>string</code> | The ID of the stack |
+| projectSlug | <code>string</code> | The ID of the project |
 
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+  .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug')
   .catch((err) => console.log(err));
 ```
 <a name="Users+sync"></a>
