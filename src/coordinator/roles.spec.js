@@ -265,7 +265,7 @@ describe('Coordinator/Roles', function() {
         const promise = roles.addProject(role.id, project.slug, null);
 
         return expect(promise).to.be.rejectedWith(
-          'An accessType of "reader", "collaborator", or "owner" is required for adding a project to a role.'
+          'An accessType of "reader", "admin" is required for adding a project to a role.'
         );
       });
     });
@@ -283,7 +283,7 @@ describe('Coordinator/Roles', function() {
         );
 
         return expect(promise).to.be.rejectedWith(
-          'An accessType of "reader", "collaborator", or "owner" is required for adding a project to a role.'
+          'An accessType of "reader", "admin" is required for adding a project to a role.'
         );
       });
     });

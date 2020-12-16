@@ -66,12 +66,12 @@ Method: POST
 | --- | --- | --- |
 | roleId | <code>string</code> | The UUID formatted ID of the role |
 | projectSlug | <code>string</code> | The slug of the project |
-| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;collaborator&#x27;</code> \| <code>&#x27;owner&#x27;</code> | The level of access for the role |
+| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;admin&#x27;</code> | The level of access for the role |
 
 **Example**  
 ```js
 contxtSdk.roles
-  .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'collaborator')
+  .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
   .then((roleProject) => console.log(roleProject))
   .catch((err) => console.log(err));
 ```

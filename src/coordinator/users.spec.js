@@ -561,7 +561,7 @@ describe('Coordinator/Users', function() {
         const promise = users.addProject(user.id, project.slug, null);
 
         return expect(promise).to.be.rejectedWith(
-          'An access type of "reader", "collaborator", or "owner" is required for adding a project to a user'
+          'An access type of "reader", "admin" is required for adding a project to a user'
         );
       });
     });
@@ -579,7 +579,7 @@ describe('Coordinator/Users', function() {
         );
 
         return expect(promise).to.be.rejectedWith(
-          'An access type of "reader", "collaborator", or "owner" is required for adding a project to a user'
+          'An access type of "reader", "admin" is required for adding a project to a user'
         );
       });
     });

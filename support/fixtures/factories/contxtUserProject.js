@@ -7,8 +7,7 @@ factory
   .define('contxtUserProject')
   .option('fromServer', false)
   .attrs({
-    accessType: () =>
-      faker.random.arrayElement(['reader', 'collaborator', 'owner']),
+    accessType: () => faker.random.arrayElement(['reader', 'admin']),
     createdAt: () => faker.date.past().toISOString(),
     id: () => faker.random.uuid(),
     projectId: () => factory.build('contxtProject').id,

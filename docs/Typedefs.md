@@ -405,7 +405,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 
 | Name | Type | Description |
 | --- | --- | --- |
-| accessType | <code>string</code> | Access Type of the user for this project with options "reader", "collaborator", "owner" |
+| accessType | <code>string</code> | Access Type of the user for this project with options "reader", "admin" |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>number</code> |  |
 | userId | <code>string</code> |  |
@@ -494,7 +494,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 
 | Name | Type | Description |
 | --- | --- | --- |
-| accessType | <code>string</code> | Access Type of the user for this project with options "reader", "collaborator", "owner" |
+| accessType | <code>string</code> | Access Type of the user for this project with options "reader", "admin" |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>string</code> |  |
 | userId | <code>string</code> |  |

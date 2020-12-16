@@ -130,12 +130,12 @@ Method: POST
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
 | projectSlug | <code>string</code> | The slug of the project |
-| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;collaborator&#x27;</code> \| <code>&#x27;owner&#x27;</code> | The level of access for the user |
+| accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;admin&#x27;</code> | The level of access for the user |
 
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'collaborator')
+  .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
   .then((userProject) => console.log(userProject))
   .catch((err) => console.log(err));
 ```

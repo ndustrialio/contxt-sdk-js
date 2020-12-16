@@ -36,7 +36,7 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtUserProject
- * @property {string} accessType Access Type of the user for this project with options "reader", "collaborator", "owner"
+ * @property {string} accessType Access Type of the user for this project with options "reader", "admin"
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
  * @property {string} userId
@@ -227,7 +227,7 @@ class Users {
    *
    * @param {string} userId The ID of the user
    * @param {string} projectSlug The slug of the project
-   * @param {'reader' | 'collaborator' | 'owner'} accessType The level of access for the user
+   * @param {'reader' | 'admin'} accessType The level of access for the user
    *
    * @returns {Promise}
    * @fulfill {ContxtUserProject} The newly created user project
@@ -235,7 +235,7 @@ class Users {
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'collaborator')
+   *   .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
    *   .then((userProject) => console.log(userProject))
    *   .catch((err) => console.log(err));
    */
@@ -252,10 +252,10 @@ class Users {
       );
     }
 
-    if (['reader', 'collaborator', 'owner'].indexOf(accessType) === -1) {
+    if (['reader', 'admin'].indexOf(accessType) === -1) {
       return Promise.reject(
         new Error(
-          'An access type of "reader", "collaborator", or "owner" is required for adding a project to a user'
+          'An access type of "reader", "admin" is required for adding a project to a user'
         )
       );
     }
