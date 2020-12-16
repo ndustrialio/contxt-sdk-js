@@ -139,7 +139,7 @@ class Roles {
     if (['reader', 'admin'].indexOf(accessType) === -1) {
       return Promise.reject(
         new Error(
-          'An accessType of "reader", or "admin" is required for adding a project to a role.'
+          'An accessType of "reader" or "admin" is required for adding a project to a role.'
         )
       );
     }
