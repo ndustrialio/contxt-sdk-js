@@ -195,13 +195,13 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtOrganizationFeaturedApplication">ContxtOrganizationFeaturedApplication</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#ContxtProject">ContxtProject</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="./Typedefs.md#ContxtRole">ContxtRole</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtRoleApplication">ContxtRoleApplication</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="./Typedefs.md#ContxtRoleStack">ContxtRoleStack</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#ContxtStack">ContxtStack</a> : <code>Object</code></dt>
+<dt><a href="./Typedefs.md#ContxtRoleProject">ContxtRoleProject</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUser">ContxtUser</a> : <code>Object</code></dt>
 <dd></dd>
@@ -213,9 +213,9 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUserPermissions">ContxtUserPermissions</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="./Typedefs.md#ContxtUserRole">ContxtUserRole</a> : <code>Object</code></dt>
+<dt><a href="./Typedefs.md#ContxtUserProject">ContxtUserProject</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="./Typedefs.md#ContxtUserStack">ContxtUserStack</a> : <code>Object</code></dt>
+<dt><a href="./Typedefs.md#ContxtUserRole">ContxtUserRole</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#CostCenter">CostCenter</a> : <code>Object</code></dt>
 <dd></dd>

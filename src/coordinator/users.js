@@ -35,12 +35,12 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtUserStack
- * @property {string} accessType Access Type of the user for this stack with options "reader", "collaborator", "owner"
+ * @typedef {Object} ContxtUserProject
+ * @property {string} accessType Access Type of the user for this project with options "reader", "admin"
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
  * @property {string} userId
- * @property {string} stackId
+ * @property {string} projectId
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
@@ -220,48 +220,48 @@ class Users {
   }
 
   /**
-   * Adds a stack to a user
+   * Adds a project to a user
    *
-   * API Endpoint: '/users/:userId/stacks/:stackId'
+   * API Endpoint: '/users/:userId/projects/:projectSlug'
    * Method: POST
    *
    * @param {string} userId The ID of the user
-   * @param {string} stackId The ID of the stack
-   * @param {'reader' | 'collaborator' | 'owner'} accessType The level of access for the user
+   * @param {string} projectSlug The slug of the project
+   * @param {'reader' | 'admin'} accessType The level of access for the user
    *
    * @returns {Promise}
-   * @fulfill {ContxtUserStack} The newly created user stack
+   * @fulfill {ContxtUserProject} The newly created user project
    * @reject {Error}
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .addStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58', 'collaborator')
-   *   .then((userStack) => console.log(userStack))
+   *   .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
+   *   .then((userProject) => console.log(userProject))
    *   .catch((err) => console.log(err));
    */
-  addStack(userId, stackId, accessType) {
+  addProject(userId, projectSlug, accessType) {
     if (!userId) {
       return Promise.reject(
-        new Error('A user ID is required for adding a stack to a user')
+        new Error('A user ID is required for adding a project to a user')
       );
     }
 
-    if (!stackId) {
+    if (!projectSlug) {
       return Promise.reject(
-        new Error('A stack ID is required for adding a stack to a user')
+        new Error('A project slug is required for adding a project to a user')
       );
     }
 
-    if (['reader', 'collaborator', 'owner'].indexOf(accessType) === -1) {
+    if (['reader', 'admin'].indexOf(accessType) === -1) {
       return Promise.reject(
         new Error(
-          'An access type of "reader", "collaborator", or "owner" is required for adding a stack to a user'
+          'An access type of "reader" or "admin" is required for adding a project to a user'
         )
       );
     }
 
     return this._request
-      .post(`${this._getBaseUrl()}/users/${userId}/stacks/${stackId}`, {
+      .post(`${this._getBaseUrl()}/users/${userId}/projects/${projectSlug}`, {
         access_type: accessType
       })
       .then((response) => toCamelCase(response));
@@ -550,13 +550,13 @@ class Users {
   }
 
   /**
-   * Removes a stack from a user
+   * Removes a project from a user
    *
-   * API Endpoint: '/users/:userId/stacks/:stackId'
+   * API Endpoint: '/users/:userId/projects/:projectSlug'
    * Method: DELETE
    *
    * @param {string} userId The ID of the user
-   * @param {string} stackId The ID of the stack
+   * @param {string} projectSlug The ID of the project
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -564,24 +564,26 @@ class Users {
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .removeStack('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
+   *   .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug')
    *   .catch((err) => console.log(err));
    */
-  removeStack(userId, stackId) {
+  removeProject(userId, projectSlug) {
     if (!userId) {
       return Promise.reject(
-        new Error('A user ID is required for removing a stack from a user')
+        new Error('A user ID is required for removing a project from a user')
       );
     }
 
-    if (!stackId) {
+    if (!projectSlug) {
       return Promise.reject(
-        new Error('A stack ID is required for removing a stack from a user')
+        new Error(
+          'A project slug is required for removing a project from a user'
+        )
       );
     }
 
     return this._request.delete(
-      `${this._getBaseUrl()}/users/${userId}/stacks/${stackId}`
+      `${this._getBaseUrl()}/users/${userId}/projects/${projectSlug}`
     );
   }
 

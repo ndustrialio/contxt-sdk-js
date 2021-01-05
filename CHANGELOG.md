@@ -1,3 +1,14 @@
+## [v3.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v3.0.0) (2020-12-16)
+
+**Changed**
+
+- Updated stacks to be projects
+- Stack routes by ID were updated to project routes by slug
+- `Coordinator.roles#addStack` is now `Coordinator.roles#addProject`
+- `Coordinator.roles#removeStack` is now `Coordinator.roles#removeProject`
+- `Coordinator.users#addStack` is now `Coordinator.users#addProject`
+- `Coordinator.users#removeStack` is now `Coordinator.users#removeProject`
+
 ## [v2.13.3](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.13.1) (2020-11-03)
 
 **Changed**
@@ -8,7 +19,7 @@
 
 **Fixed**
 
-- Fiex `Coordinator.users#activate`, `Coodinator.users#get`, and `Coorindator.users#sync` to work with the access endpoints when an orgaizationId has been selected
+- Fixed `Coordinator.users#activate`, `Coodinator.users#get`, and `Coorindator.users#sync` to work with the access endpoints when an orgaizationId has been selected
 
 ## [v2.13.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v2.13.1) (2020-04-16)
 

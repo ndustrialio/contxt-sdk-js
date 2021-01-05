@@ -5,8 +5,8 @@ import { toCamelCase } from '../utils/objects';
  * @property {number[]} applicationsExplicit Application ids the user has directly been given access to
  * @property {number[]} applicationsImplicit Application ids the user has access to from a role or being the owner
  * @property {string[]} roles Role ids that the user belongs to
- * @property {number[]} stacksExplicit Stack ids the user has directly been given access to
- * @property {number[]} stacksImplicit Stack ids the user has access to from a role or being the owner
+ * @property {number[]} projectsExplicit Project ids the user has directly been given access to
+ * @property {number[]} projectsImplicit Project ids the user has access to from a role or being the owner
  * @property {string} userId
  */
 

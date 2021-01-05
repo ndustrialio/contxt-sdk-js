@@ -346,6 +346,26 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | organizationId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
+<a name="ContxtProject"></a>
+
+## ContxtProject : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| createdBy | <code>string</code> | User ID of the user who created the project |
+| description | <code>string</code> |  |
+| icon | <code>string</code> |  |
+| id | <code>number</code> |  |
+| name | <code>string</code> |  |
+| organizationId | <code>string</code> |  |
+| ownerRoleId | <code>string</code> |  |
+| slug | <code>string</code> |  |
+| type | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+
 <a name="ContxtRole"></a>
 
 ## ContxtRole : <code>Object</code>
@@ -360,7 +380,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | id | <code>string</code> |  |
 | name | <code>string</code> |  |
 | organizationId | <code>string</code> |  |
-| stacks | [<code>Array.&lt;ContxtStack&gt;</code>](#ContxtStack) |  |
+| projects | [<code>Array.&lt;ContxtProject&gt;</code>](#ContxtProject) |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="ContxtRoleApplication"></a>
@@ -377,41 +397,19 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | roleId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
-<a name="ContxtRoleStack"></a>
+<a name="ContxtRoleProject"></a>
 
-## ContxtRoleStack : <code>Object</code>
+## ContxtRoleProject : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
 | --- | --- | --- |
-| accessType | <code>string</code> | Access Type of the user for this stack with options "reader", "collaborator", "owner" |
+| accessType | <code>string</code> | Access Type of the user for this project with options "reader", "admin" |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>number</code> |  |
 | userId | <code>string</code> |  |
-| stackId | <code>number</code> |  |
-| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-
-<a name="ContxtStack"></a>
-
-## ContxtStack : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| clientId | <code>string</code> |  |
-| clusterId | <code>string</code> |  |
-| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| currentVersionId | <code>string</code> |  |
-| description | <code>string</code> |  |
-| documentationUrl | <code>string</code> |  |
-| icon | <code>string</code> |  |
-| id | <code>number</code> |  |
-| name | <code>string</code> |  |
-| organizationId | <code>string</code> |  |
-| ownerId | <code>string</code> |  |
-| type | <code>string</code> |  |
+| projectId | <code>number</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="ContxtUser"></a>
@@ -484,9 +482,24 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | applicationsExplicit | <code>Array.&lt;number&gt;</code> | Application ids the user has directly been given access to |
 | applicationsImplicit | <code>Array.&lt;number&gt;</code> | Application ids the user has access to from a role or being the owner |
 | roles | <code>Array.&lt;string&gt;</code> | Role ids that the user belongs to |
-| stacksExplicit | <code>Array.&lt;number&gt;</code> | Stack ids the user has directly been given access to |
-| stacksImplicit | <code>Array.&lt;number&gt;</code> | Stack ids the user has access to from a role or being the owner |
+| projectsExplicit | <code>Array.&lt;number&gt;</code> | Project ids the user has directly been given access to |
+| projectsImplicit | <code>Array.&lt;number&gt;</code> | Project ids the user has access to from a role or being the owner |
 | userId | <code>string</code> |  |
+
+<a name="ContxtUserProject"></a>
+
+## ContxtUserProject : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| accessType | <code>string</code> | Access Type of the user for this project with options "reader", "admin" |
+| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| userId | <code>string</code> |  |
+| projectId | <code>string</code> |  |
+| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="ContxtUserRole"></a>
 
@@ -501,21 +514,6 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | mappedFromExternalGroup | <code>boolean</code> |  |
 | userId | <code>string</code> |  |
 | roleId | <code>string</code> |  |
-| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-
-<a name="ContxtUserStack"></a>
-
-## ContxtUserStack : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| accessType | <code>string</code> | Access Type of the user for this stack with options "reader", "collaborator", "owner" |
-| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| id | <code>string</code> |  |
-| userId | <code>string</code> |  |
-| stackId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="CostCenter"></a>
