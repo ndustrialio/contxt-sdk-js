@@ -4,13 +4,13 @@ const factory = require('rosie').Factory;
 const faker = require('faker');
 
 factory
-  .define('contxtRoleProject')
+  .define('contxtRoleProjectEnvironment')
   .option('fromServer', false)
   .attrs({
     accessType: () => faker.random.arrayElement(['reader', 'admin']),
     createdAt: () => faker.date.past().toISOString(),
     id: () => faker.random.uuid(),
-    projectId: () => factory.build('contxtProject').id,
+    environmentId: () => factory.build('contxtProjectEnvironment').id,
     updatedAt: () => faker.date.recent().toISOString(),
     roleId: () => factory.build('contxtRole').id
   })
@@ -24,8 +24,8 @@ factory
       roleProject.created_at = roleProject.createdAt;
       delete roleProject.createdAt;
 
-      roleProject.project_id = roleProject.projectId;
-      delete roleProject.projectId;
+      roleProject.environment_id = roleProject.environmentId;
+      delete roleProject.environmentId;
 
       roleProject.updated_at = roleProject.updatedAt;
       delete roleProject.updatedAt;
