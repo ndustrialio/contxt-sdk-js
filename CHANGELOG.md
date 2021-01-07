@@ -1,3 +1,11 @@
+## [v3.0.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v3.0.1) (2021-01-07)
+
+**Changed**
+
+- Roles are tied to Project Environments instead of Projects
+- `Coordinator.roles#addProject` is now `Coordinator.roles#addProjectEnvironment`
+- `Coordinator.roles#removeProject` is now `Coordinator.roles#removeProjectEnvironment`
+
 ## [v3.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v3.0.0) (2020-12-16)
 
 **Changed**
