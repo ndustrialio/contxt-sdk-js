@@ -447,27 +447,31 @@ describe('Coordinator/Users', function() {
     });
   });
 
-  describe('addProject', function() {
+  describe('addProjectEnvironment', function() {
     context(
       'when all the required parameters are provided and valid',
       function() {
-        let expectedUserProject;
+        let expectedUserProjectEnvironment;
         let getBaseUrl;
         let promise;
         let request;
         let project;
+        let projectEnvironment;
         let user;
-        let userProjectFromServer;
+        let userProjectEnvironmentFromServer;
         let toCamelCase;
 
         beforeEach(function() {
           project = fixture.build('contxtProject');
+          projectEnvironment = fixture.build('contxtProjectEnvironment');
           user = fixture.build('contxtUser');
 
-          expectedUserProject = fixture.build('contxtUserProject');
-          userProjectFromServer = fixture.build(
-            'contxtUserProject',
-            expectedUserProject,
+          expectedUserProjectEnvironment = fixture.build(
+            'contxtUserProjectEnvironment'
+          );
+          userProjectEnvironmentFromServer = fixture.build(
+            'contxtUserProjectEnvironment',
+            expectedUserProjectEnvironment,
             {
               fromServer: true
             }
@@ -475,11 +479,11 @@ describe('Coordinator/Users', function() {
 
           request = {
             ...baseRequest,
-            post: sinon.stub().resolves(userProjectFromServer)
+            post: sinon.stub().resolves(userProjectEnvironmentFromServer)
           };
           toCamelCase = sinon
             .stub(objectUtils, 'toCamelCase')
-            .callsFake((app) => expectedUserProject);
+            .callsFake((app) => expectedUserProjectEnvironment);
 
           const users = new Users(baseSdk, request, expectedTenantBaseUrl);
 
@@ -487,10 +491,11 @@ describe('Coordinator/Users', function() {
             .stub(users, '_getBaseUrl')
             .returns(expectedTenantBaseUrl);
 
-          promise = users.addProject(
+          promise = users.addProjectEnvironment(
             user.id,
             project.slug,
-            expectedUserProject.accessType
+            projectEnvironment.slug,
+            expectedUserProjectEnvironment.accessType
           );
         });
 
@@ -500,18 +505,20 @@ describe('Coordinator/Users', function() {
 
         it('posts the user project to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedTenantBaseUrl}/users/${user.id}/projects/${
-              project.slug
-            }`,
+            `${expectedTenantBaseUrl}/projects/${project.slug}/environments/${
+              projectEnvironment.slug
+            }/users/${user.id}`,
             {
-              access_type: expectedUserProject.accessType
+              access_type: expectedUserProjectEnvironment.accessType
             }
           );
         });
 
         it('formats the returned user project', function() {
           return promise.then(() => {
-            expect(toCamelCase).to.be.calledWith(userProjectFromServer);
+            expect(toCamelCase).to.be.calledWith(
+              userProjectEnvironmentFromServer
+            );
           });
         });
 
@@ -524,17 +531,21 @@ describe('Coordinator/Users', function() {
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
         const project = fixture.build('contxtProject');
-        const userProject = fixture.build('contxtUserProject');
+        const projectEnvironment = fixture.build('contxtProjectEnvironment');
+        const userProjectEnvironment = fixture.build(
+          'contxtUserProjectEnvironment'
+        );
 
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addProject(
+        const promise = users.addProjectEnvironment(
           null,
           project.slug,
-          userProject.accessType
+          projectEnvironment.slug,
+          userProjectEnvironment.accessType
         );
 
         return expect(promise).to.be.rejectedWith(
-          'A user ID is required for adding a project to a user'
+          'A user ID is required for adding a project environment to a user'
         );
       });
     });
@@ -542,12 +553,41 @@ describe('Coordinator/Users', function() {
     context('when the project slug is not provided', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
-        const userProject = fixture.build('contxtUserProject');
+        const projectEnvironment = fixture.build('contxtProjectEnvironment');
+        const userProjectEnvironment = fixture.build(
+          'contxtUserProjectEnvironment'
+        );
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addProject(user.id, null, userProject.accessType);
+        const promise = users.addProjectEnvironment(
+          user.id,
+          null,
+          projectEnvironment.slug,
+          userProjectEnvironment.accessType
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'A project slug is required for adding a project to a user'
+          'A project slug is required for adding a project environment to a user'
+        );
+      });
+    });
+
+    context('when the project environment slug is not provided', function() {
+      it('throws an error', function() {
+        const user = fixture.build('contxtUser');
+        const project = fixture.build('contxtProject');
+        const userProjectEnvironment = fixture.build(
+          'contxtUserProjectEnvironment'
+        );
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
+        const promise = users.addProjectEnvironment(
+          user.id,
+          project.slug,
+          null,
+          userProjectEnvironment.accessType
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          'A project environment slug is required for adding a project environment to a user'
         );
       });
     });
@@ -556,12 +596,17 @@ describe('Coordinator/Users', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
         const project = fixture.build('contxtProject');
-
+        const projectEnvironment = fixture.build('contxtProjectEnvironment');
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addProject(user.id, project.slug, null);
+        const promise = users.addProjectEnvironment(
+          user.id,
+          project.slug,
+          projectEnvironment.slug,
+          null
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'An access type of "reader" or "admin" is required for adding a project to a user'
+          'An access type of "reader" or "admin" is required for adding a project environment to a user'
         );
       });
     });
@@ -570,16 +615,17 @@ describe('Coordinator/Users', function() {
       it('throws an error', function() {
         const user = fixture.build('contxtUser');
         const project = fixture.build('contxtProject');
-
+        const projectEnvironment = fixture.build('contxtProjectEnvironment');
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.addProject(
+        const promise = users.addProjectEnvironment(
           user.id,
           project.slug,
+          projectEnvironment.slug,
           faker.random.word()
         );
 
         return expect(promise).to.be.rejectedWith(
-          'An access type of "reader" or "admin" is required for adding a project to a user'
+          'An access type of "reader" or "admin" is required for adding a project environment to a user'
         );
       });
     });
@@ -1306,15 +1352,17 @@ describe('Coordinator/Users', function() {
     });
   });
 
-  describe('removeProject', function() {
+  describe('removeProjectEnvironment', function() {
     context('when all required parameters are provided', function() {
       let getBaseUrl;
       let project;
+      let projectEnvironment;
       let user;
       let promise;
 
       beforeEach(function() {
         project = fixture.build('contxtProject');
+        projectEnvironment = fixture.build('contxtProjectEnvironment');
         user = fixture.build('contxtUser');
 
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
@@ -1323,16 +1371,22 @@ describe('Coordinator/Users', function() {
           .stub(users, '_getBaseUrl')
           .returns(expectedTenantBaseUrl);
 
-        promise = users.removeProject(user.id, project.slug);
+        promise = users.removeProjectEnvironment(
+          user.id,
+          project.slug,
+          projectEnvironment.slug
+        );
       });
 
       it('gets the base url', function() {
         expect(getBaseUrl).to.be.calledOnceWith();
       });
 
-      it('sends a request to removeProject the user from the organization', function() {
+      it('sends a request to removeProjectEnvironment the user from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedTenantBaseUrl}/users/${user.id}/projects/${project.slug}`
+          `${expectedTenantBaseUrl}/projects/${project.slug}/environments/${
+            projectEnvironment.slug
+          }/users/${user.id}`
         );
       });
 
@@ -1344,23 +1398,50 @@ describe('Coordinator/Users', function() {
     context('when the user ID is not provided', function() {
       it('throws an error', function() {
         const project = fixture.build('contxtProject');
+        const projectEnvironment = fixture.build('contxtProjectEnvironment');
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.removeProject(null, project.slug);
+        const promise = users.removeProjectEnvironment(
+          null,
+          project.slug,
+          projectEnvironment.slug
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'A user ID is required for removing a project from a user'
+          'A user ID is required for removing a project environment from a user'
         );
       });
     });
 
     context('when the project slug is not provided', function() {
       it('throws an error', function() {
+        const projectEnvironment = fixture.build('contxtProjectEnvironment');
         const user = fixture.build('contxtUser');
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
-        const promise = users.removeProject(user.id, null);
+        const promise = users.removeProjectEnvironment(
+          user.id,
+          null,
+          projectEnvironment.slug
+        );
 
         return expect(promise).to.be.rejectedWith(
-          'A project slug is required for removing a project from a user'
+          'A project slug is required for removing a project environment from a user'
+        );
+      });
+    });
+
+    context('when the project environment slug is not provided', function() {
+      it('throws an error', function() {
+        const project = fixture.build('contxtProject');
+        const user = fixture.build('contxtUser');
+        const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
+        const promise = users.removeProjectEnvironment(
+          user.id,
+          project.slug,
+          null
+        );
+
+        return expect(promise).to.be.rejectedWith(
+          'A project environment slug is required for removing a project environment from a user'
         );
       });
     });

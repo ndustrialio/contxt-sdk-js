@@ -102,9 +102,9 @@ class Roles {
   }
 
   /**
-   * Add a project to a role
+   * Add a project environment to a role
    *
-   * API Endpoint: '/roles/:roleId/projects/:projectSlug'
+   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
    * Method: POST
    *
    * @param {string} roleId The UUID formatted ID of the role
@@ -365,9 +365,9 @@ class Roles {
   }
 
   /**
-   * Remove an project from a role
+   * Remove a project environment from a role
    *
-   * API Endpoint: '/roles/:roleId/projects/:projectSlug'
+   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
    * Method: DELETE
    *
    * @param {string} roleId The UUID formatted ID of the role

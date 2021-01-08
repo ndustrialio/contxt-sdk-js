@@ -484,9 +484,9 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | projectsImplicit | <code>Array.&lt;number&gt;</code> | Project ids the user has access to from a role or being the owner |
 | userId | <code>string</code> |  |
 
-<a name="ContxtUserProject"></a>
+<a name="ContxtUserProjectEnvironment"></a>
 
-## ContxtUserProject : <code>Object</code>
+## ContxtUserProjectEnvironment : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -496,7 +496,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>string</code> |  |
 | userId | <code>string</code> |  |
-| projectId | <code>string</code> |  |
+| projectEnvironmentId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="ContxtUserRole"></a>

@@ -30,14 +30,14 @@ factory
       times(faker.random.number({ min: 0, max: 15 }), () => {
         return {
           id: factory.build('contxtProject').id,
-          accessType: factory.build('contxtUserProject').accessType
+          accessType: factory.build('contxtUserProjectEnvironment').accessType
         };
       }),
     projectsImplicit: () =>
       times(faker.random.number({ min: 0, max: 15 }), () => {
         return {
           id: factory.build('contxtProject').id,
-          accessType: factory.build('contxtUserProject').accessType
+          accessType: factory.build('contxtUserProjectEnvironment').accessType
         };
       }),
     userId: () => factory.build('contxtUser').id

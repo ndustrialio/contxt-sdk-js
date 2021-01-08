@@ -10,14 +10,14 @@ Module that provides access to contxt users
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
     * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
-    * [.addProject(userId, projectSlug, accessType)](#Users+addProject) ⇒ <code>Promise</code>
+    * [.addProjectEnvironment(userId, projectSlug, projectEnvironmentSlug, accessType)](#Users+addProjectEnvironment) ⇒ <code>Promise</code>
     * [.get(userId)](#Users+get) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Users+getByOrganizationId) ⇒ <code>Promise</code>
     * [.invite(organizationId, user)](#Users+invite) ⇒ <code>Promise</code>
     * [.remove(organizationId, userId)](#Users+remove) ⇒ <code>Promise</code>
     * [.removeApplication(userId, applicationId)](#Users+removeApplication) ⇒ <code>Promise</code>
     * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
-    * [.removeProject(userId, projectSlug)](#Users+removeProject) ⇒ <code>Promise</code>
+    * [.removeProjectEnvironment(userId, projectSlug, projectEnvironmentSlug)](#Users+removeProjectEnvironment) ⇒ <code>Promise</code>
     * [.sync(userId)](#Users+sync) ⇒ <code>Promise</code>
 
 <a name="new_Users_new"></a>
@@ -114,28 +114,29 @@ contxtSdk.coordinator.users
   .then((userRole) => console.log(userRole))
   .catch((err) => console.log(err));
 ```
-<a name="Users+addProject"></a>
+<a name="Users+addProjectEnvironment"></a>
 
-### contxtSdk.coordinator.users.addProject(userId, projectSlug, accessType) ⇒ <code>Promise</code>
-Adds a project to a user
+### contxtSdk.coordinator.users.addProjectEnvironment(userId, projectSlug, projectEnvironmentSlug, accessType) ⇒ <code>Promise</code>
+Adds a project environment to a user
 
-API Endpoint: '/users/:userId/projects/:projectSlug'
+API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
 Method: POST
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
-**Fulfill**: [<code>ContxtUserProject</code>](./Typedefs.md#ContxtUserProject) The newly created user project  
+**Fulfill**: [<code>ContxtUserProjectEnvironment</code>](./Typedefs.md#ContxtUserProjectEnvironment) The newly created user project environment  
 **Reject**: <code>Error</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
 | projectSlug | <code>string</code> | The slug of the project |
+| projectEnvironmentSlug | <code>string</code> | The slug of the project environment |
 | accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;admin&#x27;</code> | The level of access for the user |
 
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
+  .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug', 'admin')
   .then((userProject) => console.log(userProject))
   .catch((err) => console.log(err));
 ```
@@ -293,12 +294,12 @@ contxtSdk.coordinator.users
   .removeRole('36b8421a-cc4a-4204-b839-1397374fb16b', '007ca9ee-ece7-4931-9d11-9b4fd97d4d58')
   .catch((err) => console.log(err));
 ```
-<a name="Users+removeProject"></a>
+<a name="Users+removeProjectEnvironment"></a>
 
-### contxtSdk.coordinator.users.removeProject(userId, projectSlug) ⇒ <code>Promise</code>
-Removes a project from a user
+### contxtSdk.coordinator.users.removeProjectEnvironment(userId, projectSlug, projectEnvironmentSlug) ⇒ <code>Promise</code>
+Removes a project environment from a user
 
-API Endpoint: '/users/:userId/projects/:projectSlug'
+API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -309,11 +310,12 @@ Method: DELETE
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
 | projectSlug | <code>string</code> | The ID of the project |
+| projectEnvironmentSlug | <code>string</code> | The slug of the project environment |
 
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug')
+  .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug')
   .catch((err) => console.log(err));
 ```
 <a name="Users+sync"></a>

@@ -35,12 +35,12 @@ import { toCamelCase, toSnakeCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtUserProject
+ * @typedef {Object} ContxtUserProjectEnvironment
  * @property {string} accessType Access Type of the user for this project with options "reader", "admin"
  * @property {string} createdAt ISO 8601 Extended Format date/time string
  * @property {string} id
  * @property {string} userId
- * @property {string} projectId
+ * @property {string} projectEnvironmentId
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
@@ -220,50 +220,71 @@ class Users {
   }
 
   /**
-   * Adds a project to a user
+   * Adds a project environment to a user
    *
-   * API Endpoint: '/users/:userId/projects/:projectSlug'
+   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
    * Method: POST
    *
    * @param {string} userId The ID of the user
    * @param {string} projectSlug The slug of the project
+   * @param {string} projectEnvironmentSlug The slug of the project environment
    * @param {'reader' | 'admin'} accessType The level of access for the user
    *
    * @returns {Promise}
-   * @fulfill {ContxtUserProject} The newly created user project
+   * @fulfill {ContxtUserProjectEnvironment} The newly created user project environment
    * @reject {Error}
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
+   *   .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug', 'admin')
    *   .then((userProject) => console.log(userProject))
    *   .catch((err) => console.log(err));
    */
-  addProject(userId, projectSlug, accessType) {
+  addProjectEnvironment(
+    userId,
+    projectSlug,
+    projectEnvironmentSlug,
+    accessType
+  ) {
     if (!userId) {
       return Promise.reject(
-        new Error('A user ID is required for adding a project to a user')
+        new Error(
+          'A user ID is required for adding a project environment to a user'
+        )
       );
     }
 
     if (!projectSlug) {
       return Promise.reject(
-        new Error('A project slug is required for adding a project to a user')
+        new Error(
+          'A project slug is required for adding a project environment to a user'
+        )
+      );
+    }
+
+    if (!projectEnvironmentSlug) {
+      return Promise.reject(
+        new Error(
+          'A project environment slug is required for adding a project environment to a user.'
+        )
       );
     }
 
     if (['reader', 'admin'].indexOf(accessType) === -1) {
       return Promise.reject(
         new Error(
-          'An access type of "reader" or "admin" is required for adding a project to a user'
+          'An access type of "reader" or "admin" is required for adding a project environment to a user'
         )
       );
     }
 
     return this._request
-      .post(`${this._getBaseUrl()}/users/${userId}/projects/${projectSlug}`, {
-        access_type: accessType
-      })
+      .post(
+        `${this._getBaseUrl()}/projects/${projectSlug}/environments/${projectEnvironmentSlug}/users/${userId}`,
+        {
+          access_type: accessType
+        }
+      )
       .then((response) => toCamelCase(response));
   }
 
@@ -550,13 +571,14 @@ class Users {
   }
 
   /**
-   * Removes a project from a user
+   * Removes a project environment from a user
    *
-   * API Endpoint: '/users/:userId/projects/:projectSlug'
+   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
    * Method: DELETE
    *
    * @param {string} userId The ID of the user
    * @param {string} projectSlug The ID of the project
+   * @param {string} projectEnvironmentSlug The slug of the project environment
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -564,26 +586,36 @@ class Users {
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug')
+   *   .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug')
    *   .catch((err) => console.log(err));
    */
-  removeProject(userId, projectSlug) {
+  removeProjectEnvironment(userId, projectSlug, projectEnvironmentSlug) {
     if (!userId) {
       return Promise.reject(
-        new Error('A user ID is required for removing a project from a user')
+        new Error(
+          'A user ID is required for removing a project environment from a user'
+        )
       );
     }
 
     if (!projectSlug) {
       return Promise.reject(
         new Error(
-          'A project slug is required for removing a project from a user'
+          'A project slug is required for removing a project environment from a user'
+        )
+      );
+    }
+
+    if (!projectEnvironmentSlug) {
+      return Promise.reject(
+        new Error(
+          'A project environment slug is required for removing a project environment from a user.'
         )
       );
     }
 
     return this._request.delete(
-      `${this._getBaseUrl()}/users/${userId}/projects/${projectSlug}`
+      `${this._getBaseUrl()}/projects/${projectSlug}/environments/${projectEnvironmentSlug}/users/${userId}`
     );
   }
 

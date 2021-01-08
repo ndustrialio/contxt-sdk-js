@@ -53,9 +53,9 @@ contxtSdk.roles
 <a name="Roles+addProjectEnvironment"></a>
 
 ### contxtSdk.coordinator.roles.addProjectEnvironment(roleId, projectSlug, projectEnvironmentSlug, accessType) ⇒ <code>Promise</code>
-Add a project to a role
+Add a project environment to a role
 
-API Endpoint: '/roles/:roleId/projects/:projectSlug'
+API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
 Method: POST
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -174,9 +174,9 @@ contxtSdk.roles
 <a name="Roles+removeProjectEnvironment"></a>
 
 ### contxtSdk.coordinator.roles.removeProjectEnvironment(roleId, projectSlug, projectEnvironmentSlug) ⇒ <code>Promise</code>
-Remove an project from a role
+Remove a project environment from a role
 
-API Endpoint: '/roles/:roleId/projects/:projectSlug'
+API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
 Method: DELETE
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
