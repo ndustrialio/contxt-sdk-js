@@ -8,7 +8,7 @@ import { toSnakeCase, toCamelCase } from '../utils/objects';
  * @property {string} id
  * @property {string} name
  * @property {string} organizationId
- * @property {ContxtProject[]} projects
+ * @property {ContxtProjectEnvironment[]} projectEnvironments
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 /**
@@ -21,28 +21,26 @@ import { toSnakeCase, toCamelCase } from '../utils/objects';
  */
 
 /**
- * @typedef {Object} ContxtRoleProject
+ * @typedef {Object} ContxtRoleProjectEnvironment
  * @property {string} accessType Access Type of the user for this project with options "reader", "admin"
  * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {number} id
  * @property {string} userId
- * @property {number} projectId
+ * @property {string} environmentId
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
  */
 
 /**
- * @typedef {Object} ContxtProject
+ * @typedef {Object} ContxtProjectEnvironment
  * @property {string} createdAt ISO 8601 Extended Format date/time string
- * @property {string} createdBy User ID of the user who created the project
- * @property {string} description
- * @property {string} icon
- * @property {number} id
- * @property {string} name
- * @property {string} organizationId
- * @property {string} ownerRoleId
- * @property {string} slug
- * @property {string} type
  * @property {string} updatedAt ISO 8601 Extended Format date/time string
+ * @property {string} id
+ * @property {string} organizationId
+ * @property {number} projectId
+ * @property {string} clusterId
+ * @property {string} slug
+ * @property {string} name
+ * @property {string} type
+ * @property {string} description
  */
 
 /**
@@ -104,50 +102,73 @@ class Roles {
   }
 
   /**
-   * Add a project to a role
+   * Add a project environment to a role
    *
-   * API Endpoint: '/roles/:roleId/projects/:projectSlug'
+   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
    * Method: POST
    *
    * @param {string} roleId The UUID formatted ID of the role
    * @param {string} projectSlug The slug of the project
+   * @param {string} projectEnvironmentSlug The slug of the project environment
    * @param {'reader' | 'admin'} accessType The level of access for the role
    *
    * @returns {Promise}
-   * @fulfill {ContxtRoleProject}
+   * @fulfill {ContxtRoleProjectEnvironment}
    * @reject {Error}
    *
    * @example
    * contxtSdk.roles
-   *   .addProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'admin')
+   *   .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug', 'admin')
    *   .then((roleProject) => console.log(roleProject))
    *   .catch((err) => console.log(err));
    */
-  addProject(roleId, projectSlug, accessType) {
+  addProjectEnvironment(
+    roleId,
+    projectSlug,
+    projectEnvironmentSlug,
+    accessType
+  ) {
     if (!roleId) {
       return Promise.reject(
-        new Error('A roleId is required for adding a project to a role.')
+        new Error(
+          'A roleId is required for adding a project environment to a role.'
+        )
       );
     }
 
     if (!projectSlug) {
       return Promise.reject(
-        new Error('A projectSlug is required for adding a project to a role.')
+        new Error(
+          'A project slug is required for adding a project environment to a role.'
+        )
+      );
+    }
+
+    if (!projectEnvironmentSlug) {
+      return Promise.reject(
+        new Error(
+          'A project environment slug is required for adding a project environment to a role.'
+        )
       );
     }
 
     if (['reader', 'admin'].indexOf(accessType) === -1) {
       return Promise.reject(
         new Error(
-          'An accessType of "reader" or "admin" is required for adding a project to a role.'
+          'An accessType of "reader" or "admin" is required for adding a project environment to a role.'
         )
       );
     }
 
     return this._request
-      .post(`${this._baseUrl}/roles/${roleId}/projects/${projectSlug}`, {
-        access_type: accessType
-      })
+      .post(
+        `${
+          this._baseUrl
+        }/projects/${projectSlug}/environments/${projectEnvironmentSlug}/roles/${roleId}`,
+        {
+          access_type: accessType
+        }
+      )
       .then((response) => toCamelCase(response));
   }
 
@@ -344,13 +365,14 @@ class Roles {
   }
 
   /**
-   * Remove an project from a role
+   * Remove a project environment from a role
    *
-   * API Endpoint: '/roles/:roleId/projects/:projectSlug'
+   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
    * Method: DELETE
    *
    * @param {string} roleId The UUID formatted ID of the role
    * @param {string} projectSlug The slug of the project
+   * @param {string} projectEnvironmentSlug The slug of the project environment
    *
    * @returns {Promise}
    * @fulfill {undefined}
@@ -358,26 +380,38 @@ class Roles {
    *
    * @example
    * contxtSdk.roles
-   *   .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug')
+   *   .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug')
    *   .catch((err) => console.log(err));
    */
-  removeProject(roleId, projectSlug) {
+  removeProjectEnvironment(roleId, projectSlug, projectEnvironmentSlug) {
     if (!roleId) {
       return Promise.reject(
-        new Error('A roleId is required for removing a project from a role.')
+        new Error(
+          'A roleId is required for removing a project environment from a role.'
+        )
       );
     }
 
     if (!projectSlug) {
       return Promise.reject(
         new Error(
-          'A projectSlug is required for removing a project from a role.'
+          'A project slug is required for removing a project environment from a role.'
+        )
+      );
+    }
+
+    if (!projectEnvironmentSlug) {
+      return Promise.reject(
+        new Error(
+          'A project environment slug is required for removing a project environment from a role.'
         )
       );
     }
 
     return this._request.delete(
-      `${this._baseUrl}/roles/${roleId}/projects/${projectSlug}`
+      `${
+        this._baseUrl
+      }/projects/${projectSlug}/environments/${projectEnvironmentSlug}/roles/${roleId}`
     );
   }
 }

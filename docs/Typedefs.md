@@ -346,25 +346,24 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | organizationId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
-<a name="ContxtProject"></a>
+<a name="ContxtProjectEnvironment"></a>
 
-## ContxtProject : <code>Object</code>
+## ContxtProjectEnvironment : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
 | --- | --- | --- |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| createdBy | <code>string</code> | User ID of the user who created the project |
-| description | <code>string</code> |  |
-| icon | <code>string</code> |  |
-| id | <code>number</code> |  |
-| name | <code>string</code> |  |
-| organizationId | <code>string</code> |  |
-| ownerRoleId | <code>string</code> |  |
-| slug | <code>string</code> |  |
-| type | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
+| id | <code>string</code> |  |
+| organizationId | <code>string</code> |  |
+| projectId | <code>number</code> |  |
+| clusterId | <code>string</code> |  |
+| slug | <code>string</code> |  |
+| name | <code>string</code> |  |
+| type | <code>string</code> |  |
+| description | <code>string</code> |  |
 
 <a name="ContxtRole"></a>
 
@@ -380,7 +379,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | id | <code>string</code> |  |
 | name | <code>string</code> |  |
 | organizationId | <code>string</code> |  |
-| projects | [<code>Array.&lt;ContxtProject&gt;</code>](#ContxtProject) |  |
+| projectEnvironments | [<code>Array.&lt;ContxtProjectEnvironment&gt;</code>](#ContxtProjectEnvironment) |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="ContxtRoleApplication"></a>
@@ -397,9 +396,9 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | roleId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
-<a name="ContxtRoleProject"></a>
+<a name="ContxtRoleProjectEnvironment"></a>
 
-## ContxtRoleProject : <code>Object</code>
+## ContxtRoleProjectEnvironment : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -407,9 +406,8 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | --- | --- | --- |
 | accessType | <code>string</code> | Access Type of the user for this project with options "reader", "admin" |
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| id | <code>number</code> |  |
 | userId | <code>string</code> |  |
-| projectId | <code>number</code> |  |
+| environmentId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="ContxtUser"></a>
@@ -486,9 +484,9 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | projectsImplicit | <code>Array.&lt;number&gt;</code> | Project ids the user has access to from a role or being the owner |
 | userId | <code>string</code> |  |
 
-<a name="ContxtUserProject"></a>
+<a name="ContxtUserProjectEnvironment"></a>
 
-## ContxtUserProject : <code>Object</code>
+## ContxtUserProjectEnvironment : <code>Object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -498,7 +496,7 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 | id | <code>string</code> |  |
 | userId | <code>string</code> |  |
-| projectId | <code>string</code> |  |
+| projectEnvironmentId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="ContxtUserRole"></a>
