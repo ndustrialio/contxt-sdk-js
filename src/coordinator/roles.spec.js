@@ -168,14 +168,12 @@ describe('Coordinator/Roles', function() {
         let expectedRoleProjectEnvironment;
         let promise;
         let request;
-        let project;
         let projectEnvironment;
         let role;
         let roleProjectEnvironmentFromServer;
         let toCamelCase;
 
         beforeEach(function() {
-          project = fixture.build('contxtProject');
           projectEnvironment = fixture.build('contxtProjectEnvironment');
           role = fixture.build('contxtRole');
 
@@ -201,7 +199,6 @@ describe('Coordinator/Roles', function() {
           const roles = new Roles(baseSdk, request, expectedHost);
           promise = roles.addProjectEnvironment(
             role.id,
-            project.slug,
             projectEnvironment.slug,
             expectedRoleProjectEnvironment.accessType
           );
@@ -209,9 +206,9 @@ describe('Coordinator/Roles', function() {
 
         it('posts the role project environment to the server', function() {
           expect(request.post).to.be.calledWith(
-            `${expectedHost}/projects/${project.slug}/environments/${
+            `${expectedHost}/roles/${role.id}/project_environments/${
               projectEnvironment.slug
-            }/roles/${role.id}`,
+            }`,
             {
               access_type: expectedRoleProjectEnvironment.accessType
             }
@@ -236,7 +233,6 @@ describe('Coordinator/Roles', function() {
 
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const project = fixture.build('contxtProject');
         const projectEnvironment = fixture.build('contxtProjectEnvironment');
         const roleProjectEnvironment = fixture.build(
           'contxtRoleProjectEnvironment'
@@ -245,7 +241,6 @@ describe('Coordinator/Roles', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.addProjectEnvironment(
           null,
-          project.slug,
           projectEnvironment.slug,
           roleProjectEnvironment.accessType
         );
@@ -256,38 +251,15 @@ describe('Coordinator/Roles', function() {
       });
     });
 
-    context('when the project slug is not provided', function() {
-      it('throws an error', function() {
-        const role = fixture.build('contxtRole');
-        const projectEnvironment = fixture.build('contxtProjectEnvironment');
-        const roleProjectEnvironment = fixture.build(
-          'contxtRoleProjectEnvironment'
-        );
-        const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.addProjectEnvironment(
-          role.id,
-          null,
-          projectEnvironment.slug,
-          roleProjectEnvironment.accessType
-        );
-
-        return expect(promise).to.be.rejectedWith(
-          'A project slug is required for adding a project environment to a role.'
-        );
-      });
-    });
-
     context('when the project environment slug is not provided', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
-        const project = fixture.build('contxtProject');
         const roleProjectEnvironment = fixture.build(
           'contxtRoleProjectEnvironment'
         );
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.addProjectEnvironment(
           role.id,
-          project.slug,
           null,
           roleProjectEnvironment.accessType
         );
@@ -301,12 +273,10 @@ describe('Coordinator/Roles', function() {
     context('when the access type is not provided', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
-        const project = fixture.build('contxtProject');
         const projectEnvironment = fixture.build('contxtProjectEnvironment');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.addProjectEnvironment(
           role.id,
-          project.slug,
           projectEnvironment.slug,
           null
         );
@@ -320,13 +290,11 @@ describe('Coordinator/Roles', function() {
     context('when the access type is not a valid value', function() {
       it('throws an error', function() {
         const role = fixture.build('contxtRole');
-        const project = fixture.build('contxtProject');
         const projectEnvironment = fixture.build('contxtProjectEnvironment');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.addProjectEnvironment(
           role.id,
-          project.slug,
           projectEnvironment.slug,
           faker.random.word()
         );
@@ -921,29 +889,26 @@ describe('Coordinator/Roles', function() {
 
   describe('removeProjectEnvironment', function() {
     context('when all required parameters are provided', function() {
-      let project;
       let projectEnvironment;
       let role;
       let promise;
 
       beforeEach(function() {
-        project = fixture.build('contxtProject');
         projectEnvironment = fixture.build('contxtProjectEnvironment');
         role = fixture.build('contxtRole');
 
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         promise = roles.removeProjectEnvironment(
           role.id,
-          project.slug,
           projectEnvironment.slug
         );
       });
 
       it('sends a request to remove the project environment role role from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
-          `${expectedHost}/projects/${project.slug}/environments/${
+          `${expectedHost}/roles/${role.id}/project_environments/${
             projectEnvironment.slug
-          }/roles/${role.id}`
+          }`
         );
       });
 
@@ -954,12 +919,10 @@ describe('Coordinator/Roles', function() {
 
     context('when the role ID is not provided', function() {
       it('throws an error', function() {
-        const project = fixture.build('contxtProject');
         const projectEnvironment = fixture.build('contxtProjectEnvironment');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.removeProjectEnvironment(
           null,
-          project.slug,
           projectEnvironment.slug
         );
 
@@ -969,33 +932,11 @@ describe('Coordinator/Roles', function() {
       });
     });
 
-    context('when the project slug is not provided', function() {
-      it('throws an error', function() {
-        const projectEnvironment = fixture.build('contxtProjectEnvironment');
-        const role = fixture.build('contxtRole');
-        const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeProjectEnvironment(
-          role.id,
-          null,
-          projectEnvironment.slug
-        );
-
-        return expect(promise).to.be.rejectedWith(
-          'A project slug is required for removing a project environment from a role.'
-        );
-      });
-    });
-
     context('when the project environment slug is not provided', function() {
       it('throws an error', function() {
-        const project = fixture.build('contxtProject');
         const role = fixture.build('contxtRole');
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
-        const promise = roles.removeProjectEnvironment(
-          role.id,
-          project.slug,
-          null
-        );
+        const promise = roles.removeProjectEnvironment(role.id, null);
 
         return expect(promise).to.be.rejectedWith(
           'A project environment slug is required for removing a project environment from a role.'

@@ -8,12 +8,12 @@ Module that provides access to contxt roles
 * [Roles](#Roles)
     * [new Roles(sdk, request, baseUrl, [organizationId])](#new_Roles_new)
     * [.addApplication(roleId, applicationId)](#Roles+addApplication) ⇒ <code>Promise</code>
-    * [.addProjectEnvironment(roleId, projectSlug, projectEnvironmentSlug, accessType)](#Roles+addProjectEnvironment) ⇒ <code>Promise</code>
+    * [.addProjectEnvironment(roleId, projectEnvironmentSlug, accessType)](#Roles+addProjectEnvironment) ⇒ <code>Promise</code>
     * [.create(organizationId, role)](#Roles+create) ⇒ <code>Promise</code>
     * [.delete(organizationId, roleId)](#Roles+delete) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Roles+getByOrganizationId) ⇒ <code>Promise</code>
     * [.removeApplication(roleId, applicationId)](#Roles+removeApplication) ⇒ <code>Promise</code>
-    * [.removeProjectEnvironment(roleId, projectSlug, projectEnvironmentSlug)](#Roles+removeProjectEnvironment) ⇒ <code>Promise</code>
+    * [.removeProjectEnvironment(roleId, projectEnvironmentSlug)](#Roles+removeProjectEnvironment) ⇒ <code>Promise</code>
 
 <a name="new_Roles_new"></a>
 
@@ -52,10 +52,10 @@ contxtSdk.roles
 ```
 <a name="Roles+addProjectEnvironment"></a>
 
-### contxtSdk.coordinator.roles.addProjectEnvironment(roleId, projectSlug, projectEnvironmentSlug, accessType) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.roles.addProjectEnvironment(roleId, projectEnvironmentSlug, accessType) ⇒ <code>Promise</code>
 Add a project environment to a role
 
-API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
+API Endpoint: 'roles/:roleId/project_environments/:projectEnvironmentSlug'
 Method: POST
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -65,14 +65,13 @@ Method: POST
 | Param | Type | Description |
 | --- | --- | --- |
 | roleId | <code>string</code> | The UUID formatted ID of the role |
-| projectSlug | <code>string</code> | The slug of the project |
 | projectEnvironmentSlug | <code>string</code> | The slug of the project environment |
 | accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;admin&#x27;</code> | The level of access for the role |
 
 **Example**  
 ```js
 contxtSdk.roles
-  .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug', 'admin')
+  .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug', 'admin')
   .then((roleProject) => console.log(roleProject))
   .catch((err) => console.log(err));
 ```
@@ -173,10 +172,10 @@ contxtSdk.roles
 ```
 <a name="Roles+removeProjectEnvironment"></a>
 
-### contxtSdk.coordinator.roles.removeProjectEnvironment(roleId, projectSlug, projectEnvironmentSlug) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.roles.removeProjectEnvironment(roleId, projectEnvironmentSlug) ⇒ <code>Promise</code>
 Remove a project environment from a role
 
-API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/roles/:roleId/'
+API Endpoint: 'roles/:roleId/project_environments/:projectEnvironmentSlug'
 Method: DELETE
 
 **Kind**: instance method of [<code>Roles</code>](#Roles)  
@@ -186,12 +185,11 @@ Method: DELETE
 | Param | Type | Description |
 | --- | --- | --- |
 | roleId | <code>string</code> | The UUID formatted ID of the role |
-| projectSlug | <code>string</code> | The slug of the project |
 | projectEnvironmentSlug | <code>string</code> | The slug of the project environment |
 
 **Example**  
 ```js
 contxtSdk.roles
-  .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug')
+  .removeProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug')
   .catch((err) => console.log(err));
 ```
