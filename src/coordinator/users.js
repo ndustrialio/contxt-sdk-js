@@ -222,11 +222,10 @@ class Users {
   /**
    * Adds a project environment to a user
    *
-   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
+   * API Endpoint: '/users/:userId/project_environments/:projectEnvironmentSlug
    * Method: POST
    *
    * @param {string} userId The ID of the user
-   * @param {string} projectSlug The slug of the project
    * @param {string} projectEnvironmentSlug The slug of the project environment
    * @param {'reader' | 'admin'} accessType The level of access for the user
    *
@@ -236,28 +235,15 @@ class Users {
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug', 'admin')
+   *   .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug', 'admin')
    *   .then((userProject) => console.log(userProject))
    *   .catch((err) => console.log(err));
    */
-  addProjectEnvironment(
-    userId,
-    projectSlug,
-    projectEnvironmentSlug,
-    accessType
-  ) {
+  addProjectEnvironment(userId, projectEnvironmentSlug, accessType) {
     if (!userId) {
       return Promise.reject(
         new Error(
           'A user ID is required for adding a project environment to a user'
-        )
-      );
-    }
-
-    if (!projectSlug) {
-      return Promise.reject(
-        new Error(
-          'A project slug is required for adding a project environment to a user'
         )
       );
     }
@@ -280,7 +266,7 @@ class Users {
 
     return this._request
       .post(
-        `${this._getBaseUrl()}/projects/${projectSlug}/environments/${projectEnvironmentSlug}/users/${userId}`,
+        `${this._getBaseUrl()}/users/${userId}/project_environments/${projectEnvironmentSlug}`,
         {
           access_type: accessType
         }
@@ -573,11 +559,10 @@ class Users {
   /**
    * Removes a project environment from a user
    *
-   * API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
+   * API Endpoint: 'users/:userId/project_environments/:projectEnvironmentSlug
    * Method: DELETE
    *
    * @param {string} userId The ID of the user
-   * @param {string} projectSlug The ID of the project
    * @param {string} projectEnvironmentSlug The slug of the project environment
    *
    * @returns {Promise}
@@ -586,22 +571,14 @@ class Users {
    *
    * @example
    * contxtSdk.coordinator.users
-   *   .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug')
+   *   .removeProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug')
    *   .catch((err) => console.log(err));
    */
-  removeProjectEnvironment(userId, projectSlug, projectEnvironmentSlug) {
+  removeProjectEnvironment(userId, projectEnvironmentSlug) {
     if (!userId) {
       return Promise.reject(
         new Error(
           'A user ID is required for removing a project environment from a user'
-        )
-      );
-    }
-
-    if (!projectSlug) {
-      return Promise.reject(
-        new Error(
-          'A project slug is required for removing a project environment from a user'
         )
       );
     }
@@ -615,7 +592,7 @@ class Users {
     }
 
     return this._request.delete(
-      `${this._getBaseUrl()}/projects/${projectSlug}/environments/${projectEnvironmentSlug}/users/${userId}`
+      `${this._getBaseUrl()}/users/${userId}/project_environments/${projectEnvironmentSlug}`
     );
   }
 

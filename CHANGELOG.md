@@ -1,3 +1,9 @@
+## [v3.0.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v3.0.2) (2021-01-13)
+
+**Changed**
+
+- Fixed API URLs for `Coordinator.roles#addProjectEnvironment`, `Coordinator.roles#removeProjectEnvironment`, `Coordinator.users#addProjectEnvironment`, `Coordinator.users#removeProjectEnvironment` and updated the parameters so a project slug is no longer needed
+
 ## [v3.0.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v3.0.1) (2021-01-11)
 
 **Changed**

@@ -10,14 +10,14 @@ Module that provides access to contxt users
     * [.activate(userId, user)](#Users+activate) ⇒ <code>Promise</code>
     * [.addApplication(userId, applicationId)](#Users+addApplication) ⇒ <code>Promise</code>
     * [.addRole(userId, roleId)](#Users+addRole) ⇒ <code>Promise</code>
-    * [.addProjectEnvironment(userId, projectSlug, projectEnvironmentSlug, accessType)](#Users+addProjectEnvironment) ⇒ <code>Promise</code>
+    * [.addProjectEnvironment(userId, projectEnvironmentSlug, accessType)](#Users+addProjectEnvironment) ⇒ <code>Promise</code>
     * [.get(userId)](#Users+get) ⇒ <code>Promise</code>
     * [.getByOrganizationId(organizationId)](#Users+getByOrganizationId) ⇒ <code>Promise</code>
     * [.invite(organizationId, user)](#Users+invite) ⇒ <code>Promise</code>
     * [.remove(organizationId, userId)](#Users+remove) ⇒ <code>Promise</code>
     * [.removeApplication(userId, applicationId)](#Users+removeApplication) ⇒ <code>Promise</code>
     * [.removeRole(userId, roleId)](#Users+removeRole) ⇒ <code>Promise</code>
-    * [.removeProjectEnvironment(userId, projectSlug, projectEnvironmentSlug)](#Users+removeProjectEnvironment) ⇒ <code>Promise</code>
+    * [.removeProjectEnvironment(userId, projectEnvironmentSlug)](#Users+removeProjectEnvironment) ⇒ <code>Promise</code>
     * [.sync(userId)](#Users+sync) ⇒ <code>Promise</code>
 
 <a name="new_Users_new"></a>
@@ -116,10 +116,10 @@ contxtSdk.coordinator.users
 ```
 <a name="Users+addProjectEnvironment"></a>
 
-### contxtSdk.coordinator.users.addProjectEnvironment(userId, projectSlug, projectEnvironmentSlug, accessType) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.users.addProjectEnvironment(userId, projectEnvironmentSlug, accessType) ⇒ <code>Promise</code>
 Adds a project environment to a user
 
-API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
+API Endpoint: '/users/:userId/project_environments/:projectEnvironmentSlug
 Method: POST
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -129,14 +129,13 @@ Method: POST
 | Param | Type | Description |
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
-| projectSlug | <code>string</code> | The slug of the project |
 | projectEnvironmentSlug | <code>string</code> | The slug of the project environment |
 | accessType | <code>&#x27;reader&#x27;</code> \| <code>&#x27;admin&#x27;</code> | The level of access for the user |
 
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug', 'admin')
+  .addProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug', 'admin')
   .then((userProject) => console.log(userProject))
   .catch((err) => console.log(err));
 ```
@@ -296,10 +295,10 @@ contxtSdk.coordinator.users
 ```
 <a name="Users+removeProjectEnvironment"></a>
 
-### contxtSdk.coordinator.users.removeProjectEnvironment(userId, projectSlug, projectEnvironmentSlug) ⇒ <code>Promise</code>
+### contxtSdk.coordinator.users.removeProjectEnvironment(userId, projectEnvironmentSlug) ⇒ <code>Promise</code>
 Removes a project environment from a user
 
-API Endpoint: 'projects/:projectSlug/environments/:projectEnvironmentSlug/users/:userId
+API Endpoint: 'users/:userId/project_environments/:projectEnvironmentSlug
 Method: DELETE
 
 **Kind**: instance method of [<code>Users</code>](#Users)  
@@ -309,13 +308,12 @@ Method: DELETE
 | Param | Type | Description |
 | --- | --- | --- |
 | userId | <code>string</code> | The ID of the user |
-| projectSlug | <code>string</code> | The ID of the project |
 | projectEnvironmentSlug | <code>string</code> | The slug of the project environment |
 
 **Example**  
 ```js
 contxtSdk.coordinator.users
-  .removeProject('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-slug', 'project-environment-slug')
+  .removeProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug')
   .catch((err) => console.log(err));
 ```
 <a name="Users+sync"></a>
