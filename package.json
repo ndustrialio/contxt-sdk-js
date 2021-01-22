@@ -28,9 +28,6 @@
   "author": "ndustrial.io <dev@ndustrial.io> (ndustrial.io)",
   "license": "ISC",
   "repository": "github:ndustrialio/contxt-sdk-js",
-  "engines": {
-    "node": ">=10"
-  },
   "babel": {
     "env": {
       "test": {
