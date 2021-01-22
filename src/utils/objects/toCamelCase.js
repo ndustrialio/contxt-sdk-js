@@ -1,4 +1,4 @@
-import changeCase from 'change-case';
+import { camelCase } from 'change-case';
 import createCaseChangeFn from './createCaseChangeFn';
 
 /*
@@ -18,4 +18,4 @@ import createCaseChangeFn from './createCaseChangeFn';
  *
  * @private
  */
-export default createCaseChangeFn(changeCase.camelCase);
+export default createCaseChangeFn(camelCase);

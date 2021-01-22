@@ -1,4 +1,4 @@
-import changeCase from 'change-case';
+import { snakeCase } from 'change-case';
 import createCaseChangeFn from './createCaseChangeFn';
 
 /*
@@ -18,4 +18,4 @@ import createCaseChangeFn from './createCaseChangeFn';
  *
  * @private
  */
-export default createCaseChangeFn(changeCase.snakeCase);
+export default createCaseChangeFn(snakeCase);

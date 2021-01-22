@@ -1,3 +1,9 @@
+## [v4.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.0.0) (2021-01-22)
+
+**Changed**
+
+- Bumped build version to node v14 and updated relevant dependencies as well as engine versions.
+
 ## [v3.0.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v3.0.2) (2021-01-13)
 
 **Changed**
