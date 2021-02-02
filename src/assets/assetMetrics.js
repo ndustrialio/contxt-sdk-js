@@ -47,6 +47,22 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * @typedef {Object} AssetMetricValueCompact
+ * @property {string} id the UUID corresponding to the asset metric value id
+ * @property {string} value
+ * @property {string} effectiveEndDate ISO 8601 Extended Format date/time string
+ * @property {string} effectiveStartDate ISO 8601 Extended Format date/time string
+ */
+
+/**
+ * @typedef {Object.<AssetMetric.id, AssetMetricValueCompact[]>} AssetMetricsKeyedByMetricId
+ */
+
+/**
+ * @typedef {Object.<Asset.id, AssetMetricsKeyedByMetricId>} AssetMetricValuesByAssetIdMetricId
+ */
+
+/**
  * Module that provides access to, and the manipulation of, information about different asset metrics
  *
  * @typicalname contxtSdk.assets.metrics
@@ -570,6 +586,59 @@ class AssetMetrics {
       .then((assetMetricValueData) =>
         formatPaginatedDataFromServer(assetMetricValueData)
       );
+  }
+
+  /**
+   * Gets asset metric values for a particular asset and metric
+   *
+   * API Endpoint: '/assets/metrics/values'
+   * Method: GET
+   *
+   * @param {Object} [assetMetricFilters] Specific information that is
+   *   used to filter the list of asset metric values
+   * @param {String[]} assetMetricFilters.assetIds an array of asset ids
+   *   to request the metrics for
+   * @param {String[]} assetMetricFilters.labels an array of metric labels
+   *   to request the metrics for
+   * @param {String} [assetMetricFilters.effectiveEndDate] Effective end
+   *   date (ISO 8601 Extended formatted) of the asset metric values
+   * @param {String} [assetMetricFilters.effectiveStartDate] Effective
+   *   start date (ISO 8601 Extended formatted) of the asset metric values
+   * @returns {Promise}
+   * @fulfill {AssetMetricValuesByAssetIdMetricId}
+   * @rejects {Error}
+   *
+   * @example
+   * contxtSdk.assets.metrics
+   *   .getValuesByMetricIdsAssetIds(
+   *      {
+   *        effectiveStartDate: '2018-07-11T19:14:49.715Z',
+   *        effectiveEndDate: '2018-07-11T19:14:49.715Z',
+   *        assetIds: ['2140cc2e-6d13-42ee-9941-487fe98f8e2d', '5540cc2e-6d13-42ee-9941-487fe98f8efc'],
+   *        labels: ['facility_kwh', 'facility_cuft'],
+   *      }
+   *    )
+   *   .then((assetMetricValuesByAssetIdMetricId) => {
+   *     console.log(assetMetricValuesByAssetIdMetricId);
+   *   })
+   *   .catch((err) => console.log(err));
+   */
+  getValuesByMetricIdsAssetIds(assetMetricFilters) {
+    const requiredFields = ['assetIds', 'labels'];
+
+    for (let i = 0; i < requiredFields.length; i++) {
+      const field = requiredFields[i];
+
+      if (!assetMetricFilters[field]) {
+        return Promise.reject(
+          new Error(`The ${field} param is required to fetch data.`)
+        );
+      }
+    }
+
+    return this._request.get(`${this._baseUrl}/assets/metrics/values`, {
+      params: toSnakeCase(assetMetricFilters)
+    });
   }
 
   /**

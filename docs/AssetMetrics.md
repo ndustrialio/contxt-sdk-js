@@ -17,6 +17,7 @@ Module that provides access to, and the manipulation of, information about diffe
     * [.deleteValue(assetMetricValueId)](#AssetMetrics+deleteValue) ⇒ <code>Promise</code>
     * [.getValuesByAssetId(assetId, [assetMetricValuesFilters])](#AssetMetrics+getValuesByAssetId) ⇒ <code>Promise</code>
     * [.getValuesByMetricId(assetId, assetMetricId, [assetMetricValuesFilters])](#AssetMetrics+getValuesByMetricId) ⇒ <code>Promise</code>
+    * [.getValuesByMetricIdsAssetIds([assetMetricFilters])](#AssetMetrics+getValuesByMetricIdsAssetIds) ⇒ <code>Promise</code>
     * [.updateValue(assetMetricValueId, update)](#AssetMetrics+updateValue) ⇒ <code>Promise</code>
 
 <a name="new_AssetMetrics_new"></a>
@@ -338,6 +339,42 @@ contxtSdk.assets.metrics
    )
   .then((assetMetricValuesData) => {
     console.log(assetMetricValuesData);
+  })
+  .catch((err) => console.log(err));
+```
+<a name="AssetMetrics+getValuesByMetricIdsAssetIds"></a>
+
+### contxtSdk.assets.metrics.getValuesByMetricIdsAssetIds([assetMetricFilters]) ⇒ <code>Promise</code>
+Gets asset metric values for a particular asset and metric
+
+API Endpoint: '/assets/metrics/values'
+Method: GET
+
+**Kind**: instance method of [<code>AssetMetrics</code>](#AssetMetrics)  
+**Fulfill**: [<code>AssetMetricValuesByAssetIdMetricId</code>](./Typedefs.md#AssetMetricValuesByAssetIdMetricId)  
+**Rejects**: <code>Error</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [assetMetricFilters] | <code>Object</code> | Specific information that is   used to filter the list of asset metric values |
+| assetMetricFilters.assetIds | <code>Array.&lt;String&gt;</code> | an array of asset ids   to request the metrics for |
+| assetMetricFilters.labels | <code>Array.&lt;String&gt;</code> | an array of metric labels   to request the metrics for |
+| [assetMetricFilters.effectiveEndDate] | <code>String</code> | Effective end   date (ISO 8601 Extended formatted) of the asset metric values |
+| [assetMetricFilters.effectiveStartDate] | <code>String</code> | Effective   start date (ISO 8601 Extended formatted) of the asset metric values |
+
+**Example**  
+```js
+contxtSdk.assets.metrics
+  .getValuesByMetricIdsAssetIds(
+     {
+       effectiveStartDate: '2018-07-11T19:14:49.715Z',
+       effectiveEndDate: '2018-07-11T19:14:49.715Z',
+       assetIds: ['2140cc2e-6d13-42ee-9941-487fe98f8e2d', '5540cc2e-6d13-42ee-9941-487fe98f8efc'],
+       labels: ['facility_kwh', 'facility_cuft'],
+     }
+   )
+  .then((assetMetricValuesByAssetIdMetricId) => {
+    console.log(assetMetricValuesByAssetIdMetricId);
   })
   .catch((err) => console.log(err));
 ```

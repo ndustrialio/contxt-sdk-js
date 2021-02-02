@@ -115,6 +115,23 @@
 | value | <code>string</code> |  |
 | isEstimated | <code>boolean</code> | Whether the value is an estimation or a true reading |
 
+<a name="AssetMetricValueCompact"></a>
+
+## AssetMetricValueCompact : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | the UUID corresponding to the asset metric value id |
+| value | <code>string</code> |  |
+| effectiveEndDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+| effectiveStartDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="AssetMetricValuesByAssetIdMetricId"></a>
+
+## AssetMetricValuesByAssetIdMetricId : <code>Object.&lt;Asset.id, AssetMetricsKeyedByMetricId&gt;</code>
+**Kind**: global typedef  
 <a name="AssetMetricValuesFromServer"></a>
 
 ## AssetMetricValuesFromServer : <code>Object</code>
@@ -141,6 +158,10 @@
 | _metadata.totalRecords | <code>number</code> | Total number of asset types found |
 | records | [<code>Array.&lt;AssetMetric&gt;</code>](#AssetMetric) |  |
 
+<a name="AssetMetricsKeyedByMetricId"></a>
+
+## AssetMetricsKeyedByMetricId : <code>Object.&lt;AssetMetric.id, Array.&lt;AssetMetricValueCompact&gt;&gt;</code>
+**Kind**: global typedef  
 <a name="AssetType"></a>
 
 ## AssetType : <code>Object</code>

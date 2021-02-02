@@ -476,6 +476,111 @@ describe('Assets/Metrics', function() {
     });
   });
 
+  describe('getValuesByMetricIdsAssetIds', function() {
+    let numberOfAssetMetricValues;
+    let numberOfAssetMetrics;
+    let numberOfAssets;
+
+    let assetMetricValuesCompact;
+    let assetMetricObjects;
+    let assets;
+
+    let metricsFiltersAfterFormat;
+    let metricsFiltersBeforeFormat;
+    let promise;
+    let request;
+    let toSnakeCase;
+
+    let valuesFromServer;
+
+    beforeEach(function() {
+      numberOfAssetMetricValues = faker.random.number({ min: 1, max: 10 });
+      numberOfAssetMetrics = faker.random.number({ min: 1, max: 3 });
+      numberOfAssets = faker.random.number({ min: 1, max: 3 });
+
+      assetMetricValuesCompact = fixture.buildList(
+        'assetMetricValueCompact',
+        numberOfAssetMetricValues
+      );
+      assetMetricObjects = fixture.buildList(
+        'assetMetric',
+        numberOfAssetMetrics
+      );
+      assets = fixture.buildList('asset', numberOfAssets);
+
+      const metricObjects = assetMetricObjects.reduce((acc, metric) => {
+        return { ...acc, [metric.label]: assetMetricValuesCompact };
+      });
+
+      valuesFromServer = assets.reduce((acc, asset) => {
+        return { ...acc, [asset.id]: { ...metricObjects } };
+      }, {});
+
+      request = {
+        ...baseRequest,
+        get: sinon.stub().resolves(valuesFromServer)
+      };
+
+      metricsFiltersBeforeFormat = {
+        assetIds: assets.map((asset) => asset.id),
+        labels: assetMetricObjects.map((assetMetric) => assetMetric.id)
+      };
+
+      metricsFiltersAfterFormat = {
+        asset_ids: metricsFiltersBeforeFormat.assetIds,
+        labels: metricsFiltersBeforeFormat.labels
+      };
+
+      toSnakeCase = sinon
+        .stub(objectUtils, 'toSnakeCase')
+        .returns(metricsFiltersAfterFormat);
+    });
+
+    context('when all required information is supplied', function() {
+      beforeEach(function() {
+        const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
+        promise = assetMetrics.getValuesByMetricIdsAssetIds(
+          metricsFiltersBeforeFormat
+        );
+      });
+
+      it('called with the correctly formatted params', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/assets/metrics/values`,
+          { params: metricsFiltersAfterFormat }
+        );
+      });
+
+      it('resolves with a list of the asset metrics by asset id and label from the server', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          valuesFromServer
+        );
+      });
+
+      it('formats the url request params into the right format', function() {
+        expect(toSnakeCase).to.be.deep.calledWith(metricsFiltersBeforeFormat);
+      });
+    });
+
+    context('when any parameter is missing from filters', function() {
+      const missingParam = faker.random.arrayElement(['assetIds', 'labels']);
+
+      beforeEach(function() {
+        const assetMetrics = new AssetMetrics(baseSdk, request, expectedHost);
+        delete metricsFiltersBeforeFormat[missingParam];
+        promise = assetMetrics.getValuesByMetricIdsAssetIds(
+          metricsFiltersBeforeFormat
+        );
+      });
+
+      it('throws an Error', function() {
+        return expect(promise).to.be.eventually.rejectedWith(
+          `The ${missingParam} param is required to fetch data.`
+        );
+      });
+    });
+  });
+
   describe('update', function() {
     context('when all required information is supplied', function() {
       let assetMetricToServerAfterFormat;
