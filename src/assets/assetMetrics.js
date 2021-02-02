@@ -55,7 +55,7 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
- * @typedef {Object.<AssetMetric.id, AssetMetricValueCompact[]>} AssetMetricsKeyedByMetricId
+ * @typedef {Object.<AssetMetric.label, AssetMetricValueCompact[]>} AssetMetricsKeyedByMetricId
  */
 
 /**

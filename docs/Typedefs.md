@@ -160,7 +160,7 @@
 
 <a name="AssetMetricsKeyedByMetricId"></a>
 
-## AssetMetricsKeyedByMetricId : <code>Object.&lt;AssetMetric.id, Array.&lt;AssetMetricValueCompact&gt;&gt;</code>
+## AssetMetricsKeyedByMetricId : <code>Object.&lt;AssetMetric.label, Array.&lt;AssetMetricValueCompact&gt;&gt;</code>
 **Kind**: global typedef  
 <a name="AssetType"></a>
 

@@ -168,7 +168,7 @@ environments. Documentation for browser environments is found under
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetMetricsFromServer">AssetMetricsFromServer</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="./Typedefs.md#AssetMetricsKeyedByMetricId">AssetMetricsKeyedByMetricId</a> : <code>Object.&lt;AssetMetric.id, Array.&lt;AssetMetricValueCompact&gt;&gt;</code></dt>
+<dt><a href="./Typedefs.md#AssetMetricsKeyedByMetricId">AssetMetricsKeyedByMetricId</a> : <code>Object.&lt;AssetMetric.label, Array.&lt;AssetMetricValueCompact&gt;&gt;</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
 <dd></dd>
