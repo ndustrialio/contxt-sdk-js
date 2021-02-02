@@ -2,7 +2,7 @@
 
 **Changed**
 
-- Adds `AssetMetrics#getValuesByMetricIdsAssetIds` to fetch multiple asset metrics for multiple asset ids within a specified date range.
+- Adds `AssetMetrics#getValuesByMetricIdsAssetIds` to fetch multiple asset metric values for multiple asset IDs within a specified date range.
 
 ## [v4.0.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.0.0) (2021-01-22)
 
