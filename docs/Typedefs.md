@@ -131,7 +131,25 @@
 <a name="AssetMetricValuesByAssetIdMetricId"></a>
 
 ## AssetMetricValuesByAssetIdMetricId : <code>Object.&lt;Asset.id, AssetMetricsKeyedByMetricId&gt;</code>
+An object with asset ids as keys to another object with asset metric labels as keys.
+At this final level the object contains arrays of [AssetMetricValueCompact](#AssetMetricValueCompact)
+
 **Kind**: global typedef  
+**Example**  
+```js
+{
+  "b47e45af-3e18-408a-8070-008f9e6d7b42" : {
+    "facility_daily_cuft": [
+      {
+        "id": "cf7e45af-3e18-408a-8070-008f9e6d7b3j",
+        "value": 10,
+        "effectiveEndDate": "2018-07-10T11:04:24.631Z",
+        "effectiveStartDate" "2018-07-10T11:04:24.631Z"
+      }
+    ]
+  }
+}
+```
 <a name="AssetMetricValuesFromServer"></a>
 
 ## AssetMetricValuesFromServer : <code>Object</code>

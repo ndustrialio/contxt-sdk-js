@@ -59,7 +59,22 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  */
 
 /**
+ * An object with asset ids as keys to another object with asset metric labels as keys.
+ * At this final level the object contains arrays of {@link AssetMetricValueCompact}
  * @typedef {Object.<Asset.id, AssetMetricsKeyedByMetricId>} AssetMetricValuesByAssetIdMetricId
+ * @example
+ * {
+ *   "b47e45af-3e18-408a-8070-008f9e6d7b42" : {
+ *     "facility_daily_cuft": [
+ *       {
+ *         "id": "cf7e45af-3e18-408a-8070-008f9e6d7b3j",
+ *         "value": 10,
+ *         "effectiveEndDate": "2018-07-10T11:04:24.631Z",
+ *         "effectiveStartDate" "2018-07-10T11:04:24.631Z"
+ *       }
+ *     ]
+ *   }
+ * }
  */
 
 /**
