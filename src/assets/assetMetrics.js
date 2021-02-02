@@ -50,6 +50,7 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  * @typedef {Object} AssetMetricValueCompact
  * @property {string} id the UUID corresponding to the asset metric value id
  * @property {string} value
+ * @property {boolean} is_estimated
  * @property {string} effectiveEndDate ISO 8601 Extended Format date/time string
  * @property {string} effectiveStartDate ISO 8601 Extended Format date/time string
  */
@@ -69,6 +70,7 @@ import { formatPaginatedDataFromServer } from '../utils/pagination';
  *       {
  *         "id": "cf7e45af-3e18-408a-8070-008f9e6d7b3j",
  *         "value": 10,
+ *         "isEstimated": false,
  *         "effectiveEndDate": "2018-07-10T11:04:24.631Z",
  *         "effectiveStartDate" "2018-07-10T11:04:24.631Z"
  *       }
@@ -651,9 +653,20 @@ class AssetMetrics {
       }
     }
 
-    return this._request.get(`${this._baseUrl}/assets/metrics/values`, {
-      params: toSnakeCase(assetMetricFilters)
-    });
+    return this._request
+      .get(`${this._baseUrl}/assets/metrics/values`, {
+        params: toSnakeCase(assetMetricFilters)
+      })
+      .then((assetMetricValues) => {
+        const result = toCamelCase(assetMetricValues, {
+          excludeTransform: [
+            ...assetMetricFilters.labels,
+            ...assetMetricFilters.assetIds
+          ]
+        });
+
+        return result;
+      });
   }
 
   /**

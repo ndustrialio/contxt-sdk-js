@@ -125,6 +125,7 @@
 | --- | --- | --- |
 | id | <code>string</code> | the UUID corresponding to the asset metric value id |
 | value | <code>string</code> |  |
+| is_estimated | <code>boolean</code> |  |
 | effectiveEndDate | <code>string</code> | ISO 8601 Extended Format date/time string |
 | effectiveStartDate | <code>string</code> | ISO 8601 Extended Format date/time string |
 
@@ -143,6 +144,7 @@ At this final level the object contains arrays of [AssetMetricValueCompact](#Ass
       {
         "id": "cf7e45af-3e18-408a-8070-008f9e6d7b3j",
         "value": 10,
+        "isEstimated": false,
         "effectiveEndDate": "2018-07-10T11:04:24.631Z",
         "effectiveStartDate" "2018-07-10T11:04:24.631Z"
       }

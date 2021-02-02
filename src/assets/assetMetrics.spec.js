@@ -482,6 +482,7 @@ describe('Assets/Metrics', function() {
     let numberOfAssets;
 
     let assetMetricValuesCompact;
+    let assetMetricValuesCompactFromServer;
     let assetMetricObjects;
     let assets;
 
@@ -492,16 +493,27 @@ describe('Assets/Metrics', function() {
     let toSnakeCase;
 
     let valuesFromServer;
+    let valuesFromServerFormatted;
 
     beforeEach(function() {
       numberOfAssetMetricValues = faker.random.number({ min: 1, max: 10 });
       numberOfAssetMetrics = faker.random.number({ min: 1, max: 3 });
       numberOfAssets = faker.random.number({ min: 1, max: 3 });
 
+      // camel case
       assetMetricValuesCompact = fixture.buildList(
         'assetMetricValueCompact',
         numberOfAssetMetricValues
       );
+
+      // snake case
+      assetMetricValuesCompactFromServer = fixture.buildList(
+        'assetMetricValueCompact',
+        numberOfAssetMetricValues,
+        null,
+        { fromServer: true }
+      );
+
       assetMetricObjects = fixture.buildList(
         'assetMetric',
         numberOfAssetMetrics
@@ -509,11 +521,22 @@ describe('Assets/Metrics', function() {
       assets = fixture.buildList('asset', numberOfAssets);
 
       const metricObjects = assetMetricObjects.reduce((acc, metric) => {
-        return { ...acc, [metric.label]: assetMetricValuesCompact };
-      });
+        return { ...acc, [metric.label]: assetMetricValuesCompactFromServer };
+      }, {});
 
       valuesFromServer = assets.reduce((acc, asset) => {
         return { ...acc, [asset.id]: { ...metricObjects } };
+      }, {});
+
+      const metricObjectsFormatted = assetMetricObjects.reduce(
+        (acc, metric) => {
+          return { ...acc, [metric.label]: assetMetricValuesCompact };
+        },
+        {}
+      );
+
+      valuesFromServerFormatted = assets.reduce((acc, asset) => {
+        return { ...acc, [asset.id]: { ...metricObjectsFormatted } };
       }, {});
 
       request = {
@@ -523,7 +546,7 @@ describe('Assets/Metrics', function() {
 
       metricsFiltersBeforeFormat = {
         assetIds: assets.map((asset) => asset.id),
-        labels: assetMetricObjects.map((assetMetric) => assetMetric.id)
+        labels: assetMetricObjects.map((assetMetric) => assetMetric.label)
       };
 
       metricsFiltersAfterFormat = {
@@ -553,7 +576,7 @@ describe('Assets/Metrics', function() {
 
       it('resolves with a list of the asset metrics by asset id and label from the server', function() {
         return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
-          valuesFromServer
+          valuesFromServerFormatted
         );
       });
 
