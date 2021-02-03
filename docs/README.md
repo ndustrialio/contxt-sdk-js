@@ -160,9 +160,17 @@ environments. Documentation for browser environments is found under
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetMetricValue">AssetMetricValue</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="./Typedefs.md#AssetMetricValueCompact">AssetMetricValueCompact</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetMetricValuesByAssetIdMetricId">AssetMetricValuesByAssetIdMetricId</a> : <code>Object.&lt;Asset.id, AssetMetricsKeyedByMetricId&gt;</code></dt>
+<dd><p>An object with asset ids as keys to another object with asset metric labels as keys.
+At this final level the object contains arrays of <a href="#AssetMetricValueCompact">AssetMetricValueCompact</a></p>
+</dd>
 <dt><a href="./Typedefs.md#AssetMetricValuesFromServer">AssetMetricValuesFromServer</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetMetricsFromServer">AssetMetricsFromServer</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="./Typedefs.md#AssetMetricsKeyedByMetricId">AssetMetricsKeyedByMetricId</a> : <code>Object.&lt;AssetMetric.label, Array.&lt;AssetMetricValueCompact&gt;&gt;</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#AssetType">AssetType</a> : <code>Object</code></dt>
 <dd></dd>

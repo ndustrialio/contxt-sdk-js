@@ -115,6 +115,43 @@
 | value | <code>string</code> |  |
 | isEstimated | <code>boolean</code> | Whether the value is an estimation or a true reading |
 
+<a name="AssetMetricValueCompact"></a>
+
+## AssetMetricValueCompact : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | the UUID corresponding to the asset metric value id |
+| value | <code>string</code> |  |
+| is_estimated | <code>boolean</code> |  |
+| effectiveEndDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+| effectiveStartDate | <code>string</code> | ISO 8601 Extended Format date/time string |
+
+<a name="AssetMetricValuesByAssetIdMetricId"></a>
+
+## AssetMetricValuesByAssetIdMetricId : <code>Object.&lt;Asset.id, AssetMetricsKeyedByMetricId&gt;</code>
+An object with asset ids as keys to another object with asset metric labels as keys.
+At this final level the object contains arrays of [AssetMetricValueCompact](#AssetMetricValueCompact)
+
+**Kind**: global typedef  
+**Example**  
+```js
+{
+  "b47e45af-3e18-408a-8070-008f9e6d7b42" : {
+    "facility_daily_cuft": [
+      {
+        "id": "cf7e45af-3e18-408a-8070-008f9e6d7b3j",
+        "value": 10,
+        "isEstimated": false,
+        "effectiveEndDate": "2018-07-10T11:04:24.631Z",
+        "effectiveStartDate" "2018-07-10T11:04:24.631Z"
+      }
+    ]
+  }
+}
+```
 <a name="AssetMetricValuesFromServer"></a>
 
 ## AssetMetricValuesFromServer : <code>Object</code>
@@ -141,6 +178,10 @@
 | _metadata.totalRecords | <code>number</code> | Total number of asset types found |
 | records | [<code>Array.&lt;AssetMetric&gt;</code>](#AssetMetric) |  |
 
+<a name="AssetMetricsKeyedByMetricId"></a>
+
+## AssetMetricsKeyedByMetricId : <code>Object.&lt;AssetMetric.label, Array.&lt;AssetMetricValueCompact&gt;&gt;</code>
+**Kind**: global typedef  
 <a name="AssetType"></a>
 
 ## AssetType : <code>Object</code>
