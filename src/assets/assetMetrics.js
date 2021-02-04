@@ -1,6 +1,7 @@
 import has from 'lodash.has';
 import isPlainObject from 'lodash.isplainobject';
 import { toCamelCase, toSnakeCase } from '../utils/objects';
+import { stringifyParamsWithCommaSeparatedArrays } from '../utils/url';
 import { formatPaginatedDataFromServer } from '../utils/pagination';
 
 /**
@@ -655,7 +656,8 @@ class AssetMetrics {
 
     return this._request
       .get(`${this._baseUrl}/assets/metrics/values`, {
-        params: toSnakeCase(assetMetricFilters)
+        params: toSnakeCase(assetMetricFilters),
+        paramsSerializer: stringifyParamsWithCommaSeparatedArrays
       })
       .then((assetMetricValues) => {
         const result = toCamelCase(assetMetricValues, {

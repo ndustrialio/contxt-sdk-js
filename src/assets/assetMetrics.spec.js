@@ -2,6 +2,7 @@ import omit from 'lodash.omit';
 import AssetMetrics from './assetMetrics';
 import * as objectUtils from '../utils/objects';
 import * as paginationUtils from '../utils/pagination';
+import * as urlUtils from '../utils/url';
 
 describe('Assets/Metrics', function() {
   let baseRequest;
@@ -491,6 +492,7 @@ describe('Assets/Metrics', function() {
     let promise;
     let request;
     let toSnakeCase;
+    let strigifyParamsWithCommaSeparatedArrays;
 
     let valuesFromServer;
     let valuesFromServerFormatted;
@@ -557,6 +559,11 @@ describe('Assets/Metrics', function() {
       toSnakeCase = sinon
         .stub(objectUtils, 'toSnakeCase')
         .returns(metricsFiltersAfterFormat);
+
+      strigifyParamsWithCommaSeparatedArrays = sinon.stub(
+        urlUtils,
+        'stringifyParamsWithCommaSeparatedArrays'
+      );
     });
 
     context('when all required information is supplied', function() {
@@ -570,7 +577,10 @@ describe('Assets/Metrics', function() {
       it('called with the correctly formatted params', function() {
         expect(request.get).to.be.calledWith(
           `${expectedHost}/assets/metrics/values`,
-          { params: metricsFiltersAfterFormat }
+          {
+            params: metricsFiltersAfterFormat,
+            paramsSerializer: strigifyParamsWithCommaSeparatedArrays
+          }
         );
       });
 
