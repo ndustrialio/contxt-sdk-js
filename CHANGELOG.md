@@ -1,3 +1,9 @@
+## [v4.1.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.1.0) (2021-02-02)
+
+**Changed**
+
+- Updates `AssetMetrics#getValuesByMetricIdsAssetIds` to correctly process array url params using a new utility: `url/stringifyParams`.
+
 ## [v4.1.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.1.0) (2021-02-02)
 
 **Changed**
