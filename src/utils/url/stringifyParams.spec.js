@@ -8,57 +8,83 @@ const URL_ENCODED_COMMA = '%2C';
 const URL_PARAM_SEPARATOR = '&';
 
 describe('src/utils/url/stringifyParams.js', function() {
-  const value = { value: faker.random.number() };
-  const word = { word: faker.lorem.word() };
-  const uuid = { uuid: faker.random.uuid() };
-  const date = { date: faker.date.past().toISOString() };
+  let value;
+  let word;
+  let uuid;
+  let date;
 
-  const listValue1 = faker.lorem.word();
-  const listValue2 = faker.lorem.word();
-
-  const list = {
-    list: [listValue1, listValue2]
-  };
-
-  const allPrams = { ...value, ...word, ...uuid, ...date, ...list };
+  let listValue1;
+  let listValue2;
+  let list;
+  let allParams;
 
   describe('stringifyParamsWithCommaSeparatedArrays', function() {
-    const stringifiedValue = `value=${value.value}`;
-    const stringifiedWord = `word=${word.word}`;
-    const stringifiedUuid = `uuid=${uuid.uuid}`;
-    const stringifiedDate = `date=${date.date.replace(
-      /:/g,
-      URL_ENCODED_COLON
-    )}`;
-    const stringifiedList = `list=${list.list.join(URL_ENCODED_COMMA)}`;
+    let stringifiedValue;
+    let stringifiedWord;
+    let stringifiedUuid;
+    let stringifiedDate;
+    let stringifiedList;
+    let allStringified;
 
-    const allStringified =
-      stringifiedValue +
-      URL_PARAM_SEPARATOR +
-      stringifiedWord +
-      URL_PARAM_SEPARATOR +
-      stringifiedUuid +
-      URL_PARAM_SEPARATOR +
-      stringifiedDate +
-      URL_PARAM_SEPARATOR +
-      stringifiedList;
+    beforeEach(function() {
+      value = { value: faker.random.number() };
+      word = { word: faker.lorem.word() };
+      uuid = { uuid: faker.random.uuid() };
+      date = { date: faker.date.past().toISOString() };
 
-    it('correctly parses values of common params to the correct url encoding', function() {
-      const result1 = stringifyParamsWithCommaSeparatedArrays(value);
-      const result2 = stringifyParamsWithCommaSeparatedArrays(word);
-      const result3 = stringifyParamsWithCommaSeparatedArrays(uuid);
-      const result4 = stringifyParamsWithCommaSeparatedArrays(date);
-      const result5 = stringifyParamsWithCommaSeparatedArrays(list);
+      listValue1 = faker.lorem.word();
+      listValue2 = faker.lorem.word();
+      list = {
+        list: [listValue1, listValue2]
+      };
 
-      expect(result1).to.equal(stringifiedValue);
-      expect(result2).to.equal(stringifiedWord);
-      expect(result3).to.equal(stringifiedUuid);
-      expect(result4).to.equal(stringifiedDate);
-      expect(result5).to.equal(stringifiedList);
+      allParams = { ...value, ...word, ...uuid, ...date, ...list };
+
+      stringifiedValue = `value=${value.value}`;
+      stringifiedWord = `word=${word.word}`;
+      stringifiedUuid = `uuid=${uuid.uuid}`;
+      stringifiedDate = `date=${date.date.replace(/:/g, URL_ENCODED_COLON)}`;
+      stringifiedList = `list=${list.list.join(URL_ENCODED_COMMA)}`;
+
+      allStringified =
+        stringifiedValue +
+        URL_PARAM_SEPARATOR +
+        stringifiedWord +
+        URL_PARAM_SEPARATOR +
+        stringifiedUuid +
+        URL_PARAM_SEPARATOR +
+        stringifiedDate +
+        URL_PARAM_SEPARATOR +
+        stringifiedList;
     });
 
-    it('correctly parses and object of many values to the correct url encoding', function() {
-      const result = stringifyParamsWithCommaSeparatedArrays(allPrams);
+    it('correctly parses a number param to the correct url encoding', function() {
+      const result = stringifyParamsWithCommaSeparatedArrays(value);
+      expect(result).to.equal(stringifiedValue);
+    });
+
+    it('correctly parses a word param to the correct url encoding', function() {
+      const result = stringifyParamsWithCommaSeparatedArrays(word);
+      expect(result).to.equal(stringifiedWord);
+    });
+
+    it('correctly parses a uuid param to the correct url encoding', function() {
+      const result = stringifyParamsWithCommaSeparatedArrays(uuid);
+      expect(result).to.equal(stringifiedUuid);
+    });
+
+    it('correctly parses a date param to the correct url encoding', function() {
+      const result = stringifyParamsWithCommaSeparatedArrays(date);
+      expect(result).to.equal(stringifiedDate);
+    });
+
+    it('correctly parses an array/list param to the correct url encoding', function() {
+      const result = stringifyParamsWithCommaSeparatedArrays(list);
+      expect(result).to.equal(stringifiedList);
+    });
+
+    it('correctly parses an object of many values to the correct url encoding', function() {
+      const result = stringifyParamsWithCommaSeparatedArrays(allParams);
       expect(result).to.equal(allStringified);
     });
   });
