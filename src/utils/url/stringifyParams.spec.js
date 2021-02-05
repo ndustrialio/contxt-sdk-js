@@ -18,6 +18,21 @@ describe('src/utils/url/stringifyParams.js', function() {
   let list;
   let allParams;
 
+  beforeEach(function() {
+    value = { value: faker.random.number() };
+    word = { word: faker.lorem.word() };
+    uuid = { uuid: faker.random.uuid() };
+    date = { date: faker.date.past().toISOString() };
+
+    listValue1 = faker.lorem.word();
+    listValue2 = faker.lorem.word();
+    list = {
+      list: [listValue1, listValue2]
+    };
+
+    allParams = { ...value, ...word, ...uuid, ...date, ...list };
+  });
+
   describe('stringifyParamsWithCommaSeparatedArrays', function() {
     let stringifiedValue;
     let stringifiedWord;
@@ -27,19 +42,6 @@ describe('src/utils/url/stringifyParams.js', function() {
     let allStringified;
 
     beforeEach(function() {
-      value = { value: faker.random.number() };
-      word = { word: faker.lorem.word() };
-      uuid = { uuid: faker.random.uuid() };
-      date = { date: faker.date.past().toISOString() };
-
-      listValue1 = faker.lorem.word();
-      listValue2 = faker.lorem.word();
-      list = {
-        list: [listValue1, listValue2]
-      };
-
-      allParams = { ...value, ...word, ...uuid, ...date, ...list };
-
       stringifiedValue = `value=${value.value}`;
       stringifiedWord = `word=${word.word}`;
       stringifiedUuid = `uuid=${uuid.uuid}`;
