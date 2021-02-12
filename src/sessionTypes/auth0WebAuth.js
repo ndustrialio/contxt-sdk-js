@@ -90,7 +90,7 @@ class Auth0WebAuth {
     this._auth0 = new auth0.WebAuth({
       audience: this._sdk.config.audiences.contxtAuth.clientId,
       clientID: this._sdk.config.auth.clientId,
-      domain: 'ndustrial.auth0.com',
+      domain: this._sdk.config.auth.domain,
       redirectUri: `${currentUrl.origin}${currentUrl.pathname}`,
       responseType: 'token',
       scope: 'email profile openid'
