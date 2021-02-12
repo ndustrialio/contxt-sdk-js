@@ -1,4 +1,10 @@
-## [v4.1.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.1.0) (2021-02-05)
+## [v4.1.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.1.2) (2021-02-12)
+
+**Changed**
+
+- Allows custom Auth0 domain to be passed via the configuration `config.auth.domain`
+
+## [v4.1.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.1.1) (2021-02-05)
 
 **Fixed**
 
