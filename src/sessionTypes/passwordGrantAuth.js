@@ -42,7 +42,7 @@ class PasswordGrantAuth {
     this._sessionInfo = {};
 
     this._auth0 = new auth0.Authentication({
-      domain: 'ndustrial.auth0.com',
+      domain: this._sdk.config.auth.domain,
       clientID: this._sdk.config.auth.clientId
     });
   }

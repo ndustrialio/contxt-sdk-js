@@ -22,6 +22,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
             facilities: fixture.build('audience')
           },
           auth: {
+            domain: faker.internet.domainName(),
             clientId: faker.internet.password()
           }
         }
@@ -38,7 +39,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
     it('calls the auth0 Authentication constructor with the proper arguments', function() {
       expect(authentication).to.be.calledOnce;
       expect(authentication).to.be.calledWith({
-        domain: 'ndustrial.auth0.com',
+        domain: passwordGrantAuth._sdk.config.auth.domain,
         clientID: passwordGrantAuth._sdk.config.auth.clientId
       });
     });

@@ -20,6 +20,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           facilities: fixture.build('audience')
         },
         auth: {
+          domain: faker.internet.domainName(),
           authorizationPath: faker.hacker.noun(),
           clientId: faker.internet.password(),
           tokenExpiresAtBufferMs: faker.random.number()
@@ -108,7 +109,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expect(webAuth).to.be.calledWith({
           audience: sdk.config.audiences.contxtAuth.clientId,
           clientID: sdk.config.auth.clientId,
-          domain: 'ndustrial.auth0.com',
+          domain: sdk.config.auth.domain,
           redirectUri: `${global.window.location}/${
             sdk.config.auth.authorizationPath
           }`,
@@ -142,6 +143,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedOnRedirect = sinon.stub();
 
         sdk.config.auth.authorizationPath = expectedAuthorizationPath;
+        sdk.config.auth.domain = 'random.auth0.com';
         sdk.config.auth.onAuthenticate = expectedOnAuthenticate;
         sdk.config.auth.onRedirect = expectedOnRedirect;
 
@@ -161,6 +163,20 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expect(redirectUri).to.match(
           new RegExp(`${expectedAuthorizationPath}$`)
         );
+      });
+
+      it('creates an auth0 WebAuth instance with the default settings', function() {
+        expect(webAuth).to.be.calledWithNew;
+        expect(webAuth).to.be.calledWith({
+          audience: sdk.config.audiences.contxtAuth.clientId,
+          clientID: sdk.config.auth.clientId,
+          domain: 'random.auth0.com',
+          redirectUri: `${global.window.location}/${
+            sdk.config.auth.authorizationPath
+          }`,
+          responseType: 'token',
+          scope: 'email profile openid'
+        });
       });
     });
 
