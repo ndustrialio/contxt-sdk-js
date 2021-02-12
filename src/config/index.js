@@ -65,7 +65,6 @@ import defaultConfigs from './defaults';
  * @property {string} auth.clientId Client Id provided by Auth0 for this application
  * @property {string} [auth.clientSecret] Client secret provided by Auth0 for this application. This
  * is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType
- * * @property {string} auth.domain Auth0 domain used to authorization for this application
  * @property {string} [auth.domain] Auth0 domain for this application. This is an optional configuration
  * that defaults to the production Auth0 tenant
  * @property {Object.<string, CustomAudience>} [auth.customModuleConfigs] Custom environment setups

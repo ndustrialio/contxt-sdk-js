@@ -1282,7 +1282,7 @@ User provided configuration options
 | auth | <code>Object</code> |  | User assigned configurations specific for their authentication methods |
 | [auth.authorizationPath] | <code>string</code> |  | Path Auth0WebAuth process should redirect to after a successful sign in attempt |
 | auth.clientId | <code>string</code> |  | Client Id provided by Auth0 for this application |
-| [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application. This is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType * @property {string} auth.domain Auth0 domain used to authorization for this application |
+| [auth.clientSecret] | <code>string</code> |  | Client secret provided by Auth0 for this application. This is optional for the auth0WebAuth SessionType, but required for the machineAuth SessionType |
 | [auth.domain] | <code>string</code> |  | Auth0 domain for this application. This is an optional configuration that defaults to the production Auth0 tenant |
 | [auth.customModuleConfigs] | <code>Object.&lt;string, CustomAudience&gt;</code> |  | Custom environment setups for individual modules. Requires clientId/host or env |
 | [auth.env] | <code>string</code> | <code>&quot;&#x27;production&#x27;&quot;</code> | The environment that every module should use for their clientId and host |
