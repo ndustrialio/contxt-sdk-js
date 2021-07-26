@@ -1,3 +1,4 @@
+import Apollo from './apollo';
 import Assets from './assets';
 import Bus from './bus';
 import Config from './config';
@@ -9,6 +10,8 @@ import Health from './health';
 import Iot from './iot';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
+import { toCamelCase } from './utils/objects';
+import { gql } from '@apollo/client';
 
 /**
  * An adapter that allows the SDK to authenticate with different services and manage various tokens.
@@ -77,6 +80,7 @@ class ContxtSdk {
     this._replacedModules = {};
 
     this.config = new Config(config, externalModules);
+    this.gql = gql;
 
     this.assets = new Assets(this, this._createRequest('facilities'));
     this.auth = this._createAuthSession(sessionType);
@@ -86,7 +90,11 @@ class ContxtSdk {
       this._createRequest('coordinator')
     );
     this.events = new Events(this, this._createRequest('events'));
-    this.facilities = new Facilities(this, this._createRequest('facilities'));
+    this.facilities = new Facilities(
+      this,
+      this._createRequest('facilities'),
+      this._createApollo('facilities')
+    );
     this.files = new Files(this, this._createRequest('files'));
     this.health = new Health(this, this._createRequest('health'));
     this.iot = new Iot(this, this._createRequest('iot'));
@@ -118,7 +126,11 @@ class ContxtSdk {
       this._replacedModules[moduleName] = this[moduleName];
     }
 
-    this[moduleName] = new module(this, this._createRequest(moduleName));
+    this[moduleName] = new module(
+      this,
+      this._createRequest(moduleName),
+      this._createApollo(moduleName)
+    );
   }
 
   /**
@@ -183,6 +195,20 @@ class ContxtSdk {
   }
 
   /**
+   * Returns an instance of the Apollo client module that is tied to the requested audience
+   *
+   * @param {string} audienceName The audience name of the service you are trying to reach
+   *   (e.g. facilities or feeds)
+   *
+   * @returns {Object} Apollo client module
+   *
+   * @private
+   */
+  _createApollo(audienceName) {
+    return new Apollo(this, audienceName);
+  }
+
+  /**
    * Decorates custom modules onto the SDK instance so they behave as first-class citizens.
    *
    * @param {Object} modules
@@ -201,3 +227,4 @@ class ContxtSdk {
 }
 
 export default ContxtSdk;
+export { toCamelCase };

@@ -2,8 +2,7 @@
   "name": "@ndustrial/contxt-sdk",
   "version": "4.1.2",
   "description": "",
-  "main": "lib/index.js",
-  "module": "esm/index.js",
+  "main": "src/index.js",
   "browser": {
     "./esm/bus/index.js": "./esm/bus/index.browser.js",
     "./lib/bus/index.js": "./lib/bus/index.browser.js",
@@ -55,16 +54,19 @@
     ]
   },
   "dependencies": {
+    "@apollo/client": "^3.3.21",
     "auth0-js": "^9.14.2",
     "axios": "^0.21.1",
     "change-case": "^4.1.2",
+    "graphql": "^15.5.1",
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
     "lodash.once": "^4.1.1",
     "qs": "^6.9.6",
     "url-parse": "^1.4.7",
     "uuid": "^8.3.2",
-    "ws": "^6.1.3"
+    "ws": "^6.1.3",
+    "react": "^16.10.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

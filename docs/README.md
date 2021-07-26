@@ -1,6 +1,8 @@
 ## Classes
 
 <dl>
+<dt><a href="./Apollo.md">Apollo</a></dt>
+<dd></dd>
 <dt><a href="./Applications.md">Applications</a></dt>
 <dd><p>Module that provides access to contxt applications</p>
 </dd>

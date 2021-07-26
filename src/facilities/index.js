@@ -43,15 +43,22 @@ class Facilities {
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
    */
-  constructor(sdk, request) {
+  constructor(sdk, request, apollo) {
     const baseUrl = `${sdk.config.audiences.facilities.host}/v1`;
 
     this._baseUrl = baseUrl;
     this._request = request;
+    this.apollo = apollo;
     this._sdk = sdk;
 
     this.groupings = new FacilityGroupings(sdk, request, baseUrl);
     this.costCenters = new CostCenters(sdk, request, baseUrl);
+
+    this.useQuery = this.useQuery.bind(this);
+  }
+
+  useQuery(query, queryHookOptions) {
+    return this.apollo.useQuery(query, queryHookOptions);
   }
 
   /**
