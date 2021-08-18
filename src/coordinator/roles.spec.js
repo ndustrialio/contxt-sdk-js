@@ -199,7 +199,7 @@ describe('Coordinator/Roles', function() {
           const roles = new Roles(baseSdk, request, expectedHost);
           promise = roles.addProjectEnvironment(
             role.id,
-            projectEnvironment.slug,
+            projectEnvironment.id,
             expectedRoleProjectEnvironment.accessType
           );
         });
@@ -207,7 +207,7 @@ describe('Coordinator/Roles', function() {
         it('posts the role project environment to the server', function() {
           expect(request.post).to.be.calledWith(
             `${expectedHost}/roles/${role.id}/project_environments/${
-              projectEnvironment.slug
+              projectEnvironment.id
             }`,
             {
               access_type: expectedRoleProjectEnvironment.accessType
@@ -241,7 +241,7 @@ describe('Coordinator/Roles', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.addProjectEnvironment(
           null,
-          projectEnvironment.slug,
+          projectEnvironment.id,
           roleProjectEnvironment.accessType
         );
 
@@ -277,7 +277,7 @@ describe('Coordinator/Roles', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.addProjectEnvironment(
           role.id,
-          projectEnvironment.slug,
+          projectEnvironment.id,
           null
         );
 
@@ -295,7 +295,7 @@ describe('Coordinator/Roles', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.addProjectEnvironment(
           role.id,
-          projectEnvironment.slug,
+          projectEnvironment.id,
           faker.random.word()
         );
 
@@ -900,14 +900,14 @@ describe('Coordinator/Roles', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         promise = roles.removeProjectEnvironment(
           role.id,
-          projectEnvironment.slug
+          projectEnvironment.id
         );
       });
 
       it('sends a request to remove the project environment role role from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
           `${expectedHost}/roles/${role.id}/project_environments/${
-            projectEnvironment.slug
+            projectEnvironment.id
           }`
         );
       });
@@ -923,7 +923,7 @@ describe('Coordinator/Roles', function() {
         const roles = new Roles(baseSdk, baseRequest, expectedHost);
         const promise = roles.removeProjectEnvironment(
           null,
-          projectEnvironment.slug
+          projectEnvironment.id
         );
 
         return expect(promise).to.be.rejectedWith(

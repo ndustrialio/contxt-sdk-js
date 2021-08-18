@@ -239,7 +239,7 @@ class Users {
    *   .then((userProject) => console.log(userProject))
    *   .catch((err) => console.log(err));
    */
-  addProjectEnvironment(userId, projectEnvironmentSlug, accessType) {
+  addProjectEnvironment(userId, projectEnvironmentId, accessType) {
     if (!userId) {
       return Promise.reject(
         new Error(
@@ -248,7 +248,7 @@ class Users {
       );
     }
 
-    if (!projectEnvironmentSlug) {
+    if (!projectEnvironmentId) {
       return Promise.reject(
         new Error(
           'A project environment slug is required for adding a project environment to a user.'
@@ -266,7 +266,7 @@ class Users {
 
     return this._request
       .post(
-        `${this._getBaseUrl()}/users/${userId}/project_environments/${projectEnvironmentSlug}`,
+        `${this._getBaseUrl()}/users/${userId}/project_environments/${projectEnvironmentId}`,
         {
           access_type: accessType
         }
@@ -574,7 +574,7 @@ class Users {
    *   .removeProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug')
    *   .catch((err) => console.log(err));
    */
-  removeProjectEnvironment(userId, projectEnvironmentSlug) {
+  removeProjectEnvironment(userId, projectEnvironmentId) {
     if (!userId) {
       return Promise.reject(
         new Error(
@@ -583,7 +583,7 @@ class Users {
       );
     }
 
-    if (!projectEnvironmentSlug) {
+    if (!projectEnvironmentId) {
       return Promise.reject(
         new Error(
           'A project environment slug is required for removing a project environment from a user.'
@@ -592,7 +592,7 @@ class Users {
     }
 
     return this._request.delete(
-      `${this._getBaseUrl()}/users/${userId}/project_environments/${projectEnvironmentSlug}`
+      `${this._getBaseUrl()}/users/${userId}/project_environments/${projectEnvironmentId}`
     );
   }
 

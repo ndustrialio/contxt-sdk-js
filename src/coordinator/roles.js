@@ -121,7 +121,7 @@ class Roles {
    *   .then((roleProject) => console.log(roleProject))
    *   .catch((err) => console.log(err));
    */
-  addProjectEnvironment(roleId, projectEnvironmentSlug, accessType) {
+  addProjectEnvironment(roleId, projectEnvironmentId, accessType) {
     if (!roleId) {
       return Promise.reject(
         new Error(
@@ -130,7 +130,7 @@ class Roles {
       );
     }
 
-    if (!projectEnvironmentSlug) {
+    if (!projectEnvironmentId) {
       return Promise.reject(
         new Error(
           'A project environment slug is required for adding a project environment to a role.'
@@ -150,7 +150,7 @@ class Roles {
       .post(
         `${
           this._baseUrl
-        }/roles/${roleId}/project_environments/${projectEnvironmentSlug}`,
+        }/roles/${roleId}/project_environments/${projectEnvironmentId}`,
         {
           access_type: accessType
         }
@@ -368,7 +368,7 @@ class Roles {
    *   .removeProjectEnvironment('36b8421a-cc4a-4204-b839-1397374fb16b', 'project-environment-slug')
    *   .catch((err) => console.log(err));
    */
-  removeProjectEnvironment(roleId, projectEnvironmentSlug) {
+  removeProjectEnvironment(roleId, projectEnvironmentId) {
     if (!roleId) {
       return Promise.reject(
         new Error(
@@ -377,7 +377,7 @@ class Roles {
       );
     }
 
-    if (!projectEnvironmentSlug) {
+    if (!projectEnvironmentId) {
       return Promise.reject(
         new Error(
           'A project environment slug is required for removing a project environment from a role.'
@@ -388,7 +388,7 @@ class Roles {
     return this._request.delete(
       `${
         this._baseUrl
-      }/roles/${roleId}/project_environments/${projectEnvironmentSlug}`
+      }/roles/${roleId}/project_environments/${projectEnvironmentId}`
     );
   }
 }

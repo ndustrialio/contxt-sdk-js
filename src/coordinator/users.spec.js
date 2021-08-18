@@ -491,7 +491,7 @@ describe('Coordinator/Users', function() {
 
           promise = users.addProjectEnvironment(
             user.id,
-            projectEnvironment.slug,
+            projectEnvironment.id,
             expectedUserProjectEnvironment.accessType
           );
         });
@@ -503,7 +503,7 @@ describe('Coordinator/Users', function() {
         it('posts the user project to the server', function() {
           expect(request.post).to.be.calledWith(
             `${expectedTenantBaseUrl}/users/${user.id}/project_environments/${
-              projectEnvironment.slug
+              projectEnvironment.id
             }`,
             {
               access_type: expectedUserProjectEnvironment.accessType
@@ -535,7 +535,7 @@ describe('Coordinator/Users', function() {
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addProjectEnvironment(
           null,
-          projectEnvironment.slug,
+          projectEnvironment.id,
           userProjectEnvironment.accessType
         );
 
@@ -571,7 +571,7 @@ describe('Coordinator/Users', function() {
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addProjectEnvironment(
           user.id,
-          projectEnvironment.slug,
+          projectEnvironment.id,
           null
         );
 
@@ -588,7 +588,7 @@ describe('Coordinator/Users', function() {
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.addProjectEnvironment(
           user.id,
-          projectEnvironment.slug,
+          projectEnvironment.id,
           faker.random.word()
         );
 
@@ -1339,7 +1339,7 @@ describe('Coordinator/Users', function() {
 
         promise = users.removeProjectEnvironment(
           user.id,
-          projectEnvironment.slug
+          projectEnvironment.id
         );
       });
 
@@ -1350,7 +1350,7 @@ describe('Coordinator/Users', function() {
       it('sends a request to removeProjectEnvironment the user from the organization', function() {
         expect(baseRequest.delete).to.be.calledWith(
           `${expectedTenantBaseUrl}/users/${user.id}/project_environments/${
-            projectEnvironment.slug
+            projectEnvironment.id
           }`
         );
       });
@@ -1366,7 +1366,7 @@ describe('Coordinator/Users', function() {
         const users = new Users(baseSdk, baseRequest, expectedTenantBaseUrl);
         const promise = users.removeProjectEnvironment(
           null,
-          projectEnvironment.slug
+          projectEnvironment.id
         );
 
         return expect(promise).to.be.rejectedWith(
