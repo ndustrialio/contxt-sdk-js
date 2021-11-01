@@ -1,3 +1,15 @@
+## [v4.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.0) (2021-11-01)
+
+**Changed**
+
+- updates the files staging default url to files.api.staging.ndustrial.io
+
+## [v4.2.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.2.0) (2021-02-18)
+
+**Changed**
+
+- updates uris for updating project environment and user role associations to use an project environment id instead of a slug
+
 ## [v4.1.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.1.2) (2021-02-12)
 
 **Changed**
