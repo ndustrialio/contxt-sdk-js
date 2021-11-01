@@ -58,7 +58,7 @@ export default {
     },
     staging: {
       clientId: 'SLE310LY4nDT5p06sUGPVOLlGXk5osbQ',
-      host: 'https://files-staging.api.ndustrial.io'
+      host: 'https://files.api.staging.ndustrial.io'
     }
   },
   health: {
