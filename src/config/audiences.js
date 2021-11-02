@@ -34,7 +34,7 @@ export default {
   events: {
     staging: {
       clientId: 'dn4MaocJFdKtsBy9sFFaTeuJWL1nt5xu',
-      host: 'https://events-staging.api.ndustrial.io'
+      host: 'https://events.api.staging.ndustrial.io'
     },
     production: {
       clientId: '7jzwfE20O2XZ4aq3cO1wmk63G9GzNc8j',
