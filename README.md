@@ -1,4 +1,4 @@
-# contxt-sdk ![tests](https://github.com/ndustrialio/contxt-sdk-js/workflows/tests/badge.svg)
+# contxt-sdk ![CI](https://github.com/ndustrialio/contxt-sdk-js/workflows/CI/badge.svg)
 
 ## Installation
 

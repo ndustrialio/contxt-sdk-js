@@ -1,19 +1,19 @@
-name: tests
+name: CI
+
 on:
   push:
-    branches-ignore:
-      - 'master'
+    branches: [main]
+  pull_request:
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          fetch-depth: 1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '8.x'
+          node-version-file: .nvmrc
+          cache: npm
       - name: Install dependencies
         run: npm install
       - name: Run lint
