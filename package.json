@@ -4,6 +4,9 @@
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "browser": {
     "./esm/bus/index.js": "./esm/bus/index.browser.js",
     "./lib/bus/index.js": "./lib/bus/index.browser.js",
