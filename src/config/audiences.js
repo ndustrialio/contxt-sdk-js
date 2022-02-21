@@ -28,7 +28,7 @@ export default {
     },
     staging: {
       clientId: '8qY2xJob1JAxhmVhIDLCNnGriTM9bct8',
-      host: 'https://contxt-staging.api.ndustrial.io'
+      host: 'https://contxt-api.staging.ndustrial.io'
     }
   },
   events: {
