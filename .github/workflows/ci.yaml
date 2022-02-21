@@ -20,3 +20,40 @@ jobs:
         run: npm run lint
       - name: Run tests
         run: npm run test
+
+  release:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Bump version
+        uses: TriPSs/conventional-changelog-action@v3
+        id: version
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-user-name: "GitHub Actions"
+          git-user-email: "action@github.com"
+          preset: conventionalcommits
+          output-file: false
+      - name: Set new commit hash
+        run: echo "SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
+      - name: Create release
+        uses: actions/create-release@v1
+        if: steps.version.outputs.skipped == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.NIO_BOT_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          release_name: ${{ steps.version.outputs.tag }}
+          body: ${{ steps.version.outputs.clean_changelog }}
+          commitish: ${{ env.SHA }}
+      - name: Publish to NPM
+        if: steps.version.outputs.skipped == 'false'
+        env:
+          NPM_TOKEN: ${{ secrets.NIO_NPM_TOKEN }}
+        run: npm publish

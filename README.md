@@ -233,14 +233,4 @@ We use [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) for do
 
 ### Publishing
 
-There are certain steps that should be taken when publishing a release to NPM to avoid any issues or problems. After
-your pull request is approved and merged into `master`, follow the steps below.
-
-1.  Checkout `master` locally and perform a `git pull origin master` so your local repo is up to date with your merged changes.
-1.  Run `npm version x.x.x` in your terminal on `master` where the `x`'s are the new version numbers.
-    - This sets the new version in `package.json` and `package-lock.json` and also creates a new `git tag`.
-    - Example `npm version 0.30.1`
-1.  Perform a `git push --tags origin master` while on your local copy of `master`.
-1.  Perform an `npm publish` to publish the updated package to NPM.
-
-You've now successfully updated and published the package.
+New versions will be published automatically on merges to `main`. The changelog and version will be determined using [Conventional Commits](https://www.conventionalcommits.org/).
