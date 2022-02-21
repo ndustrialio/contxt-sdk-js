@@ -31,6 +31,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: Install dependencies
+        run: npm install
       - name: Bump version
         uses: TriPSs/conventional-changelog-action@v3
         id: version
