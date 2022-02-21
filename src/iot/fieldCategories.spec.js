@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
-import FieldCategories from './fieldCategories';
 import * as objectUtils from '../utils/objects';
 import * as paginationUtils from '../utils/pagination';
+import FieldCategories from './fieldCategories';
 
 describe('Iot/FieldCategories', function() {
   let baseRequest;
@@ -256,7 +256,7 @@ describe('Iot/FieldCategories', function() {
         _metadata: fixture.build('paginationMetadata'),
         records: fixture.buildList(
           'fieldCategory',
-          faker.random.number({ min: 5, max: 10 })
+          faker.datatype.number({ min: 5, max: 10 })
         )
       };
       fieldCategoriesFromServerBeforeFormat = {
@@ -266,8 +266,8 @@ describe('Iot/FieldCategories', function() {
         )
       };
       paginationOptionsBeforeFormat = {
-        limit: faker.random.number({ min: 10, max: 1000 }),
-        offset: faker.random.number({ max: 1000 })
+        limit: faker.datatype.number({ min: 10, max: 1000 }),
+        offset: faker.datatype.number({ max: 1000 })
       };
       paginationOptionsAfterFormat = {
         ...paginationOptionsBeforeFormat

@@ -1,6 +1,5 @@
 import { Server, WebSocket } from 'mock-socket';
 import proxyquire from 'proxyquire';
-
 import Channels from './channels';
 import WebSocketConnection from './webSocketConnection';
 
@@ -332,7 +331,9 @@ describe('Bus', function() {
         let webSocketConnection;
 
         beforeEach(function() {
-          webSocketConnection = bus.getWebSocketConnection(faker.random.uuid());
+          webSocketConnection = bus.getWebSocketConnection(
+            faker.datatype.uuid()
+          );
         });
 
         it('returns undefined', function() {

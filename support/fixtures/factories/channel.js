@@ -7,7 +7,7 @@ factory
   .define('channel')
   .option('fromServer', false)
   .attrs({
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     name: () => faker.hacker.noun(),
     organizationId: () => factory.build('organization').id,
     serviceId: () => faker.internet.password()

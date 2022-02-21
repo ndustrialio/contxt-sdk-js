@@ -1,8 +1,8 @@
 import omit from 'lodash.omit';
 import times from 'lodash.times';
-import Config from './index';
 import defaultAudiences from './audiences';
 import defaultConfigs from './defaults';
+import Config from './index';
 
 describe('Config', function() {
   afterEach(function() {
@@ -112,7 +112,7 @@ describe('Config', function() {
           audienceName = faker.hacker.adjective();
 
           existingDynamicAudiences = times(
-            faker.random.number({ min: 1, max: 3 })
+            faker.datatype.number({ min: 1, max: 3 })
           ).reduce((memo, index) => {
             memo[`${faker.lorem.word()}-${index}`] = fixture.build('audience');
 
@@ -258,7 +258,7 @@ describe('Config', function() {
         expectedReaddedAudience = fixture.build('audience');
         expectedRemovedAudience = fixture.build('audience');
         remainingDynamicAudiences = times(
-          faker.random.number({ min: 1, max: 3 })
+          faker.datatype.number({ min: 1, max: 3 })
         ).reduce((memo, index) => {
           memo[`${faker.hacker.adjective()}-${index}`] = fixture.build(
             'audience'
@@ -331,7 +331,7 @@ describe('Config', function() {
 
         beforeEach(function() {
           dynamicAudiences = times(
-            faker.random.number({ min: 1, max: 3 })
+            faker.datatype.number({ min: 1, max: 3 })
           ).reduce((memo, index) => {
             memo[`${faker.hacker.adjective()}-${index}`] = fixture.build(
               'audience'
@@ -667,7 +667,7 @@ describe('Config', function() {
           const externalModules = {};
           expectedAudiences = {};
 
-          times(faker.random.number({ min: 1, max: 10 }))
+          times(faker.datatype.number({ min: 1, max: 10 }))
             .map(() => faker.hacker.adjective())
             .forEach((moduleName) => {
               const audience = fixture.build('audience');
@@ -699,7 +699,7 @@ describe('Config', function() {
           const externalModules = {};
           expectedAudiences = {};
 
-          times(faker.random.number({ min: 1, max: 10 }))
+          times(faker.datatype.number({ min: 1, max: 10 }))
             .map(() => faker.hacker.adjective())
             .forEach((moduleName) => {
               const audience = fixture.build('audience', {

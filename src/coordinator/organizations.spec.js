@@ -1,5 +1,5 @@
-import Organizations from './organizations';
 import * as objectUtils from '../utils/objects';
+import Organizations from './organizations';
 
 describe('Coordinator/Organizations', function() {
   let baseRequest;
@@ -96,7 +96,7 @@ describe('Coordinator/Organizations', function() {
         let toCamelCase;
 
         beforeEach(function() {
-          expectedOrganizationId = faker.random.uuid();
+          expectedOrganizationId = faker.datatype.uuid();
           organizationFromServerAfterFormat = fixture.build(
             'contxtOrganization',
             {
@@ -172,7 +172,7 @@ describe('Coordinator/Organizations', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedOrganizationId = faker.random.uuid();
+        expectedOrganizationId = faker.datatype.uuid();
         organizationFromServerAfterFormat = fixture.build(
           'contxtOrganization',
           {
@@ -263,7 +263,7 @@ describe('Coordinator/Organizations', function() {
     let toCamelCase;
 
     beforeEach(function() {
-      const numberOfOrganizations = faker.random.number({
+      const numberOfOrganizations = faker.datatype.number({
         min: 1,
         max: 10
       });

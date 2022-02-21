@@ -1,5 +1,5 @@
-import Permissions from './permissions';
 import * as objectUtils from '../utils/objects';
+import Permissions from './permissions';
 
 describe('Coordinator/Permissions', function() {
   let baseRequest;
@@ -99,7 +99,7 @@ describe('Coordinator/Permissions', function() {
           expectedOrganizationId = fixture.build('contxtOrganization').id;
           expectedUsersPermissions = fixture.buildList(
             'contxtUserPermissions',
-            faker.random.number({
+            faker.datatype.number({
               min: 1,
               max: 10
             }),
@@ -173,7 +173,7 @@ describe('Coordinator/Permissions', function() {
         expectedOrganizationId = fixture.build('organization').id;
         expectedUsersPermissions = fixture.buildList(
           'contxtUserPermissions',
-          faker.random.number({
+          faker.datatype.number({
             min: 1,
             max: 10
           }),
@@ -481,7 +481,7 @@ describe('Coordinator/Permissions', function() {
 
       beforeEach(function() {
         expectedPermissionsMap = fixture.build('userPermissionsMap');
-        expectedUserId = faker.random.uuid();
+        expectedUserId = faker.datatype.uuid();
 
         request = {
           ...baseRequest,

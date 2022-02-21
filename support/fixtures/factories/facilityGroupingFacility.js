@@ -8,9 +8,9 @@ factory
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    facilityGroupingId: () => faker.random.uuid(),
-    facilityId: () => faker.random.number(),
-    id: () => faker.random.uuid(),
+    facilityGroupingId: () => faker.datatype.uuid(),
+    facilityId: () => faker.datatype.number(),
+    id: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((facilityGroupingFacility, options) => {

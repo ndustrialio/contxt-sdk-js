@@ -12,29 +12,29 @@ factory
       factory
         .buildList(
           'contxtApplication',
-          faker.random.number({ min: 0, max: 15 })
+          faker.datatype.number({ min: 0, max: 15 })
         )
         .map(({ id }) => ({ id })),
     applicationsImplicit: () =>
       factory
         .buildList(
           'contxtApplication',
-          faker.random.number({ min: 0, max: 15 })
+          faker.datatype.number({ min: 0, max: 15 })
         )
         .map(({ id }) => ({ id })),
     roles: () =>
       factory
-        .buildList('contxtRole', faker.random.number({ min: 0, max: 15 }))
+        .buildList('contxtRole', faker.datatype.number({ min: 0, max: 15 }))
         .map(({ id }) => ({ id })),
     projectsExplicit: () =>
-      times(faker.random.number({ min: 0, max: 15 }), () => {
+      times(faker.datatype.number({ min: 0, max: 15 }), () => {
         return {
           id: factory.build('contxtProject').id,
           accessType: factory.build('contxtUserProjectEnvironment').accessType
         };
       }),
     projectsImplicit: () =>
-      times(faker.random.number({ min: 0, max: 15 }), () => {
+      times(faker.datatype.number({ min: 0, max: 15 }), () => {
         return {
           id: factory.build('contxtProject').id,
           accessType: factory.build('contxtUserProjectEnvironment').accessType

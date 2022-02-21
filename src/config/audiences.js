@@ -61,16 +61,6 @@ export default {
       host: 'https://files.api.staging.ndustrial.io'
     }
   },
-  health: {
-    staging: {
-      clientId: '1zQ2YXbHXotrf2dDKgySqEjlJBz465qq',
-      host: 'https://health-staging.api.ndustrial.io'
-    },
-    production: {
-      clientId: '6uaQIV1KnnWhXiTm09iGDvy2aQaz2xVI',
-      host: 'https://health.api.ndustrial.io'
-    }
-  },
   iot: {
     staging: {
       clientId: 'm35AEcxD8hf65sq04ZU7yFxqpqVkKzES',
@@ -79,6 +69,16 @@ export default {
     production: {
       clientId: 'iznTb30Sfp2Jpaf398I5DN6MyPuDCftA',
       host: 'https://feeds.api.ndustrial.io'
+    }
+  },
+  nionic: {
+    staging: {
+      clientId: 'vhGxildn8hRRWZj49y18BGtbjTkFHcTG',
+      host: 'https://<tenant>.api.staging.ndustrial.io'
+    },
+    production: {
+      clientId: 'vtiZlMRo4apDvThTRiH7kLifQXWUdi9j',
+      host: 'https://<tenant>.api.ndustrial.io'
     }
   }
 };

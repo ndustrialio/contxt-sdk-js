@@ -10,17 +10,17 @@ factory
     applications: () =>
       factory.buildList(
         'contxtApplication',
-        faker.random.number({ min: 0, max: 10 })
+        faker.datatype.number({ min: 0, max: 10 })
       ),
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     name: () => faker.name.title(),
     organizationId: () => factory.build('contxtOrganization').id,
     projects: () =>
       factory.buildList(
         'contxtProject',
-        faker.random.number({ min: 0, max: 10 })
+        faker.datatype.number({ min: 0, max: 10 })
       ),
     updatedAt: () => faker.date.recent().toISOString()
   })

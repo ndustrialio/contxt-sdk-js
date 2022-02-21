@@ -9,12 +9,12 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.random.uuid(),
-    isPrivate: () => faker.random.boolean(),
+    id: () => faker.datatype.uuid(),
+    isPrivate: () => faker.datatype.boolean(),
     name: () => faker.commerce.productName(),
     organizationId: () => factory.build('organization').id,
     ownerId: () => faker.internet.userName(),
-    parentGroupingId: () => faker.random.uuid(),
+    parentGroupingId: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((facilityGrouping, options) => {

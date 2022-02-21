@@ -1,5 +1,5 @@
-import Feeds from './feeds';
 import * as objectUtils from '../utils/objects';
+import Feeds from './feeds';
 
 describe('Iot/Feeds', function() {
   let baseRequest;
@@ -58,7 +58,7 @@ describe('Iot/Feeds', function() {
         facilityId = fixture.build('facility').id;
         expectedFeeds = fixture.buildList(
           'feed',
-          faker.random.number({
+          faker.datatype.number({
             min: 1,
             max: 10
           })
@@ -133,7 +133,7 @@ describe('Iot/Feeds', function() {
         expectedResult = {
           feeds: fixture.buildList(
             'feed',
-            faker.random.number({
+            faker.datatype.number({
               min: 1,
               max: 10
             })
@@ -143,7 +143,7 @@ describe('Iot/Feeds', function() {
         expectedResult.feeds.forEach((feed) => {
           feed.groupings = fixture.buildList(
             'fieldGroupingStatus',
-            faker.random.number({ min: 1, max: 4 })
+            faker.datatype.number({ min: 1, max: 4 })
           );
         });
 

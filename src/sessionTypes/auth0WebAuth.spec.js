@@ -23,7 +23,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           domain: faker.internet.domainName(),
           authorizationPath: faker.hacker.noun(),
           clientId: faker.internet.password(),
-          tokenExpiresAtBufferMs: faker.random.number()
+          tokenExpiresAtBufferMs: faker.datatype.number()
         }
       }
     };
@@ -1141,7 +1141,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it('throws the original error if it includes a status code', function() {
         const expectedError = new Error();
-        expectedError.response = { status: faker.random.number() };
+        expectedError.response = { status: faker.datatype.number() };
 
         sinon
           .stub(Auth0WebAuth.prototype, '_checkSession')

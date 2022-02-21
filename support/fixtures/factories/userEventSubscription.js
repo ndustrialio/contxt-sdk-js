@@ -10,7 +10,7 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     endpointArn: () => null,
     eventId: () => factory.build('event').id,
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     mediumType: () => faker.random.arrayElement(['email', 'sms']),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('contxtUser').id

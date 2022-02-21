@@ -9,7 +9,7 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    facilityId: () => faker.random.number(),
+    facilityId: () => faker.datatype.number(),
     name: () => faker.commerce.productMaterial(),
     updatedAt: () => faker.date.recent().toISOString()
   })

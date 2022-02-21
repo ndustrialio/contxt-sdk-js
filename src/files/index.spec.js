@@ -1,9 +1,9 @@
 import axios from 'axios';
 import omit from 'lodash.omit';
 import pick from 'lodash.pick';
-import Files from './index';
 import * as objectUtils from '../utils/objects';
 import * as paginationUtils from '../utils/pagination';
+import Files from './index';
 
 describe('Files', function() {
   let baseRequest;
@@ -825,7 +825,7 @@ describe('Files', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedFileId = faker.random.uuid();
+        expectedFileId = faker.datatype.uuid();
         fileFromServerAfterFormat = fixture.build('fileToDownload');
 
         fileFromServerBeforeFormat = fixture.build(
@@ -890,7 +890,7 @@ describe('Files', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedFileId = faker.random.uuid();
+        expectedFileId = faker.datatype.uuid();
         fileFromServerAfterFormat = fixture.build('file', {
           id: expectedFileId
         });
@@ -962,7 +962,7 @@ describe('Files', function() {
         _metadata: fixture.build('paginationMetadata'),
         records: fixture.buildList(
           'file',
-          faker.random.number({ min: 1, max: 10 })
+          faker.datatype.number({ min: 1, max: 10 })
         )
       };
       filesFromServerBeforeFormat = {
@@ -972,8 +972,8 @@ describe('Files', function() {
         )
       };
       filesFiltersBeforeFormat = {
-        limit: faker.random.number({ min: 10, max: 1000 }),
-        offset: faker.random.number({ max: 1000 }),
+        limit: faker.datatype.number({ min: 10, max: 1000 }),
+        offset: faker.datatype.number({ max: 1000 }),
         orderBy: faker.random.arrayElement([
           'content_type',
           'created_at',
@@ -985,7 +985,7 @@ describe('Files', function() {
           'status',
           'updated_at'
         ]),
-        reverseOrder: faker.random.boolean(),
+        reverseOrder: faker.datatype.boolean(),
         status: faker.random.arrayElement(['ACTIVE', 'UPLOADING'])
       };
       filesFiltersAfterFormat = {

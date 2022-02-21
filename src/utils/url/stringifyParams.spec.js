@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import faker from 'faker';
-
 import { stringifyParamsWithCommaSeparatedArrays } from './stringifyParams';
 
 const URL_ENCODED_COLON = '%3A';
@@ -19,9 +18,9 @@ describe('src/utils/url/stringifyParams.js', function() {
   let allParams;
 
   beforeEach(function() {
-    value = { value: faker.random.number() };
+    value = { value: faker.datatype.number() };
     word = { word: faker.lorem.word() };
-    uuid = { uuid: faker.random.uuid() };
+    uuid = { uuid: faker.datatype.uuid() };
     date = { date: faker.date.past().toISOString() };
 
     listValue1 = faker.lorem.word();

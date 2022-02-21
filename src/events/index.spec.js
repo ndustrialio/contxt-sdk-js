@@ -1,8 +1,8 @@
 import omit from 'lodash.omit';
-import Events from './index';
 import * as eventsUtils from '../utils/events';
 import * as objectUtils from '../utils/objects';
 import * as paginationUtils from '../utils/pagination';
+import Events from './index';
 
 describe('Events', function() {
   let baseRequest;
@@ -186,7 +186,7 @@ describe('Events', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedEventId = faker.random.uuid();
+        expectedEventId = faker.datatype.uuid();
         eventFromServerAfterFormat = fixture.build('event', {
           id: expectedEventId
         });
@@ -256,12 +256,12 @@ describe('Events', function() {
       let toSnakeCase;
 
       beforeEach(function() {
-        clientId = faker.random.uuid();
+        clientId = faker.datatype.uuid();
         eventTypeFromServerAfterFormat = {
           _metadata: fixture.build('paginationMetadata'),
           records: fixture.buildList(
             'eventType',
-            faker.random.number({ min: 5, max: 10 })
+            faker.datatype.number({ min: 5, max: 10 })
           )
         };
         eventTypeFromServerBeforeFormat = {
@@ -271,8 +271,8 @@ describe('Events', function() {
           )
         };
         paginationOptionsBeforeFormat = {
-          limit: faker.random.number({ min: 10, max: 1000 }),
-          offset: faker.random.number({ max: 1000 })
+          limit: faker.datatype.number({ min: 10, max: 1000 }),
+          offset: faker.datatype.number({ max: 1000 })
         };
         paginationOptionsAfterFormat = {
           ...paginationOptionsBeforeFormat
@@ -351,12 +351,12 @@ describe('Events', function() {
 
     context('all required params are passed', function() {
       beforeEach(function() {
-        typeId = faker.random.uuid();
+        typeId = faker.datatype.uuid();
         eventsFiltersBeforeFormat = {
           include: ['triggered.latest'],
-          facilityId: faker.random.number(),
-          limit: faker.random.number({ min: 10, max: 1000 }),
-          offset: faker.random.number({ max: 1000 })
+          facilityId: faker.datatype.number(),
+          limit: faker.datatype.number({ min: 10, max: 1000 }),
+          offset: faker.datatype.number({ max: 1000 })
         };
         eventsFiltersAfterFormat = { ...eventsFiltersBeforeFormat };
         eventId = fixture.build('assetType').id;
@@ -364,7 +364,7 @@ describe('Events', function() {
           _metadata: fixture.build('paginationMetadata'),
           records: fixture.buildList(
             'event',
-            faker.random.number({ min: 5, max: 20 }),
+            faker.datatype.number({ min: 5, max: 20 }),
             { eventId }
           )
         };
@@ -442,13 +442,13 @@ describe('Events', function() {
     let triggeredEventsFromServerBeforeFormat;
 
     beforeEach(function() {
-      facilityId = faker.random.number();
+      facilityId = faker.datatype.number();
 
       triggeredEventsFromServerAfterFormat = {
         _metadata: fixture.build('paginationMetadata'),
         records: fixture.buildList(
           'triggeredEvent',
-          faker.random.number({ min: 5, max: 10 })
+          faker.datatype.number({ min: 5, max: 10 })
         )
       };
 
@@ -459,9 +459,9 @@ describe('Events', function() {
         )
       };
       paginationOptionsBeforeFormat = {
-        limit: faker.random.number({ min: 10, max: 1000 }),
-        offset: faker.random.number({ max: 1000 }),
-        eventTypeId: faker.random.uuid()
+        limit: faker.datatype.number({ min: 10, max: 1000 }),
+        offset: faker.datatype.number({ max: 1000 }),
+        eventTypeId: faker.datatype.uuid()
       };
       paginationOptionsAfterFormat = {
         ...paginationOptionsBeforeFormat

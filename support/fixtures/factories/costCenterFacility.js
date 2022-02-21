@@ -7,9 +7,9 @@ factory
   .define('costCenterFacility')
   .option('fromServer', false)
   .attrs({
-    costCenterId: () => faker.random.uuid(),
-    facilityId: () => faker.random.number(),
-    id: () => faker.random.uuid()
+    costCenterId: () => faker.datatype.uuid(),
+    facilityId: () => faker.datatype.number(),
+    id: () => faker.datatype.uuid()
   })
   .after((costCenterFacility, options) => {
     // If building a cost center facility object that comes from the server, transform it to

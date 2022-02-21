@@ -9,10 +9,10 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     name: () => faker.commerce.productName(),
-    organizationId: () => faker.random.uuid(),
-    parentCategoryId: () => faker.random.uuid(),
+    organizationId: () => faker.datatype.uuid(),
+    parentCategoryId: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((fieldCategory, options) => {

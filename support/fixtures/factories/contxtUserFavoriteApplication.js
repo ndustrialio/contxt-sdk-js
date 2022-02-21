@@ -7,9 +7,9 @@ factory
   .define('contxtUserFavoriteApplication')
   .option('fromServer', false)
   .attrs({
-    applicationId: () => faker.random.number(),
+    applicationId: () => faker.datatype.number(),
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => `auth0|${faker.internet.password()}`
   })

@@ -1,12 +1,10 @@
 import times from 'lodash.times';
 import Bus from './bus';
 import Config from './config';
-import ContxtSdk from './index';
 import Coordinator from './coordinator';
 import Events from './events';
-import Facilities from './facilities';
 import Files from './files';
-import Health from './health';
+import ContxtSdk from './index';
 import Iot from './iot';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
@@ -35,7 +33,7 @@ describe('ContxtSdk', function() {
 
     beforeEach(function() {
       expectedExternalModules = times(
-        faker.random.number({ min: 1, max: 5 })
+        faker.datatype.number({ min: 1, max: 5 })
       ).reduce((memo) => {
         const moduleName = faker.hacker.verb();
         memo[moduleName] = {
@@ -103,20 +101,8 @@ describe('ContxtSdk', function() {
       expect(contxtSdk.events).to.be.an.instanceof(Events);
     });
 
-    it('creates an instance of the request module for Facilities', function() {
-      expect(createRequest).to.be.calledWith('facilities');
-    });
-
-    it('sets an instance of Facilities', function() {
-      expect(contxtSdk.facilities).to.be.an.instanceof(Facilities);
-    });
-
     it('sets an instance of Files', function() {
       expect(contxtSdk.files).to.be.an.instanceof(Files);
-    });
-
-    it('sets an instance of Health', function() {
-      expect(contxtSdk.health).to.be.an.instanceof(Health);
     });
 
     it('creates an instance of the request module for IOT', function() {
@@ -145,7 +131,7 @@ describe('ContxtSdk', function() {
 
         beforeEach(function() {
           existingDynamicModuleNames = times(
-            faker.random.number({ min: 1, max: 10 })
+            faker.datatype.number({ min: 1, max: 10 })
           ).map((index) => `${faker.hacker.adjective()}-${index}`);
           existingStaticModule = sinon.stub();
           expectedAudience = fixture.build('audience');
@@ -230,7 +216,7 @@ describe('ContxtSdk', function() {
               .callsFake((moduleName) => `request module for: ${moduleName}`),
             _dynamicModuleNames: [
               moduleName,
-              times(faker.random.number({ min: 1, max: 10 })).map(
+              times(faker.datatype.number({ min: 1, max: 10 })).map(
                 (index) => `${faker.hacker.adjective()}-${index}`
               )
             ],
@@ -291,7 +277,7 @@ describe('ContxtSdk', function() {
 
       beforeEach(function() {
         existingDynamicModuleNames = times(
-          faker.random.number({ min: 1, max: 10 })
+          faker.datatype.number({ min: 1, max: 10 })
         ).map((index) => `${faker.hacker.adjective()}-${index}`);
         existingStaticModule = sinon.stub();
         expectedAudience = fixture.build('audience');
@@ -378,7 +364,7 @@ describe('ContxtSdk', function() {
         expectedRemovedModule = sinon.stub();
         moduleName = faker.hacker.verb();
         remainingDynamicModules = times(
-          faker.random.number({ min: 1, max: 10 })
+          faker.datatype.number({ min: 1, max: 10 })
         ).reduce((memo, index) => {
           memo[`${faker.hacker.adjective()}-${index}`] = sinon.stub();
 
@@ -457,7 +443,7 @@ describe('ContxtSdk', function() {
         internalModule = sinon.stub();
         internalModuleName = faker.hacker.verb();
         externalModules = times(
-          faker.random.number({ min: 1, max: 10 })
+          faker.datatype.number({ min: 1, max: 10 })
         ).reduce((memo, index) => {
           memo[`${faker.hacker.adjective()}-${index}`] = sinon.stub();
 
@@ -651,7 +637,7 @@ describe('ContxtSdk', function() {
     let instance;
 
     beforeEach(function() {
-      externalModules = times(faker.random.number({ min: 1, max: 5 })).reduce(
+      externalModules = times(faker.datatype.number({ min: 1, max: 5 })).reduce(
         (memo, index) => {
           const moduleName = `${faker.hacker.verb()}-${index}`;
           memo[moduleName] = { module: sinon.stub() };

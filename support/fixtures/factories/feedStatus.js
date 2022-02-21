@@ -8,7 +8,7 @@ factory
   .option('fromServer', false)
   .sequence('id')
   .attrs({
-    feedId: () => faker.random.number(),
+    feedId: () => faker.datatype.number(),
     feedStatusId: () => null,
     status: () => faker.random.arrayElement(['Active', 'Degraded', 'Critical']),
     updatedAt: () => faker.date.recent().toISOString()

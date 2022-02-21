@@ -6,10 +6,10 @@ const times = require('lodash.times');
 
 factory.define('userPermissionsMap').after((userPermissionsMap) => {
   const newPermissionsMap = times(
-    faker.random.number({ min: 1, max: 5 })
+    faker.datatype.number({ min: 1, max: 5 })
   ).reduce((memo) => {
     memo[faker.internet.password()] = times(
-      faker.random.number({ min: 1, max: 5 })
+      faker.datatype.number({ min: 1, max: 5 })
     ).reduce((existingScopes) => {
       const scopeLabel = `${faker.lorem.word()}_${faker.lorem.word()}`;
 

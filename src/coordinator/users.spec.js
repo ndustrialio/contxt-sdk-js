@@ -1,9 +1,8 @@
 import axios from 'axios';
-import omit from 'lodash.omit';
-
-import Users from './users';
-import * as objectUtils from '../utils/objects';
 import { expect } from 'chai';
+import omit from 'lodash.omit';
+import * as objectUtils from '../utils/objects';
+import Users from './users';
 
 describe('Coordinator/Users', function() {
   let baseRequest;
@@ -184,7 +183,7 @@ describe('Coordinator/Users', function() {
         userActivationPayload = {
           email: user.email,
           password: faker.internet.password(),
-          userToken: faker.random.uuid()
+          userToken: faker.datatype.uuid()
         };
 
         userActivationPayloadToServer = {
@@ -254,12 +253,12 @@ describe('Coordinator/Users', function() {
           const payload = {
             email: faker.internet.email(),
             password: faker.internet.password(),
-            userToken: faker.random.uuid()
+            userToken: faker.datatype.uuid()
           };
 
           const users = new Users(baseSdk, baseRequest, expectedBaseUrl);
           const promise = users.activate(
-            faker.random.uuid(),
+            faker.datatype.uuid(),
             omit(payload, [field])
           );
 
@@ -610,7 +609,7 @@ describe('Coordinator/Users', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedUserId = faker.random.uuid();
+        expectedUserId = faker.datatype.uuid();
         userFromServerAfterFormat = fixture.build('contxtUser', {
           id: expectedUserId
         });
@@ -682,11 +681,11 @@ describe('Coordinator/Users', function() {
         let toCamelCase;
 
         beforeEach(function() {
-          expectedOrganizationId = faker.random.uuid();
+          expectedOrganizationId = faker.datatype.uuid();
 
           expectedOrganizationUsers = fixture.buildList(
             'contxtUser',
-            faker.random.number({ min: 1, max: 10 })
+            faker.datatype.number({ min: 1, max: 10 })
           );
 
           organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
@@ -757,11 +756,11 @@ describe('Coordinator/Users', function() {
       let users;
 
       beforeEach(function() {
-        expectedOrganizationId = faker.random.uuid();
+        expectedOrganizationId = faker.datatype.uuid();
 
         expectedOrganizationUsers = fixture.buildList(
           'contxtUser',
-          faker.random.number({ min: 1, max: 10 })
+          faker.datatype.number({ min: 1, max: 10 })
         );
 
         organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
@@ -942,7 +941,7 @@ describe('Coordinator/Users', function() {
               expectedLegacyBaseUrl
             );
             const promise = users.invite(
-              faker.random.uuid(),
+              faker.datatype.uuid(),
               omit(newUserPayload, [field])
             );
 
@@ -1077,7 +1076,7 @@ describe('Coordinator/Users', function() {
               organization.id
             );
             const promise = users.invite(
-              faker.random.uuid(),
+              faker.datatype.uuid(),
               omit(newUserPayload, [field])
             );
 
@@ -1131,7 +1130,7 @@ describe('Coordinator/Users', function() {
       context('when the organization ID is not provided', function() {
         it('throws an error', function() {
           const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
-          const promise = users.remove(null, faker.random.uuid());
+          const promise = users.remove(null, faker.datatype.uuid());
 
           return expect(promise).to.be.rejectedWith(
             'An organization ID is required for removing a user from an organization'
@@ -1142,7 +1141,7 @@ describe('Coordinator/Users', function() {
       context('when the user ID is not provided', function() {
         it('throws an error', function() {
           const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
-          const promise = users.remove(faker.random.uuid(), null);
+          const promise = users.remove(faker.datatype.uuid(), null);
 
           return expect(promise).to.be.rejectedWith(
             'A user ID is required for removing a user from an organization'

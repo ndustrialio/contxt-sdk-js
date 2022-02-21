@@ -160,7 +160,7 @@ describe('sessionTypes/passwordGrantAuth', function() {
         username = faker.internet.email();
         expectedResponse = {
           accessToken: faker.internet.password(),
-          expiresIn: faker.random.number({ min: 100, max: 1000 }),
+          expiresIn: faker.datatype.number({ min: 100, max: 1000 }),
           tokenType: 'Bearer'
         };
 

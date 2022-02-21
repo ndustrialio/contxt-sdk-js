@@ -10,8 +10,8 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     email: () => faker.internet.email(),
     firstName: () => faker.name.firstName(),
-    id: () => `auth0|${faker.random.number()}`,
-    isMachineUser: () => faker.random.boolean(),
+    id: () => `auth0|${faker.datatype.number()}`,
+    isMachineUser: () => faker.datatype.boolean(),
     lastName: () => faker.name.lastName(),
     updatedAt: () => faker.date.recent().toISOString()
   })

@@ -8,8 +8,8 @@ factory
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
-    legacyOrganizationId: () => faker.random.number(),
+    id: () => faker.datatype.uuid(),
+    legacyOrganizationId: () => faker.datatype.number(),
     name: () => faker.name.title(),
     updatedAt: () => faker.date.recent().toISOString()
   })

@@ -4,12 +4,12 @@ const factory = require('rosie').Factory;
 const faker = require('faker');
 
 factory.define('Auth0WebAuthSessionInfo').attrs({
-  accessToken: () => faker.random.uuid(),
+  accessToken: () => faker.datatype.uuid(),
   expiresAt: () => sometimeSoon(2, 24)
 });
 
 factory.define('MachineAuthSessionInfo').attrs({
-  apiToken: () => faker.random.uuid(),
+  apiToken: () => faker.datatype.uuid(),
   expiresAt: () => sometimeSoon(2, 24)
 });
 
@@ -24,7 +24,7 @@ const sometimeSoon = (minHours, maxHours) => {
   const date = new Date();
 
   let future = date.getTime();
-  future += faker.random.number(range);
+  future += faker.datatype.number(range);
   date.setTime(future);
 
   return date;

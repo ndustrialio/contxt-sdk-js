@@ -555,33 +555,6 @@ More information at [axios Interceptors](https://github.com/axios/axios#intercep
 | roleId | <code>string</code> |  |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
-<a name="CostCenter"></a>
-
-## CostCenter : <code>Object</code>
-**Kind**: global typedef  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| [description] | <code>string</code> |  |
-| id | <code>string</code> | UUID |
-| name | <code>string</code> |  |
-| organizationId | <code>string</code> | UUID |
-| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-
-<a name="CostCenterFacility"></a>
-
-## CostCenterFacility : <code>Object</code>
-**Kind**: global typedef  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| costCenterId | <code>string</code> | UUID |
-| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| facilityId | <code>number</code> |  |
-| id | <code>string</code> | UUID |
-| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-
 <a name="CustomAudience"></a>
 
 ## CustomAudience : <code>Object</code>
@@ -796,37 +769,6 @@ for authenticating and communicating with an individual API and the external mod
 | key | <code>String</code> | The unique key for the feed |
 | status | <code>String</code> | The most recent status of the feed, e.g. "Healthy" |
 | statusEventId | <code>String</code> | UUID of the feed status event |
-| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-
-<a name="FacilityGrouping"></a>
-
-## FacilityGrouping : <code>Object</code>
-**Kind**: global typedef  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| [description] | <code>string</code> |  |
-| [facilities] | [<code>Array.&lt;Facility&gt;</code>](#Facility) |  |
-| id | <code>string</code> | UUID |
-| isPrivate | <code>boolean</code> |  |
-| name | <code>string</code> |  |
-| organizationId | <code>string</code> | UUID |
-| ownerId | <code>string</code> | Auth0 identifer of the user |
-| [parentGroupingId] | <code>string</code> | UUID |
-| updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-
-<a name="FacilityGroupingFacility"></a>
-
-## FacilityGroupingFacility : <code>Object</code>
-**Kind**: global typedef  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| createdAt | <code>string</code> | ISO 8601 Extended Format date/time string |
-| facilityGroupingId | <code>string</code> | UUID |
-| facilityId | <code>number</code> |  |
-| id | <code>string</code> | UUID |
 | updatedAt | <code>string</code> | ISO 8601 Extended Format date/time string |
 
 <a name="FacilityGroupingStatus"></a>
@@ -1072,36 +1014,6 @@ An error returned while creating and uploading an
 | _metadata.totalRecords | <code>number</code> | Total number of files found |
 | records | [<code>Array.&lt;File&gt;</code>](#File) |  |
 
-<a name="HealthAsset"></a>
-
-## HealthAsset : <code>Object</code>
-**Kind**: global typedef  
-**Extends**: [<code>Asset</code>](./Typedefs.md#Asset)  
-**Properties**
-
-| Name | Type |
-| --- | --- |
-| health | [<code>HealthStatus</code>](./Typedefs.md#HealthStatus) | 
-
-<a name="HealthAssetPaginatedResponse"></a>
-
-## HealthAssetPaginatedResponse : [<code>PaginatedResponse.&lt;HealthAsset&gt;</code>](#HealthAsset)
-**Kind**: global typedef  
-<a name="HealthStatus"></a>
-
-## HealthStatus : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| status | <code>string</code> | A health status of value 'healthy' or 'unhealthy' |
-| timestamp | <code>string</code> | ISO 8601 Extended Format date/time string |
-
-<a name="HealthStatusPaginatedResponse"></a>
-
-## HealthStatusPaginatedResponse : [<code>PaginatedResponse.&lt;HealthStatus&gt;</code>](#HealthStatus)
-**Kind**: global typedef  
 <a name="MachineAuthSessionInfo"></a>
 
 ## MachineAuthSessionInfo : <code>Object</code>
@@ -1180,19 +1092,6 @@ An error returned while creating and uploading an
 | [meta.timeStart] | <code>Number</code> | UNIX timestamp indicating the   start of the query window |
 | [meta.window] | <code>Number</code> | The sampling window for records.   Required if including a timeEnd or timeStart.   Valid options include: `0`, `60`, `900`, and `3600` |
 | records | [<code>Array.&lt;OutputFieldData&gt;</code>](#OutputFieldData) |  |
-
-<a name="PaginatedResponse"></a>
-
-## PaginatedResponse : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| _metadata | <code>Object</code> | Metadata about the pagination settings |
-| _metadata.offset | <code>number</code> | Offset of records in subsequent queries |
-| _metadata.totalRecords | <code>number</code> | Total number of asset types found |
-| records | <code>Array.&lt;RecordType&gt;</code> |  |
 
 <a name="PaginationMetadata"></a>
 

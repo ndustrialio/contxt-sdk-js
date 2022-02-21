@@ -10,7 +10,7 @@ factory
     assetTypeId: () => factory.build('assetType').id,
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.lorem.sentence(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     label: () => faker.hacker.phrase(),
     organizationId: () => factory.build('organization').id,
     timeInterval: () =>

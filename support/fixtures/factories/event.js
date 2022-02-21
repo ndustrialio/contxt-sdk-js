@@ -7,15 +7,15 @@ factory
   .define('event')
   .option('fromServer', false)
   .attrs({
-    allowOthersToTrigger: () => faker.random.boolean(),
+    allowOthersToTrigger: () => faker.datatype.boolean(),
     createdAt: () => faker.date.past().toISOString(),
     deletedAt: () => faker.date.recent().toISOString(),
-    facilityId: () => faker.random.number(),
-    id: () => faker.random.uuid(),
-    isPublic: () => faker.random.boolean(),
+    facilityId: () => faker.datatype.number(),
+    id: () => faker.datatype.uuid(),
+    isPublic: () => faker.datatype.boolean(),
     name: () => faker.company.companyName(),
     organizationId: () => factory.build('organization').id,
-    topicArn: () => faker.random.uuid(),
+    topicArn: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .attr('eventType', ['fromServer'], (fromServer) => {

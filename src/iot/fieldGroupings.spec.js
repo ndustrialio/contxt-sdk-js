@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
-import FieldGroupings from './fieldGroupings';
 import * as objectUtils from '../utils/objects';
 import * as paginationUtils from '../utils/pagination';
+import FieldGroupings from './fieldGroupings';
 
 describe('Iot/FieldGroupings', function() {
   let baseRequest;
@@ -357,12 +357,12 @@ describe('Iot/FieldGroupings', function() {
       let toSnakeCase;
 
       beforeEach(function() {
-        facilityId = faker.random.number({ min: 1, max: 300 });
+        facilityId = faker.datatype.number({ min: 1, max: 300 });
         fieldGroupingFromServerAfterFormat = {
           _metadata: fixture.build('paginationMetadata'),
           records: fixture.buildList(
             'fieldGrouping',
-            faker.random.number({ min: 5, max: 10 })
+            faker.datatype.number({ min: 5, max: 10 })
           )
         };
         fieldGroupingFromServerBeforeFormat = {
@@ -372,8 +372,8 @@ describe('Iot/FieldGroupings', function() {
           )
         };
         paginationOptionsBeforeFormat = {
-          limit: faker.random.number({ min: 10, max: 1000 }),
-          offset: faker.random.number({ max: 1000 })
+          limit: faker.datatype.number({ min: 10, max: 1000 }),
+          offset: faker.datatype.number({ max: 1000 })
         };
         paginationOptionsAfterFormat = {
           ...paginationOptionsBeforeFormat

@@ -9,7 +9,7 @@ factory
   .option('fromServer', false)
   .attrs({
     headers: () =>
-      times(faker.random.number({ min: 1, max: 5 })).reduce((memo) => {
+      times(faker.datatype.number({ min: 1, max: 5 })).reduce((memo) => {
         memo[faker.lorem.word()] = faker.hacker.phrase();
 
         return memo;

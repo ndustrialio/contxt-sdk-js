@@ -10,10 +10,10 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     createdBy: () => factory.build('contxtUser').id,
     description: () => faker.random.words(),
-    id: () => faker.random.number(),
+    id: () => faker.datatype.number(),
     name: () => faker.name.title(),
     organizationId: () => factory.build('contxtOrganization').id,
-    ownerRoleId: () => faker.random.uuid(),
+    ownerRoleId: () => faker.datatype.uuid(),
     slug: () => faker.random.word(),
     type: () => faker.random.word(),
     updatedAt: () => faker.date.recent().toISOString()

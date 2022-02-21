@@ -9,7 +9,7 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    downAfter: () => faker.random.number({ min: 1000, max: 9999 }),
+    downAfter: () => faker.datatype.number({ min: 1000, max: 9999 }),
     troubleshootingUrl: () => faker.internet.url(),
     type: () => faker.hacker.noun(),
     updatedAt: () => faker.date.recent().toISOString()

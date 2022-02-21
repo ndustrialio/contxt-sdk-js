@@ -8,7 +8,7 @@ factory
   .option('fromServer', false)
   .sequence('id')
   .attrs({
-    _sourceDescriptor: () => faker.random.number(),
+    _sourceDescriptor: () => faker.datatype.number(),
     _sourceType: () =>
       faker.random.arrayElement([
         'compressor',
@@ -24,15 +24,15 @@ factory
         'outdoor_sump_pump',
         'transfer_pump'
       ]),
-    canAggregate: () => faker.random.boolean(),
-    divisor: () => faker.random.number(),
+    canAggregate: () => faker.datatype.boolean(),
+    divisor: () => faker.datatype.number(),
     fieldName: () => faker.random.arrayElement(['power', 'temperature']),
-    isDefault: () => faker.random.boolean(),
-    isHidden: () => faker.random.boolean(),
-    isTotalizer: () => faker.random.boolean(),
-    isWindowed: () => faker.random.boolean(),
-    outputId: () => faker.random.number(),
-    scalar: () => faker.random.number(),
+    isDefault: () => faker.datatype.boolean(),
+    isHidden: () => faker.datatype.boolean(),
+    isTotalizer: () => faker.datatype.boolean(),
+    isWindowed: () => faker.datatype.boolean(),
+    outputId: () => faker.datatype.number(),
+    scalar: () => faker.datatype.number(),
     status: () => faker.random.arrayElement(['Active', 'Out-of-Date']),
     valueType: () => faker.random.arrayElement(['boolean', 'numeric', 'string'])
   })
@@ -51,7 +51,7 @@ factory
     (descriptor, measurement, type) => {
       const baseFieldDescriptor = `${type}_${descriptor}`;
 
-      return faker.random.boolean()
+      return faker.datatype.boolean()
         ? baseFieldDescriptor
         : `${baseFieldDescriptor}.${measurement}`;
     }
