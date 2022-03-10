@@ -1,0 +1,11 @@
+ndustrial:
+  project: sdk
+  name: contxt-sdk-js
+  type: SDK,CLI
+
+  organization: ndustrial
+  owner: csi
+  managed_by: n/a
+
+  depends: []
+
