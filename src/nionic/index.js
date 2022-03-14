@@ -50,6 +50,10 @@ class Nionic {
     });
   }
 
+  executeQuery(orgOrTenantId, query, variables = {}) {
+    return this._query(orgOrTenantId, { query, variables });
+  }
+
   getAllFacilities(orgOrTenantId) {
     return this._query(orgOrTenantId, {
       query: `
