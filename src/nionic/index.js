@@ -38,10 +38,7 @@ class Nionic {
 
   _query(orgOrTenantId, options) {
     const tenantId = this._getTenantId(orgOrTenantId);
-    const url = `${this._baseUrl.replace(
-      '<tenant>',
-      tenantId === 'ndustrial' ? 'nionic' : `${tenantId}-nionic`
-    )}/graphql`;
+    const url = `${this._baseUrl.replace('<tenant>', tenantId)}/graphql`;
     return this._request.post(url, options).then((resp) => {
       if (resp.data && resp.data.errors) {
         return Promise.reject(Error(resp.data.errors));
