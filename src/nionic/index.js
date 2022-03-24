@@ -64,7 +64,7 @@ class Nionic {
               city
               state
               zip
-              timezone
+              timezone: timezoneName
               createdAt
               updatedAt
             }
@@ -87,7 +87,7 @@ class Nionic {
               city
               state
               zip
-              timezone
+              timezone: timezoneName
               createdAt
               updatedAt
             }
