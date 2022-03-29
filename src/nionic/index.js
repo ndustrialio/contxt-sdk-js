@@ -55,7 +55,7 @@ class Nionic {
     return this._query(orgOrTenantId, { query, variables });
   }
 
-  getAllFacilities(orgOrTenantId, options = this.queryDefaults) {
+  getAllFacilities(orgOrTenantId, options = Nionic.queryDefaults) {
     const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
@@ -80,7 +80,7 @@ class Nionic {
     }).then((data) => data.facilities.nodes);
   }
 
-  getFacility(orgOrTenantId, facilityId, options = this.queryDefaults) {
+  getFacility(orgOrTenantId, facilityId, options = Nionic.queryDefaults) {
     const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
@@ -124,7 +124,7 @@ class Nionic {
   getFacilityMetrics(
     orgOrTenantId,
     { facilityId, metricLabel, mutableOnly = false },
-    options = this.queryDefaults
+    options = Nionic.queryDefaults
   ) {
     const { additionalFields } = options;
     return this._query(orgOrTenantId, {
