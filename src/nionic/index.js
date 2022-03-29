@@ -51,7 +51,7 @@ class Nionic {
     return this._query(orgOrTenantId, { query, variables });
   }
 
-  getAllFacilities(orgOrTenantId) {
+  getAllFacilities(orgOrTenantId, additionalFields = []) {
     return this._query(orgOrTenantId, {
       query: `
         query {
@@ -67,6 +67,7 @@ class Nionic {
               timezone: timezoneName
               createdAt
               updatedAt
+              ${additionalFields.join('\n')}
             }
           }
         }
@@ -74,7 +75,7 @@ class Nionic {
     }).then((data) => data.facilities.nodes);
   }
 
-  getFacility(orgOrTenantId, facilityId) {
+  getFacility(orgOrTenantId, facilityId, additionalFields = []) {
     return this._query(orgOrTenantId, {
       query: `
         query {
@@ -90,6 +91,7 @@ class Nionic {
               timezone: timezoneName
               createdAt
               updatedAt
+              ${additionalFields.join('\n')}
             }
           }
         }
