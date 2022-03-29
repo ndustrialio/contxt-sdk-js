@@ -113,12 +113,15 @@ class Nionic {
     }).then((resp) => resp.facility.metricLabels);
   }
 
-  getFacilityMetrics(orgOrTenantId, { facilityId, metricLabel }) {
+  getFacilityMetrics(
+    orgOrTenantId,
+    { facilityId, metricLabel, mutableOnly = false }
+  ) {
     return this._query(orgOrTenantId, {
       query: `
-        query($facilityId: Int!, $metricLabel: String!) {
+        query($facilityId: Int!, $metricLabel: String!, $mutableOnly: Boolean) {
           facility(id: $facilityId) {
-            metricData(label: $metricLabel) {
+            metricData(label: $metricLabel, mutableOnly: $mutableOnly) {
               nodes {
                 time
                 sourceId
@@ -129,7 +132,7 @@ class Nionic {
           }
         }
       `,
-      variables: { facilityId, metricLabel }
+      variables: { facilityId, metricLabel, mutableOnly }
     }).then((resp) => resp.facility.metricData.nodes);
   }
 }
