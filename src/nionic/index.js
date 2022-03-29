@@ -23,6 +23,10 @@ class Nionic {
     this._tenants = new Set(Object.values(this._orgIdToTenantId));
   }
 
+  static queryDefaults = {
+    additionalFields: []
+  };
+
   _getTenantId(orgOrTenantId) {
     if (!orgOrTenantId) throw Error('Tenant is required');
     if (
@@ -51,7 +55,8 @@ class Nionic {
     return this._query(orgOrTenantId, { query, variables });
   }
 
-  getAllFacilities(orgOrTenantId) {
+  getAllFacilities(orgOrTenantId, options = Nionic.queryDefaults) {
+    const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
         query {
@@ -67,6 +72,7 @@ class Nionic {
               timezone: timezoneName
               createdAt
               updatedAt
+              ${additionalFields.join('\n')}
             }
           }
         }
@@ -74,7 +80,8 @@ class Nionic {
     }).then((data) => data.facilities.nodes);
   }
 
-  getFacility(orgOrTenantId, facilityId) {
+  getFacility(orgOrTenantId, facilityId, options = Nionic.queryDefaults) {
+    const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
         query {
@@ -90,6 +97,7 @@ class Nionic {
               timezone: timezoneName
               createdAt
               updatedAt
+              ${additionalFields.join('\n')}
             }
           }
         }
@@ -115,8 +123,10 @@ class Nionic {
 
   getFacilityMetrics(
     orgOrTenantId,
-    { facilityId, metricLabel, mutableOnly = false }
+    { facilityId, metricLabel, mutableOnly = false },
+    options = Nionic.queryDefaults
   ) {
+    const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
         query($facilityId: Int!, $metricLabel: String!, $mutableOnly: Boolean) {
@@ -127,6 +137,7 @@ class Nionic {
                 sourceId
                 label
                 data
+                ${additionalFields.join('\n')}
               }
             }
           }
