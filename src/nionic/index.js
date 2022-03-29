@@ -23,6 +23,10 @@ class Nionic {
     this._tenants = new Set(Object.values(this._orgIdToTenantId));
   }
 
+  static queryDefaults = {
+    additionalFields: []
+  };
+
   _getTenantId(orgOrTenantId) {
     if (!orgOrTenantId) throw Error('Tenant is required');
     if (
@@ -51,7 +55,8 @@ class Nionic {
     return this._query(orgOrTenantId, { query, variables });
   }
 
-  getAllFacilities(orgOrTenantId, additionalFields = []) {
+  getAllFacilities(orgOrTenantId, options = this.queryDefaults) {
+    const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
         query {
@@ -75,7 +80,8 @@ class Nionic {
     }).then((data) => data.facilities.nodes);
   }
 
-  getFacility(orgOrTenantId, facilityId, additionalFields = []) {
+  getFacility(orgOrTenantId, facilityId, options = this.queryDefaults) {
+    const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
         query {
@@ -117,8 +123,10 @@ class Nionic {
 
   getFacilityMetrics(
     orgOrTenantId,
-    { facilityId, metricLabel, mutableOnly = false }
+    { facilityId, metricLabel, mutableOnly = false },
+    options = this.queryDefaults
   ) {
+    const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
         query($facilityId: Int!, $metricLabel: String!, $mutableOnly: Boolean) {
@@ -129,6 +137,7 @@ class Nionic {
                 sourceId
                 label
                 data
+                ${additionalFields.join('\n')}
               }
             }
           }
