@@ -18,7 +18,8 @@ class Nionic {
       '18d8b68e-3e59-418e-9f23-47b7cd6bdd6b': 'genan',
       '02efa741-a96f-4124-a463-ae13a704b8fc': 'lineage',
       '5209751f-ea46-4b3e-a5dd-b8d03311b791': 'ndustrial',
-      '2fe29680-fc3d-4888-9e9b-44be1e59c22c': 'sfnt'
+      '2fe29680-fc3d-4888-9e9b-44be1e59c22c': 'sfnt',
+      'b2c6705d-1727-467f-a450-207f110c9966': 'trenton'
     };
     this._tenants = new Set(Object.values(this._orgIdToTenantId));
   }
