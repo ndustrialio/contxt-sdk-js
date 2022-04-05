@@ -85,25 +85,24 @@ class Nionic {
     const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
-        query {
-          facility(id: "${facilityId}") {
-            nodes {
-              id
-              name
-              slug
-              address
-              city
-              state
-              zip
-              timezone: timezoneName
-              createdAt
-              updatedAt
-              ${additionalFields.join('\n')}
-            }
+        query($facilityId: Int!) {
+          facility(id: $facilityId) {
+            id
+            name
+            slug
+            address
+            city
+            state
+            zip
+            timezone: timezoneName
+            createdAt
+            updatedAt
+            ${additionalFields.join('\n')}
           }
         }
-    `
-    }).then((resp) => resp.data.facility);
+    `,
+      variables: { facilityId: parseInt(facilityId) }
+    }).then((resp) => resp.facility);
   }
 
   getFacilityMetricLabels(orgOrTenantId, { facilityId }) {
@@ -118,7 +117,7 @@ class Nionic {
           }
         }
       `,
-      variables: { facilityId }
+      variables: { facilityId: parseInt(facilityId) }
     }).then((resp) => resp.facility.metricLabels);
   }
 
@@ -144,7 +143,7 @@ class Nionic {
           }
         }
       `,
-      variables: { facilityId, metricLabel, mutableOnly }
+      variables: { facilityId: parseInt(facilityId), metricLabel, mutableOnly }
     }).then((resp) => resp.facility.metricData.nodes);
   }
 }
