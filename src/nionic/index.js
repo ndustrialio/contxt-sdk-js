@@ -85,8 +85,8 @@ class Nionic {
     const { additionalFields } = options;
     return this._query(orgOrTenantId, {
       query: `
-        query {
-          facility(id: "${facilityId}") {
+        query($facilityId: Int!) {
+          facility(id: $facilityId) {
             nodes {
               id
               name
@@ -102,7 +102,8 @@ class Nionic {
             }
           }
         }
-    `
+    `,
+      variables: { facilityId: parseInt(facilityId) }
     }).then((resp) => resp.data.facility);
   }
 
@@ -118,7 +119,7 @@ class Nionic {
           }
         }
       `,
-      variables: { facilityId }
+      variables: { facilityId: parseInt(facilityId) }
     }).then((resp) => resp.facility.metricLabels);
   }
 
@@ -144,7 +145,7 @@ class Nionic {
           }
         }
       `,
-      variables: { facilityId, metricLabel, mutableOnly }
+      variables: { facilityId: parseInt(facilityId), metricLabel, mutableOnly }
     }).then((resp) => resp.facility.metricData.nodes);
   }
 }
