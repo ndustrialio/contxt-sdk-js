@@ -87,19 +87,17 @@ class Nionic {
       query: `
         query($facilityId: Int!) {
           facility(id: $facilityId) {
-            nodes {
-              id
-              name
-              slug
-              address
-              city
-              state
-              zip
-              timezone: timezoneName
-              createdAt
-              updatedAt
-              ${additionalFields.join('\n')}
-            }
+            id
+            name
+            slug
+            address
+            city
+            state
+            zip
+            timezone: timezoneName
+            createdAt
+            updatedAt
+            ${additionalFields.join('\n')}
           }
         }
     `,
