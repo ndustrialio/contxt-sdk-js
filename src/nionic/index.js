@@ -102,7 +102,7 @@ class Nionic {
         }
     `,
       variables: { facilityId: parseInt(facilityId) }
-    }).then((resp) => resp.data.facility);
+    }).then((resp) => resp.facility);
   }
 
   getFacilityMetricLabels(orgOrTenantId, { facilityId }) {
