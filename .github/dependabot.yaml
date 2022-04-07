@@ -1,9 +1,10 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    open-pull-requests-limit: 0
-    schedule:
-      interval: "weekly"
-    reviewers:
-      - "ndustrialio/apps-team"
+- package-ecosystem: npm
+  directory: /
+  open-pull-requests-limit: 0
+  target-branch: staging
+  schedule:
+    interval: weekly
+  labels:
+  - automerge
