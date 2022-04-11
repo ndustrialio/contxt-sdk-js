@@ -1,3 +1,11 @@
+## [v4.3.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.1) (2022-03-17)
+
+**Changed**
+
+- updates the auth staging client_id
+- updates the auth staging default url to contxt-auth-service.staging.ndustrial.io
+- updates the contxt api staging default url to contxt.api.staging.ndustrial.io
+
 ## [v4.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.0) (2021-11-01)
 
 **Changed**
