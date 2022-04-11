@@ -9,7 +9,7 @@ factory
   .attrs({
     applicationId: () => factory.build('contxtApplication').id,
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString(),
     roleId: () => factory.build('contxtRole').id
   })

@@ -12,11 +12,11 @@ factory
     assetLabel: () => faker.lorem.word(),
     createdAt: () => faker.date.past().toISOString(),
     effectiveDate: () => faker.date.recent().toISOString(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     label: () => faker.lorem.word(),
     notes: () => faker.lorem.sentence(),
     updatedAt: () => faker.date.recent().toISOString(),
-    value: () => `${faker.random.number()}`
+    value: () => `${faker.datatype.number()}`
   })
   .after((assetAttributeValue, options) => {
     // If building an asset attribute value object that comes from the server,

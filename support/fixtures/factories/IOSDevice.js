@@ -9,9 +9,9 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    deviceToken: () => faker.random.uuid(),
-    isActive: () => faker.random.boolean(),
-    snsEndpointArn: () => faker.random.uuid(),
+    deviceToken: () => faker.datatype.uuid(),
+    isActive: () => faker.datatype.boolean(),
+    snsEndpointArn: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('eventUser').id
   })

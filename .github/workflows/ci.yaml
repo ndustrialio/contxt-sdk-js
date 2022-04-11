@@ -41,6 +41,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-user-name: 'GitHub Actions'
           git-user-email: 'action@github.com'
+          version-file: package.json,package-lock.json
           preset: conventionalcommits
           output-file: false
       - name: Set new commit hash

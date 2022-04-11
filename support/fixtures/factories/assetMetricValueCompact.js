@@ -5,8 +5,8 @@ factory
   .define('assetMetricValueCompact')
   .option('fromServer', false)
   .attrs({
-    id: faker.random.uuid(),
-    value: faker.random.number(),
+    id: faker.datatype.uuid(),
+    value: faker.datatype.number(),
     isEstimated: false,
     effectiveStartDate: faker.date.past().toISOString(),
     effectiveEndDate: faker.date.recent().toISOString()

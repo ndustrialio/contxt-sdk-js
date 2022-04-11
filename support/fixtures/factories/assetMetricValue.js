@@ -12,11 +12,11 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     effectiveEndDate: () => faker.date.recent().toISOString(),
     effectiveStartDate: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     notes: () => faker.lorem.sentence(),
     updatedAt: () => faker.date.recent().toISOString(),
-    value: () => `${faker.random.number()}`,
-    isEstimated: () => faker.random.boolean()
+    value: () => `${faker.datatype.number()}`,
+    isEstimated: () => faker.datatype.boolean()
   })
   .after((assetMetricValue, options) => {
     // If building an asset metric value object that comes from the server,

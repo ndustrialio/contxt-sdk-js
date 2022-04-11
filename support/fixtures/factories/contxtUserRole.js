@@ -8,8 +8,8 @@ factory
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
-    mappedFromExternalGroup: () => faker.random.boolean(),
+    id: () => faker.datatype.uuid(),
+    mappedFromExternalGroup: () => faker.datatype.boolean(),
     roleId: () => factory.build('contxtRole').id,
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('contxtUser').id

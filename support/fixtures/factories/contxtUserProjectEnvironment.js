@@ -9,7 +9,7 @@ factory
   .attrs({
     accessType: () => faker.random.arrayElement(['reader', 'admin']),
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     projectEnvironmentId: () => factory.build('contxtProjectEnvironment').id,
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('contxtUser').id

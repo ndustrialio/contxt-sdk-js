@@ -1,12 +1,10 @@
-import Assets from './assets';
 import Bus from './bus';
 import Config from './config';
 import Coordinator from './coordinator';
 import Events from './events';
-import Facilities from './facilities';
 import Files from './files';
-import Health from './health';
 import Iot from './iot';
+import Nionic from './nionic';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
 
@@ -78,7 +76,6 @@ class ContxtSdk {
 
     this.config = new Config(config, externalModules);
 
-    this.assets = new Assets(this, this._createRequest('facilities'));
     this.auth = this._createAuthSession(sessionType);
     this.bus = new Bus(this, this._createRequest('bus'));
     this.coordinator = new Coordinator(
@@ -86,10 +83,9 @@ class ContxtSdk {
       this._createRequest('coordinator')
     );
     this.events = new Events(this, this._createRequest('events'));
-    this.facilities = new Facilities(this, this._createRequest('facilities'));
     this.files = new Files(this, this._createRequest('files'));
-    this.health = new Health(this, this._createRequest('health'));
     this.iot = new Iot(this, this._createRequest('iot'));
+    this.nionic = new Nionic(this, this._createRequest('nionic'));
 
     this._decorate(externalModules);
   }
@@ -201,3 +197,4 @@ class ContxtSdk {
 }
 
 export default ContxtSdk;
+export { toSnakeCase, toCamelCase } from './utils/objects';

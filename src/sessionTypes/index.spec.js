@@ -1,8 +1,8 @@
 import auth0 from 'auth0-js';
 import Auth0WebAuth from './auth0WebAuth';
-import PasswordGrantAuth from './passwordGrantAuth';
-import MachineAuth from './machineAuth';
 import * as sessionTypes from './index';
+import MachineAuth from './machineAuth';
+import PasswordGrantAuth from './passwordGrantAuth';
 
 describe('sessionTypes', function() {
   afterEach(function() {
@@ -23,7 +23,7 @@ describe('sessionTypes', function() {
           auth: {
             authorizationPath: faker.hacker.noun(),
             clientId: faker.internet.password(),
-            tokenExpiresAtBufferMs: faker.random.number()
+            tokenExpiresAtBufferMs: faker.datatype.number()
           }
         }
       };

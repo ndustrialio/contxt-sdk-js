@@ -7,7 +7,7 @@ factory
   .define('fieldGroupingStatus')
   .option('fromServer', false)
   .attrs({
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     label: () => faker.commerce.productName(),
     status: () => faker.random.arrayElement(['Active', 'Out-of-Date']),
     updatedAt: () => faker.date.recent().toISOString()

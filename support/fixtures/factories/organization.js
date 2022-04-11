@@ -7,7 +7,7 @@ factory
   .define('organization')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     name: () => faker.company.companyName(),
     updatedAt: () => faker.date.recent().toISOString()
   })

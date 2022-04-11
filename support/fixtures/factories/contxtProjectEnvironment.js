@@ -9,10 +9,10 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     updatedAt: () => faker.date.recent().toISOString(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     organizationId: () => factory.build('contxtOrganization').id,
     projectId: () => factory.build('contxtProject').id,
-    clusterId: () => faker.random.uuid(),
+    clusterId: () => faker.datatype.uuid(),
     slug: () => `${faker.random.word()}-${faker.random.word()}`,
     name: () => faker.name.title(),
     type: () => faker.random.word(),

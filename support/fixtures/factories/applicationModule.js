@@ -9,8 +9,8 @@ factory
     applicationGroupingId: () => factory.build('applicationGrouping').id,
     externalLink: () => faker.internet.url(),
     iconUrl: () => faker.internet.url(),
-    id: () => faker.random.uuid(),
-    index: () => faker.random.number(),
+    id: () => faker.datatype.uuid(),
+    index: () => faker.datatype.number(),
     label: () => faker.commerce.productName(),
     slug: () => `nsight-${faker.internet.domainWord()}`
   })

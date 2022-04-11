@@ -10,7 +10,7 @@ factory
     clientId: () => faker.internet.password(),
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.lorem.sentence(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     name: () => faker.commerce.productMaterial(),
     organizationId: () => factory.build('organization').id,
     updatedAt: () => faker.date.recent().toISOString()

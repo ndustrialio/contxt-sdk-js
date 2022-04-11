@@ -1,5 +1,5 @@
-import EdgeNodes from './edgeNodes';
 import * as objectUtils from '../utils/objects';
+import EdgeNodes from './edgeNodes';
 
 describe('edgeNodes', function() {
   let baseRequest;
@@ -143,7 +143,7 @@ describe('edgeNodes', function() {
       context('the organization ID is not provided', function() {
         it('throws an error', function() {
           const edgeNodes = new EdgeNodes(baseSdk, baseRequest);
-          const promise = edgeNodes.get(null, faker.random.uuid());
+          const promise = edgeNodes.get(null, faker.datatype.uuid());
 
           return expect(promise).to.be.rejectedWith(
             'An organizationId is required for getting an edge node.'
@@ -154,7 +154,7 @@ describe('edgeNodes', function() {
       context('the edge node client ID is not provided', function() {
         it('throws an error', function() {
           const edgeNodes = new EdgeNodes(baseSdk, baseRequest);
-          const promise = edgeNodes.get(faker.random.uuid());
+          const promise = edgeNodes.get(faker.datatype.uuid());
 
           return expect(promise).to.be.rejectedWith(
             'An edgeNodeClientId is required for getting an edge node.'

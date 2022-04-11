@@ -1,5 +1,5 @@
-import Roles from './roles';
 import * as objectUtils from '../utils/objects';
+import Roles from './roles';
 
 describe('Coordinator/Roles', function() {
   let baseRequest;
@@ -691,7 +691,7 @@ describe('Coordinator/Roles', function() {
           expectedOrganizationId = fixture.build('contxtOrganization').id;
           expectedRoles = fixture.buildList(
             'contxtRole',
-            faker.random.number({
+            faker.datatype.number({
               min: 1,
               max: 10
             }),
@@ -761,7 +761,7 @@ describe('Coordinator/Roles', function() {
         expectedOrganizationId = fixture.build('organization').id;
         expectedRoles = fixture.buildList(
           'contxtRole',
-          faker.random.number({
+          faker.datatype.number({
             min: 1,
             max: 10
           }),

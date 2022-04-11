@@ -8,7 +8,7 @@ factory
   .option('fromServer', false)
   .attrs({
     eventTime: () => faker.date.past(),
-    value: () => `${faker.random.number()}`
+    value: () => `${faker.datatype.number()}`
   })
   .after((outputFieldData, options) => {
     // If building an output field data object that comes from the server,

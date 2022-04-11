@@ -9,7 +9,7 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
     label: () => faker.lorem.sentence(),
     organizationId: () => factory.build('organization').id,
     updatedAt: () => faker.date.recent().toISOString()

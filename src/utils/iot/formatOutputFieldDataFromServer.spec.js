@@ -1,8 +1,8 @@
 import omit from 'lodash.omit';
 import URL from 'url-parse';
+import * as objectUtils from '../objects';
 import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
 import * as iotUtils from './index';
-import * as objectUtils from '../objects';
 
 describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let expectedOutputFieldDataRecords;
@@ -16,19 +16,19 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
 
   beforeEach(function() {
     expectedOutputFieldMetadata = {
-      count: faker.random.number(),
-      hasMore: faker.random.boolean(),
+      count: faker.datatype.number(),
+      hasMore: faker.datatype.boolean(),
       nextRecordTime: Math.floor(faker.date.recent().getTime() / 1000)
     };
     expectedOutputFieldParsedMetadata = {
-      limit: faker.random.number(),
+      limit: faker.datatype.number(),
       timeEnd: expectedOutputFieldMetadata.nextRecordTime,
       timeStart: Math.floor(faker.date.past().getTime() / 1000),
       window: faker.random.arrayElement([0, 60, 900, 3600])
     };
     expectedOutputFieldDataRecords = fixture.buildList(
       'outputFieldData',
-      faker.random.number({ min: 1, max: 10 })
+      faker.datatype.number({ min: 1, max: 10 })
     );
     initialOutputFieldMetadata = omit(
       {
@@ -37,7 +37,7 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
         next_page_url:
           faker.internet.url() +
           '/outputs/' +
-          faker.random.number() +
+          faker.datatype.number() +
           '/fields/' +
           faker.hacker.noun() +
           '/data' +

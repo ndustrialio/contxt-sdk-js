@@ -11,10 +11,10 @@ factory
   .attrs({
     address1: () => faker.address.streetAddress(),
     address2: () => faker.address.secondaryAddress(),
-    assetId: () => faker.random.uuid(),
+    assetId: () => faker.datatype.uuid(),
     city: () => faker.address.city(),
     createdAt: () => faker.date.past().toISOString(),
-    geometryId: () => faker.random.uuid(),
+    geometryId: () => faker.datatype.uuid(),
     info: () => factory.build('facilityInfo'),
     state: () => faker.address.state(),
     timezone: () => {
@@ -30,7 +30,7 @@ factory
   })
   .attr('facilityGroupings', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.random.number({
+      faker.datatype.number({
         min: 0,
         max: 5
       }),
@@ -56,7 +56,7 @@ factory
   .attr('organizationId', ['organization'], (organization) => organization.id)
   .attr('tags', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.random.number({
+      faker.datatype.number({
         min: 0,
         max: 5
       }),

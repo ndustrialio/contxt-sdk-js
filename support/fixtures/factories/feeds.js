@@ -9,17 +9,17 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    criticalThreshold: () => faker.random.number({ min: 0, max: 5 }),
-    degradedThreshold: () => faker.random.number({ min: 0, max: 5 }),
-    downAfter: () => faker.random.number({ min: 1000, max: 9999 }),
+    criticalThreshold: () => faker.datatype.number({ min: 0, max: 5 }),
+    degradedThreshold: () => faker.datatype.number({ min: 0, max: 5 }),
+    downAfter: () => faker.datatype.number({ min: 1000, max: 9999 }),
     facilityId: () => factory.build('facility').id,
     feedTypeId: () => factory.build('feedType').id,
-    isPaused: () => faker.random.boolean(),
+    isPaused: () => faker.datatype.boolean(),
     key: () => faker.hacker.noun(),
     ownerId: () => factory.build('owner').id,
     routingKeys: () => `[${faker.hacker.noun()}]`,
     status: () => faker.random.arrayElement(['Active', 'Degraded', 'Critical']),
-    statusEventId: () => faker.random.uuid(),
+    statusEventId: () => faker.datatype.uuid(),
     timezone: () => {
       return faker.random.arrayElement([
         'America/New_York',

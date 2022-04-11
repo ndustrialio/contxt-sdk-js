@@ -18,7 +18,7 @@ describe('utils/pagination/formatPaginatedDataFromServer', function() {
 
     beforeEach(function() {
       expectedMetadata = fixture.build('paginationMetadata');
-      expectedRecords = times(faker.random.number({ min: 1, max: 10 }), () =>
+      expectedRecords = times(faker.datatype.number({ min: 1, max: 10 }), () =>
         faker.helpers.createTransaction()
       );
       initialMetadata = fixture.build('paginationMetadata');
@@ -70,7 +70,7 @@ describe('utils/pagination/formatPaginatedDataFromServer', function() {
     beforeEach(function() {
       expectedRecords = fixture.buildList(
         'organization',
-        faker.random.number({ min: 1, max: 10 })
+        faker.datatype.number({ min: 1, max: 10 })
       );
       initialRecords = expectedRecords.map((record) =>
         fixture.build('organization', record, { fromServer: true })

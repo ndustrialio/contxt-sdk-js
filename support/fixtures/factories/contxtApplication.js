@@ -7,15 +7,15 @@ factory
   .define('contxtApplication')
   .option('fromServer', false)
   .attrs({
-    clientId: () => faker.random.uuid(),
-    clientSecret: () => faker.random.uuid(),
+    clientId: () => faker.datatype.uuid(),
+    clientSecret: () => faker.datatype.uuid(),
     createdAt: () => faker.date.past().toISOString(),
-    currentVersionId: () => faker.random.uuid(),
+    currentVersionId: () => faker.datatype.uuid(),
     description: () => faker.random.words(),
     iconUrl: () => faker.image.imageUrl(),
-    id: () => faker.random.number(),
+    id: () => faker.datatype.number(),
     name: () => faker.name.title(),
-    serviceId: () => faker.random.number(),
+    serviceId: () => faker.datatype.number(),
     type: () => faker.random.word(),
     updatedAt: () => faker.date.recent().toISOString()
   })

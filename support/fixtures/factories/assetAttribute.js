@@ -12,8 +12,8 @@ factory
     dataType: () =>
       faker.random.arrayElement(['boolean', 'date', 'number', 'string']),
     description: () => faker.lorem.sentence(),
-    id: () => faker.random.uuid(),
-    isRequired: () => faker.random.boolean(),
+    id: () => faker.datatype.uuid(),
+    isRequired: () => faker.datatype.boolean(),
     label: () => faker.hacker.phrase(),
     organizationId: () => factory.build('organization').id,
     units: () => faker.lorem.sentence(),

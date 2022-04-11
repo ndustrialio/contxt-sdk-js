@@ -61,10 +61,6 @@ environments. Documentation for browser environments is found under
 <dt><a href="./Coordinator.md">Coordinator</a></dt>
 <dd><p>Module that provides access to information about Contxt</p>
 </dd>
-<dt><a href="./CostCenters.md">CostCenters</a></dt>
-<dd><p>Module that provides access to cost centers, and helps manage
-the relationship between those cost centers and facilities</p>
-</dd>
 <dt><a href="./EdgeNodes.md">EdgeNodes</a></dt>
 <dd><p>Module that provides access to contxt edge nodes</p>
 </dd>
@@ -75,10 +71,6 @@ of, information about different events</p>
 <dt><a href="./Facilities.md">Facilities</a></dt>
 <dd><p>Module that provides access to, and the manipulation
 of, information about different facilities</p>
-</dd>
-<dt><a href="./FacilityGroupings.md">FacilityGroupings</a></dt>
-<dd><p>Module that provides access to facility groupings, and helps manage
-the relationship between those groupings and facilities</p>
 </dd>
 <dt><a href="./FeedTypes.md">FeedTypes</a></dt>
 <dd><p>Module that provides access to feed type information</p>
@@ -100,9 +92,6 @@ the relationship between those groupings and facilities</p>
 More information about the best way to use this module is available at:
 <a href="https://contxt.readme.io/reference#files-overview">https://contxt.readme.io/reference#files-overview</a></p>
 </dd>
-<dt><a href="./Health.md">Health</a></dt>
-<dd><p>Module that provides access to the Contxt Health Service</p>
-</dd>
 <dt><a href="./Iot.md">Iot</a></dt>
 <dd><p>Module that provides access to real time IOT feeds and fields.</p>
 </dd>
@@ -110,6 +99,9 @@ More information about the best way to use this module is available at:
 <dd><p>A SessionType that allows machine to machine communication between Node.js servers. This would
 only be used in Node.js applications. This SessionType requires a client id and a client secret,
 which are obtained from Auth0.</p>
+</dd>
+<dt><a href="./Nionic.md">Nionic</a></dt>
+<dd><p>Module that provides access to, and the manipulation of, information about different assets</p>
 </dd>
 <dt><a href="./Organizations.md">Organizations</a></dt>
 <dd><p>Module that provides access to contxt organizations</p>
@@ -225,10 +217,6 @@ More information at <a href="https://github.com/axios/axios#interceptors">axios 
 <dd></dd>
 <dt><a href="./Typedefs.md#ContxtUserRole">ContxtUserRole</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="./Typedefs.md#CostCenter">CostCenter</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#CostCenterFacility">CostCenterFacility</a> : <code>Object</code></dt>
-<dd></dd>
 <dt><a href="./Typedefs.md#CustomAudience">CustomAudience</a> : <code>Object</code></dt>
 <dd><p>A custom audience that will override the configuration of an individual module. Consists of
 either a reference to an environment that already exists or a clientId and host for a
@@ -257,10 +245,6 @@ for authenticating and communicating with an individual API and the external mod
 <dt><a href="./Typedefs.md#Facility">Facility</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FacilityFeedStatus">FacilityFeedStatus</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#FacilityGrouping">FacilityGrouping</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#FacilityGroupingFacility">FacilityGroupingFacility</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#FacilityGroupingStatus">FacilityGroupingStatus</a> : <code>Object</code></dt>
 <dd></dd>
@@ -292,14 +276,6 @@ for authenticating and communicating with an individual API and the external mod
 <dd></dd>
 <dt><a href="./Typedefs.md#FilesFromServer">FilesFromServer</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="./Typedefs.md#HealthAsset">HealthAsset</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#HealthAssetPaginatedResponse">HealthAssetPaginatedResponse</a> : <code><a href="#HealthAsset">PaginatedResponse.&lt;HealthAsset&gt;</a></code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#HealthStatus">HealthStatus</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#HealthStatusPaginatedResponse">HealthStatusPaginatedResponse</a> : <code><a href="#HealthStatus">PaginatedResponse.&lt;HealthStatus&gt;</a></code></dt>
-<dd></dd>
 <dt><a href="./Typedefs.md#MachineAuthSessionInfo">MachineAuthSessionInfo</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#MessageBusChannel">MessageBusChannel</a> : <code>Object</code></dt>
@@ -309,8 +285,6 @@ for authenticating and communicating with an individual API and the external mod
 <dt><a href="./Typedefs.md#OutputFieldData">OutputFieldData</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#OutputFieldDataResponse">OutputFieldDataResponse</a> : <code>Object</code></dt>
-<dd></dd>
-<dt><a href="./Typedefs.md#PaginatedResponse">PaginatedResponse</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="./Typedefs.md#PaginationMetadata">PaginationMetadata</a> : <code>Object</code></dt>
 <dd></dd>

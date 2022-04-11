@@ -85,7 +85,7 @@ describe('Request', function() {
       let response;
 
       beforeEach(function() {
-        expectedArgs = times(faker.random.number({ min: 1, max: 10 })).map(
+        expectedArgs = times(faker.datatype.number({ min: 1, max: 10 })).map(
           faker.hacker.phrase
         );
         expectedResponse = faker.hacker.phrase();
@@ -122,7 +122,7 @@ describe('Request', function() {
 
     beforeEach(function() {
       const requestInterceptors = times(
-        faker.random.number({ min: 0, max: 10 }),
+        faker.datatype.number({ min: 0, max: 10 }),
         () => {
           return {
             fulfilled: sinon.stub(),
@@ -131,7 +131,7 @@ describe('Request', function() {
         }
       );
       const responseInterceptors = times(
-        faker.random.number({ min: 0, max: 10 }),
+        faker.datatype.number({ min: 0, max: 10 }),
         () => {
           return {
             fulfilled: sinon.stub(),

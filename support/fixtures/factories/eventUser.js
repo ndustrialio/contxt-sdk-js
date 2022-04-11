@@ -11,15 +11,15 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     email: () => faker.internet.email(),
     firstName: () => faker.name.firstName(),
-    id: () => `auth0|${faker.random.number()}`,
-    isMachineUser: () => faker.random.boolean(),
+    id: () => `auth0|${faker.datatype.number()}`,
+    isMachineUser: () => faker.datatype.boolean(),
     lastName: () => faker.name.lastName(),
     userMobileNumbers: () => [],
     updatedAt: () => faker.date.recent().toISOString()
   })
   .attr('IOSDevice', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.random.number({
+      faker.datatype.number({
         min: 0,
         max: 5
       }),
@@ -38,7 +38,7 @@ factory
   })
   .attr('userEventSubscription', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.random.number({
+      faker.datatype.number({
         min: 0,
         max: 5
       }),
@@ -60,7 +60,7 @@ factory
     ['id', 'firstName', 'lastName', 'fromServer'],
     (id, firstName, lastName, fromServer) => {
       return times(
-        faker.random.number({
+        faker.datatype.number({
           min: 0,
           max: 5
         }),

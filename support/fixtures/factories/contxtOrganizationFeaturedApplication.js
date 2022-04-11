@@ -7,10 +7,10 @@ factory
   .define('contxtOrganizationFeaturedApplication')
   .option('fromServer', false)
   .attrs({
-    applicationId: () => faker.random.number(),
+    applicationId: () => faker.datatype.number(),
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.random.uuid(),
-    organizationId: () => faker.random.uuid(),
+    id: () => faker.datatype.uuid(),
+    organizationId: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((featuredApp, options) => {

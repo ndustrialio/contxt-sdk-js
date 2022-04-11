@@ -6,15 +6,15 @@ const faker = require('faker');
 factory
   .define('applicationGrouping')
   .attrs({
-    applicationId: () => faker.random.number(),
-    id: () => faker.random.uuid(),
-    index: () => faker.random.number(),
+    applicationId: () => faker.datatype.number(),
+    id: () => faker.datatype.uuid(),
+    index: () => faker.datatype.number(),
     label: () => faker.random.words()
   })
   .attr('applicationModules', ['id'], (id) => {
     return factory.buildList(
       'applicationModule',
-      faker.random.number({ min: 1, max: 10 }),
+      faker.datatype.number({ min: 1, max: 10 }),
       { applicationGroupingId: id }
     );
   })

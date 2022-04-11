@@ -1,5 +1,5 @@
-import Outputs from './outputs';
 import * as iotUtils from '../utils/iot';
+import Outputs from './outputs';
 
 describe('Iot/Outputs', function() {
   let baseRequest;
@@ -61,19 +61,19 @@ describe('Iot/Outputs', function() {
       beforeEach(function() {
         expectedFieldHumanName = fixture.build('outputField').fieldHumanName;
         expectedOptions = {
-          limit: faker.random.number(),
+          limit: faker.datatype.number(),
           timeEnd: Math.floor(faker.date.recent().getTime() / 1000),
           timeStart: Math.floor(faker.date.past().getTime() / 1000),
           window: faker.random.arrayElement([0, 60, 900, 3600])
         };
         expectedOutputFieldData = {
-          meta: { count: faker.random.number() },
+          meta: { count: faker.datatype.number() },
           records: fixture.buildList(
             'outputFieldData',
-            faker.random.number({ min: 1, max: 10 })
+            faker.datatype.number({ min: 1, max: 10 })
           )
         };
-        expectedOutputId = faker.random.number();
+        expectedOutputId = faker.datatype.number();
         rawOutputFieldData = {
           meta: expectedOutputFieldData.meta,
           records: expectedOutputFieldData.records.map((record) =>
@@ -133,7 +133,7 @@ describe('Iot/Outputs', function() {
 
       it('throws an error when there is no provided output ID', function() {
         const outputs = new Outputs(baseSdk, baseRequest);
-        const promise = outputs.getFieldData(faker.random.number(), null);
+        const promise = outputs.getFieldData(faker.datatype.number(), null);
 
         return expect(promise).to.be.rejectedWith(
           "A fieldHumanName is required for getting a specific field's output data"

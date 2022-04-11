@@ -8,9 +8,9 @@ factory
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    fieldGroupingId: () => faker.random.uuid(),
-    outputFieldId: () => faker.random.number(),
-    id: () => faker.random.uuid(),
+    fieldGroupingId: () => faker.datatype.uuid(),
+    outputFieldId: () => faker.datatype.number(),
+    id: () => faker.datatype.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((fieldGroupingField, options) => {

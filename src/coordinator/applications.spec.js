@@ -1,5 +1,5 @@
-import Applications from './applications';
 import * as objectUtils from '../utils/objects';
+import Applications from './applications';
 
 describe('Coordinator/Applications', function() {
   let baseRequest;
@@ -163,7 +163,7 @@ describe('Coordinator/Applications', function() {
     let toCamelCase;
 
     beforeEach(function() {
-      const numberOfApplications = faker.random.number({
+      const numberOfApplications = faker.datatype.number({
         min: 1,
         max: 10
       });
@@ -219,7 +219,7 @@ describe('Coordinator/Applications', function() {
     beforeEach(function() {
       expectedFavoriteApplications = fixture.buildList(
         'contxtUserFavoriteApplication',
-        faker.random.number({
+        faker.datatype.number({
           min: 1,
           max: 10
         })
@@ -270,10 +270,10 @@ describe('Coordinator/Applications', function() {
     let toCamelCase;
 
     beforeEach(function() {
-      expectedApplicationId = faker.random.uuid();
+      expectedApplicationId = faker.datatype.uuid();
       expectedGroupings = fixture.buildList(
         'applicationGrouping',
-        faker.random.number({ min: 1, max: 10 })
+        faker.datatype.number({ min: 1, max: 10 })
       );
       groupingsFromServer = expectedGroupings.map((grouping) =>
         fixture.build('applicationGrouping', grouping, { fromServer: true })
@@ -321,10 +321,10 @@ describe('Coordinator/Applications', function() {
         let toCamelCase;
 
         beforeEach(function() {
-          expectedOrganizationId = faker.random.uuid();
+          expectedOrganizationId = faker.datatype.uuid();
           expectedFeaturedApplications = fixture.buildList(
             'contxtOrganizationFeaturedApplication',
-            faker.random.number({
+            faker.datatype.number({
               min: 1,
               max: 10
             }),
@@ -401,7 +401,7 @@ describe('Coordinator/Applications', function() {
         expectedOrganizationId = fixture.build('organization').id;
         expectedFeaturedApplications = fixture.buildList(
           'contxtOrganizationFeaturedApplication',
-          faker.random.number({
+          faker.datatype.number({
             min: 1,
             max: 10
           }),
