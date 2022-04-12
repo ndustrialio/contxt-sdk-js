@@ -7,6 +7,7 @@ import Iot from './iot';
 import Nionic from './nionic';
 import Request from './request';
 import * as sessionTypes from './sessionTypes';
+import { toSnakeCase, toCamelCase } from './utils/objects';
 
 /**
  * An adapter that allows the SDK to authenticate with different services and manage various tokens.
@@ -197,4 +198,4 @@ class ContxtSdk {
 }
 
 export default ContxtSdk;
-export { toSnakeCase, toCamelCase } from './utils/objects';
+export { toSnakeCase, toCamelCase };
