@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "auth0-js": "^9.14.2",
-    "axios": "^0.21.1",
+    "axios": "^0.27.2",
     "change-case": "^4.1.2",
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
