@@ -96,7 +96,7 @@
     "lodash.sortby": "^4.7.0",
     "lodash.times": "^4.3.2",
     "mocha": "^6.2.3",
-    "mock-socket": "^8.0.5",
+    "mock-socket": "^9.1.5",
     "prettier": "^1.14.3",
     "pretty-quick": "^1.4.1",
     "proxyquire": "^2.1.0",
