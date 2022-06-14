@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "auth0-js": "^9.14.2",
-    "axios": "^0.21.1",
+    "axios": "^0.27.2",
     "change-case": "^4.1.2",
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
@@ -88,7 +88,7 @@
     "fast-glob": "^3.2.4",
     "gulp": "^4.0.2",
     "gulp-babel": "^7.0.1",
-    "gulp-sourcemaps": "^2.6.5",
+    "gulp-sourcemaps": "^3.0.0",
     "husky": "^2.3.0",
     "jsdoc-to-markdown": "^6.0.1",
     "lodash.omit": "^4.5.0",
@@ -96,11 +96,11 @@
     "lodash.sortby": "^4.7.0",
     "lodash.times": "^4.3.2",
     "mocha": "^6.2.3",
-    "mock-socket": "^8.0.5",
+    "mock-socket": "^9.1.5",
     "prettier": "^1.14.3",
     "pretty-quick": "^1.4.1",
     "proxyquire": "^2.1.0",
-    "rosie": "^1.6.0",
+    "rosie": "^2.1.0",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.2.0"
   }
