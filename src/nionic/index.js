@@ -22,7 +22,6 @@ class Nionic {
       'b2c6705d-1727-467f-a450-207f110c9966': 'trenton',
       'c5517437-8497-400a-8c6d-a9de88669c70': 'blackline'
     };
-    this._tenants = new Set(Object.values(this._orgIdToTenantId));
   }
 
   static queryDefaults = {
@@ -31,14 +30,6 @@ class Nionic {
 
   _getTenantId(orgOrTenantId) {
     if (!orgOrTenantId) throw Error('Tenant is required');
-    if (
-      !(orgOrTenantId in this._orgIdToTenantId) &&
-      !this._tenants.has(orgOrTenantId)
-    ) {
-      throw Error(
-        `Tenant is either unrecognized or not yet supported: ${orgOrTenantId}`
-      );
-    }
     return this._orgIdToTenantId[orgOrTenantId] || orgOrTenantId;
   }
 
