@@ -20,7 +20,8 @@ class Nionic {
       '5209751f-ea46-4b3e-a5dd-b8d03311b791': 'ndustrial',
       '2fe29680-fc3d-4888-9e9b-44be1e59c22c': 'sfnt',
       'b2c6705d-1727-467f-a450-207f110c9966': 'trenton',
-      'c5517437-8497-400a-8c6d-a9de88669c70': 'blackline'
+      'c5517437-8497-400a-8c6d-a9de88669c70': 'blackline',
+      '65be9a9d-5cc1-4318-8762-da74e454ea51': 'vcv',
     };
   }
 
