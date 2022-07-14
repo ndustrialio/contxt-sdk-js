@@ -89,7 +89,7 @@
     "gulp": "^4.0.2",
     "gulp-babel": "^7.0.1",
     "gulp-sourcemaps": "^3.0.0",
-    "husky": "^2.3.0",
+    "husky": "^8.0.1",
     "jsdoc-to-markdown": "^7.1.1",
     "lodash.omit": "^4.5.0",
     "lodash.pick": "^4.4.0",
