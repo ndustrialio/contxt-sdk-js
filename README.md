@@ -233,4 +233,4 @@ We use [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) for do
 
 ### Publishing
 
-New versions will be published automatically on merges to `main`. The changelog and version will be determined using [Conventional Commits](https://www.conventionalcommits.org/).
+New versions will be published automatically on merges to `main`. The changelog and version will be determined using [Conventional Commits](https://www.conventionalcommits.org/). A build will only be triggered for `feat` and `fix` commit types.
