@@ -9,9 +9,8 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     id: () => faker.datatype.uuid(),
-    legacyOrganizationId: () => faker.datatype.number(),
     name: () => faker.name.title(),
-    updatedAt: () => faker.date.recent().toISOString()
+    updatedAt: () => faker.date.recent().toISOString(),
   })
   .after((org, options) => {
     // If building an organization object that comes from the server, transform it to have camel
@@ -19,9 +18,6 @@ factory
     if (options.fromServer) {
       org.created_at = org.createdAt;
       delete org.createdAt;
-
-      org.legacy_organization_id = org.legacyOrganizationId;
-      delete org.legacyOrganizationId;
 
       org.updated_at = org.updatedAt;
       delete org.updatedAt;
