@@ -7,8 +7,8 @@ export default {
     },
     staging: {
       clientId: '1HD1NG1VTBtkqRt2HRRj3E3hdmqmwzoz',
-      host: 'https://bus-staging.ndustrial.io',
-      webSocket: 'wss://bus-staging.ndustrial.io'
+      host: 'https://bus.staging.ndustrial.io',
+      webSocket: 'wss://bus.staging.ndustrial.io'
     }
   },
   contxtAuth: {
@@ -41,16 +41,6 @@ export default {
       host: 'https://events.api.ndustrial.io'
     }
   },
-  facilities: {
-    production: {
-      clientId: 'SgbCopArnGMa9PsRlCVUCVRwxocntlg0',
-      host: 'https://facilities.api.ndustrial.io'
-    },
-    staging: {
-      clientId: 'xG775XHIOZVUn84seNeHXi0Qe55YuR5w',
-      host: 'https://facilities-staging.api.ndustrial.io'
-    }
-  },
   files: {
     production: {
       clientId: 'VZJ2MRd71dM9oX2hB1EVAEjUe6loL7pl',
@@ -64,7 +54,7 @@ export default {
   iot: {
     staging: {
       clientId: 'm35AEcxD8hf65sq04ZU7yFxqpqVkKzES',
-      host: 'https://feeds-staging.api.ndustrial.io'
+      host: 'https://feeds.api.staging.ndustrial.io'
     },
     production: {
       clientId: 'iznTb30Sfp2Jpaf398I5DN6MyPuDCftA',
