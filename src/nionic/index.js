@@ -22,6 +22,7 @@ class Nionic {
       'b2c6705d-1727-467f-a450-207f110c9966': 'trenton',
       'c5517437-8497-400a-8c6d-a9de88669c70': 'blackline',
       '65be9a9d-5cc1-4318-8762-da74e454ea51': 'vcv',
+      'bc071c66-d030-44c7-9c2a-cfe3161cdf3e': 'lsc-communications'
     };
   }
 
