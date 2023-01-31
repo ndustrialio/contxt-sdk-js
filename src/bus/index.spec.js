@@ -3,14 +3,6 @@ import proxyquire from 'proxyquire';
 import Channels from './channels';
 import WebSocketConnection from './webSocketConnection';
 
-function testOnClose(evt) {
-  console.log(`onClose called with: ${evt}`);
-}
-
-function testOnError(evt) {
-  console.log(`onError called with: ${evt}`);
-}
-
 describe('Bus', function() {
   let baseRequest;
   let baseSdk;
@@ -152,6 +144,7 @@ describe('Bus', function() {
           let promise;
           let sdk;
           let server;
+          let testOnClose;
 
           beforeEach(function() {
             expectedApiToken = faker.internet.password();
@@ -167,6 +160,8 @@ describe('Bus', function() {
             server = new Server(
               `${expectedHost}/organizations/${expectedOrganization.id}/stream`
             );
+
+            testOnClose = sinon.stub();
 
             bus = new Bus(sdk, baseRequest);
             bus._baseWebSocketUrl = expectedHost;
@@ -208,7 +203,7 @@ describe('Bus', function() {
 
             it('calls the onClose callback', function() {
               return promise.then(() => {
-                expect(testOnClose).to.be.called();
+                expect(testOnClose).to.have.been.calledOnce;
               });
             });
 
@@ -254,6 +249,7 @@ describe('Bus', function() {
             let promise;
             let sdk;
             let server;
+            let testOnError;
 
             beforeEach(function() {
               expectedApiToken = faker.internet.password();
@@ -276,12 +272,14 @@ describe('Bus', function() {
                 }
               );
 
+              testOnError = sinon.stub();
+
               const bus = new Bus(sdk, baseRequest);
               bus._baseWebSocketUrl = expectedHost;
 
               promise = bus.connect(
                 expectedOrganization.id,
-                testOnClose,
+                null,
                 testOnError
               );
             });
@@ -302,17 +300,13 @@ describe('Bus', function() {
               return expect(promise).to.be.rejected;
             });
 
-            it('rejects with an error event', function() {
+            it('rejects with an error event AND onError is called', function() {
               return promise.catch((event) => {
                 expect(event.type).to.equal('error');
+                expect(testOnError).to.have.been.calledOnce;
               });
             });
 
-            it('calls the onError callback', function() {
-              return promise.then(() => {
-                expect(testOnError).to.be.called();
-              });
-            });
           }
         );
       }

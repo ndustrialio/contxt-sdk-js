@@ -73,9 +73,9 @@ class Bus {
    * @reject {errorEvent} The error event
    *
    * @example
-   * contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d', (evt) => {
+   * contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d', (orgId, evt) => {
    *   console.log(`connection closed: ${evt}`);
-   * }, (evt) => {
+   * }, (orgId, evt) => {
    *   console.log(`connection error: ${evt}`);
    * })
    *   .then((webSocket) => {
