@@ -65,13 +65,19 @@ class Bus {
    * If a connection already exists for that organization id, the connection is returned, otherwise a new connection is created and returned.
    *
    * @param {string} organizationId UUID corresponding with an organization
+   * @param {function} onClose optional callback to be executed when the connection is closed
+   * @param {function} onError optional callback to be executed when the connection encounters an error
    *
    * @returns {Promise}
    * @fulfill {WebSocketConnection}
    * @reject {errorEvent} The error event
    *
    * @example
-   * contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d')
+   * contxtSdk.bus.connect('4f0e51c6-728b-4892-9863-6d002e61204d', (evt) => {
+   *   console.log(`connection closed: ${evt}`);
+   * }, (evt) => {
+   *   console.log(`connection error: ${evt}`);
+   * })
    *   .then((webSocket) => {
    *     console.log(webSocket);
    *   })
@@ -79,7 +85,7 @@ class Bus {
    *     console.log(errorEvent);
    *   });
    */
-  connect(organizationId) {
+  connect(organizationId, onClose, onError) {
     return new Promise((resolve, reject) => {
       if (this._webSockets[organizationId]) {
         return resolve(this._webSockets[organizationId]);
@@ -109,10 +115,29 @@ class Bus {
 
           ws.onclose = (event) => {
             this._webSockets[organizationId] = null;
+            if (onClose) {
+              try {
+                onClose(organizationId, event);
+              } catch (ex) {
+                // TODO log this
+              }
+            }
           };
 
           ws.onerror = (errorEvent) => {
-            reject(errorEvent);
+            if (onError) {
+              try {
+                onError(organizationId, errorEvent);
+              } catch (ex) {
+                // TODO log this
+              }
+            }
+            // the rejection callback may not be valid any more, in the event that this was connected first, and therefore resolve was called
+            try {
+              reject(errorEvent);
+            } catch (ex) {
+              // TODO log this
+            }
           };
         })
         .catch((err) => {

@@ -1,3 +1,9 @@
+## [v4.3.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.2) (2023-01-31)
+
+**Changed**
+
+- adds onClose and onError callbacks to Message Bus connect.
+
 ## [v4.3.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.1) (2022-03-17)
 
 **Changed**

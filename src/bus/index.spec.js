@@ -3,6 +3,14 @@ import proxyquire from 'proxyquire';
 import Channels from './channels';
 import WebSocketConnection from './webSocketConnection';
 
+function testOnClose(evt) {
+  console.log(`onClose called with: ${evt}`);
+}
+
+function testOnError(evt) {
+  console.log(`onError called with: ${evt}`);
+}
+
 describe('Bus', function() {
   let baseRequest;
   let baseSdk;
@@ -163,7 +171,10 @@ describe('Bus', function() {
             bus = new Bus(sdk, baseRequest);
             bus._baseWebSocketUrl = expectedHost;
 
-            promise = bus.connect(expectedOrganization.id);
+            promise = bus.connect(
+              expectedOrganization.id,
+              testOnClose
+            );
           });
 
           afterEach(function() {
@@ -192,6 +203,12 @@ describe('Bus', function() {
             beforeEach(function() {
               return promise.then(() => {
                 server.close();
+              });
+            });
+
+            it('calls the onClose callback', function() {
+              return promise.then(() => {
+                expect(testOnClose).to.be.called();
               });
             });
 
@@ -262,7 +279,11 @@ describe('Bus', function() {
               const bus = new Bus(sdk, baseRequest);
               bus._baseWebSocketUrl = expectedHost;
 
-              promise = bus.connect(expectedOrganization.id);
+              promise = bus.connect(
+                expectedOrganization.id,
+                testOnClose,
+                testOnError
+              );
             });
 
             afterEach(function() {
@@ -284,6 +305,12 @@ describe('Bus', function() {
             it('rejects with an error event', function() {
               return promise.catch((event) => {
                 expect(event.type).to.equal('error');
+              });
+            });
+
+            it('calls the onError callback', function() {
+              return promise.then(() => {
+                expect(testOnError).to.be.called();
               });
             });
           }
