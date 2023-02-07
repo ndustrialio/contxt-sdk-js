@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const { name: sdkName, version: sdkVersion } = require('../package.json');
+
 class Request {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
@@ -141,6 +143,7 @@ class Request {
       .getCurrentApiToken(this._audienceName)
       .then((apiToken) => {
         config.headers.common.Authorization = `Bearer ${apiToken}`;
+        config.headers.common['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
 
         return config;
       });
