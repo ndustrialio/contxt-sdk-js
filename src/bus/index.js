@@ -119,7 +119,7 @@ class Bus {
               try {
                 onClose(organizationId, event);
               } catch (ex) {
-                // TODO log this
+                console.log('Message Bus Error calling onClose callback: ', ex)
               }
             }
           };
@@ -129,14 +129,14 @@ class Bus {
               try {
                 onError(organizationId, errorEvent);
               } catch (ex) {
-                // TODO log this
+                console.log('Message Bus Error calling onError callback: ', ex)
               }
             }
             // the rejection callback may not be valid any more, in the event that this was connected first, and therefore resolve was called
             try {
               reject(errorEvent);
             } catch (ex) {
-              // TODO log this
+              console.log('Message Bus Error rejecting with error: ', ex)
             }
           };
         })
