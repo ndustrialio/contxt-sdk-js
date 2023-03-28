@@ -76,6 +76,15 @@ describe('ContxtSdk', function() {
       expect(contxtSdk.bus).to.be.an.instanceof(Bus);
     });
 
+    it('passes bus config to the bus constructor', function() {
+      contxtSdk = new ContxtSdk({
+        config: {...baseConfig, bus: {autoAcknowledge: false}},
+        externalModules: expectedExternalModules,
+        sessionType: expectedAuthSessionType
+      });
+      expect(contxtSdk.bus._config).to.deep.equal({autoAcknowledge: false});
+    });
+
     it('sets an instance of Config', function() {
       expect(contxtSdk.config).to.be.an.instanceof(Config);
     });

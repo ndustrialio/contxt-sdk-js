@@ -7,5 +7,8 @@ export default {
   interceptors: {
     request: [],
     response: []
+  },
+  bus: {
+    autoAcknowledge: true
   }
 };

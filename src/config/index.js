@@ -116,6 +116,11 @@ class Config {
       ...defaultConfigs.interceptors,
       ...userConfig.interceptors
     };
+
+    this.bus = {
+      ...defaultConfigs.bus,
+      ...userConfig.bus
+    };
   }
 
   addDynamicAudience(audienceName, { clientId, host }) {
