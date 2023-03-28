@@ -78,7 +78,7 @@ class ContxtSdk {
     this.config = new Config(config, externalModules);
 
     this.auth = this._createAuthSession(sessionType);
-    this.bus = new Bus(this, this._createRequest('bus'));
+    this.bus = new Bus(this, this._createRequest('bus'), this.config.bus);
     this.coordinator = new Coordinator(
       this,
       this._createRequest('coordinator')

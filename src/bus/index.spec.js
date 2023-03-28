@@ -290,6 +290,48 @@ describe('Bus', function() {
         );
       }
     );
+
+    context('when providing custom config', function() {
+      let bus;
+      let expectedApiToken;
+      let promise;
+      let sdk;
+      let server;
+      let busConfig
+
+      beforeEach(function() {
+        expectedApiToken = faker.internet.password();
+
+        sdk = {
+          ...baseSdk,
+          auth: {
+            ...baseSdk.auth,
+            getCurrentApiToken: sinon.stub().resolves(expectedApiToken)
+          }
+        };
+
+        server = new Server(
+          `${expectedHost}/organizations/${expectedOrganization.id}/stream`
+        );
+
+        busConfig = { autoAcknowledge: false };
+        bus = new Bus(sdk, baseRequest, busConfig);
+        bus._baseWebSocketUrl = expectedHost;
+
+        promise = bus.connect(expectedOrganization.id);
+      });
+
+      afterEach(function() {
+        server.stop();
+      });
+
+      it('passes the auto-acknowledge flag to the WebSocketConnection', function() {
+        return promise.then((resolvedWebSocket) => {
+          expect(resolvedWebSocket._autoAck).to.equal(busConfig.autoAcknowledge);
+        });
+      });
+
+    });
   });
 
   describe('getWebSocketConnection', function() {
