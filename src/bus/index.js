@@ -36,6 +36,20 @@ import WebSocketConnection from './webSocketConnection';
  */
 
 /**
+ * Configuration object for the Bus
+ *
+ * @typedef {Object} BusConfig
+ * @property {boolean} autoAcknowledge
+ */
+
+/**
+ * @type {BusConfig}
+ */
+const defaultBusConfig = {
+  autoAcknowledge: true
+};
+
+/**
  * Module that provides access to the message bus. This is for Node
  * environments. Documentation for browser environments is found under
  * `BrowserBus`.
@@ -46,8 +60,9 @@ class Bus {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
    * @param {Object} request An instance of the request module tied to this module's audience.
+   * @param {BusConfig} config A config object for the Bus instance
    */
-  constructor(sdk, request) {
+  constructor(sdk, request, config) {
     const baseUrl = `${sdk.config.audiences.bus.host}`;
     const baseWebSocketUrl = `${sdk.config.audiences.bus.webSocket}`;
 
@@ -56,6 +71,7 @@ class Bus {
     this._request = request;
     this._sdk = sdk;
     this._webSockets = {};
+    this._config = Object.assign({}, defaultBusConfig, config);
 
     this.channels = new Channels(sdk, request, baseUrl);
   }
@@ -101,7 +117,8 @@ class Bus {
           ws.onopen = (event) => {
             this._webSockets[organizationId] = new WebSocketConnection(
               ws,
-              organizationId
+              organizationId,
+              this._config.autoAcknowledge
             );
 
             resolve(this._webSockets[organizationId]);
