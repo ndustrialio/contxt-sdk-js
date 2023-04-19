@@ -1,3 +1,15 @@
+## [v5.3.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.1) (2022-03-17)
+
+**Changed**
+
+- exposed `peek` operation on message bus channel for a given subscription
+
+## [v5.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.1) (2022-03-17)
+
+**Changed**
+
+- add auto-ack flag on message bus client constructor
+
 ## [v4.3.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.1) (2022-03-17)
 
 **Changed**

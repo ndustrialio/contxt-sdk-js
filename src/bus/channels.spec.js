@@ -344,4 +344,111 @@ describe('Bus/Channels', function() {
       });
     });
   });
+
+  describe('peek', function() {
+    context('the required fields are provided', function() {
+      let channelFromServerAfterFormat;
+      let channelFromServerBeforeFormat;
+      let expectedOrganizationId;
+      let expectedServiceId;
+      let expectedChannelId;
+      let expectedSubscription;
+      let promise;
+      let request;
+      let toCamelCase;
+
+      beforeEach(function() {
+        channelFromServerAfterFormat = fixture.build('channel');
+        expectedSubscription = "test";
+        expectedChannelId = channelFromServerAfterFormat.id;
+        expectedOrganizationId = channelFromServerAfterFormat.organizationId;
+        expectedServiceId = channelFromServerAfterFormat.serviceId;
+        channelFromServerBeforeFormat = fixture.build(
+          'channel',
+          channelFromServerAfterFormat,
+          { fromServer: true }
+        );
+
+        request = {
+          ...baseRequest,
+          get: sinon.stub().resolves(channelFromServerBeforeFormat)
+        };
+        toCamelCase = sinon
+          .stub(objectUtils, 'toCamelCase')
+          .returns(channelFromServerAfterFormat);
+
+        const channels = new Channels(baseSdk, request);
+        channels._baseUrl = expectedHost;
+
+        promise = channels.peek(
+          expectedOrganizationId,
+          expectedServiceId,
+          expectedChannelId,
+          expectedSubscription
+        );
+      });
+
+      it('gets the channel from the server', function() {
+        expect(request.get).to.be.calledWith(
+          `${expectedHost}/organizations/${expectedOrganizationId}/services/${expectedServiceId}/channels/${expectedChannelId}/peek/${expectedSubscription}`
+        );
+      });
+
+      it('formats the channel object', function() {
+        return promise.then(() => {
+          expect(toCamelCase).to.be.calledWith(channelFromServerBeforeFormat);
+        });
+      });
+
+      it('returns the requested event', function() {
+        return expect(promise).to.be.fulfilled.and.to.eventually.deep.equal(
+          channelFromServerAfterFormat
+        );
+      });
+    });
+
+    context('the organizationId is not provided', function() {
+      it('throws an error', function() {
+        const channels = new Channels(baseSdk, baseRequest);
+        const promise = channels.peek();
+
+        return expect(promise).to.be.rejectedWith(
+          'An organizationId is required to peek a message bus channel subscription.'
+        );
+      });
+    });
+
+    context('the serviceId is not provided', function() {
+      it('throws an error', function() {
+        const channels = new Channels(baseSdk, baseRequest);
+        const promise = channels.peek('1');
+
+        return expect(promise).to.be.rejectedWith(
+          'A serviceId is required to peek a message bus channel subscription.'
+        );
+      });
+    });
+
+    context('the channelId is not provided', function() {
+      it('throws an error', function() {
+        const channels = new Channels(baseSdk, baseRequest);
+        const promise = channels.peek('1', '2');
+
+        return expect(promise).to.be.rejectedWith(
+          'A channelId is required to peek a message bus channel subscription.'
+        );
+      });
+    });
+
+    context('the subscription is not provided', function() {
+      it('throws an error', function() {
+        const channels = new Channels(baseSdk, baseRequest);
+        const promise = channels.peek('1', '2', '3');
+
+        return expect(promise).to.be.rejectedWith(
+          'A subscription name is required to peek a message bus channel subscription.'
+        );
+      });
+    });
+  });
 });
