@@ -231,6 +231,60 @@ class Channels {
       toSnakeCase(update)
     );
   }
+
+  /**
+   * Peeks messages from a channel subscription
+   *
+   * API Endpoint: '/organizations/:organizationId/services/:serviceId/channels/:channelId/peek/:subscription'
+   * Method: GET
+   *
+   * @param {string} organizationId UUID of the organization
+   * @param {string} serviceId ID of the service
+   * @param {string} channelId UUID of the channel
+   * @param {string} subscription name of the subscription
+   * @param {number} messagePos the number of messages to peek
+   *
+   * @returns {Promise}
+   * @fulfill {MessageBusChannel} Information about an event
+   * @reject {Error}
+   *
+   * @example
+   * contxtSdk.bus.channels
+   *   .peek(
+   *     '875afddd-091c-4385-bc21-0edf38804d27',
+   *     'ab123service',
+   *     '175afdec-291c-4385-bc21-0edf38804d21',
+   *     'test-subscription'
+   *   )
+   *   .then((channel) => console.log(channel))
+   *   .catch((err) => console.log(err));
+   */
+  peek(organizationId, serviceId, channelId, subscription, messagePos) {
+    let errorMsg;
+
+    if (!organizationId) {
+      errorMsg = 'An organizationId is required to peek a message bus channel subscription.';
+    } else if (!serviceId) {
+      errorMsg = 'A serviceId is required to peek a message bus channel subscription.';
+    } else if (!channelId) {
+      errorMsg = 'A channelId is required to peek a message bus channel subscription.';
+    } else if (!subscription) {
+      errorMsg = 'A subscription name is required to peek a message bus channel subscription.';
+    }
+
+    if (errorMsg) {
+      return Promise.reject(new Error(errorMsg));
+    }
+
+    return this._request
+      .get(
+        `${
+          this._baseUrl
+        }/organizations/${organizationId}/services/${serviceId}/channels/${channelId}/peek/${subscription}`,
+        { params: { messagePos } }
+      )
+      .then((response) => toCamelCase(response));
+  }
 }
 
 export default Channels;
