@@ -113,7 +113,7 @@ class Bus {
             resolve(this._webSockets[organizationId]);
           };
 
-          ws.onclose = (event) => {
+          ws.addEventListener("close", (event) => {
             this._webSockets[organizationId] = null;
             if (onClose) {
               try {
@@ -122,9 +122,9 @@ class Bus {
                 console.log('Message Bus Error calling onClose callback: ', ex)
               }
             }
-          };
+          });
 
-          ws.onerror = (errorEvent) => {
+          ws.addEventListener("error", (errorEvent) => {
             if (onError) {
               try {
                 onError(organizationId, errorEvent);
@@ -138,7 +138,7 @@ class Bus {
             } catch (ex) {
               console.log('Message Bus Error rejecting with error: ', ex)
             }
-          };
+          });
         })
         .catch((err) => {
           reject(err);

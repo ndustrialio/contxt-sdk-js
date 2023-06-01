@@ -145,6 +145,7 @@ describe('Bus', function() {
           let sdk;
           let server;
           let testOnClose;
+          let testOnClose2;
 
           beforeEach(function() {
             expectedApiToken = faker.internet.password();
@@ -162,6 +163,7 @@ describe('Bus', function() {
             );
 
             testOnClose = sinon.stub();
+            testOnClose2 = sinon.stub();
 
             bus = new Bus(sdk, baseRequest);
             bus._baseWebSocketUrl = expectedHost;
@@ -197,6 +199,8 @@ describe('Bus', function() {
           context('when the connection closes', function() {
             beforeEach(function() {
               return promise.then(() => {
+                const ws = bus._webSockets[expectedOrganization.id];
+                ws._webSocket.addEventListener("close", testOnClose2);
                 server.close();
               });
             });
@@ -204,6 +208,7 @@ describe('Bus', function() {
             it('calls the onClose callback', function() {
               return promise.then(() => {
                 expect(testOnClose).to.have.been.calledOnce;
+                expect(testOnClose2).to.have.been.calledOnce;
               });
             });
 

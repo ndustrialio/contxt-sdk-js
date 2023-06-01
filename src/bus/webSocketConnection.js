@@ -36,7 +36,7 @@ class WebSocketConnection {
     this._webSocket = webSocket;
 
     if (this._webSocket) {
-      this._webSocket.onerror = this._onError;
+      this._webSocket.addEventListener("error", this._onError);
       this._webSocket.onmessage = this._onMessage;
     }
   }
