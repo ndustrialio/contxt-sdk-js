@@ -142,7 +142,9 @@ class Bus {
           });
 
           ws.addEventListener("error", (errorEvent) => {
-            if (!this._webSockets[organizationId]) {
+            const connected = this._webSockets[organizationId] != null;
+            this._webSockets[organizationId] = null;
+            if (!connected) {
               reject(errorEvent)
             }
             if (onError) {
