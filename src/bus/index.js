@@ -142,6 +142,9 @@ class Bus {
           });
 
           ws.addEventListener("error", (errorEvent) => {
+            if (!this._webSockets[organizationId]) {
+              reject(errorEvent)
+            }
             if (onError) {
               try {
                 onError(organizationId, errorEvent);
