@@ -1,5 +1,15 @@
 import axios from 'axios';
 
+function loadSdkInfo() {
+  try {
+    const { name: sdkName, version: sdkVersion } = require('../package.json');
+    return { sdkName, sdkVersion };
+  } catch (e) {
+    return { sdkName: "@ndustrial/contxt-sdk", sdkVersion: "5.5.0+" };
+  }
+}
+
+const { sdkName, sdkVersion } = loadSdkInfo();
 class Request {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
@@ -141,6 +151,7 @@ class Request {
       .getCurrentApiToken(this._audienceName)
       .then((apiToken) => {
         config.headers.common.Authorization = `Bearer ${apiToken}`;
+        config.headers.common['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
 
         return config;
       });

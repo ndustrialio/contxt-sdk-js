@@ -144,6 +144,8 @@ describe('Bus', function() {
           let promise;
           let sdk;
           let server;
+          let testOnClose;
+          let testOnClose2;
 
           beforeEach(function() {
             expectedApiToken = faker.internet.password();
@@ -160,10 +162,16 @@ describe('Bus', function() {
               `${expectedHost}/organizations/${expectedOrganization.id}/stream`
             );
 
+            testOnClose = sinon.stub();
+            testOnClose2 = sinon.stub();
+
             bus = new Bus(sdk, baseRequest);
             bus._baseWebSocketUrl = expectedHost;
 
-            promise = bus.connect(expectedOrganization.id);
+            promise = bus.connect(
+              expectedOrganization.id,
+              testOnClose
+            );
           });
 
           afterEach(function() {
@@ -191,7 +199,16 @@ describe('Bus', function() {
           context('when the connection closes', function() {
             beforeEach(function() {
               return promise.then(() => {
+                const ws = bus._webSockets[expectedOrganization.id];
+                ws._webSocket.addEventListener("close", testOnClose2);
                 server.close();
+              });
+            });
+
+            it('calls the onClose callback', function() {
+              return promise.then(() => {
+                expect(testOnClose).to.have.been.calledOnce;
+                expect(testOnClose2).to.have.been.calledOnce;
               });
             });
 
@@ -237,6 +254,7 @@ describe('Bus', function() {
             let promise;
             let sdk;
             let server;
+            let testOnError;
 
             beforeEach(function() {
               expectedApiToken = faker.internet.password();
@@ -259,10 +277,16 @@ describe('Bus', function() {
                 }
               );
 
+              testOnError = sinon.stub();
+
               const bus = new Bus(sdk, baseRequest);
               bus._baseWebSocketUrl = expectedHost;
 
-              promise = bus.connect(expectedOrganization.id);
+              promise = bus.connect(
+                expectedOrganization.id,
+                null,
+                testOnError
+              );
             });
 
             afterEach(function() {
@@ -281,11 +305,13 @@ describe('Bus', function() {
               return expect(promise).to.be.rejected;
             });
 
-            it('rejects with an error event', function() {
+            it('rejects with an error event AND onError is called', function() {
               return promise.catch((event) => {
                 expect(event.type).to.equal('error');
+                expect(testOnError).to.have.been.calledOnce;
               });
             });
+
           }
         );
       }
