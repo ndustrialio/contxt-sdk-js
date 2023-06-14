@@ -1,7 +1,15 @@
 import axios from 'axios';
 
-const { name: sdkName, version: sdkVersion } = require('../package.json');
+function loadSdkInfo() {
+  try {
+    const { name: sdkName, version: sdkVersion } = require('../package.json');
+    return { sdkName, sdkVersion };
+  } catch (e) {
+    return { sdkName: "@ndustrial/contxt-sdk", sdkVersion: "5.5.0+" };
+  }
+}
 
+const { sdkName, sdkVersion } = loadSdkInfo();
 class Request {
   /**
    * @param {Object} sdk An instance of the SDK so the module can communicate with other modules
