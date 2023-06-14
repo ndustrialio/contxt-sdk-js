@@ -1,8 +1,21 @@
-## [v4.3.2](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.2) (2023-01-31)
+## [v5.5.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.5.0) (2023-06-14)
 
 **Changed**
 
 - adds onClose and onError callbacks to Message Bus connect.
+- adds app and contxt lib version as API requests User-Agent header
+
+## [v5.4.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.4.0) (2022-03-17)
+
+**Changed**
+
+- exposed `peek` operation on message bus channel for a given subscription
+
+## [v5.3.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.3.0) (2022-03-17)
+
+**Changed**
+
+- add auto-ack flag on message bus client constructor
 
 ## [v4.3.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v4.3.1) (2022-03-17)
 

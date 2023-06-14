@@ -29,11 +29,13 @@ class WebSocketConnection {
   /**
    * @param {WebSocket} webSocket A WebSocket connection to the message bus
    * @param {string} organizationId UUID corresponding with an organization
+   * @param {boolean} autoAcknowledge Whether the messages should be ACK'd explicitly or not
    */
-  constructor(webSocket, organizationId) {
+  constructor(webSocket, organizationId, autoAcknowledge = true) {
     this._messageHandlers = {};
     this._organizationId = organizationId;
     this._webSocket = webSocket;
+    this._autoAck = autoAcknowledge;
 
     if (this._webSocket) {
       this._webSocket.addEventListener("error", this._onError);
@@ -282,20 +284,24 @@ class WebSocketConnection {
 
             if (error) {
               return resolve(errorHandler(error));
-            } else {
-              try {
-                const ack = once(() => {
-                  return this._acknowledge(result.id);
-                });
+            }
 
-                return resolve(
-                  Promise.resolve(handler(result.body, ack)).then((res) => {
+            try {
+              const ack = once(() => {
+                return this._acknowledge(result.id);
+              });
+
+              return resolve(
+                Promise.resolve(handler(result.body, ack)).then((res) => {
+                  if (this._autoAck) {
                     return ack().then(() => res);
-                  })
-                );
-              } catch (throwable) {
-                return reject(throwable);
-              }
+                  }
+
+                  return res;
+                })
+              );
+            } catch (throwable) {
+              return reject(throwable);
             }
           });
         };

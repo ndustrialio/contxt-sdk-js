@@ -1755,6 +1755,51 @@ describe('Bus/WebSocketConnection', function() {
               });
           });
         });
+
+        context('and the client does not auto-ack', function() {
+          let errorHandler;
+
+          beforeEach(function() {
+            handler = sinon.stub().returns(null);
+            errorHandler = sinon.stub().returns(null);
+
+            ws = new WebSocketConnection(
+              expectedWebSocket,
+              expectedOrganization.id,
+              false
+            );
+
+            promise = ws.subscribe(
+              serviceId,
+              channel,
+              group,
+              handler,
+              errorHandler
+            );
+
+            jsonRpcId = Object.keys(ws._messageHandlers)[0];
+
+            ws._messageHandlers[jsonRpcId]({
+              result: {
+                subscription
+              }
+            });
+          });
+
+          it('doesn\'t call the ack function', function() {
+            return promise
+              .then(() => {
+                return ws._messageHandlers[subscription]({
+                  result: {
+                    error: message
+                  }
+                });
+              })
+              .catch(() => {
+                expect(acknowledge).to.not.be.called;
+              });
+          });
+        });
       });
 
       context('without a group', function() {
