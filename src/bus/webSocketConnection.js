@@ -308,7 +308,7 @@ class WebSocketConnection {
 
         return result;
       }
-    );
+    ).catch(errorHandler);
   }
 
   /**
