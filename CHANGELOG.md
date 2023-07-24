@@ -1,3 +1,9 @@
+## [v5.6.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.6.0) (2023-07-24)
+
+**Changed**
+
+- only set custom User-Agent request header in Node mode
+
 ## [v5.5.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.5.0) (2023-06-14)
 
 **Changed**
