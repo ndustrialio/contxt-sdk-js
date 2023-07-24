@@ -151,7 +151,9 @@ class Request {
       .getCurrentApiToken(this._audienceName)
       .then((apiToken) => {
         config.headers.common.Authorization = `Bearer ${apiToken}`;
-        config.headers.common['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
+        if (typeof window === 'undefined' && process.env.npm_package_name !== undefined) {
+          config.headers.common['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
+        }
 
         return config;
       });
