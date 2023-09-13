@@ -39,8 +39,8 @@ class Nionic {
     const tenantId = this._getTenantId(orgOrTenantId);
     const url = `${this._baseUrl.replace('<tenant>', tenantId)}/graphql`;
     return this._request.post(url, options).then((resp) => {
-      if (resp.data && resp.data.errors) {
-        return Promise.reject(Error(resp.data.errors));
+      if (resp.errors) {
+        return Promise.reject(Error(JSON.stringify(resp.errors)));
       }
       return Promise.resolve(resp.data);
     });
