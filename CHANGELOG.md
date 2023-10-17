@@ -1,10 +1,10 @@
-## [v5.6.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.6.1) (2023-10-17)
+## [v5.5.4](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.5.4) (2023-10-17)
 
 **Changed**
 
 - added new org IDs
 
-## [v5.6.0](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.6.0) (2023-07-24)
+## [v5.5.1](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.5.1) (2023-07-24)
 
 **Changed**
 
