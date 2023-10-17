@@ -22,7 +22,13 @@ class Nionic {
       'b2c6705d-1727-467f-a450-207f110c9966': 'trenton',
       'c5517437-8497-400a-8c6d-a9de88669c70': 'blackline',
       '65be9a9d-5cc1-4318-8762-da74e454ea51': 'vcv',
-      'bc071c66-d030-44c7-9c2a-cfe3161cdf3e': 'lsc-communications'
+      'bc071c66-d030-44c7-9c2a-cfe3161cdf3e': 'lsc-communications',
+      '5a4bbead-7208-499e-a853-9cb174a71c63': 'uscold',
+      '513b06ea-0169-4436-b3b2-77318bd77e94': 'wlgore',
+      '7b9457e8-99cd-46da-9477-4c2806884a8f': 'jci',
+      '3b1c4ddf-6068-4875-83f3-6960630c5b37': 'gargill',
+      '94b653fd-8ea2-4fea-be38-0f08ca734820': 'emergent',
+      'c18cf4fb-13ec-4e19-9475-cc1be484ba27': 'waterbridge'
     };
   }
 
