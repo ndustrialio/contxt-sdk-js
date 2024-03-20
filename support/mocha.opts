@@ -1,3 +1,0 @@
---require babel-register
---require support/addons.js
---require support/globals.js
