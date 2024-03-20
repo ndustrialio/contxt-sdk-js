@@ -1,0 +1,4 @@
+require:
+  - "babel-register"
+  - "support/addons.js"
+  - "support/globals.js"

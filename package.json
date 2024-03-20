@@ -18,7 +18,7 @@
     "lint": "eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
     "prepare": "npm run build",
     "test": "npm run lint && npm run test:js",
-    "test:js": "NODE_ENV=test mocha --opts 'support/mocha.opts' 'src/**/*.spec.js'",
+    "test:js": "NODE_ENV=test mocha --config 'support/mocharc.yml' 'src/**/*.spec.js'",
     "test:js:dev": "npm run test:js -- --watch",
     "test:js:inspect": "npm run test:js -- --inspect-brk",
     "watch": "gulp watch"
@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "auth0-js": "^9.14.2",
-    "axios": "^0.27.2",
+    "axios": "^1.6.8",
     "change-case": "^4.1.2",
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
@@ -95,7 +95,7 @@
     "lodash.pick": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "lodash.times": "^4.3.2",
-    "mocha": "^6.2.3",
+    "mocha": "^10.3.0",
     "mock-socket": "^9.1.5",
     "prettier": "^2.7.1",
     "pretty-quick": "^3.1.3",
