@@ -139,7 +139,6 @@ class Request {
    *
    * @param {Object} config
    * @param {Object} config.headers
-   * @param {Object} config.headers.common
    *
    * @returns {Promise}
    * @fulfill {Object} axios.js config
@@ -150,11 +149,10 @@ class Request {
     return this._sdk.auth
       .getCurrentApiToken(this._audienceName)
       .then((apiToken) => {
-        config.headers.common.Authorization = `Bearer ${apiToken}`;
+        config.headers['Authorization'] = `Bearer ${apiToken}`;
         if (typeof window === 'undefined' && process.env.npm_package_name !== undefined) {
-          config.headers.common['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
+          config.headers['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
         }
-
         return config;
       });
   }

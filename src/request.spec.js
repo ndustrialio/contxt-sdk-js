@@ -218,7 +218,7 @@ describe('Request', function() {
     it('resolves a config with an Authorization header appended', function() {
       return promise.then((config) => {
         expect(config).to.equal(initialConfig);
-        expect(config.headers.common.Authorization).to.equal(
+        expect(config.headers['Authorization']).to.equal(
           `Bearer ${expectedToken}`
         );
       });

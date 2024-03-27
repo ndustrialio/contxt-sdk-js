@@ -1,3 +1,9 @@
+## [v5.5.7](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.5.7) (2024-03-26)
+
+**Changed**
+
+- adapted to latest version of Axios
+
 ## [v5.5.4](http://github.com/ndustrialio/contxt-sdk-js/tree/v5.5.4) (2023-10-17)
 
 **Changed**
