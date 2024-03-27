@@ -150,8 +150,9 @@ class Request {
       .getCurrentApiToken(this._audienceName)
       .then((apiToken) => {
         config.headers['Authorization'] = `Bearer ${apiToken}`;
-        config.headers['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
-
+        if (typeof window === 'undefined' && process.env.npm_package_name !== undefined) {
+          config.headers['User-Agent'] = `${process.env.npm_package_name}/${process.env.npm_package_version} (${sdkName}/${sdkVersion})`;
+        }
         return config;
       });
   }
