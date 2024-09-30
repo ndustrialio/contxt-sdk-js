@@ -86,7 +86,7 @@
     "eslint-plugin-node": "^8.0.1",
     "faker": "^5.5.3",
     "fast-glob": "^3.2.4",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-babel": "^7.0.1",
     "gulp-sourcemaps": "^3.0.0",
     "husky": "^8.0.1",
