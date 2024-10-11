@@ -147,7 +147,7 @@ describe('Bus/WebSocketConnection', function() {
 
                 promise = Promise.race([
                   ws.authorize(token),
-                  new Promise((resolve, reject) => {
+                  new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
                     setTimeout(resolve, waitTime, resolvedIndicator);
                   })
                 ]);
@@ -553,7 +553,7 @@ describe('Bus/WebSocketConnection', function() {
 
                 promise = Promise.race([
                   ws.publish(serviceId, channel, expectedMessage),
-                  new Promise((resolve, reject) => {
+                  new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
                     setTimeout(resolve, waitTime, resolvedIndicator);
                   })
                 ]);
@@ -956,7 +956,7 @@ describe('Bus/WebSocketConnection', function() {
 
                 promise = Promise.race([
                   ws.subscribe(serviceId, channel, group, () => {}, () => {}),
-                  new Promise((resolve, reject) => {
+                  new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
                     setTimeout(resolve, waitTime, resolvedIndicator);
                   })
                 ]);
@@ -1456,7 +1456,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully as a promise',
           function() {
             beforeEach(function() {
-              handler = sinon.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) { // eslint-disable-line no-unused-vars
                 return Promise.resolve(null);
               });
 
@@ -1498,7 +1498,7 @@ describe('Bus/WebSocketConnection', function() {
           function() {
             beforeEach(function() {
               handler = sinon.stub().callsFake(function(m, a) {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
                   a();
 
                   resolve();
@@ -1540,7 +1540,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error', function() {
           beforeEach(function() {
-            handler = sinon.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) { // eslint-disable-line no-unused-vars
               throw Error();
             });
 
@@ -1578,7 +1578,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error in a promise', function() {
           beforeEach(function() {
-            handler = sinon.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) { // eslint-disable-line no-unused-vars
               return new Promise((resolve, reject) => {
                 reject(Error());
               });
@@ -1889,7 +1889,7 @@ describe('Bus/WebSocketConnection', function() {
           'and the handler completes successfully as a promise',
           function() {
             beforeEach(function() {
-              handler = sinon.stub().callsFake(function(m, a) {
+              handler = sinon.stub().callsFake(function(m, a) { // eslint-disable-line no-unused-vars
                 return Promise.resolve(null);
               });
 
@@ -1925,7 +1925,7 @@ describe('Bus/WebSocketConnection', function() {
           function() {
             beforeEach(function() {
               handler = sinon.stub().callsFake(function(m, a) {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
                   a();
 
                   resolve();
@@ -1961,7 +1961,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error', function() {
           beforeEach(function() {
-            handler = sinon.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) { // eslint-disable-line no-unused-vars
               throw Error();
             });
 
@@ -1993,7 +1993,7 @@ describe('Bus/WebSocketConnection', function() {
 
         context('and the handler throws an error in a promise', function() {
           beforeEach(function() {
-            handler = sinon.stub().callsFake(function(m, a) {
+            handler = sinon.stub().callsFake(function(m, a) { // eslint-disable-line no-unused-vars
               return new Promise((resolve, reject) => {
                 reject(Error());
               });

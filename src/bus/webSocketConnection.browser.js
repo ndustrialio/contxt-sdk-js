@@ -10,7 +10,7 @@ class WebSocketConnection {
   /**
    * @alias BrowserWebSocketConnection
    */
-  constructor(webSocket, organizationId) {
+  constructor(webSocket, organizationId) { // eslint-disable-line no-unused-vars
     throw new Error(
       'The Message Bus is not currently supported in browser environments'
     );
