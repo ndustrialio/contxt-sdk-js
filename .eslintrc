@@ -5,7 +5,7 @@
     "mocha": true,
     "node": true
   },
-  "extends": ["ndustrial", "prettier"],
+  "extends": ["@ndustrial", "prettier"],
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 6,
