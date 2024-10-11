@@ -1,7 +1,7 @@
 import globals from "globals";
-import babelParser from "babel-eslint";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import babelParser from "@babel/eslint-parser";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 
