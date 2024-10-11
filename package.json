@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "gulp build",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint --format 'node_modules/eslint-friendly-formatter' '+(src|support)/**/*.js'",
+    "lint": "eslint --format 'node_modules/eslint-friendly-formatter/index.js' '+(src|support)/**/*.js'",
     "prepare": "npm run build",
     "test": "npm run lint && npm run test:js",
     "test:js": "NODE_ENV=test mocha --config 'support/mocharc.yml' 'src/**/*.spec.js'",
@@ -80,7 +80,7 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "del": "^6.1.1",
-    "eslint": "^4.15.0",
+    "eslint": "^9.12.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-plugin-node": "^8.0.1",
