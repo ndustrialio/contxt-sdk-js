@@ -217,6 +217,7 @@ class Auth0WebAuth {
         this._onRedirect(redirectPathname);
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.log(`Error while handling authentication: ${err}`);
 
         this._onRedirect('/');
@@ -245,7 +246,7 @@ class Auth0WebAuth {
    * @param {Boolean} [options.forceLogin = false] When true will bypass any sso settings in the authorization provider
    */
   logIn(options = {}) {
-    let authOptions = {};
+    let authOptions = {}; // eslint-disable-line prefer-const
 
     if (options.forceLogin) {
       authOptions.prompt = 'login';

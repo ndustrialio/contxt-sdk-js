@@ -104,6 +104,7 @@ class WebSocketConnection {
   _onError = (error) => {
     this._messageHandlers = {};
 
+    // eslint-disable-next-line no-console
     console.log('Message Bus WebSocket Error: ', error);
   };
 

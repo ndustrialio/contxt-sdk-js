@@ -23,7 +23,7 @@ function map(input, callback, userOptions) {
   return Object.keys(input).reduce((memo, key) => {
     const value = input[key];
     const result = callback(value, key, input);
-    let [newValue, newKey] = result;
+    let [newValue, newKey] = result; // eslint-disable-line prefer-const
 
     if (newKey === '__MARKED_FOR_REMOVAL__') {
       return memo;

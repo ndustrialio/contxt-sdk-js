@@ -300,7 +300,7 @@ describe('Coordinator/Users', function() {
         };
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
-          .callsFake((app) => expectedUserApplication);
+          .callsFake((app) => expectedUserApplication); // eslint-disable-line no-unused-vars
 
         const users = new Users(baseSdk, request, expectedTenantBaseUrl);
 
@@ -387,7 +387,7 @@ describe('Coordinator/Users', function() {
         };
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
-          .callsFake((app) => expectedUserRole);
+          .callsFake((app) => expectedUserRole) // eslint-disable-line no-unused-vars
 
         const users = new Users(baseSdk, request, expectedTenantBaseUrl);
 
@@ -480,7 +480,7 @@ describe('Coordinator/Users', function() {
           };
           toCamelCase = sinon
             .stub(objectUtils, 'toCamelCase')
-            .callsFake((app) => expectedUserProjectEnvironment);
+            .callsFake((app) => expectedUserProjectEnvironment); // eslint-disable-line no-unused-vars
 
           const users = new Users(baseSdk, request, expectedTenantBaseUrl);
 

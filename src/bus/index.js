@@ -120,7 +120,7 @@ class Bus {
             }
           );
 
-          ws.onopen = (event) => {
+          ws.onopen = (event) => { // eslint-disable-line no-unused-vars
             this._webSockets[organizationId] = new WebSocketConnection(
               ws,
               organizationId,
@@ -136,6 +136,7 @@ class Bus {
               try {
                 onClose(organizationId, event);
               } catch (ex) {
+                // eslint-disable-next-line no-console
                 console.log('Message Bus Error calling onClose callback: ', ex)
               }
             }
@@ -151,6 +152,7 @@ class Bus {
               try {
                 onError(organizationId, errorEvent);
               } catch (ex) {
+                // eslint-disable-next-line no-console
                 console.log('Message Bus Error calling onError callback: ', ex)
               }
             }

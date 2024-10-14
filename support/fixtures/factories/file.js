@@ -16,7 +16,7 @@ factory
     status: () => faker.random.arrayElement(['ACTIVE', 'UPLOADING']),
     updatedAt: () => faker.date.recent().toISOString()
   })
-  .attr('uploadInfo', ['fromServer'], (fromServer, uploadInfo) => {
+  .attr('uploadInfo', ['fromServer'], (fromServer, uploadInfo) => { // eslint-disable-line no-unused-vars
     return factory.build('fileUploadInfo', null, { fromServer });
   })
   .after((file, options) => {

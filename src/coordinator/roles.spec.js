@@ -109,7 +109,7 @@ describe('Coordinator/Roles', function() {
         };
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
-          .callsFake((app) => expectedRoleApplication);
+          .callsFake((app) => expectedRoleApplication); // eslint-disable-line no-unused-vars
 
         const roles = new Roles(baseSdk, request, expectedHost);
         promise = roles.addApplication(role.id, application.id);
@@ -194,7 +194,7 @@ describe('Coordinator/Roles', function() {
           };
           toCamelCase = sinon
             .stub(objectUtils, 'toCamelCase')
-            .callsFake((app) => expectedRoleProjectEnvironment);
+            .callsFake((app) => expectedRoleProjectEnvironment); // eslint-disable-line no-unused-vars
 
           const roles = new Roles(baseSdk, request, expectedHost);
           promise = roles.addProjectEnvironment(

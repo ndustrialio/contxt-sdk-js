@@ -114,7 +114,7 @@ describe('Coordinator/Applications', function() {
         };
         toCamelCase = sinon
           .stub(objectUtils, 'toCamelCase')
-          .callsFake((app) => expectedApplicationFavorite);
+          .callsFake((app) => expectedApplicationFavorite); // eslint-disable-line no-unused-vars
 
         const applications = new Applications(baseSdk, request, expectedHost);
         promise = applications.addFavorite(application.id);
