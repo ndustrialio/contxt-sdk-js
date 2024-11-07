@@ -1,5 +1,7 @@
 import URL from 'url-parse';
 
+const allowedQueryParams = ['after', 'limit', 'timeEnd', 'timeStart', 'window'];
+
 /**
  * Parses metadata from the provided url. Will coerce fields that should be
  * numbers from `String` to `Number`
@@ -21,7 +23,7 @@ import URL from 'url-parse';
 function parseOutputFieldNextPageUrlMetadata(url) {
   const query = new URL(url, true).query;
 
-  return ['limit', 'timeEnd', 'timeStart', 'window'].reduce((memo, key) => {
+  return allowedQueryParams.reduce((memo, key) => {
     if (memo[key]) {
       memo[key] = parseInt(memo[key], 10);
     }
