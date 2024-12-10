@@ -1,4 +1,5 @@
 import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
 import parseOutputFieldNextPageUrlMetadata from './parseOutputFieldNextPageUrlMetadata';
 
-export { formatOutputFieldDataFromServer, parseOutputFieldNextPageUrlMetadata };
+const IotUtils = { formatOutputFieldDataFromServer, parseOutputFieldNextPageUrlMetadata }
+export default IotUtils;

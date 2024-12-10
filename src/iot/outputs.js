@@ -1,4 +1,4 @@
-import { formatOutputFieldDataFromServer } from '../utils/iot';
+import IotUtils from '../utils/iot';
 /**
  * @typedef {Object} OutputFieldDataResponse
  * @property {Object} meta
@@ -98,7 +98,7 @@ class Outputs {
         `${this._baseUrl}/outputs/${outputId}/fields/${fieldHumanName}/data`,
         { params: options }
       )
-      .then((fieldData) => formatOutputFieldDataFromServer(fieldData));
+      .then((fieldData) => IotUtils.formatOutputFieldDataFromServer(fieldData));
   }
 }
 

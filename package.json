@@ -4,6 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
+  "type": "commonjs",
   "publishConfig": {
     "access": "public"
   },
@@ -53,6 +54,7 @@
     "auth0-js": "^9.14.2",
     "axios": "^1.6.8",
     "change-case": "^4.1.2",
+    "core-js": "^3.39.0",
     "lodash.has": "^4.5.2",
     "lodash.isplainobject": "^4.0.6",
     "lodash.once": "^4.1.1",
@@ -66,6 +68,7 @@
     "@babel/core": "^7.26.0",
     "@babel/eslint-parser": "^7.25.9",
     "@babel/preset-env": "^7.26.0",
+    "@babel/register": "^7.25.9",
     "@eslint/compat": "^1.2.2",
     "babel-plugin-istanbul": "^7.0.0",
     "chai": "^4.1.2",

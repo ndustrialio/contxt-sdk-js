@@ -1,7 +1,7 @@
 import omit from 'lodash.omit';
-import * as eventsUtils from '../utils/events';
-import * as objectUtils from '../utils/objects';
-import * as paginationUtils from '../utils/pagination';
+import eventsUtils from '../utils/events';
+import objectUtils from '../utils/objects';
+import paginationUtils from '../utils/pagination';
 import Events from './index';
 
 describe('Events', function() {

@@ -1,4 +1,4 @@
-import * as objectUtils from '../utils/objects';
+import objectUtils from '../utils/objects';
 import Feeds from './feeds';
 
 describe('Iot/Feeds', function() {

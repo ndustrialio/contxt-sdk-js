@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtOrganization
@@ -51,7 +51,7 @@ class Organizations {
     if (this._organizationId) {
       return this._request
         .get(`${this._baseUrl}/${this._organizationId}`)
-        .then((org) => toCamelCase(org));
+        .then((org) => ObjectUtils.toCamelCase(org));
     }
 
     if (!organizationId) {
@@ -64,7 +64,7 @@ class Organizations {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}`)
-      .then((org) => toCamelCase(org));
+      .then((org) => ObjectUtils.toCamelCase(org));
   }
 
   /**
@@ -86,7 +86,7 @@ class Organizations {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/organizations`)
-      .then((orgs) => orgs.map((org) => toCamelCase(org)));
+      .then((orgs) => orgs.map((org) => ObjectUtils.toCamelCase(org)));
   }
 }
 

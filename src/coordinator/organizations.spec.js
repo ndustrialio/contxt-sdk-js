@@ -1,4 +1,4 @@
-import * as objectUtils from '../utils/objects';
+import objectUtils from '../utils/objects';
 import Organizations from './organizations';
 
 describe('Coordinator/Organizations', function() {

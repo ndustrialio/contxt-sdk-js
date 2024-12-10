@@ -1,5 +1,5 @@
-import { parseOutputFieldNextPageUrlMetadata } from './index';
-import { toCamelCase } from '../objects';
+import IotUtils from './index';
+import ObjectUtils from '../objects';
 
 /**
  * Normalizes the output field data and metadata returned from the API server
@@ -38,15 +38,15 @@ import { toCamelCase } from '../objects';
  */
 function formatOutputFieldDataFromServer(input = {}) {
   const meta = input.meta || {};
-  const query = parseOutputFieldNextPageUrlMetadata(meta.next_page_url);
+  const query = IotUtils.parseOutputFieldNextPageUrlMetadata(meta.next_page_url);
   const records = input.records || [];
 
   return {
     meta: {
-      ...toCamelCase(input.meta, { excludeKeys: ['next_page_url'] }),
+      ...ObjectUtils.toCamelCase(input.meta, { excludeKeys: ['next_page_url'] }),
       ...query
     },
-    records: toCamelCase(records)
+    records: ObjectUtils.toCamelCase(records)
   };
 }
 

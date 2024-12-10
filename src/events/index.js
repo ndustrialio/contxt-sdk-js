@@ -1,8 +1,8 @@
 import has from 'lodash.has';
 import isPlainObject from 'lodash.isplainobject';
-import { formatEventUpdateToServer } from '../utils/events';
-import { toCamelCase, toSnakeCase } from '../utils/objects';
-import { formatPaginatedDataFromServer } from '../utils/pagination';
+import EventUtils from '../utils/events';
+import ObjectUtils from '../utils/objects';
+import PaginationUtils from '../utils/pagination';
 
 /**
  * @typedef {Object} Event
@@ -189,8 +189,8 @@ class Events {
     }
 
     return this._request
-      .post(`${this._baseUrl}/events`, toSnakeCase(event))
-      .then((response) => toCamelCase(response));
+      .post(`${this._baseUrl}/events`, ObjectUtils.toSnakeCase(event))
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -247,7 +247,7 @@ class Events {
 
     return this._request
       .get(`${this._baseUrl}/events/${eventId}`)
-      .then((event) => toCamelCase(event));
+      .then((event) => ObjectUtils.toCamelCase(event));
   }
 
   /**
@@ -278,9 +278,9 @@ class Events {
 
     return this._request
       .get(`${this._baseUrl}/clients/${clientId}/types`, {
-        params: toSnakeCase(paginationOptions)
+        params: ObjectUtils.toSnakeCase(paginationOptions)
       })
-      .then((response) => formatPaginatedDataFromServer(response));
+      .then((response) => PaginationUtils.formatPaginatedDataFromServer(response));
   }
 
   /**
@@ -322,9 +322,9 @@ class Events {
 
     return this._request
       .get(`${this._baseUrl}/types/${eventTypeId}/events`, {
-        params: toSnakeCase(eventFilters)
+        params: ObjectUtils.toSnakeCase(eventFilters)
       })
-      .then((events) => formatPaginatedDataFromServer(events));
+      .then((events) => PaginationUtils.formatPaginatedDataFromServer(events));
   }
 
   /**
@@ -351,12 +351,12 @@ class Events {
 
     return this._request
       .get(`${this._baseUrl}/facilities/${facilityId}/triggered-events`, {
-        params: toSnakeCase(triggeredEventFilters, {
+        params: ObjectUtils.toSnakeCase(triggeredEventFilters, {
           deep: true,
           excludeTransform: ['orderBy', 'reverseOrder']
         })
       })
-      .then((events) => formatPaginatedDataFromServer(events));
+      .then((events) => PaginationUtils.formatPaginatedDataFromServer(events));
   }
 
   /**
@@ -386,7 +386,7 @@ class Events {
 
     return this._request
       .get(`${this._baseUrl}/users/${userId}`)
-      .then((user) => toCamelCase(user));
+      .then((user) => ObjectUtils.toCamelCase(user));
   }
 
   /**
@@ -425,9 +425,9 @@ class Events {
     return this._request
       .post(
         `${this._baseUrl}/users/${userId}/events/${eventId}`,
-        toSnakeCase(subscribeOpts)
+        ObjectUtils.toSnakeCase(subscribeOpts)
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -512,7 +512,7 @@ class Events {
       );
     }
 
-    const formattedUpdate = formatEventUpdateToServer(update);
+    const formattedUpdate = EventUtils.formatEventUpdateToServer(update);
 
     return this._request.put(
       `${this._baseUrl}/events/${eventId}`,
@@ -574,8 +574,8 @@ class Events {
     }
 
     return this._request
-      .post(`${this._baseUrl}/types`, toSnakeCase(eventType))
-      .then((response) => toCamelCase(response));
+      .post(`${this._baseUrl}/types`, ObjectUtils.toSnakeCase(eventType))
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 }
 

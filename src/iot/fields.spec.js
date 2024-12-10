@@ -1,5 +1,5 @@
 import Fields from './fields';
-import * as objectUtils from '../utils/objects';
+import objectUtils from '../utils/objects';
 
 describe('Iot/Fields', function() {
   let baseRequest;

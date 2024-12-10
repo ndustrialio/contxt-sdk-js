@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { toCamelCase, toSnakeCase } from '../utils/objects';
-import { formatPaginatedDataFromServer } from '../utils/pagination';
+import ObjectUtils from '../utils/objects';
+import PaginationUtils from '../utils/pagination';
 
 /**
  * @typedef {Object} File
@@ -142,11 +142,11 @@ class Files {
     }
 
     return this._request
-      .post(`${this._baseUrl}/files`, toSnakeCase(fileInfo))
+      .post(`${this._baseUrl}/files`, ObjectUtils.toSnakeCase(fileInfo))
       .then(({ upload_info, ...createdFile }) => {
         return {
-          ...toCamelCase(createdFile),
-          uploadInfo: toCamelCase(upload_info, {
+          ...ObjectUtils.toCamelCase(createdFile),
+          uploadInfo: ObjectUtils.toCamelCase(upload_info, {
             deep: false,
             excludeTransform: ['headers']
           })
@@ -321,7 +321,7 @@ class Files {
 
     return this._request
       .get(`${this._baseUrl}/files/${fileId}/download`)
-      .then((file) => toCamelCase(file));
+      .then((file) => ObjectUtils.toCamelCase(file));
   }
 
   /**
@@ -351,7 +351,7 @@ class Files {
 
     return this._request
       .get(`${this._baseUrl}/files/${fileId}`)
-      .then((file) => toCamelCase(file));
+      .then((file) => ObjectUtils.toCamelCase(file));
   }
 
   /**
@@ -381,9 +381,9 @@ class Files {
   getAll(filesFilters) {
     return this._request
       .get(`${this._baseUrl}/files`, {
-        params: toSnakeCase(filesFilters)
+        params: ObjectUtils.toSnakeCase(filesFilters)
       })
-      .then((assetsData) => formatPaginatedDataFromServer(assetsData));
+      .then((assetsData) => PaginationUtils.formatPaginatedDataFromServer(assetsData));
   }
 
   /**

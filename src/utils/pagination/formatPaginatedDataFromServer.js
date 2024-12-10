@@ -1,4 +1,4 @@
-import { toCamelCase } from '../objects';
+import ObjectUtils from '../objects';
 
 /**
  * Default formatter. Returns the original value in case no formatter is
@@ -11,7 +11,7 @@ import { toCamelCase } from '../objects';
  * @private
  */
 function defaultFormatter(value) {
-  return toCamelCase(value);
+  return ObjectUtils.toCamelCase(value);
 }
 
 /**
@@ -38,7 +38,7 @@ function formatPaginatedDataFromServer(
   const records = input.records || [];
 
   return {
-    _metadata: toCamelCase(_metadata),
+    _metadata: ObjectUtils.toCamelCase(_metadata),
     records: records.map(recordFormatter)
   };
 }

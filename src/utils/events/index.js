@@ -1,3 +1,4 @@
 import formatEventUpdateToServer from './formatEventUpdateToServer';
 
-export { formatEventUpdateToServer };
+const EventUtils = { formatEventUpdateToServer };
+export default EventUtils;

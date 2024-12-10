@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
-import { toCamelCase, toSnakeCase } from '../utils/objects';
-import { formatPaginatedDataFromServer } from '../utils/pagination';
+import ObjectUtils from '../utils/objects';
+import PaginationUtils from '../utils/pagination';
 
 /**
  * @typedef {Object} FieldGrouping
@@ -88,7 +88,7 @@ class FieldGroupings {
       .post(
         `${this._baseUrl}/groupings/${fieldGroupingId}/fields/${outputFieldId}`
       )
-      .then((grouping) => toCamelCase(grouping));
+      .then((grouping) => ObjectUtils.toCamelCase(grouping));
   }
 
   /**
@@ -137,14 +137,14 @@ class FieldGroupings {
       }
     }
 
-    const formattedGrouping = toSnakeCase(fieldGrouping);
+    const formattedGrouping = ObjectUtils.toSnakeCase(fieldGrouping);
 
     return this._request
       .post(
         `${this._baseUrl}/facilities/${facilityId}/groupings`,
         formattedGrouping
       )
-      .then((fieldGrouping) => toCamelCase(fieldGrouping));
+      .then((fieldGrouping) => ObjectUtils.toCamelCase(fieldGrouping));
   }
 
   /**
@@ -202,7 +202,7 @@ class FieldGroupings {
 
     return this._request
       .get(`${this._baseUrl}/groupings/${groupingId}`)
-      .then((fieldGrouping) => toCamelCase(fieldGrouping));
+      .then((fieldGrouping) => ObjectUtils.toCamelCase(fieldGrouping));
   }
 
   /**
@@ -234,9 +234,9 @@ class FieldGroupings {
 
     return this._request
       .get(`${this._baseUrl}/facilities/${facilityId}/groupings`, {
-        params: toSnakeCase(paginationOptions)
+        params: ObjectUtils.toSnakeCase(paginationOptions)
       })
-      .then((fieldGrouping) => formatPaginatedDataFromServer(fieldGrouping));
+      .then((fieldGrouping) => PaginationUtils.formatPaginatedDataFromServer(fieldGrouping));
   }
 
   /**
@@ -327,13 +327,13 @@ class FieldGroupings {
       );
     }
 
-    const formattedUpdate = toSnakeCase(update, {
+    const formattedUpdate = ObjectUtils.toSnakeCase(update, {
       excludeKeys: ['facilityId', 'id', 'ownerId', 'slug']
     });
 
     return this._request
       .put(`${this._baseUrl}/groupings/${groupingId}`, formattedUpdate)
-      .then((fieldGrouping) => toCamelCase(fieldGrouping));
+      .then((fieldGrouping) => ObjectUtils.toCamelCase(fieldGrouping));
   }
 }
 

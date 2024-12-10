@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { toCamelCase, toSnakeCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtUser
@@ -137,7 +137,7 @@ class Users {
     // Uses axios directly instead of this.request to bypass authorization interceptors
     return axios.post(
       `${this._getBaseUrl('access')}/users/${userId}/activate`,
-      toSnakeCase(user)
+      ObjectUtils.toSnakeCase(user)
     );
   }
 
@@ -179,7 +179,7 @@ class Users {
       .post(
         `${this._getBaseUrl()}/users/${userId}/applications/${applicationId}`
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -216,7 +216,7 @@ class Users {
 
     return this._request
       .post(`${this._getBaseUrl()}/users/${userId}/roles/${roleId}`)
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -271,7 +271,7 @@ class Users {
           access_type: accessType
         }
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -301,7 +301,7 @@ class Users {
 
     return this._request
       .get(`${this._getBaseUrl('access')}/users/${userId}`)
-      .then((user) => toCamelCase(user));
+      .then((user) => ObjectUtils.toCamelCase(user));
   }
 
   /**
@@ -327,7 +327,7 @@ class Users {
     if (this._organizationId) {
       return this._request
         .get(`${this._getBaseUrl()}/users`)
-        .then((orgUsers) => toCamelCase(orgUsers));
+        .then((orgUsers) => ObjectUtils.toCamelCase(orgUsers));
     }
 
     if (!organizationId) {
@@ -342,7 +342,7 @@ class Users {
       .get(
         `${this._getBaseUrl('legacy')}/organizations/${organizationId}/users`
       )
-      .then((orgUsers) => toCamelCase(orgUsers));
+      .then((orgUsers) => ObjectUtils.toCamelCase(orgUsers));
   }
 
   /**
@@ -395,8 +395,8 @@ class Users {
       }
 
       return this._request
-        .post(`${this._getBaseUrl()}/users`, toSnakeCase(user))
-        .then((response) => toCamelCase(response));
+        .post(`${this._getBaseUrl()}/users`, ObjectUtils.toSnakeCase(user))
+        .then((response) => ObjectUtils.toCamelCase(response));
     }
 
     if (!organizationId) {
@@ -420,9 +420,9 @@ class Users {
     return this._request
       .post(
         `${this._getBaseUrl('legacy')}/organizations/${organizationId}/users`,
-        toSnakeCase(user)
+        ObjectUtils.toSnakeCase(user)
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**

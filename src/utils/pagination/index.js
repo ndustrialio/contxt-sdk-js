@@ -1,3 +1,4 @@
 import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
 
-export { formatPaginatedDataFromServer };
+const PaginationUtils = { formatPaginatedDataFromServer };
+export default PaginationUtils
