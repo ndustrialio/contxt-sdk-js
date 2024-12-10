@@ -1,4 +1,4 @@
-import { toSnakeCase, toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtRole
@@ -98,7 +98,7 @@ class Roles {
 
     return this._request
       .post(`${this._baseUrl}/roles/${roleId}/applications/${applicationId}`)
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -155,7 +155,7 @@ class Roles {
           access_type: accessType
         }
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -194,8 +194,8 @@ class Roles {
       }
 
       return this._request
-        .post(`${this._baseUrl}/roles`, toSnakeCase(role))
-        .then((response) => toCamelCase(response));
+        .post(`${this._baseUrl}/roles`, ObjectUtils.toSnakeCase(role))
+        .then((response) => ObjectUtils.toCamelCase(response));
     }
 
     if (!organizationId) {
@@ -221,9 +221,9 @@ class Roles {
     return this._request
       .post(
         `${this._baseUrl}/organizations/${organizationId}/roles`,
-        toSnakeCase(role)
+        ObjectUtils.toSnakeCase(role)
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -294,7 +294,7 @@ class Roles {
     if (this._organizationId) {
       return this._request
         .get(`${this._baseUrl}/roles`)
-        .then((roles) => toCamelCase(roles));
+        .then((roles) => ObjectUtils.toCamelCase(roles));
     }
 
     if (!organizationId) {
@@ -307,7 +307,7 @@ class Roles {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/roles`)
-      .then((roles) => toCamelCase(roles));
+      .then((roles) => ObjectUtils.toCamelCase(roles));
   }
 
   /**

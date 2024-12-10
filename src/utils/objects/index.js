@@ -1,4 +1,5 @@
 import toCamelCase from './toCamelCase';
 import toSnakeCase from './toSnakeCase';
 
-export { toCamelCase, toSnakeCase };
+const ObjectUtils = { toCamelCase, toSnakeCase };
+export default ObjectUtils

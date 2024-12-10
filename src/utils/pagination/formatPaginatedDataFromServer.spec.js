@@ -1,5 +1,5 @@
 import times from 'lodash.times';
-import * as objectUtils from '../objects';
+import objectUtils from '../objects';
 import formatPaginatedDataFromServer from './formatPaginatedDataFromServer';
 
 describe('utils/pagination/formatPaginatedDataFromServer', function() {

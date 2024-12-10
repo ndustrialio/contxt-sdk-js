@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} FeedType
@@ -48,7 +48,7 @@ class FeedTypes {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/feeds/types`)
-      .then((feedTypes) => toCamelCase(feedTypes));
+      .then((feedTypes) => ObjectUtils.toCamelCase(feedTypes));
   }
 }
 

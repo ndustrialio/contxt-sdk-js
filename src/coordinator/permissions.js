@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtUserPermissions
@@ -52,7 +52,7 @@ class Permissions {
     if (this._organizationId) {
       return this._request
         .get(`${this._baseUrl}/users/permissions`)
-        .then((userPermissions) => toCamelCase(userPermissions));
+        .then((userPermissions) => ObjectUtils.toCamelCase(userPermissions));
     }
 
     if (!organizationId) {
@@ -65,7 +65,7 @@ class Permissions {
 
     return this._request
       .get(`${this._baseUrl}/organizations/${organizationId}/users/permissions`)
-      .then((userPermissions) => toCamelCase(userPermissions));
+      .then((userPermissions) => ObjectUtils.toCamelCase(userPermissions));
   }
 
   /**
@@ -100,7 +100,7 @@ class Permissions {
 
       return this._request
         .get(`${this._baseUrl}/users/${userId}/permissions`)
-        .then((userPermissions) => toCamelCase(userPermissions));
+        .then((userPermissions) => ObjectUtils.toCamelCase(userPermissions));
     }
 
     if (!organizationId) {
@@ -125,7 +125,7 @@ class Permissions {
           this._baseUrl
         }/organizations/${organizationId}/users/${userId}/permissions`
       )
-      .then((userPermissions) => toCamelCase(userPermissions));
+      .then((userPermissions) => ObjectUtils.toCamelCase(userPermissions));
   }
 
   /**
@@ -158,7 +158,7 @@ class Permissions {
       );
     }
 
-    // NOTE: This response is not run through the `toCamelCase` method because
+    // NOTE: This response is not run through the `ObjectUtils.toCamelCase` method because
     // it could errantly remove underscores from service IDs.
     return this._request.get(`${this._baseUrl}/users/${userId}/permissions`);
   }

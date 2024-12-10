@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} OutputField
@@ -70,7 +70,7 @@ class Fields {
 
     return this._request
       .get(`${this._baseUrl}/fields/${outputFieldId}`)
-      .then((outputField) => toCamelCase(outputField));
+      .then((outputField) => ObjectUtils.toCamelCase(outputField));
   }
 }
 

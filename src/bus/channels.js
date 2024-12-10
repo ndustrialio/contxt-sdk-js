@@ -1,5 +1,5 @@
 import isPlainObject from 'lodash.isplainobject';
-import { toCamelCase, toSnakeCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} MessageBusChannel
@@ -71,9 +71,9 @@ class Channels {
         `${this._baseUrl}/organizations/${channel.organizationId}/services/${
           channel.serviceId
         }/channels`,
-        toSnakeCase(channel)
+        ObjectUtils.toSnakeCase(channel)
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -166,7 +166,7 @@ class Channels {
           this._baseUrl
         }/organizations/${organizationId}/services/${serviceId}/channels/${channelId}`
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -228,7 +228,7 @@ class Channels {
       `${
         this._baseUrl
       }/organizations/${organizationId}/services/${serviceId}/channels/${channelId}`,
-      toSnakeCase(update)
+      ObjectUtils.toSnakeCase(update)
     );
   }
 
@@ -283,7 +283,7 @@ class Channels {
         }/organizations/${organizationId}/services/${serviceId}/channels/${channelId}/peek/${subscription}`,
         { params: { messagePos } }
       )
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 }
 

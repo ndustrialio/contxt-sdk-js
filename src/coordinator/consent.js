@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtApplicationConsent
@@ -102,7 +102,7 @@ class Consent {
         .post(`${this._baseUrl}/consents/${consentId}/accept`, {
           access_token: accessToken
         })
-        .then((userApproval) => toCamelCase(userApproval));
+        .then((userApproval) => ObjectUtils.toCamelCase(userApproval));
     });
   }
 
@@ -136,7 +136,7 @@ class Consent {
         .post(`${this._baseUrl}/applications/consent`, {
           access_token: accessToken
         })
-        .then((applicationConsent) => toCamelCase(applicationConsent));
+        .then((applicationConsent) => ObjectUtils.toCamelCase(applicationConsent));
     });
   }
 }

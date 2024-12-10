@@ -1,4 +1,4 @@
-import { toCamelCase, toSnakeCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} Feed
@@ -111,9 +111,9 @@ class Feeds {
 
     return this._request
       .get(`${this._baseUrl}/feeds`, {
-        params: toSnakeCase({ facilityId })
+        params: ObjectUtils.toSnakeCase({ facilityId })
       })
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 
   /**
@@ -143,7 +143,7 @@ class Feeds {
 
     return this._request
       .get(`${this._baseUrl}/facilities/${facilityId}/status`)
-      .then((response) => toCamelCase(response));
+      .then((response) => ObjectUtils.toCamelCase(response));
   }
 }
 

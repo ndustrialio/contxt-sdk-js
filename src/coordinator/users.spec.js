@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { expect } from 'chai';
 import omit from 'lodash.omit';
-import * as objectUtils from '../utils/objects';
+import objectUtils from '../utils/objects';
 import Users from './users';
 
 describe('Coordinator/Users', function() {

@@ -185,7 +185,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         isAuthenticated.restore();
         sinon.stub(Auth0WebAuth.prototype, 'isAuthenticated').returns(false);
 
-        const auth0WebAuth = new Auth0WebAuth(sdk); // eslint-disable-line no-unused-vars
+        const auth0WebAuth = new Auth0WebAuth(sdk);  
       });
 
       it('does not schedule  a future token renewal', function() {

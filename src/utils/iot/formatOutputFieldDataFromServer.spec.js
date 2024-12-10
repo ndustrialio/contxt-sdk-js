@@ -1,8 +1,8 @@
 import omit from 'lodash.omit';
 import URL from 'url-parse';
-import * as objectUtils from '../objects';
+import objectUtils from '../objects';
 import formatOutputFieldDataFromServer from './formatOutputFieldDataFromServer';
-import * as iotUtils from './index';
+import iotUtils from './index';
 
 describe('utils/iot/formatOutputFieldDataFromServer', function() {
   let expectedOutputFieldDataRecords;

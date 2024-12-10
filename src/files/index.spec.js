@@ -1,8 +1,8 @@
 import axios from 'axios';
 import omit from 'lodash.omit';
 import pick from 'lodash.pick';
-import * as objectUtils from '../utils/objects';
-import * as paginationUtils from '../utils/pagination';
+import objectUtils from '../utils/objects';
+import paginationUtils from '../utils/pagination';
 import Files from './index';
 
 describe('Files', function() {

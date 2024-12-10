@@ -1,4 +1,4 @@
-import * as iotUtils from '../utils/iot';
+import iotUtils from '../utils/iot';
 import Outputs from './outputs';
 
 describe('Iot/Outputs', function() {

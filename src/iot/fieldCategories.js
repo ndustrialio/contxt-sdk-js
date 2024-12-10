@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
-import { toCamelCase, toSnakeCase } from '../utils/objects';
-import { formatPaginatedDataFromServer } from '../utils/pagination';
+import ObjectUtils from '../utils/objects';
+import PaginationUtils from '../utils/pagination';
 
 /**
  * @typedef {Object} FieldCategory
@@ -77,11 +77,11 @@ class FieldCategories {
       }
     }
 
-    const formattedCategory = toSnakeCase(fieldCategory);
+    const formattedCategory = ObjectUtils.toSnakeCase(fieldCategory);
 
     return this._request
       .post(`${this._baseUrl}/categories`, formattedCategory)
-      .then((fieldCategory) => toCamelCase(fieldCategory));
+      .then((fieldCategory) => ObjectUtils.toCamelCase(fieldCategory));
   }
 
   /**
@@ -139,7 +139,7 @@ class FieldCategories {
 
     return this._request
       .get(`${this._baseUrl}/categories/${categoryId}`)
-      .then((fieldCategory) => toCamelCase(fieldCategory));
+      .then((fieldCategory) => ObjectUtils.toCamelCase(fieldCategory));
   }
 
   /**
@@ -163,10 +163,10 @@ class FieldCategories {
   getAll(paginationOptions) {
     return this._request
       .get(`${this._baseUrl}/categories`, {
-        params: toSnakeCase(paginationOptions)
+        params: ObjectUtils.toSnakeCase(paginationOptions)
       })
       .then((fieldCategories) =>
-        formatPaginatedDataFromServer(fieldCategories)
+        PaginationUtils.formatPaginatedDataFromServer(fieldCategories)
       );
   }
 
@@ -199,7 +199,7 @@ class FieldCategories {
 
     return this._request
       .get(`${this._baseUrl}/facilities/${facilityId}/categories`)
-      .then((fieldCategories) => toCamelCase(fieldCategories));
+      .then((fieldCategories) => ObjectUtils.toCamelCase(fieldCategories));
   }
 
   /**
@@ -251,13 +251,13 @@ class FieldCategories {
       );
     }
 
-    const formattedUpdate = toSnakeCase(update, {
+    const formattedUpdate = ObjectUtils.toSnakeCase(update, {
       excludeKeys: ['id', 'organizationId']
     });
 
     return this._request
       .put(`${this._baseUrl}/categories/${categoryId}`, formattedUpdate)
-      .then((fieldCategory) => toCamelCase(fieldCategory));
+      .then((fieldCategory) => ObjectUtils.toCamelCase(fieldCategory));
   }
 }
 

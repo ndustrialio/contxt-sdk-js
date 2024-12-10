@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} ContxtApplication
@@ -107,7 +107,7 @@ class Applications {
 
     return this._request
       .post(`${this._baseUrl}/applications/${applicationId}/favorites`)
-      .then((favoriteApplication) => toCamelCase(favoriteApplication));
+      .then((favoriteApplication) => ObjectUtils.toCamelCase(favoriteApplication));
   }
 
   /**
@@ -129,7 +129,7 @@ class Applications {
   getAll() {
     return this._request
       .get(`${this._baseUrl}/applications`)
-      .then((apps) => apps.map((app) => toCamelCase(app)));
+      .then((apps) => apps.map((app) => ObjectUtils.toCamelCase(app)));
   }
 
   /**
@@ -153,7 +153,7 @@ class Applications {
   getFavorites() {
     return this._request
       .get(`${this._baseUrl}/applications/favorites`)
-      .then((favoriteApps) => toCamelCase(favoriteApps));
+      .then((favoriteApps) => ObjectUtils.toCamelCase(favoriteApps));
   }
 
   /**
@@ -181,7 +181,7 @@ class Applications {
     if (this._organizationId) {
       return this._request
         .get(`${this._baseUrl}/applications/featured`)
-        .then((featuredApplications) => toCamelCase(featuredApplications));
+        .then((featuredApplications) => ObjectUtils.toCamelCase(featuredApplications));
     }
 
     if (!organizationId) {
@@ -196,7 +196,7 @@ class Applications {
       .get(
         `${this._baseUrl}/organizations/${organizationId}/applications/featured`
       )
-      .then((featuredApplications) => toCamelCase(featuredApplications));
+      .then((featuredApplications) => ObjectUtils.toCamelCase(featuredApplications));
   }
 
   /**
@@ -221,7 +221,7 @@ class Applications {
   getGroupings(applicationId) {
     return this._request
       .get(`${this._baseUrl}/applications/${applicationId}/groupings`)
-      .then((groupings) => toCamelCase(groupings));
+      .then((groupings) => ObjectUtils.toCamelCase(groupings));
   }
 
   /**

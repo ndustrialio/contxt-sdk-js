@@ -1,4 +1,4 @@
-import { toCamelCase } from '../utils/objects';
+import ObjectUtils from '../utils/objects';
 
 /**
  * @typedef {Object} EdgeNode
@@ -60,7 +60,7 @@ class EdgeNodes {
 
       return this._request
         .get(`${this._baseUrl}/edgenodes/${edgeNodeClientId}`)
-        .then((edgeNode) => toCamelCase(edgeNode));
+        .then((edgeNode) => ObjectUtils.toCamelCase(edgeNode));
     }
 
     if (!organizationId) {
@@ -81,7 +81,7 @@ class EdgeNodes {
           this._baseUrl
         }/organizations/${organizationId}/edgenodes/${edgeNodeClientId}`
       )
-      .then((edgeNode) => toCamelCase(edgeNode));
+      .then((edgeNode) => ObjectUtils.toCamelCase(edgeNode));
   }
 }
 
