@@ -84,7 +84,7 @@
     "globals": "^15.13.0",
     "gulp": "^5.0.0",
     "gulp-babel": "^8.0.0",
-    "gulp-sourcemaps": "^2.6.5",
+    "gulp-sourcemaps": "^3.0.0",
     "husky": "^9.1.7",
     "jsdoc-to-markdown": "^7.1.1",
     "lodash.omit": "^4.5.0",
