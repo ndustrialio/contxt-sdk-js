@@ -15,3 +15,9 @@ updates:
       interval: 'weekly'
     labels:
       - automerge
+registries:
+  github-octocat:
+    type: git
+    url: https://github.com
+    username: nio-bot
+    password: ${{secrets.NIO_BOT_TOKEN}}
