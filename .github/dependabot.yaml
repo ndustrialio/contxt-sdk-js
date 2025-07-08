@@ -6,3 +6,12 @@ updates:
       interval: weekly
     labels:
       - automerge
+    versioning-strategy: 'lockfile-only'
+  - package-ecosystem: 'github-actions'
+    registries:
+      - github-octocat
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - automerge
