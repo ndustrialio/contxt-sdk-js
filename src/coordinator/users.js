@@ -324,7 +324,7 @@ class Users {
    *   .catch((err) => console.log(err));
    */
   getByOrganizationId(organizationId) {
-    if (this._organizationId) {
+    if (!organizationId && this._organizationId) {
       return this._request
         .get(`${this._getBaseUrl()}/users`)
         .then((orgUsers) => ObjectUtils.toCamelCase(orgUsers));
