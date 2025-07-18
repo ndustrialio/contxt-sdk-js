@@ -1,8 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -21,48 +19,3 @@ jobs:
         run: npm run lint
       - name: Run tests
         run: npm run test
-
-  release:
-    needs: tests
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.NIO_BOT_TOKEN }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - name: Install dependencies
-        run: npm install
-      - name: Bump version
-        uses: TriPSs/conventional-changelog-action@v3
-        id: version
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          git-user-name: 'GitHub Actions'
-          git-user-email: 'action@github.com'
-          version-file: package.json,package-lock.json
-          preset: conventionalcommits
-          output-file: false
-      - name: Set new commit hash
-        run: echo "SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
-      - name: Create release
-        uses: actions/create-release@v1
-        if: steps.version.outputs.skipped == 'false'
-        env:
-          GITHUB_TOKEN: ${{ secrets.NIO_BOT_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          release_name: ${{ steps.version.outputs.tag }}
-          body: ${{ steps.version.outputs.clean_changelog }}
-          commitish: ${{ env.SHA }}
-      - name: Publish to NPM
-        if: steps.version.outputs.skipped == 'false'
-        env:
-          NPM_TOKEN: ${{ secrets.NIO_NPM_TOKEN }}
-        run: |
-          npm config set //registry.npmjs.org/:_authToken '${NPM_TOKEN}'
-          npm publish
