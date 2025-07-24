@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "auth0-js": "^9.14.2",
-    "axios": "^1.6.8",
+    "axios": "^1.10.0",
     "change-case": "^4.1.2",
     "core-js": "^3.39.0",
     "lodash.has": "^4.5.2",
