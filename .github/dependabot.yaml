@@ -6,3 +6,18 @@ updates:
       interval: weekly
     labels:
       - automerge
+    versioning-strategy: 'lockfile-only'
+  - package-ecosystem: 'github-actions'
+    registries:
+      - github-octocat
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - automerge
+registries:
+  github-octocat:
+    type: git
+    url: https://github.com
+    username: nio-bot
+    password: ${{secrets.NIO_BOT_TOKEN}}
