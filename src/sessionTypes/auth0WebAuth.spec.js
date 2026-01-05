@@ -9,8 +9,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
   let originalWindow;
   let scheduleSessionRefresh;
   let sdk;
-  let webAuth;
-  let webAuthSession;
+  let webAuthInstance;
+  let WebAuthConstructorStub;
 
   beforeEach(function() {
     sdk = {
@@ -24,17 +24,30 @@ describe('sessionTypes/Auth0WebAuth', function() {
           authorizationPath: faker.hacker.noun(),
           clientId: faker.internet.password(),
           tokenExpiresAtBufferMs: faker.datatype.number()
-        }
-      }
+        },
+      },
     };
-    webAuthSession = {
+
+    webAuthInstance = {
       authorize: sinon.stub(),
-      logout: sinon.stub()
+      logout: sinon.stub(),
+      checkSession: sinon.stub(),
+      parseHash: sinon.stub(),
+      client: {
+        userInfo: sinon.stub(),
+      },
     };
+
     originalWindow = global.window;
     global.window = {
       location: faker.internet.url()
     };
+
+    WebAuthConstructorStub = sinon
+      .stub(auth0, 'WebAuth')
+      .callsFake(function() {
+        return webAuthInstance;
+      });
 
     getStoredSession = sinon
       .stub(Auth0WebAuth.prototype, '_getStoredSession')
@@ -46,7 +59,6 @@ describe('sessionTypes/Auth0WebAuth', function() {
       Auth0WebAuth.prototype,
       '_scheduleSessionRefresh'
     );
-    webAuth = sinon.stub(auth0, 'WebAuth').returns(webAuthSession);
   });
 
   afterEach(function() {
@@ -105,8 +117,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
-        expect(webAuth).to.be.calledWithNew;
-        expect(webAuth).to.be.calledWith({
+        expect(WebAuthConstructorStub).to.be.calledWithNew;
+        expect(WebAuthConstructorStub).to.be.calledWith({
           audience: sdk.config.audiences.contxtAuth.clientId,
           clientID: sdk.config.auth.clientId,
           domain: sdk.config.auth.domain,
@@ -119,7 +131,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('appends an auth0 WebAuth instance to the class instance', function() {
-        expect(auth0WebAuth._auth0).to.equal(webAuthSession);
+        expect(auth0WebAuth._auth0).to.equal(webAuthInstance);
       });
 
       it('checks if the user is currently authenticated', function() {
@@ -159,15 +171,15 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
-        const [{ redirectUri }] = webAuth.firstCall.args;
+        const [{ redirectUri }] = WebAuthConstructorStub.firstCall.args;
         expect(redirectUri).to.match(
           new RegExp(`${expectedAuthorizationPath}$`)
         );
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
-        expect(webAuth).to.be.calledWithNew;
-        expect(webAuth).to.be.calledWith({
+        expect(WebAuthConstructorStub).to.be.calledWithNew;
+        expect(WebAuthConstructorStub).to.be.calledWith({
           audience: sdk.config.audiences.contxtAuth.clientId,
           clientID: sdk.config.auth.clientId,
           domain: 'random.auth0.com',
@@ -185,7 +197,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         isAuthenticated.restore();
         sinon.stub(Auth0WebAuth.prototype, 'isAuthenticated').returns(false);
 
-        const auth0WebAuth = new Auth0WebAuth(sdk);  
+        new Auth0WebAuth(sdk);
       });
 
       it('does not schedule  a future token renewal', function() {
@@ -422,8 +434,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
             {
               headers: {
                 Authorization: `Bearer ${expectedAccessToken}`
-              }
-            }
+              },
+            },
           );
         });
 
@@ -432,7 +444,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
             expectedApiToken
           );
         });
-      }
+      },
     );
 
     context(
@@ -540,7 +552,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           'updated_at'
         ]);
 
-        webAuthSession.client = {
+        webAuthInstance.client = {
           userInfo: sinon.stub().callsFake((accessToken, cb) => {
             cb(null, profile);
           })
@@ -554,7 +566,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it("gets the user's profile", function() {
         return promise.then(() => {
-          expect(webAuthSession.client.userInfo).to.be.calledWith(
+          expect(webAuthInstance.client.userInfo).to.be.calledWith(
             expectedAccessToken
           );
         });
@@ -573,7 +585,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
-        webAuthSession.client = {
+        webAuthInstance.client = {
           userInfo: sinon.stub().callsFake((accessToken, cb) => {
             cb(expectedError);
           })
@@ -761,12 +773,12 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
     it('begins to authorize an auth0 WebAuth session', function() {
       auth0WebAuth.logIn();
-      expect(webAuthSession.authorize).to.be.calledOnce;
+      expect(webAuthInstance.authorize).to.be.calledOnce;
     });
 
     it('can force login by passing prompt=login', function() {
       auth0WebAuth.logIn({ forceLogin: true });
-      expect(webAuthSession.authorize).to.be.calledWith({ prompt: 'login' });
+      expect(webAuthInstance.authorize).to.be.calledWith({ prompt: 'login' });
     });
   });
 
@@ -826,7 +838,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     });
 
     it('logs the user out from Auth0 and redirects to the project root', function() {
-      expect(webAuthSession.logout).to.be.calledWith(expectedOptions);
+      expect(webAuthInstance.logout).to.be.calledWith(expectedOptions);
     });
   });
 
@@ -840,10 +852,10 @@ describe('sessionTypes/Auth0WebAuth', function() {
         expectedOptions = faker.helpers.createTransaction();
         expectedSessionInfo = {
           accessToken: faker.internet.password(),
-          expiresAt: faker.date.future().getTime()
+          expiresAt: faker.date.future().getTime(),
         };
 
-        webAuthSession.checkSession = sinon.stub().callsFake((options, cb) => {
+        webAuthInstance.checkSession = sinon.stub().callsFake((options, cb) => {
           cb(null, expectedSessionInfo);
         });
 
@@ -852,7 +864,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('checks for an up to date session', function() {
-        expect(webAuthSession.checkSession).to.be.calledWith(expectedOptions);
+        expect(webAuthInstance.checkSession).to.be.calledWith(expectedOptions);
       });
 
       it('resolves with the up to date session info', function() {
@@ -869,7 +881,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
 
-        webAuthSession.checkSession = sinon.stub().callsFake((options, cb) => {
+        webAuthInstance.checkSession = sinon.stub().callsFake((options, cb) => {
           cb(expectedError);
         });
 
@@ -887,9 +899,8 @@ describe('sessionTypes/Auth0WebAuth', function() {
     it('it returns the original AuthResult', function() {
       const expectedAuthResult = fixture.build('Auth0WebAuthSessionInfo');
 
-      const result = Auth0WebAuth.prototype._defaultOnAuthenticate(
-        expectedAuthResult
-      );
+      const result =
+        Auth0WebAuth.prototype._defaultOnAuthenticate(expectedAuthResult);
       expect(result).to.equal(expectedAuthResult);
     });
   });
@@ -937,7 +948,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it('removes the previously stored pathname from local storage', function() {
         expect(global.localStorage.removeItem).to.be.calledWith(
-          'redirect_pathname'
+          'redirect_pathname',
         );
       });
 
@@ -1085,7 +1096,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
             consent_required: 'Consent required',
             interaction_required: 'Interaction required',
             login_required: 'Login required'
-          }[errorType]
+          }[errorType],
         };
         const expectedError = new Error('Unauthorized');
         expectedError.response = {
@@ -1200,7 +1211,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedHash = faker.helpers.createTransaction();
-        webAuthSession.parseHash = sinon
+        webAuthInstance.parseHash = sinon
           .stub()
           .callsFake((cb) => cb(null, expectedHash));
 
@@ -1209,7 +1220,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('parses the hash using auth0', function() {
-        expect(webAuthSession.parseHash).to.be.calledOnce;
+        expect(webAuthInstance.parseHash).to.be.calledOnce;
       });
 
       it('fulfills a promise with the hash information', function() {
@@ -1223,7 +1234,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       beforeEach(function() {
         expectedError = new Error(faker.hacker.phrase());
-        webAuthSession.parseHash = sinon
+        webAuthInstance.parseHash = sinon
           .stub()
           .callsFake((cb) => cb(expectedError));
 
@@ -1232,7 +1243,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it('returns with a rejected promise', function() {
         return expect(auth0WebAuth._parseHash()).to.be.rejectedWith(
-          expectedError
+          expectedError,
         );
       });
     });
@@ -1241,7 +1252,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let auth0WebAuth;
 
       beforeEach(function() {
-        webAuthSession.parseHash = sinon
+        webAuthInstance.parseHash = sinon
           .stub()
           .callsFake((cb) => cb(null, null));
 
