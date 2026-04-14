@@ -28,12 +28,11 @@ class Nionic {
       '7b9457e8-99cd-46da-9477-4c2806884a8f': 'jci',
       '3b1c4ddf-6068-4875-83f3-6960630c5b37': 'gargill',
       '94b653fd-8ea2-4fea-be38-0f08ca734820': 'emergent',
-      'c18cf4fb-13ec-4e19-9475-cc1be484ba27': 'waterbridge'
     };
   }
 
   static queryDefaults = {
-    additionalFields: []
+    additionalFields: [],
   };
 
   _getTenantId(orgOrTenantId) {
@@ -77,7 +76,7 @@ class Nionic {
             }
           }
         }
-    `
+    `,
     }).then((data) => data.facilities.nodes);
   }
 
@@ -101,7 +100,7 @@ class Nionic {
           }
         }
     `,
-      variables: { facilityId: parseInt(facilityId) }
+      variables: { facilityId: parseInt(facilityId) },
     }).then((resp) => resp.facility);
   }
 
@@ -117,14 +116,14 @@ class Nionic {
           }
         }
       `,
-      variables: { facilityId: parseInt(facilityId) }
+      variables: { facilityId: parseInt(facilityId) },
     }).then((resp) => resp.facility.metricLabels);
   }
 
   getFacilityMetrics(
     orgOrTenantId,
     { facilityId, metricLabel, mutableOnly = false },
-    options = Nionic.queryDefaults
+    options = Nionic.queryDefaults,
   ) {
     const { additionalFields } = options;
     return this._query(orgOrTenantId, {
@@ -145,7 +144,7 @@ class Nionic {
           }
         }
       `,
-      variables: { facilityId: parseInt(facilityId), metricLabel }
+      variables: { facilityId: parseInt(facilityId), metricLabel },
     }).then((resp) => resp.facility.metricData.nodes);
   }
 }
