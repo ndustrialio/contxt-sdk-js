@@ -21,7 +21,6 @@ class Nionic {
       '2fe29680-fc3d-4888-9e9b-44be1e59c22c': 'sfnt',
       'b2c6705d-1727-467f-a450-207f110c9966': 'trenton',
       'c5517437-8497-400a-8c6d-a9de88669c70': 'blackline',
-      '65be9a9d-5cc1-4318-8762-da74e454ea51': 'vcv',
       'bc071c66-d030-44c7-9c2a-cfe3161cdf3e': 'lsc-communications',
       '5a4bbead-7208-499e-a853-9cb174a71c63': 'uscold',
       '513b06ea-0169-4436-b3b2-77318bd77e94': 'wlgore',
