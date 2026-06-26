@@ -1,12 +1,12 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory.define('facilityInfo').attrs({
-  'General Manager': () => faker.name.findName(),
-  latitude: () => faker.address.latitude(),
-  longitude: () => faker.address.longitude(),
+  'General Manager': () => faker.person.fullName(),
+  latitude: () => faker.location.latitude(),
+  longitude: () => faker.location.longitude(),
   rail_access: () => `${faker.datatype.boolean()}`,
-  square_feet: () => `${faker.datatype.number()}`
+  square_feet: () => `${faker.number.int()}`
 });

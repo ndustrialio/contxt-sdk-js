@@ -1,20 +1,20 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('applicationGrouping')
   .attrs({
-    applicationId: () => faker.datatype.number(),
-    id: () => faker.datatype.uuid(),
-    index: () => faker.datatype.number(),
-    label: () => faker.random.words()
+    applicationId: () => faker.number.int(),
+    id: () => faker.string.uuid(),
+    index: () => faker.number.int(),
+    label: () => faker.lorem.words()
   })
   .attr('applicationModules', ['id'], (id) => {
     return factory.buildList(
       'applicationModule',
-      faker.datatype.number({ min: 1, max: 10 }),
+      faker.number.int({ min: 1, max: 10 }),
       { applicationGroupingId: id }
     );
   })

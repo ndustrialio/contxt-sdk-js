@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('event')
@@ -10,12 +10,12 @@ factory
     allowOthersToTrigger: () => faker.datatype.boolean(),
     createdAt: () => faker.date.past().toISOString(),
     deletedAt: () => faker.date.recent().toISOString(),
-    facilityId: () => faker.datatype.number(),
-    id: () => faker.datatype.uuid(),
+    facilityId: () => faker.number.int(),
+    id: () => faker.string.uuid(),
     isPublic: () => faker.datatype.boolean(),
-    name: () => faker.company.companyName(),
+    name: () => faker.company.name(),
     organizationId: () => factory.build('organization').id,
-    topicArn: () => faker.datatype.uuid(),
+    topicArn: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .attr('eventType', ['fromServer'], (fromServer) => {

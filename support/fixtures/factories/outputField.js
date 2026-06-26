@@ -1,16 +1,16 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('outputField')
   .option('fromServer', false)
   .sequence('id')
   .attrs({
-    _sourceDescriptor: () => faker.datatype.number(),
+    _sourceDescriptor: () => faker.number.int(),
     _sourceType: () =>
-      faker.random.arrayElement([
+      faker.helpers.arrayElement([
         'compressor',
         'condenser_fan',
         'condenser_pump',
@@ -25,16 +25,16 @@ factory
         'transfer_pump'
       ]),
     canAggregate: () => faker.datatype.boolean(),
-    divisor: () => faker.datatype.number(),
-    fieldName: () => faker.random.arrayElement(['power', 'temperature']),
+    divisor: () => faker.number.int(),
+    fieldName: () => faker.helpers.arrayElement(['power', 'temperature']),
     isDefault: () => faker.datatype.boolean(),
     isHidden: () => faker.datatype.boolean(),
     isTotalizer: () => faker.datatype.boolean(),
     isWindowed: () => faker.datatype.boolean(),
-    outputId: () => faker.datatype.number(),
-    scalar: () => faker.datatype.number(),
-    status: () => faker.random.arrayElement(['Active', 'Out-of-Date']),
-    valueType: () => faker.random.arrayElement(['boolean', 'numeric', 'string'])
+    outputId: () => faker.number.int(),
+    scalar: () => faker.number.int(),
+    status: () => faker.helpers.arrayElement(['Active', 'Out-of-Date']),
+    valueType: () => faker.helpers.arrayElement(['boolean', 'numeric', 'string'])
   })
   .attr('_sourceMeasurement', ['fieldName'], (fieldName) => {
     const fieldNames = {
@@ -42,7 +42,7 @@ factory
       temperature: ['temperature']
     };
 
-    return faker.random.arrayElement(fieldNames[fieldName]);
+    return faker.helpers.arrayElement(fieldNames[fieldName]);
   })
   .attr('feedKey', ['_sourceDescriptor'], (descriptor) => `egauge${descriptor}`)
   .attr(
@@ -64,7 +64,7 @@ factory
       usage: ['Average Usage', 'Cumulative Usage']
     };
 
-    return faker.random.arrayElement(labels[measurement]);
+    return faker.helpers.arrayElement(labels[measurement]);
   })
   .attr('units', ['_sourceMeasurement'], (measurement) => {
     const units = {
@@ -73,7 +73,7 @@ factory
       usage: ['kW', 'kWh']
     };
 
-    return faker.random.arrayElement(units[measurement]);
+    return faker.helpers.arrayElement(units[measurement]);
   })
   .after((outputField, options) => {
     delete outputField._sourceDescriptor;

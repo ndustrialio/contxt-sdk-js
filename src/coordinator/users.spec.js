@@ -183,7 +183,7 @@ describe('Coordinator/Users', function () {
         userActivationPayload = {
           email: user.email,
           password: faker.internet.password(),
-          userToken: faker.datatype.uuid(),
+          userToken: faker.string.uuid(),
         };
 
         userActivationPayloadToServer = {
@@ -253,12 +253,12 @@ describe('Coordinator/Users', function () {
           const payload = {
             email: faker.internet.email(),
             password: faker.internet.password(),
-            userToken: faker.datatype.uuid(),
+            userToken: faker.string.uuid(),
           };
 
           const users = new Users(baseSdk, baseRequest, expectedBaseUrl);
           const promise = users.activate(
-            faker.datatype.uuid(),
+            faker.string.uuid(),
             omit(payload, [field]),
           );
 
@@ -588,7 +588,7 @@ describe('Coordinator/Users', function () {
         const promise = users.addProjectEnvironment(
           user.id,
           projectEnvironment.id,
-          faker.random.word(),
+          faker.lorem.word(),
         );
 
         return expect(promise).to.be.rejectedWith(
@@ -609,7 +609,7 @@ describe('Coordinator/Users', function () {
       let toCamelCase;
 
       beforeEach(function () {
-        expectedUserId = faker.datatype.uuid();
+        expectedUserId = faker.string.uuid();
         userFromServerAfterFormat = fixture.build('contxtUser', {
           id: expectedUserId,
         });
@@ -681,11 +681,11 @@ describe('Coordinator/Users', function () {
         let toCamelCase;
 
         beforeEach(function () {
-          expectedOrganizationId = faker.datatype.uuid();
+          expectedOrganizationId = faker.string.uuid();
 
           expectedOrganizationUsers = fixture.buildList(
             'contxtUser',
-            faker.datatype.number({ min: 1, max: 10 }),
+            faker.number.int({ min: 1, max: 10 }),
           );
 
           organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
@@ -756,11 +756,11 @@ describe('Coordinator/Users', function () {
       let users;
 
       beforeEach(function () {
-        expectedOrganizationId = faker.datatype.uuid();
+        expectedOrganizationId = faker.string.uuid();
 
         expectedOrganizationUsers = fixture.buildList(
           'contxtUser',
-          faker.datatype.number({ min: 1, max: 10 }),
+          faker.number.int({ min: 1, max: 10 }),
         );
 
         organizationUsersFromServer = expectedOrganizationUsers.map((user) =>
@@ -930,8 +930,8 @@ describe('Coordinator/Users', function () {
           it(`it throws an error when ${field} is missing`, function () {
             const newUserPayload = {
               email: faker.internet.email(),
-              firstName: faker.name.firstName(),
-              lastName: faker.name.lastName(),
+              firstName: faker.person.firstName(),
+              lastName: faker.person.lastName(),
               redirectUrl: faker.internet.url(),
             };
 
@@ -941,7 +941,7 @@ describe('Coordinator/Users', function () {
               expectedLegacyBaseUrl,
             );
             const promise = users.invite(
-              faker.datatype.uuid(),
+              faker.string.uuid(),
               omit(newUserPayload, [field]),
             );
 
@@ -1062,8 +1062,8 @@ describe('Coordinator/Users', function () {
             const organization = fixture.build('organization');
             const newUserPayload = {
               email: faker.internet.email(),
-              firstName: faker.name.firstName(),
-              lastName: faker.name.lastName(),
+              firstName: faker.person.firstName(),
+              lastName: faker.person.lastName(),
               redirectUrl: faker.internet.url(),
             };
 
@@ -1076,7 +1076,7 @@ describe('Coordinator/Users', function () {
               organization.id,
             );
             const promise = users.invite(
-              faker.datatype.uuid(),
+              faker.string.uuid(),
               omit(newUserPayload, [field]),
             );
 
@@ -1130,7 +1130,7 @@ describe('Coordinator/Users', function () {
       context('when the organization ID is not provided', function () {
         it('throws an error', function () {
           const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
-          const promise = users.remove(null, faker.datatype.uuid());
+          const promise = users.remove(null, faker.string.uuid());
 
           return expect(promise).to.be.rejectedWith(
             'An organization ID is required for removing a user from an organization',
@@ -1141,7 +1141,7 @@ describe('Coordinator/Users', function () {
       context('when the user ID is not provided', function () {
         it('throws an error', function () {
           const users = new Users(baseSdk, baseRequest, expectedLegacyBaseUrl);
-          const promise = users.remove(faker.datatype.uuid(), null);
+          const promise = users.remove(faker.string.uuid(), null);
 
           return expect(promise).to.be.rejectedWith(
             'A user ID is required for removing a user from an organization',

@@ -1,13 +1,13 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('channel')
   .option('fromServer', false)
   .attrs({
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     name: () => faker.hacker.noun(),
     organizationId: () => factory.build('organization').id,
     serviceId: () => faker.internet.password()

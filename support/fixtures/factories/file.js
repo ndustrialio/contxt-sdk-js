@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('file')
@@ -11,9 +11,9 @@ factory
     contentType: () => faker.system.mimeType(),
     description: () => faker.hacker.phrase(),
     filename: () => faker.system.commonFileName(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     organizationId: () => factory.build('organization').id,
-    status: () => faker.random.arrayElement(['ACTIVE', 'UPLOADING']),
+    status: () => faker.helpers.arrayElement(['ACTIVE', 'UPLOADING']),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .attr('uploadInfo', ['fromServer'], (fromServer, uploadInfo) => {

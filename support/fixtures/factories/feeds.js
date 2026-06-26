@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('feed')
@@ -9,19 +9,19 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    criticalThreshold: () => faker.datatype.number({ min: 0, max: 5 }),
-    degradedThreshold: () => faker.datatype.number({ min: 0, max: 5 }),
-    downAfter: () => faker.datatype.number({ min: 1000, max: 9999 }),
+    criticalThreshold: () => faker.number.int({ min: 0, max: 5 }),
+    degradedThreshold: () => faker.number.int({ min: 0, max: 5 }),
+    downAfter: () => faker.number.int({ min: 1000, max: 9999 }),
     facilityId: () => factory.build('facility').id,
     feedTypeId: () => factory.build('feedType').id,
     isPaused: () => faker.datatype.boolean(),
     key: () => faker.hacker.noun(),
     ownerId: () => factory.build('owner').id,
     routingKeys: () => `[${faker.hacker.noun()}]`,
-    status: () => faker.random.arrayElement(['Active', 'Degraded', 'Critical']),
-    statusEventId: () => faker.datatype.uuid(),
+    status: () => faker.helpers.arrayElement(['Active', 'Degraded', 'Critical']),
+    statusEventId: () => faker.string.uuid(),
     timezone: () => {
-      return faker.random.arrayElement([
+      return faker.helpers.arrayElement([
         'America/New_York',
         'America/Chicago',
         'America/Denver',

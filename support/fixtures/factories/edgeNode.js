@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('edgeNode')
@@ -10,7 +10,7 @@ factory
     clientId: () => faker.internet.password(),
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.lorem.sentence(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     name: () => faker.commerce.productMaterial(),
     organizationId: () => factory.build('organization').id,
     updatedAt: () => faker.date.recent().toISOString()

@@ -1,15 +1,15 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtOrganization')
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.datatype.uuid(),
-    name: () => faker.name.title(),
+    id: () => faker.string.uuid(),
+    name: () => faker.person.jobTitle(),
     updatedAt: () => faker.date.recent().toISOString(),
   })
   .after((org, options) => {

@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const times = require('lodash.times');
 
 factory
@@ -9,16 +9,16 @@ factory
   .option('fromServer', false)
   .sequence('id')
   .attrs({
-    address1: () => faker.address.streetAddress(),
-    address2: () => faker.address.secondaryAddress(),
-    assetId: () => faker.datatype.uuid(),
-    city: () => faker.address.city(),
+    address1: () => faker.location.streetAddress(),
+    address2: () => faker.location.secondaryAddress(),
+    assetId: () => faker.string.uuid(),
+    city: () => faker.location.city(),
     createdAt: () => faker.date.past().toISOString(),
-    geometryId: () => faker.datatype.uuid(),
+    geometryId: () => faker.string.uuid(),
     info: () => factory.build('facilityInfo'),
-    state: () => faker.address.state(),
+    state: () => faker.location.state(),
     timezone: () => {
-      return faker.random.arrayElement([
+      return faker.helpers.arrayElement([
         'America/New_York',
         'America/Chicago',
         'America/Denver',
@@ -26,11 +26,11 @@ factory
       ]);
     },
     weatherLocationId: () => null,
-    zip: () => faker.address.zipCode()
+    zip: () => faker.location.zipCode()
   })
   .attr('facilityGroupings', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.datatype.number({
+      faker.number.int({
         min: 0,
         max: 5
       }),
@@ -47,7 +47,7 @@ factory
       }
     );
   })
-  .attr('name', ['city'], (city) => `${faker.address.cityPrefix()} ${city}`)
+  .attr('name', ['city'], (city) => `${faker.location.cardinalDirection()} ${city}`)
   .attr('organization', ['fromServer'], (fromServer) => {
     return factory.build('organization', null, {
       fromServer
@@ -56,7 +56,7 @@ factory
   .attr('organizationId', ['organization'], (organization) => organization.id)
   .attr('tags', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.datatype.number({
+      faker.number.int({
         min: 0,
         max: 5
       }),

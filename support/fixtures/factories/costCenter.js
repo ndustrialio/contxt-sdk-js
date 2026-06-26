@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const times = require('lodash.times');
 
 factory
@@ -10,14 +10,14 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     name: () => faker.commerce.productName(),
     organizationId: () => factory.build('organization').id,
     updatedAt: () => faker.date.recent().toISOString()
   })
   .attr('facilities', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.datatype.number({
+      faker.number.int({
         min: 0,
         max: 5
       }),

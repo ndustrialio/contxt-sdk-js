@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('userMobileNumber')
@@ -9,9 +9,9 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    name: () => faker.name.firstName(),
+    name: () => faker.person.firstName(),
     isActive: () => faker.datatype.boolean(),
-    phoneNumber: () => faker.phone.phoneNumber(),
+    phoneNumber: () => faker.phone.number(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('eventUser').id
   })

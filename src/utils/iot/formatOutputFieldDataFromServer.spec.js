@@ -16,19 +16,19 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
 
   beforeEach(function() {
     expectedOutputFieldMetadata = {
-      count: faker.datatype.number(),
+      count: faker.number.int(),
       hasMore: faker.datatype.boolean(),
       nextRecordTime: Math.floor(faker.date.recent().getTime() / 1000)
     };
     expectedOutputFieldParsedMetadata = {
-      limit: faker.datatype.number(),
+      limit: faker.number.int(),
       timeEnd: expectedOutputFieldMetadata.nextRecordTime,
       timeStart: Math.floor(faker.date.past().getTime() / 1000),
-      window: faker.random.arrayElement([0, 60, 900, 3600])
+      window: faker.helpers.arrayElement([0, 60, 900, 3600])
     };
     expectedOutputFieldDataRecords = fixture.buildList(
       'outputFieldData',
-      faker.datatype.number({ min: 1, max: 10 })
+      faker.number.int({ min: 1, max: 10 })
     );
     initialOutputFieldMetadata = omit(
       {
@@ -37,7 +37,7 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
         next_page_url:
           faker.internet.url() +
           '/outputs/' +
-          faker.datatype.number() +
+          faker.number.int() +
           '/fields/' +
           faker.hacker.noun() +
           '/data' +

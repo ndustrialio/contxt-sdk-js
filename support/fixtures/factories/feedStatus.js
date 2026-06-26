@@ -1,16 +1,16 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('feedStatus')
   .option('fromServer', false)
   .sequence('id')
   .attrs({
-    feedId: () => faker.datatype.number(),
+    feedId: () => faker.number.int(),
     feedStatusId: () => null,
-    status: () => faker.random.arrayElement(['Active', 'Degraded', 'Critical']),
+    status: () => faker.helpers.arrayElement(['Active', 'Degraded', 'Critical']),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((feedType, options) => {

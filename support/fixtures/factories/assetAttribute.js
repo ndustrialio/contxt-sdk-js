@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('assetAttribute')
@@ -10,9 +10,9 @@ factory
     assetTypeId: () => factory.build('assetType').id,
     createdAt: () => faker.date.past().toISOString(),
     dataType: () =>
-      faker.random.arrayElement(['boolean', 'date', 'number', 'string']),
+      faker.helpers.arrayElement(['boolean', 'date', 'number', 'string']),
     description: () => faker.lorem.sentence(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     isRequired: () => faker.datatype.boolean(),
     label: () => faker.hacker.phrase(),
     organizationId: () => factory.build('organization').id,

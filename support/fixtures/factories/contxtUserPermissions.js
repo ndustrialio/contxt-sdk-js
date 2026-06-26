@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const times = require('lodash.times');
 
 factory
@@ -12,29 +12,29 @@ factory
       factory
         .buildList(
           'contxtApplication',
-          faker.datatype.number({ min: 0, max: 15 })
+          faker.number.int({ min: 0, max: 15 })
         )
         .map(({ id }) => ({ id })),
     applicationsImplicit: () =>
       factory
         .buildList(
           'contxtApplication',
-          faker.datatype.number({ min: 0, max: 15 })
+          faker.number.int({ min: 0, max: 15 })
         )
         .map(({ id }) => ({ id })),
     roles: () =>
       factory
-        .buildList('contxtRole', faker.datatype.number({ min: 0, max: 15 }))
+        .buildList('contxtRole', faker.number.int({ min: 0, max: 15 }))
         .map(({ id }) => ({ id })),
     projectsExplicit: () =>
-      times(faker.datatype.number({ min: 0, max: 15 }), () => {
+      times(faker.number.int({ min: 0, max: 15 }), () => {
         return {
           id: factory.build('contxtProject').id,
           accessType: factory.build('contxtUserProjectEnvironment').accessType
         };
       }),
     projectsImplicit: () =>
-      times(faker.datatype.number({ min: 0, max: 15 }), () => {
+      times(faker.number.int({ min: 0, max: 15 }), () => {
         return {
           id: factory.build('contxtProject').id,
           accessType: factory.build('contxtUserProjectEnvironment').accessType

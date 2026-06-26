@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtProject')
@@ -9,13 +9,13 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     createdBy: () => factory.build('contxtUser').id,
-    description: () => faker.random.words(),
-    id: () => faker.datatype.number(),
-    name: () => faker.name.title(),
+    description: () => faker.lorem.words(),
+    id: () => faker.number.int(),
+    name: () => faker.person.jobTitle(),
     organizationId: () => factory.build('contxtOrganization').id,
-    ownerRoleId: () => faker.datatype.uuid(),
-    slug: () => faker.random.word(),
-    type: () => faker.random.word(),
+    ownerRoleId: () => faker.string.uuid(),
+    slug: () => faker.lorem.word(),
+    type: () => faker.lorem.word(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((project, options) => {

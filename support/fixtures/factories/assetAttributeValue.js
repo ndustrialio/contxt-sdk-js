@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('assetAttributeValue')
@@ -12,11 +12,11 @@ factory
     assetLabel: () => faker.lorem.word(),
     createdAt: () => faker.date.past().toISOString(),
     effectiveDate: () => faker.date.recent().toISOString(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     label: () => faker.lorem.word(),
     notes: () => faker.lorem.sentence(),
     updatedAt: () => faker.date.recent().toISOString(),
-    value: () => `${faker.datatype.number()}`
+    value: () => `${faker.number.int()}`
   })
   .after((assetAttributeValue, options) => {
     // If building an asset attribute value object that comes from the server,

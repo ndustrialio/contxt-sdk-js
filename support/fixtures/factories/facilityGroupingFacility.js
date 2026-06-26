@@ -1,16 +1,16 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('facilityGroupingFacility')
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    facilityGroupingId: () => faker.datatype.uuid(),
-    facilityId: () => faker.datatype.number(),
-    id: () => faker.datatype.uuid(),
+    facilityGroupingId: () => faker.string.uuid(),
+    facilityId: () => faker.number.int(),
+    id: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((facilityGroupingFacility, options) => {

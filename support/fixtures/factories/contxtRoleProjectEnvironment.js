@@ -1,15 +1,15 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtRoleProjectEnvironment')
   .option('fromServer', false)
   .attrs({
-    accessType: () => faker.random.arrayElement(['reader', 'admin']),
+    accessType: () => faker.helpers.arrayElement(['reader', 'admin']),
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     environmentId: () => factory.build('contxtProjectEnvironment').id,
     updatedAt: () => faker.date.recent().toISOString(),
     roleId: () => factory.build('contxtRole').id

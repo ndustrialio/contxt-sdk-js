@@ -1,12 +1,12 @@
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const factory = require('rosie').Factory;
 
 factory
   .define('assetMetricValueCompact')
   .option('fromServer', false)
   .attrs({
-    id: faker.datatype.uuid(),
-    value: faker.datatype.number(),
+    id: faker.string.uuid(),
+    value: faker.number.int(),
     isEstimated: false,
     effectiveStartDate: faker.date.past().toISOString(),
     effectiveEndDate: faker.date.recent().toISOString()

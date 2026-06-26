@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('facilityTag')
@@ -9,7 +9,7 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    facilityId: () => faker.datatype.number(),
+    facilityId: () => faker.number.int(),
     name: () => faker.commerce.productMaterial(),
     updatedAt: () => faker.date.recent().toISOString()
   })

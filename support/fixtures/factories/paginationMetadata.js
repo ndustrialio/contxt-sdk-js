@@ -1,9 +1,9 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory.define('paginationMetadata').attrs({
-  offset: () => faker.datatype.number({ max: 100 }),
-  totalRecords: () => faker.datatype.number({ min: 1, max: 1000 })
+  offset: () => faker.number.int({ max: 100 }),
+  totalRecords: () => faker.number.int({ min: 1, max: 1000 })
 });

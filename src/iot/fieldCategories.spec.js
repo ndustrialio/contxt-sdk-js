@@ -256,7 +256,7 @@ describe('Iot/FieldCategories', function() {
         _metadata: fixture.build('paginationMetadata'),
         records: fixture.buildList(
           'fieldCategory',
-          faker.datatype.number({ min: 5, max: 10 })
+          faker.number.int({ min: 5, max: 10 })
         )
       };
       fieldCategoriesFromServerBeforeFormat = {
@@ -266,8 +266,8 @@ describe('Iot/FieldCategories', function() {
         )
       };
       paginationOptionsBeforeFormat = {
-        limit: faker.datatype.number({ min: 10, max: 1000 }),
-        offset: faker.datatype.number({ max: 1000 })
+        limit: faker.number.int({ min: 10, max: 1000 }),
+        offset: faker.number.int({ max: 1000 })
       };
       paginationOptionsAfterFormat = {
         ...paginationOptionsBeforeFormat

@@ -296,7 +296,7 @@ describe('Coordinator/Roles', function() {
         const promise = roles.addProjectEnvironment(
           role.id,
           projectEnvironment.id,
-          faker.random.word()
+          faker.lorem.word()
         );
 
         return expect(promise).to.be.rejectedWith(
@@ -691,7 +691,7 @@ describe('Coordinator/Roles', function() {
           expectedOrganizationId = fixture.build('contxtOrganization').id;
           expectedRoles = fixture.buildList(
             'contxtRole',
-            faker.datatype.number({
+            faker.number.int({
               min: 1,
               max: 10
             }),
@@ -761,7 +761,7 @@ describe('Coordinator/Roles', function() {
         expectedOrganizationId = fixture.build('organization').id;
         expectedRoles = fixture.buildList(
           'contxtRole',
-          faker.datatype.number({
+          faker.number.int({
             min: 1,
             max: 10
           }),

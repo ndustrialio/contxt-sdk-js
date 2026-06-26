@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('feedType')
@@ -9,7 +9,7 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    downAfter: () => faker.datatype.number({ min: 1000, max: 9999 }),
+    downAfter: () => faker.number.int({ min: 1000, max: 9999 }),
     troubleshootingUrl: () => faker.internet.url(),
     type: () => faker.hacker.noun(),
     updatedAt: () => faker.date.recent().toISOString()

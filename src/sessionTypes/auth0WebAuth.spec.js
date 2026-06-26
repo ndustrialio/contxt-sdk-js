@@ -23,7 +23,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
           domain: faker.internet.domainName(),
           authorizationPath: faker.hacker.noun(),
           clientId: faker.internet.password(),
-          tokenExpiresAtBufferMs: faker.datatype.number()
+          tokenExpiresAtBufferMs: faker.number.int({ max: 10000 })
         }
       }
     };
@@ -105,14 +105,15 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
+        const currentUrl = new URL(global.window.location);
+        currentUrl.pathname = sdk.config.auth.authorizationPath;
+
         expect(webAuth).to.be.calledWithNew;
         expect(webAuth).to.be.calledWith({
           audience: sdk.config.audiences.contxtAuth.clientId,
           clientID: sdk.config.auth.clientId,
           domain: sdk.config.auth.domain,
-          redirectUri: `${global.window.location}/${
-            sdk.config.auth.authorizationPath
-          }`,
+          redirectUri: `${currentUrl.origin}${currentUrl.pathname}`,
           responseType: 'token',
           scope: 'email profile openid'
         });
@@ -166,14 +167,15 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('creates an auth0 WebAuth instance with the default settings', function() {
+        const currentUrl = new URL(global.window.location);
+        currentUrl.pathname = sdk.config.auth.authorizationPath;
+
         expect(webAuth).to.be.calledWithNew;
         expect(webAuth).to.be.calledWith({
           audience: sdk.config.audiences.contxtAuth.clientId,
           clientID: sdk.config.auth.clientId,
           domain: 'random.auth0.com',
-          redirectUri: `${global.window.location}/${
-            sdk.config.auth.authorizationPath
-          }`,
+          redirectUri: `${currentUrl.origin}${currentUrl.pathname}`,
           responseType: 'token',
           scope: 'email profile openid'
         });
@@ -212,7 +214,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         let promise;
 
         beforeEach(function() {
-          audienceNameToDelete = faker.random.arrayElement(
+          audienceNameToDelete = faker.helpers.arrayElement(
             Object.keys(sdk.config.audiences)
           );
 
@@ -251,7 +253,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         beforeEach(function() {
           let resolver;
 
-          audienceNameToDelete = faker.random.arrayElement(
+          audienceNameToDelete = faker.helpers.arrayElement(
             Object.keys(sdk.config.audiences)
           );
 
@@ -384,7 +386,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     let expectedAudienceName;
 
     beforeEach(function() {
-      expectedAudienceName = faker.random.arrayElement(
+      expectedAudienceName = faker.helpers.arrayElement(
         Object.keys(sdk.config.audiences)
       );
     });
@@ -780,7 +782,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
     beforeEach(function() {
       expectedOptions = {
         federated: true,
-        returnTo: global.window.location,
+        returnTo: new URL(global.window.location).origin,
         [faker.hacker.adjective()]: faker.hacker.phrase()
       };
       expectedTokenRenewalTimeout = faker.helpers.createTransaction();
@@ -1074,7 +1076,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       });
 
       it('throws a 401 and logs the user out if Auth0 requires the session to be re-authenticated', function() {
-        const errorType = faker.random.arrayElement([
+        const errorType = faker.helpers.arrayElement([
           'consent_required',
           'interaction_required',
           'login_required'
@@ -1141,7 +1143,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
 
       it('throws the original error if it includes a status code', function() {
         const expectedError = new Error();
-        expectedError.response = { status: faker.datatype.number() };
+        expectedError.response = { status: faker.number.int() };
 
         sinon
           .stub(Auth0WebAuth.prototype, '_checkSession')
@@ -1267,7 +1269,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       const currentDate = new Date();
       clock = sinon.useFakeTimers(currentDate);
 
-      const expiresAt = faker.date.future().getTime();
+      const expiresAt = currentDate.getTime() + 100000;
       expectedDelay =
         expiresAt -
         sdk.config.auth.tokenExpiresAtBufferMs -

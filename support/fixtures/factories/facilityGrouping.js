@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('facilityGrouping')
@@ -9,12 +9,12 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     isPrivate: () => faker.datatype.boolean(),
     name: () => faker.commerce.productName(),
     organizationId: () => factory.build('organization').id,
     ownerId: () => faker.internet.userName(),
-    parentGroupingId: () => faker.datatype.uuid(),
+    parentGroupingId: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((facilityGrouping, options) => {

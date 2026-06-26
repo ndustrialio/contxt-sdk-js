@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('IOSDevice')
@@ -9,9 +9,9 @@ factory
   .sequence('id')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    deviceToken: () => faker.datatype.uuid(),
+    deviceToken: () => faker.string.uuid(),
     isActive: () => faker.datatype.boolean(),
-    snsEndpointArn: () => faker.datatype.uuid(),
+    snsEndpointArn: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('eventUser').id
   })

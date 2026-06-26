@@ -1,22 +1,22 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtApplication')
   .option('fromServer', false)
   .attrs({
-    clientId: () => faker.datatype.uuid(),
-    clientSecret: () => faker.datatype.uuid(),
+    clientId: () => faker.string.uuid(),
+    clientSecret: () => faker.string.uuid(),
     createdAt: () => faker.date.past().toISOString(),
-    currentVersionId: () => faker.datatype.uuid(),
-    description: () => faker.random.words(),
-    iconUrl: () => faker.image.imageUrl(),
-    id: () => faker.datatype.number(),
-    name: () => faker.name.title(),
-    serviceId: () => faker.datatype.number(),
-    type: () => faker.random.word(),
+    currentVersionId: () => faker.string.uuid(),
+    description: () => faker.lorem.words(),
+    iconUrl: () => faker.image.url(),
+    id: () => faker.number.int(),
+    name: () => faker.person.jobTitle(),
+    serviceId: () => faker.number.int(),
+    type: () => faker.lorem.word(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((org, options) => {

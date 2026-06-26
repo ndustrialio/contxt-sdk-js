@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('fieldCategory')
@@ -9,10 +9,10 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     name: () => faker.commerce.productName(),
-    organizationId: () => faker.datatype.uuid(),
-    parentCategoryId: () => faker.datatype.uuid(),
+    organizationId: () => faker.string.uuid(),
+    parentCategoryId: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((fieldCategory, options) => {

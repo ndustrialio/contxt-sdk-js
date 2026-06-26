@@ -58,7 +58,7 @@ describe('Iot/Feeds', function() {
         facilityId = fixture.build('facility').id;
         expectedFeeds = fixture.buildList(
           'feed',
-          faker.datatype.number({
+          faker.number.int({
             min: 1,
             max: 10
           })
@@ -133,7 +133,7 @@ describe('Iot/Feeds', function() {
         expectedResult = {
           feeds: fixture.buildList(
             'feed',
-            faker.datatype.number({
+            faker.number.int({
               min: 1,
               max: 10
             })
@@ -143,7 +143,7 @@ describe('Iot/Feeds', function() {
         expectedResult.feeds.forEach((feed) => {
           feed.groupings = fixture.buildList(
             'fieldGroupingStatus',
-            faker.datatype.number({ min: 1, max: 4 })
+            faker.number.int({ min: 1, max: 4 })
           );
         });
 

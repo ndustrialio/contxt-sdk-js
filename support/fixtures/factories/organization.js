@@ -1,14 +1,14 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('organization')
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.datatype.uuid(),
-    name: () => faker.company.companyName(),
+    id: () => faker.string.uuid(),
+    name: () => faker.company.name(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((organization, options) => {

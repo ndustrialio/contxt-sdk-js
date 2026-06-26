@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('userEventSubscription')
@@ -10,8 +10,8 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     endpointArn: () => null,
     eventId: () => factory.build('event').id,
-    id: () => faker.datatype.uuid(),
-    mediumType: () => faker.random.arrayElement(['email', 'sms']),
+    id: () => faker.string.uuid(),
+    mediumType: () => faker.helpers.arrayElement(['email', 'sms']),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('contxtUser').id
   })
