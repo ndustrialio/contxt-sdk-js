@@ -12,9 +12,9 @@ factory
     fieldCategoryId: () => faker.string.uuid(),
     facilityId: () => faker.number.int(),
     id: () => faker.string.uuid(),
-    isPublic: () => faker.datatype.boolean(),
+    isPublic: () => fakerBoolean(),
     label: () => faker.commerce.productName(),
-    ownerId: () => faker.internet.userName(),
+    ownerId: () => faker.internet.username(),
     slug: () => faker.lorem.slug(),
     updatedAt: () => faker.date.recent().toISOString()
   })

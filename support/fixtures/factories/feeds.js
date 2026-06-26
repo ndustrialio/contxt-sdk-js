@@ -14,7 +14,7 @@ factory
     downAfter: () => faker.number.int({ min: 1000, max: 9999 }),
     facilityId: () => factory.build('facility').id,
     feedTypeId: () => factory.build('feedType').id,
-    isPaused: () => faker.datatype.boolean(),
+    isPaused: () => fakerBoolean(),
     key: () => faker.hacker.noun(),
     ownerId: () => factory.build('owner').id,
     routingKeys: () => `[${faker.hacker.noun()}]`,

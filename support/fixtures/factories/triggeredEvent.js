@@ -12,7 +12,7 @@ factory
     deletedAt: () => faker.date.recent().toISOString(),
     eventId: () => faker.string.uuid(),
     id: () => faker.string.uuid(),
-    isPublic: () => faker.datatype.boolean(),
+    isPublic: () => fakerBoolean(),
     ownerId: () => faker.string.uuid(),
     triggerEndAt: () => faker.date.recent().toISOString(),
     triggerStartAt: () => faker.date.recent().toISOString(),

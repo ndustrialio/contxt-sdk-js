@@ -10,7 +10,7 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     deviceToken: () => faker.string.uuid(),
-    isActive: () => faker.datatype.boolean(),
+    isActive: () => fakerBoolean(),
     snsEndpointArn: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('eventUser').id

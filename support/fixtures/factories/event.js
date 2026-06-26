@@ -7,12 +7,12 @@ factory
   .define('event')
   .option('fromServer', false)
   .attrs({
-    allowOthersToTrigger: () => faker.datatype.boolean(),
+    allowOthersToTrigger: () => fakerBoolean(),
     createdAt: () => faker.date.past().toISOString(),
     deletedAt: () => faker.date.recent().toISOString(),
     facilityId: () => faker.number.int(),
     id: () => faker.string.uuid(),
-    isPublic: () => faker.datatype.boolean(),
+    isPublic: () => fakerBoolean(),
     name: () => faker.company.name(),
     organizationId: () => factory.build('organization').id,
     topicArn: () => faker.string.uuid(),

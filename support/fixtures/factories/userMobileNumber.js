@@ -10,7 +10,7 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     name: () => faker.person.firstName(),
-    isActive: () => faker.datatype.boolean(),
+    isActive: () => fakerBoolean(),
     phoneNumber: () => faker.phone.number(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('eventUser').id

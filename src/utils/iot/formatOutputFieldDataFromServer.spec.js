@@ -17,7 +17,7 @@ describe('utils/iot/formatOutputFieldDataFromServer', function() {
   beforeEach(function() {
     expectedOutputFieldMetadata = {
       count: faker.number.int(),
-      hasMore: faker.datatype.boolean(),
+      hasMore: fakerBoolean(),
       nextRecordTime: Math.floor(faker.date.recent().getTime() / 1000)
     };
     expectedOutputFieldParsedMetadata = {

@@ -5,9 +5,16 @@ const { faker } = require('@faker-js/faker');
 
 // createTransaction was removed from faker; this polyfill restores it for tests
 faker.helpers.createTransaction = () => ({});
+
+// faker.datatype.boolean() was removed in @faker-js/faker v10;
+// this is a drop-in replacement using faker.number.int()
+function fakerBoolean() {
+  return faker.number.int({ max: 1 }) === 1;
+}
 const sinon = require('sinon');
 const fixtureFactories = require('./fixtures/factories');
 
+global.fakerBoolean = fakerBoolean;
 global.expect = chai.expect;
 global.fixture = fixtureFactories;
 global.faker = faker;

@@ -10,10 +10,10 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
     id: () => faker.string.uuid(),
-    isPrivate: () => faker.datatype.boolean(),
+    isPrivate: () => fakerBoolean(),
     name: () => faker.commerce.productName(),
     organizationId: () => factory.build('organization').id,
-    ownerId: () => faker.internet.userName(),
+    ownerId: () => faker.internet.username(),
     parentGroupingId: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })

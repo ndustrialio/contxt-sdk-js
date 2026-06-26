@@ -11,8 +11,8 @@ factory
     email: () => faker.internet.email(),
     firstName: () => faker.person.firstName(),
     id: () => `auth0|${faker.internet.password()}`,
-    isActivated: () => faker.datatype.boolean(),
-    isSuperuser: () => faker.datatype.boolean(),
+    isActivated: () => fakerBoolean(),
+    isSuperuser: () => fakerBoolean(),
     lastName: () => faker.person.lastName(),
     phoneNumber: () => faker.phone.number(),
     updatedAt: () => faker.date.recent().toISOString()

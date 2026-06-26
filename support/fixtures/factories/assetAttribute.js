@@ -13,7 +13,7 @@ factory
       faker.helpers.arrayElement(['boolean', 'date', 'number', 'string']),
     description: () => faker.lorem.sentence(),
     id: () => faker.string.uuid(),
-    isRequired: () => faker.datatype.boolean(),
+    isRequired: () => fakerBoolean(),
     label: () => faker.hacker.phrase(),
     organizationId: () => factory.build('organization').id,
     units: () => faker.lorem.sentence(),

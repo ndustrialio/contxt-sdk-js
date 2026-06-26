@@ -16,7 +16,7 @@ factory
     notes: () => faker.lorem.sentence(),
     updatedAt: () => faker.date.recent().toISOString(),
     value: () => `${faker.number.int()}`,
-    isEstimated: () => faker.datatype.boolean()
+    isEstimated: () => fakerBoolean()
   })
   .after((assetMetricValue, options) => {
     // If building an asset metric value object that comes from the server,

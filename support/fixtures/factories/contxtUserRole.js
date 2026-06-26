@@ -9,7 +9,7 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     id: () => faker.string.uuid(),
-    mappedFromExternalGroup: () => faker.datatype.boolean(),
+    mappedFromExternalGroup: () => fakerBoolean(),
     roleId: () => factory.build('contxtRole').id,
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('contxtUser').id

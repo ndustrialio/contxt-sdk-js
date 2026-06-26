@@ -985,7 +985,7 @@ describe('Files', function() {
           'status',
           'updated_at'
         ]),
-        reverseOrder: faker.datatype.boolean(),
+        reverseOrder: fakerBoolean(),
         status: faker.helpers.arrayElement(['ACTIVE', 'UPLOADING'])
       };
       filesFiltersAfterFormat = {

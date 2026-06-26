@@ -11,7 +11,7 @@ factory
     email: () => faker.internet.email(),
     firstName: () => faker.person.firstName(),
     id: () => `auth0|${faker.number.int()}`,
-    isMachineUser: () => faker.datatype.boolean(),
+    isMachineUser: () => fakerBoolean(),
     lastName: () => faker.person.lastName(),
     updatedAt: () => faker.date.recent().toISOString()
   })

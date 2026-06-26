@@ -24,13 +24,13 @@ factory
         'outdoor_sump_pump',
         'transfer_pump'
       ]),
-    canAggregate: () => faker.datatype.boolean(),
+    canAggregate: () => fakerBoolean(),
     divisor: () => faker.number.int(),
     fieldName: () => faker.helpers.arrayElement(['power', 'temperature']),
-    isDefault: () => faker.datatype.boolean(),
-    isHidden: () => faker.datatype.boolean(),
-    isTotalizer: () => faker.datatype.boolean(),
-    isWindowed: () => faker.datatype.boolean(),
+    isDefault: () => fakerBoolean(),
+    isHidden: () => fakerBoolean(),
+    isTotalizer: () => fakerBoolean(),
+    isWindowed: () => fakerBoolean(),
     outputId: () => faker.number.int(),
     scalar: () => faker.number.int(),
     status: () => faker.helpers.arrayElement(['Active', 'Out-of-Date']),
@@ -51,7 +51,7 @@ factory
     (descriptor, measurement, type) => {
       const baseFieldDescriptor = `${type}_${descriptor}`;
 
-      return faker.datatype.boolean()
+      return fakerBoolean()
         ? baseFieldDescriptor
         : `${baseFieldDescriptor}.${measurement}`;
     }
