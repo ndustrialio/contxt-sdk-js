@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { nanoid } from 'nanoid';
 import once from 'lodash.once';
 
 /**
@@ -342,7 +342,7 @@ class WebSocketConnection {
    */
   _registerSingleMessageHandler(method, params) {
     return new Promise((resolve, reject) => {
-      const messageId = uuid();
+      const messageId = nanoid();
 
       this._messageHandlers[messageId] = (message) => {
         const error = message.error;
