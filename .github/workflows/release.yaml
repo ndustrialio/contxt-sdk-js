@@ -16,9 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: yarn
       - name: Install dependencies
-        run: npm install
+        run: yarn install --frozen-lockfile
       - name: Bump version
         uses: TriPSs/conventional-changelog-action@v3
         id: version
@@ -26,7 +26,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-user-name: 'GitHub Actions'
           git-user-email: 'action@github.com'
-          version-file: package.json,package-lock.json
+          version-file: package.json,yarn.lock
           preset: conventionalcommits
           output-file: false
       - name: Set new commit hash
@@ -47,4 +47,4 @@ jobs:
           NPM_TOKEN: ${{ secrets.NIO_NPM_TOKEN }}
         run: |
           npm config set //registry.npmjs.org/:_authToken '${NPM_TOKEN}'
-          npm publish
+          yarn publish

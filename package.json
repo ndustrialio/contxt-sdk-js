@@ -17,7 +17,7 @@
   "scripts": {
     "build": "gulp build",
     "lint": "eslint --cache --fix --format=visualstudio .",
-    "prepare": "npm run build",
+    "prepare": "yarn run build",
     "test": "npm run lint && npm run test:js",
     "test:js": "NODE_ENV=test mocha --config 'support/mocharc.yml' 'src/**/*.spec.js'",
     "test:js:dev": "npm run test:js -- --watch",
@@ -63,7 +63,7 @@
     "url-parse": "^1.4.7",
     "ws": "^8.8.0"
   },
-  "overrides": {
+  "resolutions": {
     "serialize-javascript": "^7.0.6",
     "js-yaml": "^4.2.0",
     "diff": "^8.0.3"
