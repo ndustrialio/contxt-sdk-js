@@ -1,4 +1,5 @@
 require:
+  - "support/auth0-cjs-compat.js"
   - "@babel/register"
   - "support/addons.js"
   - "support/globals.js"
