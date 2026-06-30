@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtUser')
@@ -9,12 +9,12 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     email: () => faker.internet.email(),
-    firstName: () => faker.name.firstName(),
+    firstName: () => faker.person.firstName(),
     id: () => `auth0|${faker.internet.password()}`,
-    isActivated: () => faker.datatype.boolean(),
-    isSuperuser: () => faker.datatype.boolean(),
-    lastName: () => faker.name.lastName(),
-    phoneNumber: () => faker.phone.phoneNumber(),
+    isActivated: () => fakerBoolean(),
+    isSuperuser: () => fakerBoolean(),
+    lastName: () => faker.person.lastName(),
+    phoneNumber: () => faker.phone.number(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((user, options) => {

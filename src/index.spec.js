@@ -33,7 +33,7 @@ describe('ContxtSdk', function() {
 
     beforeEach(function() {
       expectedExternalModules = times(
-        faker.datatype.number({ min: 1, max: 5 })
+        faker.number.int({ min: 1, max: 5 })
       ).reduce((memo) => {
         const moduleName = faker.hacker.verb();
         memo[moduleName] = {
@@ -140,7 +140,7 @@ describe('ContxtSdk', function() {
 
         beforeEach(function() {
           existingDynamicModuleNames = times(
-            faker.datatype.number({ min: 1, max: 10 })
+            faker.number.int({ min: 1, max: 10 })
           ).map((index) => `${faker.hacker.adjective()}-${index}`);
           existingStaticModule = sinon.stub();
           expectedAudience = fixture.build('audience');
@@ -225,7 +225,7 @@ describe('ContxtSdk', function() {
               .callsFake((moduleName) => `request module for: ${moduleName}`),
             _dynamicModuleNames: [
               moduleName,
-              times(faker.datatype.number({ min: 1, max: 10 })).map(
+              times(faker.number.int({ min: 1, max: 10 })).map(
                 (index) => `${faker.hacker.adjective()}-${index}`
               )
             ],
@@ -286,7 +286,7 @@ describe('ContxtSdk', function() {
 
       beforeEach(function() {
         existingDynamicModuleNames = times(
-          faker.datatype.number({ min: 1, max: 10 })
+          faker.number.int({ min: 1, max: 10 })
         ).map((index) => `${faker.hacker.adjective()}-${index}`);
         existingStaticModule = sinon.stub();
         expectedAudience = fixture.build('audience');
@@ -373,7 +373,7 @@ describe('ContxtSdk', function() {
         expectedRemovedModule = sinon.stub();
         moduleName = faker.hacker.verb();
         remainingDynamicModules = times(
-          faker.datatype.number({ min: 1, max: 10 })
+          faker.number.int({ min: 1, max: 10 })
         ).reduce((memo, index) => {
           memo[`${faker.hacker.adjective()}-${index}`] = sinon.stub();
 
@@ -452,7 +452,7 @@ describe('ContxtSdk', function() {
         internalModule = sinon.stub();
         internalModuleName = faker.hacker.verb();
         externalModules = times(
-          faker.datatype.number({ min: 1, max: 10 })
+          faker.number.int({ min: 1, max: 10 })
         ).reduce((memo, index) => {
           memo[`${faker.hacker.adjective()}-${index}`] = sinon.stub();
 
@@ -538,7 +538,7 @@ describe('ContxtSdk', function() {
           fn = () =>
             ContxtSdk.prototype.unmountDynamicModule.call(
               instance,
-              faker.random.arrayElement(Object.keys(externalModules))
+              faker.helpers.arrayElement(Object.keys(externalModules))
             );
         });
 
@@ -646,7 +646,7 @@ describe('ContxtSdk', function() {
     let instance;
 
     beforeEach(function() {
-      externalModules = times(faker.datatype.number({ min: 1, max: 5 })).reduce(
+      externalModules = times(faker.number.int({ min: 1, max: 5 })).reduce(
         (memo, index) => {
           const moduleName = `${faker.hacker.verb()}-${index}`;
           memo[moduleName] = { module: sinon.stub() };

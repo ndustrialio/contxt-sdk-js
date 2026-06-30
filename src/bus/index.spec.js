@@ -400,7 +400,7 @@ describe('Bus', function() {
 
         beforeEach(function() {
           webSocketConnection = bus.getWebSocketConnection(
-            faker.datatype.uuid()
+            faker.string.uuid()
           );
         });
 

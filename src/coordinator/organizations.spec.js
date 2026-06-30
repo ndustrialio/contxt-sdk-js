@@ -96,7 +96,7 @@ describe('Coordinator/Organizations', function() {
         let toCamelCase;
 
         beforeEach(function() {
-          expectedOrganizationId = faker.datatype.uuid();
+          expectedOrganizationId = faker.string.uuid();
           organizationFromServerAfterFormat = fixture.build(
             'contxtOrganization',
             {
@@ -172,7 +172,7 @@ describe('Coordinator/Organizations', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedOrganizationId = faker.datatype.uuid();
+        expectedOrganizationId = faker.string.uuid();
         organizationFromServerAfterFormat = fixture.build(
           'contxtOrganization',
           {
@@ -263,7 +263,7 @@ describe('Coordinator/Organizations', function() {
     let toCamelCase;
 
     beforeEach(function() {
-      const numberOfOrganizations = faker.datatype.number({
+      const numberOfOrganizations = faker.number.int({
         min: 1,
         max: 10
       });

@@ -23,7 +23,7 @@ describe('sessionTypes', function() {
           auth: {
             authorizationPath: faker.hacker.noun(),
             clientId: faker.internet.password(),
-            tokenExpiresAtBufferMs: faker.datatype.number()
+            tokenExpiresAtBufferMs: faker.number.int()
           }
         }
       };

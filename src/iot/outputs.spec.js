@@ -61,19 +61,19 @@ describe('Iot/Outputs', function() {
       beforeEach(function() {
         expectedFieldHumanName = fixture.build('outputField').fieldHumanName;
         expectedOptions = {
-          limit: faker.datatype.number(),
+          limit: faker.number.int(),
           timeEnd: Math.floor(faker.date.recent().getTime() / 1000),
           timeStart: Math.floor(faker.date.past().getTime() / 1000),
-          window: faker.random.arrayElement([0, 60, 900, 3600])
+          window: faker.helpers.arrayElement([0, 60, 900, 3600])
         };
         expectedOutputFieldData = {
-          meta: { count: faker.datatype.number() },
+          meta: { count: faker.number.int() },
           records: fixture.buildList(
             'outputFieldData',
-            faker.datatype.number({ min: 1, max: 10 })
+            faker.number.int({ min: 1, max: 10 })
           )
         };
-        expectedOutputId = faker.datatype.number();
+        expectedOutputId = faker.number.int();
         rawOutputFieldData = {
           meta: expectedOutputFieldData.meta,
           records: expectedOutputFieldData.records.map((record) =>
@@ -133,7 +133,7 @@ describe('Iot/Outputs', function() {
 
       it('throws an error when there is no provided output ID', function() {
         const outputs = new Outputs(baseSdk, baseRequest);
-        const promise = outputs.getFieldData(faker.datatype.number(), null);
+        const promise = outputs.getFieldData(faker.number.int(), null);
 
         return expect(promise).to.be.rejectedWith(
           "A fieldHumanName is required for getting a specific field's output data"

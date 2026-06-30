@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('applicationModule')
@@ -9,8 +9,8 @@ factory
     applicationGroupingId: () => factory.build('applicationGrouping').id,
     externalLink: () => faker.internet.url(),
     iconUrl: () => faker.internet.url(),
-    id: () => faker.datatype.uuid(),
-    index: () => faker.datatype.number(),
+    id: () => faker.string.uuid(),
+    index: () => faker.number.int(),
     label: () => faker.commerce.productName(),
     slug: () => `nsight-${faker.internet.domainWord()}`
   })

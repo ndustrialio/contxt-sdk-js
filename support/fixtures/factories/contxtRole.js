@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtRole')
@@ -10,17 +10,17 @@ factory
     applications: () =>
       factory.buildList(
         'contxtApplication',
-        faker.datatype.number({ min: 0, max: 10 })
+        faker.number.int({ min: 0, max: 10 })
       ),
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    id: () => faker.datatype.uuid(),
-    name: () => faker.name.title(),
+    id: () => faker.string.uuid(),
+    name: () => faker.person.jobTitle(),
     organizationId: () => factory.build('contxtOrganization').id,
     projects: () =>
       factory.buildList(
         'contxtProject',
-        faker.datatype.number({ min: 0, max: 10 })
+        faker.number.int({ min: 0, max: 10 })
       ),
     updatedAt: () => faker.date.recent().toISOString()
   })

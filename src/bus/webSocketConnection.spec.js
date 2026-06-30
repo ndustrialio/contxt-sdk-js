@@ -312,13 +312,13 @@ describe('Bus/WebSocketConnection', function() {
     let ws;
 
     beforeEach(function() {
-      expectedError = faker.random.words();
+      expectedError = faker.lorem.words();
       expectedOrganization = fixture.build('organization');
 
       ws = new WebSocketConnection(expectedWebSocket, expectedOrganization.id);
 
       ws._messageHandlers = {
-        [faker.datatype.uuid()]: sinon.stub()
+        [faker.string.uuid()]: sinon.stub()
       };
 
       ws._onError(expectedError);
@@ -340,7 +340,7 @@ describe('Bus/WebSocketConnection', function() {
 
         beforeEach(function() {
           expectedOrganization = fixture.build('organization');
-          expectedUUID = faker.datatype.uuid();
+          expectedUUID = faker.string.uuid();
           expectedMessage = {
             jsonrpc: '2.0',
             id: expectedUUID,
@@ -376,7 +376,7 @@ describe('Bus/WebSocketConnection', function() {
         beforeEach(function() {
           expectedMessage = {
             jsonrpc: '2.0',
-            id: faker.datatype.uuid(),
+            id: faker.string.uuid(),
             result: null
           };
           expectedOrganization = fixture.build('organization');
@@ -407,11 +407,11 @@ describe('Bus/WebSocketConnection', function() {
       beforeEach(function() {
         expectedMessage = {
           jsonrpc: '2.0',
-          id: faker.datatype.uuid(),
+          id: faker.string.uuid(),
           result: null
         };
         expectedOrganization = fixture.build('organization');
-        expectedUUID = faker.datatype.uuid();
+        expectedUUID = faker.string.uuid();
         expectedMessageHandlers = {
           [expectedUUID]: sinon.stub()
         };
@@ -447,13 +447,13 @@ describe('Bus/WebSocketConnection', function() {
         let ws;
 
         beforeEach(function() {
-          channel = faker.random.word();
+          channel = faker.lorem.word();
           expectedOrganization = fixture.build('organization');
           message = {
             example: 1
           };
           send = sinon.spy(expectedWebSocket, 'send');
-          serviceId = faker.datatype.uuid();
+          serviceId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -544,11 +544,11 @@ describe('Bus/WebSocketConnection', function() {
                 clock = sinon.useFakeTimers();
                 expectedMessage = {
                   jsonrpc: '2.0',
-                  id: faker.datatype.uuid(),
+                  id: faker.string.uuid(),
                   result: null
                 };
                 resolvedIndicator = Symbol(faker.hacker.noun());
-                serviceId = faker.datatype.uuid();
+                serviceId = faker.string.uuid();
                 waitTime = 1 * 60 * 1000; // 1 minute
 
                 promise = Promise.race([
@@ -560,7 +560,7 @@ describe('Bus/WebSocketConnection', function() {
 
                 ws._messageHandlers[jsonRpcId]({
                   jsonrpc: '2.0',
-                  id: faker.datatype.uuid(),
+                  id: faker.string.uuid(),
                   result: null
                 });
               });
@@ -601,13 +601,13 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function() {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
         message = {
           example: 1
         };
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
 
@@ -646,13 +646,13 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function(done) {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
         message = {
           example: 1
         };
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -698,7 +698,7 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function() {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
         message = {
           example: 1
@@ -752,7 +752,7 @@ describe('Bus/WebSocketConnection', function() {
           example: 1
         };
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -794,11 +794,11 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function() {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
         message = null;
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -845,11 +845,11 @@ describe('Bus/WebSocketConnection', function() {
         let ws;
 
         beforeEach(function() {
-          channel = faker.random.word();
-          group = faker.random.word();
+          channel = faker.lorem.word();
+          group = faker.lorem.word();
           expectedOrganization = fixture.build('organization');
           send = sinon.spy(expectedWebSocket, 'send');
-          serviceId = faker.datatype.uuid();
+          serviceId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -885,7 +885,7 @@ describe('Bus/WebSocketConnection', function() {
             let subscription;
 
             beforeEach(function() {
-              subscription = faker.datatype.uuid();
+              subscription = faker.string.uuid();
               ws._messageHandlers[jsonRpcId]({
                 jsonrpc: '2.0',
                 id: jsonRpcId,
@@ -949,9 +949,9 @@ describe('Bus/WebSocketConnection', function() {
 
               beforeEach(function() {
                 clock = sinon.useFakeTimers();
-                subscription = faker.datatype.uuid();
+                subscription = faker.string.uuid();
                 resolvedIndicator = Symbol(faker.hacker.noun());
-                serviceId = faker.datatype.uuid();
+                serviceId = faker.string.uuid();
                 waitTime = 1 * 60 * 1000; // 1 minute
 
                 promise = Promise.race([
@@ -963,7 +963,7 @@ describe('Bus/WebSocketConnection', function() {
 
                 ws._messageHandlers[jsonRpcId]({
                   jsonrpc: '2.0',
-                  id: faker.datatype.uuid(),
+                  id: faker.string.uuid(),
                   result: {
                     subscription
                   }
@@ -1006,11 +1006,11 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function() {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
-        group = faker.random.word();
+        group = faker.lorem.word();
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(null, expectedOrganization.id);
 
@@ -1049,11 +1049,11 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function(done) {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
-        group = faker.random.word();
+        group = faker.lorem.word();
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -1099,9 +1099,9 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function() {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
-        group = faker.random.word();
+        group = faker.lorem.word();
         send = sinon.spy(expectedWebSocket, 'send');
         serviceId = null;
 
@@ -1147,9 +1147,9 @@ describe('Bus/WebSocketConnection', function() {
       beforeEach(function() {
         channel = null;
         expectedOrganization = fixture.build('organization');
-        group = faker.random.word();
+        group = faker.lorem.word();
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -1191,11 +1191,11 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function() {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
         group = null;
         send = sinon.spy(expectedWebSocket, 'send');
-        serviceId = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -1232,10 +1232,10 @@ describe('Bus/WebSocketConnection', function() {
 
       context('with a group', function() {
         beforeEach(function() {
-          channel = faker.random.word();
+          channel = faker.lorem.word();
           expectedOrganization = fixture.build('organization');
           group = null;
-          serviceId = faker.datatype.uuid();
+          serviceId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -1254,10 +1254,10 @@ describe('Bus/WebSocketConnection', function() {
 
       context('without a group', function() {
         beforeEach(function() {
-          channel = faker.random.word();
+          channel = faker.lorem.word();
           expectedOrganization = fixture.build('organization');
           group = null;
-          serviceId = faker.datatype.uuid();
+          serviceId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -1285,10 +1285,10 @@ describe('Bus/WebSocketConnection', function() {
 
       context('with a group', function() {
         beforeEach(function() {
-          channel = faker.random.word();
+          channel = faker.lorem.word();
           expectedOrganization = fixture.build('organization');
           group = null;
-          serviceId = faker.datatype.uuid();
+          serviceId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -1307,10 +1307,10 @@ describe('Bus/WebSocketConnection', function() {
 
       context('without a group', function() {
         beforeEach(function() {
-          channel = faker.random.word();
+          channel = faker.lorem.word();
           expectedOrganization = fixture.build('organization');
           group = null;
-          serviceId = faker.datatype.uuid();
+          serviceId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -1342,13 +1342,13 @@ describe('Bus/WebSocketConnection', function() {
       let ws;
 
       beforeEach(function() {
-        channel = faker.random.word();
+        channel = faker.lorem.word();
         expectedOrganization = fixture.build('organization');
         group = null;
         handler = sinon.stub().returns(null);
-        serviceId = faker.datatype.uuid();
-        message = faker.random.word();
-        subscription = faker.datatype.uuid();
+        serviceId = faker.string.uuid();
+        message = faker.lorem.word();
+        subscription = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,
@@ -2180,7 +2180,7 @@ describe('Bus/WebSocketConnection', function() {
         beforeEach(function() {
           expectedOrganization = fixture.build('organization');
           send = sinon.spy(expectedWebSocket, 'send');
-          messageId = faker.datatype.uuid();
+          messageId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -2219,7 +2219,7 @@ describe('Bus/WebSocketConnection', function() {
         beforeEach(function() {
           expectedOrganization = fixture.build('organization');
           send = sinon.spy(expectedWebSocket, 'send');
-          messageId = faker.datatype.uuid();
+          messageId = faker.string.uuid();
 
           ws = new WebSocketConnection(
             expectedWebSocket,
@@ -2255,7 +2255,7 @@ describe('Bus/WebSocketConnection', function() {
       beforeEach(function() {
         expectedOrganization = fixture.build('organization');
         send = sinon.spy(expectedWebSocket, 'send');
-        messageId = faker.datatype.uuid();
+        messageId = faker.string.uuid();
 
         ws = new WebSocketConnection(
           expectedWebSocket,

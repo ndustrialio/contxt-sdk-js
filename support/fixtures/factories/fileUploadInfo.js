@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const times = require('lodash.times');
 
 factory
@@ -9,14 +9,14 @@ factory
   .option('fromServer', false)
   .attrs({
     headers: () =>
-      times(faker.datatype.number({ min: 1, max: 5 })).reduce((memo) => {
+      times(faker.number.int({ min: 1, max: 5 })).reduce((memo) => {
         memo[faker.lorem.word()] = faker.hacker.phrase();
 
         return memo;
       }, {}),
     expiresAt: () => faker.date.future().toISOString(),
     method: 'PUT',
-    url: () => faker.internet.avatar()
+    url: () => faker.image.avatar()
   })
   .after((uploadInfo, options) => {
     // If building a file object that comes from the server, transform it to have camel

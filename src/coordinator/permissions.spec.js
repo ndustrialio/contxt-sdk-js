@@ -99,7 +99,7 @@ describe('Coordinator/Permissions', function() {
           expectedOrganizationId = fixture.build('contxtOrganization').id;
           expectedUsersPermissions = fixture.buildList(
             'contxtUserPermissions',
-            faker.datatype.number({
+            faker.number.int({
               min: 1,
               max: 10
             }),
@@ -173,7 +173,7 @@ describe('Coordinator/Permissions', function() {
         expectedOrganizationId = fixture.build('organization').id;
         expectedUsersPermissions = fixture.buildList(
           'contxtUserPermissions',
-          faker.datatype.number({
+          faker.number.int({
             min: 1,
             max: 10
           }),
@@ -481,7 +481,7 @@ describe('Coordinator/Permissions', function() {
 
       beforeEach(function() {
         expectedPermissionsMap = fixture.build('userPermissionsMap');
-        expectedUserId = faker.datatype.uuid();
+        expectedUserId = faker.string.uuid();
 
         request = {
           ...baseRequest,

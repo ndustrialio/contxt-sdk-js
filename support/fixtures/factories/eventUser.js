@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const times = require('lodash.times');
 
 factory
@@ -10,16 +10,16 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     email: () => faker.internet.email(),
-    firstName: () => faker.name.firstName(),
-    id: () => `auth0|${faker.datatype.number()}`,
-    isMachineUser: () => faker.datatype.boolean(),
-    lastName: () => faker.name.lastName(),
+    firstName: () => faker.person.firstName(),
+    id: () => `auth0|${faker.number.int()}`,
+    isMachineUser: () => fakerBoolean(),
+    lastName: () => faker.person.lastName(),
     userMobileNumbers: () => [],
     updatedAt: () => faker.date.recent().toISOString()
   })
   .attr('IOSDevice', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.datatype.number({
+      faker.number.int({
         min: 0,
         max: 5
       }),
@@ -38,7 +38,7 @@ factory
   })
   .attr('userEventSubscription', ['id', 'fromServer'], (id, fromServer) => {
     return times(
-      faker.datatype.number({
+      faker.number.int({
         min: 0,
         max: 5
       }),
@@ -60,7 +60,7 @@ factory
     ['id', 'firstName', 'lastName', 'fromServer'],
     (id, firstName, lastName, fromServer) => {
       return times(
-        faker.datatype.number({
+        faker.number.int({
           min: 0,
           max: 5
         }),

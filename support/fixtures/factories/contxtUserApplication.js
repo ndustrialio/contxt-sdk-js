@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtUserApplication')
@@ -9,7 +9,7 @@ factory
   .attrs({
     applicationId: () => factory.build('contxtApplication').id,
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('contxtUser').id
   })

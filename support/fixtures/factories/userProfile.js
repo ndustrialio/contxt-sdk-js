@@ -1,13 +1,13 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('userProfile')
   .attrs({
-    name: () => faker.name.findName(),
-    nickname: () => faker.name.firstName(),
+    name: () => faker.person.fullName(),
+    nickname: () => faker.person.firstName(),
     picture: () => faker.image.avatar(),
     sub: () => faker.hacker.adjective(),
     updatedAt: () => faker.date.recent().toISOString()

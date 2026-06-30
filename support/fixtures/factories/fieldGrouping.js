@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('fieldGrouping')
@@ -9,12 +9,12 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     description: () => faker.hacker.phrase(),
-    fieldCategoryId: () => faker.datatype.uuid(),
-    facilityId: () => faker.datatype.number(),
-    id: () => faker.datatype.uuid(),
-    isPublic: () => faker.datatype.boolean(),
+    fieldCategoryId: () => faker.string.uuid(),
+    facilityId: () => faker.number.int(),
+    id: () => faker.string.uuid(),
+    isPublic: () => fakerBoolean(),
     label: () => faker.commerce.productName(),
-    ownerId: () => faker.internet.userName(),
+    ownerId: () => faker.internet.username(),
     slug: () => faker.lorem.slug(),
     updatedAt: () => faker.date.recent().toISOString()
   })

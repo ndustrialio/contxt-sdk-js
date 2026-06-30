@@ -1,14 +1,14 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('outputFieldData')
   .option('fromServer', false)
   .attrs({
     eventTime: () => faker.date.past(),
-    value: () => `${faker.datatype.number()}`
+    value: () => `${faker.number.int()}`
   })
   .after((outputFieldData, options) => {
     // If building an output field data object that comes from the server,

@@ -1,15 +1,15 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtUserRole')
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    id: () => faker.datatype.uuid(),
-    mappedFromExternalGroup: () => faker.datatype.boolean(),
+    id: () => faker.string.uuid(),
+    mappedFromExternalGroup: () => fakerBoolean(),
     roleId: () => factory.build('contxtRole').id,
     updatedAt: () => faker.date.recent().toISOString(),
     userId: () => factory.build('contxtUser').id

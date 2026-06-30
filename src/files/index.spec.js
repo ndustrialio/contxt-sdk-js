@@ -825,7 +825,7 @@ describe('Files', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedFileId = faker.datatype.uuid();
+        expectedFileId = faker.string.uuid();
         fileFromServerAfterFormat = fixture.build('fileToDownload');
 
         fileFromServerBeforeFormat = fixture.build(
@@ -890,7 +890,7 @@ describe('Files', function() {
       let toCamelCase;
 
       beforeEach(function() {
-        expectedFileId = faker.datatype.uuid();
+        expectedFileId = faker.string.uuid();
         fileFromServerAfterFormat = fixture.build('file', {
           id: expectedFileId
         });
@@ -962,7 +962,7 @@ describe('Files', function() {
         _metadata: fixture.build('paginationMetadata'),
         records: fixture.buildList(
           'file',
-          faker.datatype.number({ min: 1, max: 10 })
+          faker.number.int({ min: 1, max: 10 })
         )
       };
       filesFromServerBeforeFormat = {
@@ -972,9 +972,9 @@ describe('Files', function() {
         )
       };
       filesFiltersBeforeFormat = {
-        limit: faker.datatype.number({ min: 10, max: 1000 }),
-        offset: faker.datatype.number({ max: 1000 }),
-        orderBy: faker.random.arrayElement([
+        limit: faker.number.int({ min: 10, max: 1000 }),
+        offset: faker.number.int({ max: 1000 }),
+        orderBy: faker.helpers.arrayElement([
           'content_type',
           'created_at',
           'description',
@@ -985,8 +985,8 @@ describe('Files', function() {
           'status',
           'updated_at'
         ]),
-        reverseOrder: faker.datatype.boolean(),
-        status: faker.random.arrayElement(['ACTIVE', 'UPLOADING'])
+        reverseOrder: fakerBoolean(),
+        status: faker.helpers.arrayElement(['ACTIVE', 'UPLOADING'])
       };
       filesFiltersAfterFormat = {
         ...filesFiltersBeforeFormat

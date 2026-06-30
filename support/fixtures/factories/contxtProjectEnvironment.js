@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('contxtProjectEnvironment')
@@ -9,14 +9,14 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     updatedAt: () => faker.date.recent().toISOString(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     organizationId: () => factory.build('contxtOrganization').id,
     projectId: () => factory.build('contxtProject').id,
-    clusterId: () => faker.datatype.uuid(),
-    slug: () => `${faker.random.word()}-${faker.random.word()}`,
-    name: () => faker.name.title(),
-    type: () => faker.random.word(),
-    description: () => faker.random.words()
+    clusterId: () => faker.string.uuid(),
+    slug: () => `${faker.lorem.word()}-${faker.lorem.word()}`,
+    name: () => faker.person.jobTitle(),
+    type: () => faker.lorem.word(),
+    description: () => faker.lorem.words()
   })
   .after((projectEnvironment, options) => {
     // If building an application object that comes from the server, transform it to have camel

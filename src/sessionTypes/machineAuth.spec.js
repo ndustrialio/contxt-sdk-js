@@ -69,7 +69,7 @@ describe('sessionTypes/MachineAuth', function() {
         let promise;
 
         beforeEach(function() {
-          audienceNameToDelete = faker.random.arrayElement(
+          audienceNameToDelete = faker.helpers.arrayElement(
             Object.keys(sdk.config.audiences)
           );
 
@@ -110,7 +110,7 @@ describe('sessionTypes/MachineAuth', function() {
         let promise;
 
         beforeEach(function() {
-          audienceNameToDelete = faker.random.arrayElement(
+          audienceNameToDelete = faker.helpers.arrayElement(
             Object.keys(sdk.config.audiences)
           );
 
@@ -361,7 +361,7 @@ describe('sessionTypes/MachineAuth', function() {
         const currentDate = new Date();
         audienceName = faker.hacker.adjective();
         expectedAudience = fixture.build('audience');
-        expiresInMs = faker.datatype.number({ min: 1000, max: 100000 });
+        expiresInMs = faker.number.int({ min: 1000, max: 100000 });
         expectedSessionInfo = {
           apiToken: faker.internet.password(),
           expiresAt: currentDate.getTime() + expiresInMs
@@ -518,7 +518,7 @@ describe('sessionTypes/MachineAuth', function() {
         const audienceName = faker.hacker.adjective();
         sdk.config.audiences[audienceName] = fixture.build('audience');
         const expectedError = new Error();
-        expectedError.response = { status: faker.datatype.number() };
+        expectedError.response = { status: faker.number.int() };
 
         sinon.stub(axios, 'post').rejects(expectedError);
 
@@ -543,7 +543,7 @@ describe('sessionTypes/MachineAuth', function() {
         expiresAt: faker.date.future().getTime()
       };
       initialSessionInfo = times(
-        faker.datatype.number({ min: 1, max: 10 })
+        faker.number.int({ min: 1, max: 10 })
       ).reduce((memo) => {
         memo[faker.hacker.verb()] = {
           apiToken: faker.internet.password(),

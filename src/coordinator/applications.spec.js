@@ -163,7 +163,7 @@ describe('Coordinator/Applications', function() {
     let toCamelCase;
 
     beforeEach(function() {
-      const numberOfApplications = faker.datatype.number({
+      const numberOfApplications = faker.number.int({
         min: 1,
         max: 10
       });
@@ -219,7 +219,7 @@ describe('Coordinator/Applications', function() {
     beforeEach(function() {
       expectedFavoriteApplications = fixture.buildList(
         'contxtUserFavoriteApplication',
-        faker.datatype.number({
+        faker.number.int({
           min: 1,
           max: 10
         })
@@ -270,10 +270,10 @@ describe('Coordinator/Applications', function() {
     let toCamelCase;
 
     beforeEach(function() {
-      expectedApplicationId = faker.datatype.uuid();
+      expectedApplicationId = faker.string.uuid();
       expectedGroupings = fixture.buildList(
         'applicationGrouping',
-        faker.datatype.number({ min: 1, max: 10 })
+        faker.number.int({ min: 1, max: 10 })
       );
       groupingsFromServer = expectedGroupings.map((grouping) =>
         fixture.build('applicationGrouping', grouping, { fromServer: true })
@@ -321,10 +321,10 @@ describe('Coordinator/Applications', function() {
         let toCamelCase;
 
         beforeEach(function() {
-          expectedOrganizationId = faker.datatype.uuid();
+          expectedOrganizationId = faker.string.uuid();
           expectedFeaturedApplications = fixture.buildList(
             'contxtOrganizationFeaturedApplication',
-            faker.datatype.number({
+            faker.number.int({
               min: 1,
               max: 10
             }),
@@ -401,7 +401,7 @@ describe('Coordinator/Applications', function() {
         expectedOrganizationId = fixture.build('organization').id;
         expectedFeaturedApplications = fixture.buildList(
           'contxtOrganizationFeaturedApplication',
-          faker.datatype.number({
+          faker.number.int({
             min: 1,
             max: 10
           }),

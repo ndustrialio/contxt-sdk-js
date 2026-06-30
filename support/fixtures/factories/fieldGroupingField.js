@@ -1,16 +1,16 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('fieldGroupingField')
   .option('fromServer', false)
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
-    fieldGroupingId: () => faker.datatype.uuid(),
-    outputFieldId: () => faker.datatype.number(),
-    id: () => faker.datatype.uuid(),
+    fieldGroupingId: () => faker.string.uuid(),
+    outputFieldId: () => faker.number.int(),
+    id: () => faker.string.uuid(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((fieldGroupingField, options) => {

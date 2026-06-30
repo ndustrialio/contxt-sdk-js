@@ -1,15 +1,15 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('costCenterFacility')
   .option('fromServer', false)
   .attrs({
-    costCenterId: () => faker.datatype.uuid(),
-    facilityId: () => faker.datatype.number(),
-    id: () => faker.datatype.uuid()
+    costCenterId: () => faker.string.uuid(),
+    facilityId: () => faker.number.int(),
+    id: () => faker.string.uuid()
   })
   .after((costCenterFacility, options) => {
     // If building a cost center facility object that comes from the server, transform it to

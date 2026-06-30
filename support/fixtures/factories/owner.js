@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('owner')
@@ -9,10 +9,10 @@ factory
   .attrs({
     createdAt: () => faker.date.past().toISOString(),
     email: () => faker.internet.email(),
-    firstName: () => faker.name.firstName(),
-    id: () => `auth0|${faker.datatype.number()}`,
-    isMachineUser: () => faker.datatype.boolean(),
-    lastName: () => faker.name.lastName(),
+    firstName: () => faker.person.firstName(),
+    id: () => `auth0|${faker.number.int()}`,
+    isMachineUser: () => fakerBoolean(),
+    lastName: () => faker.person.lastName(),
     updatedAt: () => faker.date.recent().toISOString()
   })
   .after((owner, options) => {

@@ -1,15 +1,15 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory.define('Auth0WebAuthSessionInfo').attrs({
-  accessToken: () => faker.datatype.uuid(),
+  accessToken: () => faker.string.uuid(),
   expiresAt: () => sometimeSoon(2, 24)
 });
 
 factory.define('MachineAuthSessionInfo').attrs({
-  apiToken: () => faker.datatype.uuid(),
+  apiToken: () => faker.string.uuid(),
   expiresAt: () => sometimeSoon(2, 24)
 });
 
@@ -24,7 +24,7 @@ const sometimeSoon = (minHours, maxHours) => {
   const date = new Date();
 
   let future = date.getTime();
-  future += faker.datatype.number(range);
+  future += faker.number.int(range);
   date.setTime(future);
 
   return date;

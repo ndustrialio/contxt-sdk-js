@@ -7,16 +7,16 @@ describe('utils/iot/parseOutputFieldNextPageUrlMetadata', function() {
 
   beforeEach(function() {
     expectedMetadata = {
-      limit: faker.datatype.number(),
+      limit: faker.number.int(),
       timeEnd: Math.floor(faker.date.recent().getTime() / 1000),
       timeStart: Math.floor(faker.date.past().getTime() / 1000),
-      window: faker.random.arrayElement([0, 60, 900, 3600])
+      window: faker.helpers.arrayElement([0, 60, 900, 3600])
     };
 
     const url =
       faker.internet.url() +
       '/outputs/' +
-      faker.datatype.number() +
+      faker.number.int() +
       '/fields/' +
       faker.hacker.noun() +
       '/data' +

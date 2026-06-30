@@ -1,7 +1,7 @@
 'use strict';
 
 const factory = require('rosie').Factory;
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 factory
   .define('assetMetricValue')
@@ -12,11 +12,11 @@ factory
     createdAt: () => faker.date.past().toISOString(),
     effectiveEndDate: () => faker.date.recent().toISOString(),
     effectiveStartDate: () => faker.date.past().toISOString(),
-    id: () => faker.datatype.uuid(),
+    id: () => faker.string.uuid(),
     notes: () => faker.lorem.sentence(),
     updatedAt: () => faker.date.recent().toISOString(),
-    value: () => `${faker.datatype.number()}`,
-    isEstimated: () => faker.datatype.boolean()
+    value: () => `${faker.number.int()}`,
+    isEstimated: () => fakerBoolean()
   })
   .after((assetMetricValue, options) => {
     // If building an asset metric value object that comes from the server,

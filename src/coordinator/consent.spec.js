@@ -95,7 +95,7 @@ describe('Coordinator/Consent', function() {
     let expectedConsentId;
 
     beforeEach(function() {
-      expectedConsentId = faker.datatype.uuid();
+      expectedConsentId = faker.string.uuid();
       consent = new Consent(baseSdk, baseRequest, expectedHost);
     });
 
