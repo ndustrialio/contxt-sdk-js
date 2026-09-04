@@ -21,7 +21,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
         },
         auth: {
           domain: faker.internet.domainName(),
-          authorizationPath: faker.hacker.noun(),
+          authorizationPath: faker.lorem.slug(),
           clientId: faker.internet.password(),
           tokenExpiresAtBufferMs: faker.number.int({ max: 10000 })
         }
@@ -139,7 +139,7 @@ describe('sessionTypes/Auth0WebAuth', function() {
       let expectedOnRedirect;
 
       beforeEach(function() {
-        expectedAuthorizationPath = faker.hacker.adjective();
+        expectedAuthorizationPath = faker.lorem.slug();
         expectedOnAuthenticate = sinon.stub().returns();
         expectedOnRedirect = sinon.stub();
 
