@@ -41,10 +41,3 @@ jobs:
           release_name: ${{ steps.version.outputs.tag }}
           body: ${{ steps.version.outputs.clean_changelog }}
           commitish: ${{ env.SHA }}
-      - name: Publish to NPM
-        if: steps.version.outputs.skipped == 'false'
-        env:
-          NPM_TOKEN: ${{ secrets.NIO_NPM_TOKEN }}
-        run: |
-          npm config set //registry.npmjs.org/:_authToken '${NPM_TOKEN}'
-          npm publish
