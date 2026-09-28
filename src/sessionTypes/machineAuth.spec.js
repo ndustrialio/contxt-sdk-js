@@ -527,6 +527,48 @@ describe('sessionTypes/MachineAuth', function() {
 
         return expect(promise).to.be.rejectedWith(expectedError);
       });
+
+      it('clears out the reference to the axios promise when the request fails', function() {
+        const audienceName = faker.hacker.adjective();
+        sdk.config.audiences[audienceName] = fixture.build('audience');
+
+        sinon.stub(axios, 'post').rejects(new Error());
+
+        const machineAuth = new MachineAuth(sdk);
+        const promise = machineAuth._getNewSessionInfo(audienceName);
+
+        return expect(promise).to.be.rejected.then(() => {
+          expect(machineAuth._tokenPromises[audienceName]).to.be.null;
+        });
+      });
+
+      it('requests a new token on the next call after a failed request', function() {
+        const audienceName = faker.hacker.adjective();
+        sdk.config.audiences[audienceName] = fixture.build('audience');
+        const expectedError = new Error();
+        expectedError.response = { status: 503 };
+        const expectedApiToken = faker.internet.password();
+
+        const post = sinon.stub(axios, 'post');
+        post.onFirstCall().rejects(expectedError);
+        post.onSecondCall().resolves({
+          data: { access_token: expectedApiToken, expires_in: 3600 }
+        });
+
+        const machineAuth = new MachineAuth(sdk);
+
+        return expect(machineAuth.getCurrentApiToken(audienceName))
+          .to.be.rejectedWith(expectedError)
+          .then(() => {
+            return expect(
+              machineAuth.getCurrentApiToken(audienceName)
+            ).to.be.fulfilled.and.to.eventually.equal(expectedApiToken);
+          })
+          .then(() => {
+            expect(post).to.be.calledTwice;
+            expect(machineAuth.isAuthenticated(audienceName)).to.be.true;
+          });
+      });
     });
   });
 
