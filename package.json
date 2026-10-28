@@ -6,7 +6,7 @@
   "module": "esm/index.js",
   "type": "commonjs",
   "engines": {
-    "node": ">=24 <25"
+    "node": ">=24"
   },
   "publishConfig": {
     "access": "public"
