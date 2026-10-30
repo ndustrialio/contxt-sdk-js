@@ -138,6 +138,9 @@ class MachineAuth {
           return sessionInfo;
         })
         .catch((err) => {
+          // Don't cache the failure, so the next call retries the request
+          this._tokenPromises[audienceName] = null;
+
           if (!(err.response && err.response.status)) {
             throw new Error(
               'There was a problem getting a token from the ContxtAuth server. Please check your configuration settings.'
